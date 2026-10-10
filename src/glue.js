@@ -4,13 +4,13 @@ function saveP(){localStorage.setItem('tlmn_profile',JSON.stringify(PR));localSt
 function fmt(n){return n.toLocaleString('vi-VN');}
 function toast(h){const d=document.createElement('div');d.className='toast';d.innerHTML=h;document.getElementById('toast').appendChild(d);setTimeout(()=>d.remove(),3200);}
 function badgeToasts(l){l.forEach(b=>toast(`${b.icon} <b>Huy hiệu mới: ${b.name}</b><br>+${fmt(b.xu)} xu`));}
-function updHud(){ensureDaily(PR,new Date());document.getElementById('xu').innerHTML=I('coin')+fmt(PR.xu);
+function updHud(){ensureDaily(PR,new Date());animCoin(PR.xu);
  const sel=document.getElementById('bet');sel.innerHTML=BETS.map(b=>`<option value="${b}" ${b==PR.bet?'selected':''}>${fmt(b)}</option>`).join('');
  document.getElementById('d1').innerHTML=loginState(PR,new Date()).canClaim?'<span class="dot"></span>':'';
  document.getElementById('d2').innerHTML=PR.quests.list.some(q=>!q.claimed&&q.prog>=questDef(q.id).goal)?'<span class="dot"></span>':'';}
 function setBet(v){if(G&&!G.over&&G.started)return msg('Đổi mức cược khi ván kết thúc');PR.bet=+v;saveP();}
-function closeModal(){document.getElementById('modal').style.display='none';}
-function modal(h){document.getElementById('modalIn').innerHTML=h+'<div style="text-align:right"><button class="alt" onclick="closeModal()">Đóng</button></div>';document.getElementById('modal').style.display='flex';}
+function closeModal(){document.getElementById('modal').style.display='none';document.body.classList.remove('mopen');}
+function modal(h){document.getElementById('modalIn').innerHTML=h+'<div style="text-align:right"><button class="alt" onclick="closeModal()">Đóng</button></div>';document.getElementById('modal').style.display='flex';document.body.classList.add('mopen');}
 function openDaily(){const now=new Date(),ls=loginState(PR,now),cur=ls.canClaim?ls.day-1:ls.day;
  let h='<h3>'+I('gift')+' Quà điểm danh</h3><div class="days">'+LOGIN_REWARDS.map((r,i)=>`<div class="day ${i<cur?'done':''} ${ls.canClaim&&i===ls.day-1?'today':''}">Ngày ${i+1}<br>${I("coin")}${r}</div>`).join('')+'</div>';
  h+=ls.canClaim?`<p><button onclick="doClaimLogin()">Nhận ${fmt(ls.reward)} xu</button></p>`:'<p>'+I('check')+' Hôm nay đã nhận. Quay lại ngày mai nhé!</p>';

@@ -141,7 +141,7 @@ function render(){
  [1,2,3].forEach(p=>{const e=$('s'+p),fin=G.finished.indexOf(p),n=G.hands[p].length;
   e.className='seat'+(G.turn===p&&!G.over?' turn':'');
   const tag=fin>=0?`<span class="tag fin">Về ${['nhất','nhì','ba','bét'][fin]}</span>`:G.passed[p]&&G.cur?'<span class="tag pass">Bỏ lượt</span>':G.turn===p&&!G.over?'<span class="tag">Đang nghĩ…</span>':'<span class="tag" style="opacity:0">.</span>';
-  e.innerHTML=`<div class="av" style="--avc:${AVATARS[p][1]}">${AVATARS[p][0]}<span class="cnt">${n}</span></div><div class="nm">${NAMES[p]}</div><div class="blv"><span class="lvb">${BOTLV[p]}</span>${titleForLevel(BOTLV[p]).name}</div>${tag}<div class="${G.over?'reveal':'fan'}"></div>`;
+  e.innerHTML=`<div class="av" style="--avc:${AVATARS[p][1]};--lp:${(BOTLV[p]*37)%100}">${AVATARS[p][0]}<span class="cnt">${n}</span></div><div class="nm">${NAMES[p]}</div><div class="blv"><span class="lvb">${BOTLV[p]}</span>${titleForLevel(BOTLV[p]).name}</div>${tag}<div class="${G.over?'reveal':'fan'}"></div>`;
   const f=e.lastChild;if(G.over)G.hands[p].forEach(c=>f.appendChild(cardEl(c)));else f.innerHTML='<div class="back"></div>'.repeat(Math.min(n,13));});
  const pile=$('pile');pile.innerHTML='';G.pile.forEach(c=>pile.appendChild(cardEl(c)));
  const pv=$('prev');pv.innerHTML='';(G.prev||[]).forEach(c=>pv.appendChild(cardEl(c)));
@@ -155,15 +155,30 @@ function render(){
 updMute();updHud();newGame();const DEMO=typeof location!=='undefined'&&location.hash==='#demo';
 if(!DEMO&&loginState(PR,new Date()).canClaim)setTimeout(openDaily,500);
 
-function renderMe(){const e=$('meInfo');if(!e)return;const L=levelInfo(PR.xp),t=currentTitle(PR);
+function renderMe(){const e=$('meInfo');if(!e)return;const L=levelInfo(PR.xp),t=currentTitle(PR);const a=document.querySelector('#meBar .av');if(a&&a.style)a.style.setProperty&&a.style.setProperty('--lp',Math.round(100*L.cur/L.need));
  e.innerHTML=`<span class="lvb big">${L.level}</span><div class="mi"><div class="mt">${t.name} <small>▾</small></div><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><div class="xpt">${L.cur}/${L.need} XP</div></div>`;}
 function levelUpFX(lv){if(!lv)return;if(lv.xp)toast(`+${lv.xp} XP`);if(!lv.ups.length){renderMe();return;}
  const top=lv.ups[lv.ups.length-1];renderMe();
  setTimeout(()=>{try{[392,523,659,784,1047].forEach((f,i)=>tone(f,.22,'square',.07,i*.08));tone(1568,.5,'triangle',.12,.42);}catch(e){}
-  fx(`<div class="lvup"><div class="lvc">${top}</div><div>LÊN CẤP!</div><small>+${fmt(lv.xu)} xu</small></div>`,2600);
+  document.body.classList.add('busy');setTimeout(()=>{document.body.classList.remove('busy');pumpT();},2600);fx(`<div class="lvup"><div class="lvc">${top}</div><div>LÊN CẤP!</div><small>+${fmt(lv.xu)} xu</small></div>`,2600);
   toast(`${I('medal')} Lên cấp ${top}! +${fmt(lv.xu)} xu`);lv.newTitles.forEach(t=>toast(`Mở khóa danh hiệu: <b>${t.name}</b>`));},900);}
 function openTitles(){const L=levelInfo(PR.xp),cur=currentTitle(PR);
  modal(`<h3>${I('medal')} Cấp ${L.level} · ${cur.name}</h3><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><p class="small">${L.cur}/${L.need} XP đến cấp ${L.level+1} (thưởng ${fmt(levelReward(L.level+1))} xu). XP: về nhất ${XP_PLACE[0]}, nhì ${XP_PLACE[1]}, ba ${XP_PLACE[2]}, bét ${XP_PLACE[3]}, chặt heo +${XP_CHOP}, tới trắng +${XP_INSTANT}, nhiệm vụ +${XP_QUEST}.</p><h4>Danh hiệu</h4>`+
  TITLES.map(t=>{const u=titleUnlocked(PR,t),req=t.min?`Cấp ${t.min}`:'Huy hiệu: '+(BADGES.find(b=>b.id===t.badge)||{}).name;
   return `<div class="row"><div style="flex:1"><b>${t.name}</b> <small class="small">${req}</small></div>${t.id===cur.id?I('check'):u?`<button class="alt" onclick="pickTitle('${t.id}')">Chọn</button>`:I('lock')}</div>`;}).join(''));}
 function pickTitle(id){if(setTitle(PR,id)){saveP();renderMe();toast('Đã đổi danh hiệu: '+currentTitle(PR).name);}openTitles();}
+
+// ---------- Hàng đợi thông báo (không chồng lên bảng lên cấp) ----------
+var TQ=[],TON=0;
+function toast(h){TQ.push(h);pumpT();}
+function pumpT(){const box=$('toast');if(!box)return;
+ while(TQ.length&&TON<(document.body&&document.body.classList&&document.body.classList.contains('mopen')?1:2)&&!(document.body&&document.body.classList&&document.body.classList.contains('busy'))){const d=document.createElement('div');d.className='toast';d.innerHTML=TQ.shift();box.appendChild(d);TON++;
+  setTimeout(()=>{d.className='toast out';setTimeout(()=>{d.remove&&d.remove();TON--;pumpT();},RM?0:300);},2400);}}
+// ---------- Bộ đếm xu có hiệu ứng ----------
+var coinShown=null,coinRaf=0;
+function animCoin(v){const e=$('xu');if(!e)return;const from=coinShown==null?v:coinShown;coinShown=v;
+ const set=n=>{e.innerHTML=I('coin')+fmt(Math.round(n));};
+ if(from===v||RM||typeof requestAnimationFrame!=='function'){set(v);return;}
+ if(e.classList){e.classList.remove('bump','up','down');void e.offsetWidth;e.classList.add('bump',v>from?'up':'down');setTimeout(()=>e.classList.remove('up','down','bump'),900);}
+ cancelAnimationFrame(coinRaf);const t0=performance.now(),D=700;
+ const step=t=>{const k=Math.min(1,(t-t0)/D),q=1-Math.pow(1-k,3);set(from+(v-from)*q);if(k<1)coinRaf=requestAnimationFrame(step);};coinRaf=requestAnimationFrame(step);}
