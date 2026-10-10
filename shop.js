@@ -14,16 +14,63 @@ const SHOP=[
  {id:'em_tease',type:'emote',name:'Cà khịa',list:['🤣','😏','🙏','💤','🤡','🔥'],price:500},
  {id:'em_talk',type:'emote',name:'Câu nói Tiến Lên',list:['Chặt nè!','Run chưa?','Hết bài chưa?','Đỉnh quá!','Nhanh lên nào!','Ván nữa không?'],price:800},
 ];
+// ---- Mở rộng cửa hàng: độ hiếm r (1 Thường, 2 Hiếm, 3 Sử thi, 4 Huyền thoại), tag 'new'/'hot', css cho mặt sau/mặt bàn
+const BK=(id,name,price,r,css,o)=>Object.assign({id,type:'back',name,price,r,css},o||{});
+const FT=(id,name,price,r,f,o)=>Object.assign({id,type:'felt',name,price,r,f},o||{});
+const AV=(id,name,emo,price,r,o)=>Object.assign({id,type:'avatar',name,emo,price,r},o||{});
+SHOP.push(
+ BK('back_sakura','Hoa Anh Đào',400,1,'radial-gradient(circle at 30% 30%,#fff5 0 3px,transparent 4px) 0 0/10px 10px,linear-gradient(160deg,#f48fb1,#ad1457)'),
+ BK('back_ocean','Đại Dương',400,1,'repeating-radial-gradient(circle at 50% 120%,#ffffff22 0 3px,transparent 3px 8px),linear-gradient(180deg,#0288d1,#01579b)'),
+ BK('back_carbon','Sợi Carbon',600,2,'repeating-linear-gradient(45deg,#333 0 3px,#1a1a1a 3px 6px)',{tag:'hot'}),
+ BK('back_lotus','Sen Hồng',700,2,'radial-gradient(circle,#ffd6e8 0 18%,#ec407a 19% 30%,transparent 31%),linear-gradient(160deg,#2e7d32,#1b5e20)',{tag:'new'}),
+ BK('back_aodai','Áo Dài',900,2,'repeating-linear-gradient(90deg,#ffeb3b33 0 2px,transparent 2px 9px),linear-gradient(160deg,#d32f2f,#7f0000)'),
+ BK('back_galaxy','Thiên Hà',1500,3,'radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 70% 60%,#fff 0 1px,transparent 2px),radial-gradient(circle at 40% 80%,#fff8 0 1px,transparent 2px),radial-gradient(ellipse at 50% 50%,#7c4dff,#1a0b3d 70%)',{tag:'hot'}),
+ BK('back_neon','Neon Sài Gòn',1800,3,'repeating-linear-gradient(0deg,transparent 0 6px,#00e5ff55 6px 7px),repeating-linear-gradient(90deg,transparent 0 6px,#ff40ff55 6px 7px),#120022',{tag:'new'}),
+ BK('back_jade','Ngọc Bích Hoàng Cung',2600,3,'radial-gradient(circle,#e9c45a 0 10%,transparent 11%),repeating-conic-gradient(#00695c 0 15deg,#004d40 15deg 30deg)'),
+ BK('back_phoenix','Phượng Hoàng Lửa',4000,4,'radial-gradient(circle at 50% 45%,#fff59d 0 10%,#ff9800 20%,#d84315 45%,#3e0a00 80%)',{lv:15,tag:'hot'}),
+ BK('back_emperor','Hoàng Đế',6000,4,'radial-gradient(circle,#fff3b0 0 8%,transparent 9%),repeating-conic-gradient(#b8860b 0 10deg,#5d4300 10deg 20deg)',{lv:20}),
+ FT('felt_teal','Ngọc Lam',600,1,['#1fa39a','#137168','#0a4440','#062a27']),FT('felt_brown','Gỗ Sồi',600,1,['#8d6e63','#6d4c41','#4e342e','#2b1b16']),
+ FT('felt_sky','Bầu Trời',900,2,['#4fc3f7','#0288d1','#01579b','#002f5e'],{tag:'new'}),FT('felt_rose','Hồng Phấn',900,2,['#f06292','#c2185b','#880e4f','#4a0429']),
+ FT('felt_olive','Ô Liu Pháp',1200,2,['#9e9d24','#827717','#524c0f','#2c2906']),FT('felt_midnight','Nửa Đêm',2000,3,['#3949ab','#1a237e','#0d1240','#05081e'],{tag:'hot'}),
+ FT('felt_lava','Dung Nham',3000,3,['#ff7043','#bf360c','#5d1600','#2a0a00']),FT('felt_gold','Sòng Vàng Macau',5000,4,['#d4af37','#9c7a1c','#5e4a10','#2e2408'],{lv:18,tag:'hot'}),
+ AV('av_monkey','Khỉ con','🐵',300,1),AV('av_bear','Gấu nâu','🐻',300,1),AV('av_frog','Ếch xanh','🐸',300,1),AV('av_pig','Heo hồng','🐷',300,1,{tag:'hot'}),
+ AV('av_chick','Gà con','🐥',300,1),AV('av_unicorn','Kỳ lân','🦄',900,2,{tag:'new'}),AV('av_alien','Người ngoài hành tinh','👽',900,2),AV('av_ghost','Bóng ma','👻',900,2),
+ AV('av_clown','Chú hề','🤡',700,2),AV('av_vampire','Ma cà rồng','🧛',1200,3),AV('av_genie','Thần đèn','🧞',1500,3),AV('av_mermaid','Tiên cá','🧜',1500,3,{tag:'new'}),
+ AV('av_astro','Phi hành gia','🧑‍🚀',1800,3),AV('av_lion','Sư tử','🦁',2000,3,{tag:'hot'}),AV('av_eagle','Đại bàng','🦅',2500,3),AV('av_phoenix','Phượng hoàng','🐦‍🔥',5000,4,{lv:20}),
+ {id:'fr_wood',type:'frame',name:'Viền Gỗ',price:200,r:1},{id:'fr_sakura',type:'frame',name:'Viền Hoa',price:900,r:2,tag:'new'},{id:'fr_neon',type:'frame',name:'Viền Neon',price:1500,r:3},
+ {id:'fr_fire',type:'frame',name:'Viền Lửa',price:2500,r:3,tag:'hot'},{id:'fr_dragon',type:'frame',name:'Viền Rồng Vàng',price:5000,r:4,lv:20},
+ {id:'em_love',type:'emote',name:'Tình yêu',list:['😍','🥰','💕','😘','🌹','💌'],price:400,r:1},{id:'em_animal',type:'emote',name:'Thú cưng',list:['🐶','🐱','🐷','🐸','🐵','🐔'],price:500,r:1},
+ {id:'em_rage',type:'emote',name:'Nổi giận',list:['🤬','😤','💢','👊','😭','🥶'],price:600,r:2},{id:'em_vn',type:'emote',name:'Nói kiểu Việt',list:['Hên thôi!','Xui quá trời','Đánh lẹ đi','Chơi đẹp nha','Gà quá!','Phục rồi đó'],price:900,r:2,tag:'new'},
+ {id:'em_party',type:'emote',name:'Ăn mừng',list:['🎉','🥳','🍾','🎊','💃','🕺'],price:1200,r:3},{id:'em_boss',type:'emote',name:'Đại ca',list:['Thua đi cưng','Ai chơi lại?','Ván này của tui','Bài đẹp vậy đó','Nể chưa?','Ngồi im xem'],price:2000,r:3,tag:'hot'},
+ {id:'deck_classic',type:'deck',name:'Bộ Cổ Điển',price:0,r:1},{id:'deck_vintage',type:'deck',name:'Giấy Cổ',price:800,r:2,css:'background:linear-gradient(160deg,#f6e7c1,#e0c48f)!important;filter:sepia(.25)'},
+ {id:'deck_mint',type:'deck',name:'Bạc Hà',price:800,r:2,css:'background:linear-gradient(160deg,#eafff5,#bff0d9)!important'},
+ {id:'deck_night',type:'deck',name:'Bóng Đêm',price:1800,r:3,css:'filter:invert(.92) hue-rotate(180deg)',tag:'new'},
+ {id:'deck_royal',type:'deck',name:'Hoàng Gia Viền Vàng',price:3500,r:4,css:'background:linear-gradient(160deg,#fffdf3,#f5e6b8)!important;box-shadow:0 0 0 2px #c9962e inset,0 0 0 1px #6b4a00,0 3px 8px #000a!important',lv:12,tag:'hot'},
+ {id:'fx_confetti',type:'fx',name:'Pháo Giấy',price:0,r:1,parts:null},{id:'fx_money',type:'fx',name:'Mưa Tiền',price:1200,r:2,parts:['💵','💰','🪙'],tag:'hot'},
+ {id:'fx_hearts',type:'fx',name:'Mưa Tim',price:1000,r:2,parts:['❤️','💖','💕']},{id:'fx_stars',type:'fx',name:'Sao Băng',price:1600,r:3,parts:['⭐','🌟','✨']},
+ {id:'fx_dragon',type:'fx',name:'Rồng Vàng Thăng Thiên',price:4500,r:4,parts:['🐉','🔥','🧧','✨'],lv:15,tag:'new'},
+ {id:'bub_white',type:'bubble',name:'Bong Bóng Trắng',price:0,r:1,css:''},{id:'bub_gold',type:'bubble',name:'Bong Bóng Vàng',price:600,r:2,css:'background:linear-gradient(#fff3b0,#e9c45a);color:#3a2500'},
+ {id:'bub_pink',type:'bubble',name:'Bong Bóng Hồng',price:500,r:1,css:'background:#ffd1e3;color:#880e4f'},{id:'bub_neon',type:'bubble',name:'Bong Bóng Neon',price:1400,r:3,css:'background:#120022;color:#7cf9ff;box-shadow:0 0 12px #ff40ff,0 0 0 2px #00e5ff'},
+ {id:'bub_fire',type:'bubble',name:'Bong Bóng Lửa',price:2500,r:4,css:'background:linear-gradient(#ffcc80,#ff5722);color:#3e0a00;box-shadow:0 0 16px #ff5722'},
+ {id:'nc_white',type:'name',name:'Tên Trắng',price:0,r:1,css:'color:#fff7dc'},{id:'nc_gold',type:'name',name:'Tên Vàng Kim',price:800,r:2,css:'color:#ffd84d;text-shadow:0 0 6px #ffb30088'},
+ {id:'nc_cyan',type:'name',name:'Tên Băng Lam',price:800,r:2,css:'color:#7cf9ff;text-shadow:0 0 6px #00e5ff88'},{id:'nc_red',type:'name',name:'Tên Hỏa Long',price:1500,r:3,css:'background:linear-gradient(90deg,#ff5722,#ffd84d);-webkit-background-clip:text;background-clip:text;color:transparent'},
+ {id:'nc_rainbow',type:'name',name:'Tên Cầu Vồng',price:3000,r:4,css:'background:linear-gradient(90deg,#ff5252,#ffd740,#69f0ae,#40c4ff,#e040fb);-webkit-background-clip:text;background-clip:text;color:transparent',tag:'hot'}
+);
+SHOP.forEach(x=>{if(!x.r)x.r=x.price===0?1:x.price>=2500?4:x.price>=1200?3:x.price>=500?2:1;});
+const RARITY=[null,{name:'Thường',col:'#b0bec5'},{name:'Hiếm',col:'#42a5f5'},{name:'Sử thi',col:'#ab47bc'},{name:'Huyền thoại',col:'#ffb300'}];
+// Ưu đãi mỗi ngày: 1 món giảm 30% (xác định theo ngày)
+function dailyDeal(day){const pool=SHOP.filter(x=>x.price>=300);let h=0;for(const c of String(day))h=(h*31+c.charCodeAt(0))>>>0;const it=pool[h%pool.length];return{id:it.id,price:Math.round(it.price*0.7/10)*10,off:30};}
+function priceOf(id,day){const it=shopItem(id);if(!it)return null;const d=day!=null?dailyDeal(day):null;return d&&d.id===id?d.price:it.price;}
 const AV_BGS=['#2b6cb0','#7b3fa0','#b5651d','#c2185b','#00897b','#3949ab','#ef6c00','#455a64','#8d1c1c','#1b5e20'];
-const DEFAULT_EQUIP={back:'back_classic',felt:'felt_green',avatar:'av_cool',frame:'fr_gold'};
+const DEFAULT_EQUIP={back:'back_classic',felt:'felt_green',avatar:'av_cool',frame:'fr_gold',deck:'deck_classic',fx:'fx_confetti',bubble:'bub_white',name:'nc_white'};
 function shopItem(id){return SHOP.find(x=>x.id===id);}
 function ensureInv(P){P.inv=P.inv||{};P.equip=Object.assign({},DEFAULT_EQUIP,P.equip||{});if(!P.avBg)P.avBg=AV_BGS[0];return P;}
 function owns(P,id){const it=shopItem(id);return !!it&&(it.price===0||!!(P.inv&&P.inv[id]));}
-function buyItem(P,id,level){ensureInv(P);const it=shopItem(id);if(!it)return{ok:false,reason:'Không có vật phẩm'};
+function buyItem(P,id,level,day){ensureInv(P);const it=shopItem(id);if(!it)return{ok:false,reason:'Không có vật phẩm'};
  if(owns(P,id))return{ok:false,reason:'Đã sở hữu'};if(it.lv&&(level||1)<it.lv)return{ok:false,reason:'Cần cấp '+it.lv};
- if(P.xu<it.price)return{ok:false,reason:'Không đủ xu'};P.xu-=it.price;P.inv[id]=Date.now();return{ok:true};}
+ const pr=priceOf(id,day);if(P.xu<pr)return{ok:false,reason:'Không đủ xu'};P.xu-=pr;P.inv[id]=Date.now();return{ok:true};}
 function equipItem(P,id){ensureInv(P);const it=shopItem(id);if(!it||it.type==='emote'||!owns(P,id))return false;P.equip[it.type]=id;return true;}
 function equipped(P,type){ensureInv(P);const id=P.equip[type];return shopItem(owns(P,id)?id:DEFAULT_EQUIP[type]);}
 function myEmotes(P){return SHOP.filter(x=>x.type==='emote'&&owns(P,x.id)).flatMap(x=>x.list);}
 // SHOP_END
-if(typeof module!=='undefined')module.exports={SHOP,AV_BGS,DEFAULT_EQUIP,shopItem,ensureInv,owns,buyItem,equipItem,equipped,myEmotes};
+if(typeof module!=='undefined')module.exports={RARITY,dailyDeal,priceOf,SHOP,AV_BGS,DEFAULT_EQUIP,shopItem,ensureInv,owns,buyItem,equipItem,equipped,myEmotes};

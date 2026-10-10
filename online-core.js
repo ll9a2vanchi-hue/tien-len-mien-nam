@@ -47,7 +47,7 @@ class OnlineHost{
   if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:true});this.st.hist.push({txt:`${this.st.seats[s].name} mất kết nối — máy chơi thay`,cls:'ps'});this.push();this.tick();}}
   else{this.players=this.players.filter(x=>x.uid!==uid);this.assign();this.push();}}
  assign(){const ps=this.players.filter(x=>!x.gone);this.seats=[0,1,2,3].map(i=>ps[i]?Object.assign({},ps[i],{bot:false}):null);}
- room(){return{host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
+ room(){return{bet:this.opt.bet||null,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
  start(rng){if(this.st&&!this.st.over)return false;this.assign();const humans=this.seats.filter(Boolean).length;if(humans<2&&!this.opt.fillBots)return false;
   const seats=this.seats.slice();if(this.opt.fillBots){let k=0;for(let i=0;i<4;i++)if(!seats[i]){seats[i]={uid:null,name:OBOTS[(k++ +humans)%OBOTS.length],bot:true,av:'🤖',lv:5};}}
   if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);if(this.st.over)this.finish();this.push();this.tick();return true;}

@@ -51,7 +51,7 @@ async function enterRoom(code,isHost,bots){if(ONL.active)await leaveRoom(true);a
  const ch=chan('tlmn:room:'+code),tr=mkTr(ch);ONL.ch=ch;ONL.tr=tr;
  ONL.client=new OnlineClient(tr,ONL.me);ONL.client.onState=s=>onlineState(s);ONL.client.onRoom=r=>{ONL.room=r;renderRoom();};ONL.client.onReject=e=>{sfx('bad');msg(e);};ONL.client.onFull=()=>{toast('Phòng đã đủ 4 người');leaveRoom(true);};
  tr.on('chat',m=>addChat(m));tr.on('emote',m=>{const ls=localSeatOf(m.uid);if(ls>=0)showEmote(ls,String(m.e).slice(0,24));});
- tr.on('bye',m=>onPresenceLeave(m.uid));
+ tr.on('bye',m=>onPresenceLeave(m.uid));tr.on('throw',m=>{if(!m||!ONL.st)return;const f=localSeatOf(m.from),me=ONL.st.seats.findIndex(s=>s&&s.uid===USER.id);let to=localSeatOf(m.to);if(to<0&&/^seat\d$/.test(m.to||''))to=(+m.to.slice(4)-me+4)%4;if(f>=0&&to>=0)throwFX(f,to,m.id);});
  if(isHost){ONL.host=new OnlineHost(tr,ONL.me,{fillBots:bots});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};}
  ch.on('presence',{event:'sync'},()=>{const s=ch.presenceState();ONL.presence=Object.keys(s);});
  ch.on('presence',{event:'leave'},({key})=>onPresenceLeave(key));
@@ -68,7 +68,7 @@ function onPresenceLeave(uid){if(!ONL.active||!uid||uid===USER.id)return;
   else toast('Chủ phòng rời đi — đang chuyển chủ phòng…');}}
 async function leaveRoom(silent){if(!ONL.active)return;if(!silent&&G&&!G.over&&!confirm('Rời phòng? Máy sẽ chơi thay bạn.'))return;
  try{ONL.tr&&ONL.tr.send('bye',{uid:USER.id});}catch(e){}if(ONL.host)ONL.host.stop();try{await SB.removeChannel(ONL.ch);}catch(e){}
- ONL.active=false;ONL.host=null;ONL.client=null;if(G){G.over=true;G.online=false;}history.replaceState&&history.replaceState(null,'',location.pathname);
+ ONL.active=false;ONL.host=null;ONL.client=null;ONL.pub=false;setTimeout(()=>typeof lobbyTrack==='function'&&lobbyTrack(),0);if(G){G.over=true;G.online=false;}history.replaceState&&history.replaceState(null,'',location.pathname);
  [1,2,3].forEach(p=>{const e=$('s'+p);if(e)e.style.visibility='';});$('bChat').style.display='none';document.body.classList.remove('onl');$('chatDraw').className='';showHome();}
 function renderRoom(){if(!ONL.active||!document.body.classList.contains('athome'))return;const r=ONL.room;if(!r)return;const amHost=!!ONL.host;
  const seats=(r.seats||[]).map((s,i)=>s?`<div class="row"><div class="av ${'fr-'+esc(s.frame||'fr_gold')}" style="--avc:${esc(s.bg||'#456')};width:44px;height:44px;font-size:24px">${esc(s.av||'🙂')}</div><div style="flex:1"><b>${esc(s.name)}</b>${s.uid===r.host?' <small style="color:#ffd84d">★ Chủ phòng</small>':''}<br><small><span class="lvb">${s.lv||1}</span><span class="tt t${s.tier||1}">${esc(s.title||'')}</span></small></div></div>`:

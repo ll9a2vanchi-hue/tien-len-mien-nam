@@ -273,6 +273,30 @@ body.athome #home{display:block}body.athome #top,body.athome #table,body.athome 
 #me #meBar{margin-bottom:2px}
 @media(max-width:700px){.seat .blv{max-width:118px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}}
 html,body{overflow-x:hidden}
+
+/* ===== v7: nút, sảnh, vòng quay, ném đồ, độ hiếm ===== */
+#meBar{width:100%;max-width:640px;margin-left:auto;margin-right:auto}#ctrl{justify-content:space-between!important;flex:1;width:auto}#ctrl #bPass{margin-left:auto}#ctrl #bPlay{margin-right:auto}
+@media(max-width:700px){#bPlay{flex:none!important;width:30%}#bPass{flex:none!important;width:26%}}
+.proj{position:fixed;left:0;top:0;z-index:40;font-size:34px;margin:-20px 0 0 -20px;pointer-events:none;filter:drop-shadow(0 4px 6px #000a)}
+.splat{position:fixed;z-index:41;font-size:58px;transform:translate(-50%,-50%);pointer-events:none;animation:spl 1.4s forwards}
+@keyframes spl{0%{transform:translate(-50%,-50%) scale(.2)}15%{transform:translate(-50%,-50%) scale(1.3)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-30%) scale(1)}}
+.spk{position:fixed;z-index:41;font-size:16px;pointer-events:none;animation:spk .8s forwards}@keyframes spk{to{transform:translate(var(--dx),var(--dy));opacity:0}}
+.seat .av{cursor:pointer}.sitem.prem{box-shadow:0 0 0 1px #ffd84d88 inset}
+.conf.emo{background:none!important;width:auto;height:auto;font-size:26px}
+.wwrap{position:relative;width:min(80vw,300px);margin:6px auto}.wheel{width:100%;display:block;filter:drop-shadow(0 8px 20px #000c)}
+.wptr{position:absolute;left:50%;top:-6px;margin-left:-14px;width:0;height:0;border:14px solid transparent;border-top:26px solid #ffd84d;z-index:2;filter:drop-shadow(0 2px 2px #000)}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;max-height:52vh;overflow:auto}
+.ltab{margin:0;padding:8px;border-radius:12px;display:flex;flex-direction:column;gap:6px;text-align:left}.ltab.busy{box-shadow:0 0 0 1px #7fe0a8aa inset}
+.ltab .lh,.ltab .lf{display:flex;justify-content:space-between;align-items:center;font-size:12px}.ltab .lseats{display:flex;gap:4px;justify-content:center}
+.ltab .av{width:28px;height:28px;font-size:16px;box-shadow:0 0 0 2px #e9c45a66}.ltab .av.empty{--avc:#0004;color:#fff6;font-weight:800}
+.ltab .st{padding:1px 6px;border-radius:8px;background:#fff1}.ltab .st.pl{background:#c62828;color:#fff}.ltab .st.wt{background:#2e7d32;color:#fff}
+.sitem{position:relative}.sitem .rar{font-size:10px;font-weight:800;letter-spacing:.5px}.sitem .tg{position:absolute;top:4px;left:4px;font-size:9px;font-weight:800;padding:1px 5px;border-radius:6px;background:#e53935;color:#fff}.sitem .tg.new{background:#00acc1}
+.sitem .old{text-decoration:line-through;opacity:.55;font-size:10px}.deal{border:1px solid #ffd84d;border-radius:14px;padding:8px;margin-bottom:8px;background:linear-gradient(90deg,#5d1a00aa,#3a2500aa);display:flex;gap:10px;align-items:center}
+.av.fr-fr_wood{box-shadow:0 0 0 3px #2b1b10,0 0 0 5px #8d6e63,0 8px 18px #000c}.av.fr-fr_sakura{box-shadow:0 0 0 3px #3a0018,0 0 0 5px #f48fb1,0 0 0 7px #fff0f6,0 0 14px #f48fb188,0 8px 18px #000c}
+.av.fr-fr_neon{box-shadow:0 0 0 3px #000,0 0 0 5px #00e5ff,0 0 0 7px #ff40ff,0 0 18px #00e5ffaa,0 8px 18px #000c}
+.av.fr-fr_fire{box-shadow:0 0 0 3px #2a0700,0 0 0 5px #ff5722,0 0 0 7px #ffcc80,0 0 22px #ff5722cc,0 8px 18px #000c;animation:dia 1.6s linear infinite}
+.av.fr-fr_dragon{box-shadow:0 0 0 3px #2e2408,0 0 0 6px #d4af37,0 0 0 8px #fff3b0,0 0 26px #ffd84dcc,0 8px 18px #000c;animation:dia 2s linear infinite}
+.pv.dk{width:46px;height:64px;border-radius:6px;background:#fff;color:#c00;font-weight:800;display:grid;place-items:center;font-size:18px}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -304,7 +328,7 @@ html,body{overflow-x:hidden}
 </defs></svg>
 
 <div id="top"><b class="logo"><img src="icons/icon-192.png" alt="" width="26" height="26"> Tiến Lên Miền Nam</b><div class="r"><button class="alt ic" id="bHome" onclick="goHome()" title="Màn hình chính"><svg class="i"><use href="#i-home"/></svg></button><span id="xu"></span><select id="bet" onchange="setBet(this.value)" aria-label="Mức cược"></select>
-<button class="alt ic" onclick="openDaily()" title="Quà điểm danh"><svg class="i"><use href="#i-gift"/></svg><span id="d1"></span></button><button class="alt ic" onclick="openQuests()" title="Nhiệm vụ"><svg class="i"><use href="#i-quest"/></svg><span id="d2"></span></button><button class="alt ic hm" onclick="openBadges()" title="Huy hiệu"><svg class="i"><use href="#i-medal"/></svg></button><button class="alt ic hm" onclick="openAccount()" title="Tài khoản &amp; sao lưu"><svg class="i"><use href="#i-user"/></svg><span id="d3"></span></button><button class="alt ic" id="bInstall" onclick="doInstall()" title="Cài đặt ứng dụng" style="display:none"><svg class="i"><use href="#i-install"/></svg></button><button class="alt ic" id="bMute" onclick="toggleMute()" title="Âm thanh"><svg class="i"><use href="#i-sound"/></svg></button><button id="bNew" onclick="newGame()" title="Ván mới"><svg class="i"><use href="#i-new"/></svg><span class="lbl"> Ván mới</span></button></div></div>
+<button class="alt ic" onclick="openDaily()" title="Quà điểm danh"><svg class="i"><use href="#i-gift"/></svg><span id="d1"></span></button><button class="alt ic" onclick="openQuests()" title="Nhiệm vụ"><svg class="i"><use href="#i-quest"/></svg><span id="d2"></span></button><button class="alt ic hm" onclick="openBadges()" title="Huy hiệu"><svg class="i"><use href="#i-medal"/></svg></button><button class="alt ic hm" onclick="openAccount()" title="Tài khoản &amp; sao lưu"><svg class="i"><use href="#i-user"/></svg><span id="d3"></span></button><button class="alt ic" id="bInstall" onclick="doInstall()" title="Cài đặt ứng dụng" style="display:none"><svg class="i"><use href="#i-install"/></svg></button><button class="alt ic" id="bMute" onclick="toggleMute()" title="Âm thanh"><svg class="i"><use href="#i-sound"/></svg></button><button id="bNew" onclick="newGameBtn()" title="Ván mới"><svg class="i"><use href="#i-new"/></svg><span class="lbl"> Ván mới</span></button></div></div>
 <div id="table"><div class="seat" id="s2"></div><div class="seat" id="s1"></div>
 <div id="center"><div id="pileWrap"><div id="under"></div><div class="pile" id="pile"></div></div><div id="msg"></div></div>
 <div class="seat" id="s3"></div></div>
