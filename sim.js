@@ -1,8 +1,8 @@
-const fs=require('fs');const el=()=>({style:{},className:'',innerHTML:'',textContent:'',appendChild(){},querySelector(){return el()},disabled:0});
+const fs=require('fs');const el=()=>({style:{},className:'',innerHTML:'',textContent:'',appendChild(){},remove(){},querySelector(){return el()},disabled:0});
 global.document={getElementById:el,createElement:el};global.localStorage={getItem:()=>null,setItem(){}};
 let q=[];global.setTimeout=f=>q.push(f);
-const src=fs.readFileSync('/tmp/x.js','utf8').replace('newGame();\n','')+`
-NAMES.length;let done=0;for(let g=0;g<300;g++){newGame();let n=0;
+const src=(()=>{const h=fs.readFileSync(__dirname+'/index.html','utf8');return h.slice(h.lastIndexOf('<script>')+8,h.lastIndexOf('</script>'));})().replace('newGame();\n','')+`
+NAMES.length;let done=0;for(let g=0;g<300;g++){if(PR.xu<1000)PR.xu=1e5;newGame();let n=0;
 while(!G.over&&n<2000){n++;if(G.turn===0){const m=botMove(G.hands[0],G.cur,G.first?0:null,[13]);if(m)doPlay(0,m);else if(!G.cur)doPlay(0,[G.hands[0][0]]);else doPass(0);}const f=q;q=[];f.forEach(x=>x());}
-if(G.over)done++;}console.log('completed',done,'/300 games, scores',S.pts);`;
+if(G.over)done++;}console.log('completed',done,'/300 games, scores',S.pts,'profile games',PR.stats.games,'badges',Object.keys(PR.badges).length,'chops',PR.stats.chops);`;
 eval(src);

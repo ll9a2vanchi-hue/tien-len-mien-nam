@@ -17,11 +17,24 @@ button:disabled{opacity:.4}button.alt{background:#ddd}
 #ctrl{text-align:center}#score{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center}
 #score>div{background:#163;padding:16px;border-radius:12px;min-width:280px}table{width:100%;border-collapse:collapse}td,th{padding:4px;border-bottom:1px solid #fff3}
 @media(max-width:500px){.card{width:44px;height:64px;margin-left:-20px}}
+#xu{font-weight:700;color:#ffd84d;margin-right:6px}#bet{font-size:14px;padding:6px;border-radius:8px}
+.modal{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:20}
+.modal>div{background:linear-gradient(#1b6b40,#124a2c);padding:16px;border-radius:14px;width:min(94vw,440px);max-height:86vh;overflow:auto;box-shadow:0 6px 30px #000}
+.row{display:flex;align-items:center;gap:8px;background:#0003;border-radius:10px;padding:8px;margin:6px 0}
+.bar{height:8px;background:#0006;border-radius:4px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:#f4c542}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.badge{background:#0003;border-radius:10px;padding:8px;text-align:center;font-size:12px}
+.badge .ic{font-size:30px}.badge.lock{opacity:.35;filter:grayscale(1)}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.day{background:#0003;border-radius:8px;padding:6px 2px;text-align:center;font-size:12px}.day.done{background:#2a8a55}.day.today{outline:2px solid #f4c542}
+#toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{background:#222e;border:2px solid #f4c542;border-radius:12px;padding:10px 16px;animation:tin .3s}@keyframes tin{from{transform:translateY(-20px);opacity:0}}
+.dot{display:inline-block;width:8px;height:8px;background:#f33;border-radius:50%;vertical-align:top}
+#top{flex-wrap:wrap}
 </style></head><body>
-<div id="top"><b>🃏 Tiến Lên Miền Nam</b><span><button class="alt" onclick="showScore()">Bảng điểm</button><button onclick="newGame()">Ván mới</button></span></div>
+<div id="top"><b>🃏 Tiến Lên Miền Nam</b><span><span id="xu"></span><select id="bet" onchange="setBet(this.value)"></select><button class="alt" onclick="openDaily()">🎁<span id="d1"></span></button><button class="alt" onclick="openQuests()">📋<span id="d2"></span></button><button class="alt" onclick="openBadges()">🏅</button><button class="alt" onclick="showScore()">Bảng điểm</button><button onclick="newGame()">Ván mới</button></span></div>
 <div id="table"><div class="bot" id="b2"></div><div class="bot" id="b1"></div><div id="center"><div id="pile"></div><div id="msg"></div></div><div class="bot" id="b3"></div></div>
 <div id="me"><div id="hand"></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" onclick="hint()">Gợi ý</button><button class="alt" onclick="sortHand()">Xếp bài</button></div></div>
 <div id="score" onclick="this.style.display='none'"><div id="scoreIn"></div></div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="toast"></div>
 <script>
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
@@ -93,6 +106,100 @@ function botMove(hand,cur,mustInclude,others){
   return null;
 }
 // RULES_END
+// PROGRESS_START
+const START_XU=1000,RESCUE_XU=500,BETS=[50,100,200,500,1000];
+const LOGIN_REWARDS=[100,150,200,300,400,600,1000];
+const PLACE_MULT=[2,0.5,-0.5,-1];
+const BADGES=[
+ {id:'first_game',icon:'🎴',name:'Nhập môn',desc:'Chơi ván đầu tiên',xu:50,test:s=>s.games>=1},
+ {id:'first_win',icon:'🥇',name:'Chiến thắng đầu tiên',desc:'Về nhất 1 ván',xu:100,test:s=>s.wins>=1},
+ {id:'win10',icon:'🏆',name:'Cao thủ',desc:'Về nhất 10 ván',xu:500,test:s=>s.wins>=10},
+ {id:'win50',icon:'👑',name:'Thần bài',desc:'Về nhất 50 ván',xu:2000,test:s=>s.wins>=50},
+ {id:'games50',icon:'🎲',name:'Chăm chỉ',desc:'Chơi 50 ván',xu:500,test:s=>s.games>=50},
+ {id:'streak3',icon:'🔥',name:'Chuỗi thắng 3',desc:'Thắng 3 ván liên tiếp',xu:300,test:s=>s.bestStreak>=3},
+ {id:'streak5',icon:'⚡',name:'Bất bại',desc:'Thắng 5 ván liên tiếp',xu:1000,test:s=>s.bestStreak>=5},
+ {id:'chop1',icon:'🐷',name:'Chặt heo',desc:'Chặt heo (2) lần đầu',xu:200,test:s=>s.chops>=1},
+ {id:'chop10',icon:'🔪',name:'Đồ tể',desc:'Chặt heo 10 lần',xu:1000,test:s=>s.chops>=10},
+ {id:'quad',icon:'💣',name:'Tứ quý',desc:'Đánh ra tứ quý',xu:200,test:s=>s.quads>=1},
+ {id:'pairseq4',icon:'🚂',name:'Tàu hỏa',desc:'Đánh 4 đôi thông',xu:500,test:s=>s.pairseq4>=1},
+ {id:'straight8',icon:'🐉',name:'Rồng dài',desc:'Đánh sảnh từ 8 lá',xu:300,test:s=>s.longStraight>=8},
+ {id:'instant',icon:'🌟',name:'Tới trắng',desc:'Thắng tới trắng',xu:1000,test:s=>s.instant>=1},
+ {id:'rich',icon:'💰',name:'Đại gia',desc:'Có 10.000 xu',xu:1000,test:(s,p)=>p.xu>=10000},
+ {id:'login7',icon:'📅',name:'Trung thành',desc:'Điểm danh 7 ngày liên tiếp',xu:500,test:(s,p)=>p.login.streak>=7},
+];
+const QUEST_POOL=[
+ {id:'play3',name:'Chơi 3 ván',ev:'game',goal:3,xu:150},
+ {id:'play5',name:'Chơi 5 ván',ev:'game',goal:5,xu:250},
+ {id:'win1',name:'Về nhất 1 ván',ev:'win',goal:1,xu:200},
+ {id:'win2',name:'Về nhất 2 ván',ev:'win',goal:2,xu:400},
+ {id:'top2',name:'Về nhất hoặc nhì 3 ván',ev:'top2',goal:3,xu:300},
+ {id:'pairs5',name:'Đánh 5 đôi',ev:'pair',goal:5,xu:150},
+ {id:'triple2',name:'Đánh 2 sám cô',ev:'triple',goal:2,xu:200},
+ {id:'straight3',name:'Đánh 3 sảnh',ev:'straight',goal:3,xu:200},
+ {id:'two3',name:'Đánh ra 3 con heo (2)',ev:'two',goal:3,xu:200},
+ {id:'chop1',name:'Chặt 1 heo',ev:'chop',goal:1,xu:400},
+];
+function dayKey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function dayDiff(a,b){const p=k=>{const[y,m,d]=k.split('-').map(Number);return Date.UTC(y,m-1,d)/864e5;};return p(b)-p(a);}
+function newProfile(){return{xu:START_XU,bet:100,rescueDay:null,login:{last:null,streak:0},badges:{},
+ stats:{games:0,wins:0,streak:0,bestStreak:0,chops:0,quads:0,pairseq4:0,longStraight:0,instant:0},quests:{day:null,list:[]}};}
+function ensureDaily(P,now,rng){rng=rng||Math.random;const k=dayKey(now);
+ if(P.quests.day!==k){const pool=QUEST_POOL.slice(),list=[];
+  while(list.length<3){const q=pool.splice(Math.floor(rng()*pool.length),1)[0];if(list.some(x=>questDef(x.id).ev===q.ev))continue;list.push({id:q.id,prog:0,claimed:false});}
+  P.quests={day:k,list};return true;}return false;}
+function questDef(id){return QUEST_POOL.find(q=>q.id===id);}
+function questEvent(P,ev,n){P.quests.list.forEach(q=>{const d=questDef(q.id);if(d.ev===ev)q.prog=Math.min(d.goal,q.prog+(n||1));});}
+function claimQuest(P,i){const q=P.quests.list[i],d=q&&questDef(q.id);if(!q||q.claimed||q.prog<d.goal)return 0;q.claimed=true;P.xu+=d.xu;return d.xu;}
+function loginState(P,now){const k=dayKey(now),l=P.login;if(l.last===k)return{canClaim:false,day:l.streak};
+ const next=(l.last&&dayDiff(l.last,k)===1)?(l.streak%7)+1:1;return{canClaim:true,day:next,reward:LOGIN_REWARDS[next-1]};}
+function claimLogin(P,now){const s=loginState(P,now);if(!s.canClaim)return 0;P.login={last:dayKey(now),streak:s.day};P.xu+=s.reward;return s.reward;}
+function canRescue(P,now){return P.xu<BETS[0]&&P.rescueDay!==dayKey(now);}
+function rescue(P,now){if(!canRescue(P,now))return 0;P.rescueDay=dayKey(now);P.xu+=RESCUE_XU;return RESCUE_XU;}
+function checkBadges(P){const out=[];let again=true;while(again){again=false;
+ for(const b of BADGES)if(!P.badges[b.id]&&b.test(P.stats,P)){P.badges[b.id]=Date.now();P.xu+=b.xu;out.push(b);again=true;}}return out;}
+// human played a combo; prev = combo on table before (or null)
+function onPlay(P,info,prev){const s=P.stats;
+ if(info.type==='pair')questEvent(P,'pair');if(info.type==='triple')questEvent(P,'triple');if(info.type==='straight'){questEvent(P,'straight');s.longStraight=Math.max(s.longStraight,info.len);}
+ if(info.type==='quad')s.quads++;if(info.type==='pairseq'&&info.len>=4)s.pairseq4++;
+ if((info.top>>2)===12&&(info.type==='single'||info.type==='pair'||info.type==='triple'))questEvent(P,'two',info.len);
+ let bonus=0;if(prev&&(prev.top>>2)===12&&info.type!==prev.type){s.chops++;questEvent(P,'chop');bonus=Math.round(P.bet*0.5*(prev.type==='pair'?2:1));P.xu+=bonus;}
+ return{bonus,badges:checkBadges(P)};}
+// place: 0..3, instant: human won tới trắng
+function onGameEnd(P,place,instant){const s=P.stats;s.games++;questEvent(P,'game');
+ let delta=Math.round(P.bet*(instant?(place===0?3:-1):PLACE_MULT[place]));
+ if(place===0){s.wins++;s.streak++;s.bestStreak=Math.max(s.bestStreak,s.streak);questEvent(P,'win');}else s.streak=0;
+ if(place<=1)questEvent(P,'top2');if(instant&&place===0)s.instant++;
+ P.xu=Math.max(0,P.xu+delta);return{delta,badges:checkBadges(P)};}
+
+let PR=JSON.parse(localStorage.getItem('tlmn_profile')||'null')||newProfile();
+function saveP(){localStorage.setItem('tlmn_profile',JSON.stringify(PR));updHud();}
+function fmt(n){return n.toLocaleString('vi-VN');}
+function toast(h){const d=document.createElement('div');d.className='toast';d.innerHTML=h;document.getElementById('toast').appendChild(d);setTimeout(()=>d.remove(),3200);}
+function badgeToasts(l){l.forEach(b=>toast(`${b.icon} <b>Huy hiệu mới: ${b.name}</b><br>+${fmt(b.xu)} xu`));}
+function updHud(){ensureDaily(PR,new Date());document.getElementById('xu').textContent='💰 '+fmt(PR.xu);
+ const sel=document.getElementById('bet');sel.innerHTML=BETS.map(b=>`<option value="${b}" ${b==PR.bet?'selected':''}>Cược ${fmt(b)}</option>`).join('');
+ document.getElementById('d1').innerHTML=loginState(PR,new Date()).canClaim?'<span class="dot"></span>':'';
+ document.getElementById('d2').innerHTML=PR.quests.list.some(q=>!q.claimed&&q.prog>=questDef(q.id).goal)?'<span class="dot"></span>':'';}
+function setBet(v){if(G&&!G.over&&G.started)return msg('Đổi mức cược khi ván kết thúc');PR.bet=+v;saveP();}
+function closeModal(){document.getElementById('modal').style.display='none';}
+function modal(h){document.getElementById('modalIn').innerHTML=h+'<div style="text-align:right"><button class="alt" onclick="closeModal()">Đóng</button></div>';document.getElementById('modal').style.display='flex';}
+function openDaily(){const now=new Date(),ls=loginState(PR,now),cur=ls.canClaim?ls.day-1:ls.day;
+ let h='<h3>🎁 Quà điểm danh</h3><div class="days">'+LOGIN_REWARDS.map((r,i)=>`<div class="day ${i<cur?'done':''} ${ls.canClaim&&i===ls.day-1?'today':''}">Ngày ${i+1}<br>💰${r}</div>`).join('')+'</div>';
+ h+=ls.canClaim?`<p><button onclick="doClaimLogin()">Nhận ${fmt(ls.reward)} xu</button></p>`:'<p>✅ Hôm nay đã nhận. Quay lại ngày mai nhé!</p>';
+ if(canRescue(PR,now))h+=`<div class="row">😢 Hết xu? <button onclick="doRescue()">Nhận cứu trợ ${RESCUE_XU} xu</button></div>`;else if(PR.xu<BETS[0])h+='<p>Đã nhận cứu trợ hôm nay.</p>';
+ modal(h);}
+function doClaimLogin(){const r=claimLogin(PR,new Date());if(r)toast(`🎁 Điểm danh +${fmt(r)} xu`);badgeToasts(checkBadges(PR));saveP();openDaily();}
+function doRescue(){const r=rescue(PR,new Date());if(r)toast(`🆘 Cứu trợ +${r} xu`);saveP();openDaily();}
+function openQuests(){ensureDaily(PR,new Date());const m=new Date();m.setHours(24,0,0,0);const hh=Math.ceil((m-new Date())/36e5);
+ modal('<h3>📋 Nhiệm vụ hôm nay</h3><p style="font-size:13px">Làm mới sau ~'+hh+' giờ (0h)</p>'+PR.quests.list.map((q,i)=>{const d=questDef(q.id),done=q.prog>=d.goal;
+  return `<div class="row"><div style="flex:1">${d.name} <small>(${q.prog}/${d.goal})</small><div class="bar"><i style="width:${100*q.prog/d.goal}%"></i></div></div>${q.claimed?'✅':`<button ${done?'':'disabled'} onclick="doClaimQuest(${i})">+${d.xu}</button>`}</div>`;}).join(''));}
+function doClaimQuest(i){const r=claimQuest(PR,i);if(r)toast(`📋 Hoàn thành nhiệm vụ +${r} xu`);badgeToasts(checkBadges(PR));saveP();openQuests();}
+function openBadges(){const n=Object.keys(PR.badges).length;
+ modal(`<h3>🏅 Huy hiệu (${n}/${BADGES.length})</h3><div class="grid">`+BADGES.map(b=>`<div class="badge ${PR.badges[b.id]?'':'lock'}"><div class="ic">${PR.badges[b.id]?b.icon:'🔒'}</div><b>${b.name}</b><br>${b.desc}<br>💰${fmt(b.xu)}</div>`).join('')+'</div>'+
+ `<p style="font-size:13px">Ván: ${PR.stats.games} · Thắng: ${PR.stats.wins} · Chuỗi tốt nhất: ${PR.stats.bestStreak} · Chặt heo: ${PR.stats.chops}</p>`);}
+function hookPlay(info,prev){const r=onPlay(PR,info,prev);if(r.bonus)toast(`🐷 Chặt heo! +${fmt(r.bonus)} xu`);badgeToasts(r.badges);saveP();}
+function hookEnd(place,instant){const r=onGameEnd(PR,place,instant);toast(`${r.delta>=0?'🎉':'💸'} ${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu`);badgeToasts(r.badges);saveP();
+ if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);}
 const NAMES=['Bạn','Máy Trái','Máy Trên','Máy Phải'];
 const PTS=[3,1,-1,-3];
 let G,sel=new Set(),sortMode=0;
@@ -103,9 +210,11 @@ function cardSVG(c){const r=RANKS[rk(c)],s=SUITS[st(c)];
 function cardEl(c,click){const d=document.createElement('div');d.className='card'+(st(c)>=2?' red':'')+(sel.has(c)?' sel':'');d.innerHTML=cardSVG(c);if(click)d.onclick=()=>{sel.has(c)?sel.delete(c):sel.add(c);render();};return d;}
 function typeName(i){return{single:'Rác',pair:'Đôi',triple:'Sám cô',quad:'Tứ quý',straight:'Sảnh '+i.len,pairseq:i.len+' đôi thông'}[i.type];}
 function newGame(){
+ closeModal();document.getElementById('score').style.display='none';
+ if(PR.xu<PR.bet){const ok=BETS.filter(b=>b<=PR.xu);if(ok.length){PR.bet=ok[ok.length-1];saveP();}else{updHud();msg('Không đủ xu để cược!');openDaily();return;}}
  const d=[...Array(52).keys()];for(let i=51;i>0;i--){const j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]];}
  G={hands:[0,1,2,3].map(p=>sortCards(d.slice(p*13,p*13+13))),cur:null,curBy:null,passed:[0,0,0,0],finished:[],first:false,over:false,log:''};
- sel.clear();
+ sel.clear();G.started=true;
  for(let p=0;p<4;p++){const w=instantWin(G.hands[p]);if(w){G.finished=[p];G.over=true;msg(`${NAMES[p]} TỚI TRẮNG: ${w}!`);endGame(true);render();return;}}
  if(S.lastWinner==null){G.turn=G.hands.findIndex(h=>h.includes(0));G.first=true;}else G.turn=S.lastWinner;
  msg(G.first?`${NAMES[G.turn]} giữ 3♠ đánh trước`:`${NAMES[G.turn]} thắng ván trước, đánh trước`);
@@ -123,7 +232,7 @@ function nextTurn(){
 }
 function doPlay(p,cards){
  const info=detect(cards);G.hands[p]=G.hands[p].filter(c=>!cards.includes(c));
- const chop=G.cur&&info.type!==G.cur.type;G.cur=info;G.curBy=p;G.pile=sortCards(cards);G.first=false;
+ const prevCur=G.cur;const chop=G.cur&&info.type!==G.cur.type;if(p===0)hookPlay(info,prevCur);G.cur=info;G.curBy=p;G.pile=sortCards(cards);G.first=false;
  msg(`${NAMES[p]}: ${chop?'CHẶT! ':''}${typeName(info)}`);
  if(G.hands[p].length===0){G.finished.push(p);if(active().length<=1){G.finished.push(...active());G.over=true;endGame(false);render();return;}}
  nextTurn();render();step();
@@ -143,7 +252,7 @@ function hint(){if(G.over||G.turn!==0)return;const m=botMove(G.hands[0],G.cur,G.
 function sortHand(){sortMode^=1;render();}
 function endGame(instant){const f=G.finished,all=[...f,...[0,1,2,3].filter(p=>!f.includes(p))];
  if(instant){S.pts[f[0]]+=6;[0,1,2,3].forEach(p=>{if(p!==f[0])S.pts[p]-=2;});}else all.forEach((p,i)=>S.pts[p]+=PTS[i]);
- S.wins[all[0]]++;S.games++;S.lastWinner=all[0];save();G.rank=all;
+ hookEnd(all.indexOf(0),instant&&f[0]===0);S.wins[all[0]]++;S.games++;S.lastWinner=all[0];save();G.rank=all;
  setTimeout(()=>showScore(all),600);}
 function showScore(rank){let h='<h3>🏆 Bảng điểm</h3>';
  if(Array.isArray(rank))h+='<p>Thứ tự về: '+rank.map((p,i)=>`${['Nhất','Nhì','Ba','Bét'][i]}: ${NAMES[p]}`).join(' · ')+'</p>';
@@ -161,5 +270,5 @@ function render(){
  document.getElementById('me').className=G.turn===0&&!G.over?'turn':'';
  document.getElementById('bPlay').disabled=G.over||G.turn!==0;document.getElementById('bPass').disabled=G.over||G.turn!==0||!G.cur;
 }
-newGame();
+updHud();newGame();if(loginState(PR,new Date()).canClaim)setTimeout(openDaily,500);
 </script></body></html>
