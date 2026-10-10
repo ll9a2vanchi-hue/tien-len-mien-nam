@@ -68,4 +68,4 @@ function botMove(hand,cur,mustInclude,others){
   return null;
 }
 // RULES_END
-if(typeof module!=='undefined')module.exports={RANKS,SUITS,cid,rk,st,detect,canBeat,instantWin,combos,botMove,sortCards};
+if(typeof module!=='undefined')module.exports={RANKS,SUITS,cid,rk,st,detect,canBeat,instantWin,combos,botMove,sortCards,cost,isBomb};
