@@ -8,4 +8,8 @@ Game đánh bài Tiến Lên Miền Nam chạy hoàn toàn offline trong trình 
 
 - Xu & mức cược, quà điểm danh 7 ngày, nhiệm vụ mỗi ngày, 15 huy hiệu thành tích.
 
+- Giao diện bàn nỉ xanh, avatar, hiệu ứng bay bài/chặt/thắng, âm thanh Web Audio (có nút tắt), lịch sử vòng đánh.
+
+Build: `./build.sh` (ghép src/ + rules.js + progress.js thành index.html).
+
 Kiểm thử: `node test.js`, `node test-progress.js`, `node sim.js`.

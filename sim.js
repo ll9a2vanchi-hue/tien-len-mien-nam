@@ -1,5 +1,5 @@
-const fs=require('fs');const el=()=>({style:{},className:'',innerHTML:'',textContent:'',appendChild(){},remove(){},querySelector(){return el()},disabled:0});
-global.document={getElementById:el,createElement:el};global.localStorage={getItem:()=>null,setItem(){}};
+const fs=require('fs');const el=()=>({style:{},dataset:{},classList:{add(){},remove(){}},className:'',innerHTML:'',textContent:'',appendChild(){},remove(){},querySelector(){return el()},querySelectorAll(){return []},disabled:0,get lastChild(){return el()},get firstChild(){return el()}});
+global.document={getElementById:el,createElement:el,querySelectorAll:()=>[]};global.window={};global.localStorage={getItem:()=>null,setItem(){}};
 let q=[];global.setTimeout=f=>q.push(f);
 const src=(()=>{const h=fs.readFileSync(__dirname+'/index.html','utf8');return h.slice(h.lastIndexOf('<script>')+8,h.lastIndexOf('</script>'));})().replace('newGame();\n','')+`
 NAMES.length;let done=0;for(let g=0;g<300;g++){if(PR.xu<1000)PR.xu=1e5;newGame();let n=0;

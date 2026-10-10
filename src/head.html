@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b3d22"><title>Tiến Lên Miền Nam</title><style>
+:root{--cw:84px;--ch:120px;--ov:-44px;--pw:58px;--ph:82px;--gold:#f4c542}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#fff;user-select:none;-webkit-tap-highlight-color:transparent;
+ background:#2b1a0e radial-gradient(ellipse at center,#4a2c15 0%,#1e1008 100%);display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
+button{font:700 15px system-ui,sans-serif;padding:9px 14px;border:0;border-radius:10px;margin:3px;cursor:pointer;color:#2a1a00;
+ background:linear-gradient(#ffe27a,#e0a800);box-shadow:0 3px 0 #8a6200,0 4px 8px #0006;transition:transform .08s}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 #8a6200}button:disabled{opacity:.4;cursor:default}
+button.alt{background:linear-gradient(#f5f5f5,#c9c9c9);box-shadow:0 3px 0 #777,0 4px 8px #0006}
+button.ic{padding:7px 9px;font-size:17px}
+#top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:6px 10px;background:linear-gradient(#0009,#0004);border-bottom:1px solid #fff2;gap:4px}
+#top b.logo{font-size:18px;letter-spacing:.5px;text-shadow:0 2px 4px #000}#top .r{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+#xu{font-weight:800;color:#ffd84d;margin-right:6px;background:#0006;padding:6px 10px;border-radius:20px;border:1px solid #ffd84d55}
+#bet{font:600 14px system-ui;padding:7px;border-radius:10px;border:0;background:#fff;color:#222}
+#table{flex:1;position:relative;margin:10px;border-radius:120px;padding:14px;
+ background:radial-gradient(ellipse at 50% 40%,#2fa35f 0%,#1c7a43 45%,#0f5129 100%);
+ box-shadow:inset 0 0 0 6px #0b3d22,inset 0 0 50px #0008,0 0 0 12px #6b3d1a,0 0 0 14px #a8702f,0 10px 30px #000a;
+ display:grid;grid-template-columns:150px 1fr 150px;grid-template-rows:auto 1fr;gap:8px;min-height:340px}
+#table.shake{animation:shake .45s}@keyframes shake{20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-4px)}60%{transform:translate(-5px,2px)}80%{transform:translate(3px,-1px)}}
+.seat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;font-size:14px}
+#s2{grid-column:2;grid-row:1}#s1{grid-column:1;grid-row:2}#s3{grid-column:3;grid-row:2}
+.av{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-size:34px;position:relative;
+ background:radial-gradient(circle at 35% 30%,#fff8,#0000 60%),var(--avc,#456);border:3px solid #fff8;box-shadow:0 4px 10px #0008;transition:box-shadow .2s}
+.seat.turn .av,#me.turn .av{box-shadow:0 0 0 4px var(--gold),0 0 22px 6px #f4c542aa;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 4px var(--gold),0 0 10px 2px #f4c54255}}
+.cnt{position:absolute;right:-8px;bottom:-4px;background:#c0262d;color:#fff;font:800 13px system-ui;min-width:24px;height:24px;border-radius:12px;display:grid;place-items:center;border:2px solid #fff}
+.nm{font-weight:700;text-shadow:0 1px 3px #000;background:#0005;padding:2px 10px;border-radius:12px}
+.tag{font-size:12px;padding:2px 8px;border-radius:10px;background:#0007;min-height:18px}.tag.pass{background:#555}.tag.fin{background:#c08a00;color:#fff}
+.fan{display:flex;height:34px;justify-content:center}.fan .back{width:22px;height:32px;margin-left:-14px;border-radius:3px}.fan .back:first-child{margin-left:0}
+.back{background:#a31621 repeating-linear-gradient(45deg,#0000 0 4px,#fff3 4px 5px),#a31621;border:2px solid #fff;box-shadow:0 1px 2px #0008;flex:none}
+.reveal{display:flex;flex-wrap:wrap;justify-content:center;max-width:150px}.reveal .card{--cw:30px;--ch:43px;margin:1px!important}
+#center{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0}
+#pileWrap{position:relative;min-height:calc(var(--ph) + 50px);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pile{display:flex;justify-content:center}.pile .card{--cw:var(--pw);--ch:var(--ph);margin-left:calc(var(--pw) * -0.42)}.pile .card:first-child{margin-left:0}
+#prev{opacity:.55;transform:scale(.72);margin-top:-14px;filter:saturate(.7)}#prev:empty{display:none}
+#pile .card{box-shadow:0 6px 14px #0009}
+#msg{min-height:24px;text-align:center;color:#fffbe0;font-weight:700;font-size:15px;text-shadow:0 1px 3px #000;padding:2px 10px;background:#0004;border-radius:12px}
+#hist{width:min(100%,380px);max-height:110px;overflow:auto;background:#0004;border-radius:10px;padding:4px 8px;font-size:13px;line-height:1.45}
+#hist div{border-bottom:1px solid #fff1;padding:1px 0}#hist div:last-child{color:#fff;font-weight:700}#hist .chop{color:#ff8a8a}#hist .ps{opacity:.6}
+#hist .c{font-weight:800;background:#fff;color:#111;border-radius:3px;padding:0 3px;margin:0 1px;white-space:nowrap}#hist .c.red{color:#d11}
+#me{display:flex;flex-direction:column;align-items:center;padding:0 6px 8px}
+#meBar{display:flex;align-items:center;gap:8px;margin-top:4px}#me .av{width:44px;height:44px;font-size:24px;--avc:#2b6cb0}
+#hand{display:flex;justify-content:center;padding:28px 4px 4px;width:100%;max-width:1100px;min-height:calc(var(--ch) + 34px)}
+#hand .card{margin-left:var(--ov);cursor:pointer}#hand .card:first-child{margin-left:0}
+.card{width:var(--cw);height:var(--ch);border-radius:calc(var(--cw) * .11);position:relative;flex:none;color:#1a1a1a;
+ background:linear-gradient(160deg,#fff,#f1efe6);box-shadow:0 2px 5px #0007,inset 0 0 0 1px #0002;transition:transform .15s,box-shadow .15s}
+.card.red{color:#d01b1b}.card svg{width:100%;height:100%;display:block}
+#hand .card.sel{transform:translateY(-24px);box-shadow:0 0 0 3px var(--gold),0 10px 18px #000a}
+@media(hover:hover){#hand .card:not(.sel):hover{transform:translateY(-8px)}}
+#ctrl{display:flex;flex-wrap:wrap;justify-content:center}#bPlay{min-width:96px;font-size:17px}
+.modal,#score{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:20}
+.modal>div,#score>div{background:linear-gradient(#1b6b40,#124a2c);padding:16px;border-radius:16px;width:min(94vw,440px);max-height:86vh;overflow:auto;box-shadow:0 6px 30px #000;border:2px solid #f4c54266}
+table{width:100%;border-collapse:collapse}td,th{padding:4px;border-bottom:1px solid #fff3}
+.row{display:flex;align-items:center;gap:8px;background:#0003;border-radius:10px;padding:8px;margin:6px 0}
+.bar{height:8px;background:#0006;border-radius:4px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.badge{background:#0003;border-radius:10px;padding:8px;text-align:center;font-size:12px}
+.badge .ic{font-size:30px}.badge.lock{opacity:.35;filter:grayscale(1)}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.day{background:#0003;border-radius:8px;padding:6px 2px;text-align:center;font-size:12px}.day.done{background:#2a8a55}.day.today{outline:2px solid var(--gold)}
+#toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{background:#222e;border:2px solid var(--gold);border-radius:12px;padding:10px 16px;animation:tin .3s}@keyframes tin{from{transform:translateY(-20px);opacity:0}}
+.dot{display:inline-block;width:8px;height:8px;background:#f33;border-radius:50%;vertical-align:top}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:15;overflow:hidden}
+.boom{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);font:900 64px system-ui;color:#ffeb3b;-webkit-text-stroke:3px #b00;text-shadow:0 0 30px #f00,0 6px 0 #700;animation:boom .9s ease-out forwards;white-space:nowrap}
+@keyframes boom{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}25%{transform:translate(-50%,-50%) scale(1.25);opacity:1}70%{opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+.flash{position:absolute;inset:0;background:radial-gradient(circle,#fff8,#f004 40%,#0000 70%);animation:fl .5s forwards}@keyframes fl{to{opacity:0}}
+.conf{position:absolute;top:-20px;width:10px;height:16px;border-radius:2px;animation:fall linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.banner{position:absolute;left:50%;top:30%;transform:translateX(-50%);font:900 40px system-ui;color:#ffe27a;text-shadow:0 0 20px #f80,0 4px 0 #6b3d00;animation:boom 2.4s forwards;white-space:nowrap}
+@media(max-width:700px){
+ :root{--ov:calc((100vw - 16px - 13 * var(--cw)) / 12);--cw:56px;--ch:80px;--pw:44px;--ph:62px}
+ #table{grid-template-columns:78px 1fr 78px;border-radius:60px;margin:8px 10px;padding:8px;min-height:300px}
+ .av{width:46px;height:46px;font-size:24px}.fan{display:none}.seat{font-size:12px}.nm{padding:1px 6px}
+ #hist{max-height:84px;font-size:12px}.boom{font-size:34px}.banner{font-size:28px}#top b.logo{font-size:15px}
+ #hand{padding-top:30px}button{padding:8px 10px;font-size:14px;margin:2px}#top b.logo{display:none}#top .r{justify-content:center;width:100%}button.ic{padding:6px 7px;font-size:15px}#bet{padding:6px 2px;width:74px}#xu{padding:5px 8px}#me .av{display:none}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style></head><body>
+<div id="top"><b class="logo">🃏 Tiến Lên Miền Nam</b><div class="r"><span id="xu"></span><select id="bet" onchange="setBet(this.value)"></select>
+<button class="alt ic" onclick="openDaily()" title="Quà">🎁<span id="d1"></span></button><button class="alt ic" onclick="openQuests()" title="Nhiệm vụ">📋<span id="d2"></span></button><button class="alt ic" onclick="openBadges()" title="Huy hiệu">🏅</button><button class="alt ic" onclick="showScore()" title="Bảng điểm">🏆</button><button class="alt ic" id="bMute" onclick="toggleMute()" title="Âm thanh">🔊</button><button onclick="newGame()">Ván mới</button></div></div>
+<div id="table"><div class="seat" id="s2"></div><div class="seat" id="s1"></div>
+<div id="center"><div id="pileWrap"><div class="pile" id="pile"></div><div class="pile" id="prev"></div></div><div id="msg"></div><div id="hist"></div></div>
+<div class="seat" id="s3"></div></div>
+<div id="me"><div id="hand"></div><div id="meBar"><div class="av">😎<span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" onclick="hint()">💡 Gợi ý</button><button class="alt" onclick="sortHand()">⇅ Xếp</button></div></div></div>
+<div id="score" onclick="if(event.target===this)this.style.display='none'"><div id="scoreIn"></div></div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="toast"></div><div id="fx"></div>
+<script>
