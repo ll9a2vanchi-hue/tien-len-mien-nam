@@ -147,7 +147,10 @@ function render(){
  const pv=$('prev');pv.innerHTML='';(G.prev||[]).forEach(c=>pv.appendChild(cardEl(c)));
  const hs=$('hist');hs.innerHTML=G.hist.map(h=>`<div class="${h.cls}">${h.txt}</div>`).join('');hs.scrollTop=1e6;
  let h=G.hands[0].slice();if(sortMode)h.sort((a,b)=>st(a)-st(b)||a-b);else h=sortCards(h);
- const hd=$('hand');hd.innerHTML='';h.forEach(c=>hd.appendChild(cardEl(c,true)));
+ const hd=$('hand');hd.innerHTML='';const W=(typeof innerWidth!=='undefined'?innerWidth:1000),two=W<=700&&h.length>7,k=two?Math.ceil(h.length/2):h.length;
+ h.forEach((c,i)=>{if(two&&i===k){const b=document.createElement('div');b.className='brk';hd.appendChild(b);}const e=cardEl(c,true);if(two&&i>=k)e.className+=' r2';hd.appendChild(e);});
+ hd.className=two?'two':'';if(hd.style&&hd.style.setProperty){if(W<=700){const n=Math.max(k,1),av=W-28,cw=Math.min(two?Math.min(84,(typeof innerHeight!=='undefined'?innerHeight:900)*0.1):64,av/(1+0.58*(n-1)));const ov=n>1?Math.min(-cw*0.42,(av-n*cw)/(n-1)):0;
+  hd.style.setProperty('--cw',cw.toFixed(1)+'px');hd.style.setProperty('--ch',(cw*1.43).toFixed(1)+'px');hd.style.setProperty('--ov',ov.toFixed(1)+'px');}else{['--cw','--ch','--ov'].forEach(v=>hd.style.removeProperty(v));}}
  $('myCnt').textContent=G.hands[0].length;renderMe();
  $('me').className=G.turn===0&&!G.over?'turn':'';
  $('bPlay').disabled=G.over||G.turn!==0;$('bPass').disabled=G.over||G.turn!==0||!G.cur;

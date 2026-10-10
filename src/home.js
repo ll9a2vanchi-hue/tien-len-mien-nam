@@ -63,3 +63,4 @@ function sendEmote(e){$('emoBar').className='';showEmote(0,e);if(typeof onlineEm
 function showEmote(p,e){const host=p===0?$('meInfo'):$('s'+p);if(!host||!host.appendChild)return;const d=document.createElement('div');d.className='bubble'+([...e].length<=2?' big':'');d.textContent=e;host.appendChild(d);setTimeout(()=>d.remove&&d.remove(),2600);sfx('tap');}
 sortMode=+(localStorage.getItem('tlmn_sort')||0);
 applyCosmetics();
+window.addEventListener('resize',()=>{if(G&&G.started&&!document.body.classList.contains('athome'))render();});

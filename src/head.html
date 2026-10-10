@@ -244,6 +244,21 @@ body.athome #home{display:block}body.athome #top,body.athome #table,body.athome 
 .seat .reveal{position:absolute;top:100%;left:50%;transform:translateX(-50%);z-index:3;margin-top:-6px}#s2 .reveal{top:auto;bottom:-6px;left:calc(50% + 50px);transform:none;max-width:none;width:max-content;max-width:320px}
 #s1 .reveal,#s3 .reveal{top:auto;bottom:-48px}
 @media(max-width:700px){.seat .reveal,#s2 .reveal,#s1 .reveal,#s3 .reveal{position:static;transform:none;margin-top:0;width:auto}#top .hm{display:none}}
+
+/* ===== Tối ưu mobile ===== */
+#hand.two{flex-wrap:wrap;align-content:flex-start}#hand.two .brk{flex-basis:100%;height:0}#hand.two .brk+.card{margin-left:0}
+#hand.two .card.r2{margin-top:calc(var(--ch) * -0.42)}
+@media(max-width:700px){
+ #ctrl{flex-wrap:nowrap!important;gap:6px!important;padding:0 6px}#ctrl button{margin:0;padding-left:10px;padding-right:10px;min-width:0}#ctrl .tx{display:none}#ctrl button{white-space:nowrap}
+ #bPlay{flex:1.4;min-width:0!important}#bPass{flex:1}#ctrl .alt.ic,#bHint,#bSort{flex:none;width:44px;padding:8px 0!important;display:grid;place-items:center}
+ #hand{padding-top:16px!important;min-height:0!important;padding-bottom:2px}
+ #me{gap:4px!important;padding-bottom:max(6px,env(safe-area-inset-bottom))!important}
+ #top{padding-top:max(4px,env(safe-area-inset-top))}
+ #hist{max-height:none!important;cursor:pointer;width:min(96%,360px);padding:3px 8px}
+ #hist:not(.open) div:not(:last-child){display:none}#hist:not(.open) div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0}
+ #hist:not(.open)::after{content:'▾';position:absolute;right:6px;top:3px;opacity:.6}#hist{position:relative}
+ #hist.open{max-height:40vh!important;overflow:auto}#hist:empty{display:none}
+}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -277,9 +292,9 @@ body.athome #home{display:block}body.athome #top,body.athome #table,body.athome 
 <div id="top"><b class="logo"><img src="icons/icon-192.png" alt="" width="26" height="26"> Tiến Lên Miền Nam</b><div class="r"><button class="alt ic" id="bHome" onclick="goHome()" title="Màn hình chính"><svg class="i"><use href="#i-home"/></svg></button><span id="xu"></span><select id="bet" onchange="setBet(this.value)" aria-label="Mức cược"></select>
 <button class="alt ic" onclick="openDaily()" title="Quà điểm danh"><svg class="i"><use href="#i-gift"/></svg><span id="d1"></span></button><button class="alt ic" onclick="openQuests()" title="Nhiệm vụ"><svg class="i"><use href="#i-quest"/></svg><span id="d2"></span></button><button class="alt ic hm" onclick="openBadges()" title="Huy hiệu"><svg class="i"><use href="#i-medal"/></svg></button><button class="alt ic hm" onclick="showScore()" title="Bảng điểm"><svg class="i"><use href="#i-trophy"/></svg></button><button class="alt ic hm" onclick="openAccount()" title="Tài khoản &amp; sao lưu"><svg class="i"><use href="#i-user"/></svg><span id="d3"></span></button><button class="alt ic" id="bInstall" onclick="doInstall()" title="Cài đặt ứng dụng" style="display:none"><svg class="i"><use href="#i-install"/></svg></button><button class="alt ic" id="bMute" onclick="toggleMute()" title="Âm thanh"><svg class="i"><use href="#i-sound"/></svg></button><button id="bNew" onclick="newGame()" title="Ván mới"><svg class="i"><use href="#i-new"/></svg><span class="lbl"> Ván mới</span></button></div></div>
 <div id="table"><div class="seat" id="s2"></div><div class="seat" id="s1"></div>
-<div id="center"><div id="pileWrap"><div class="pile" id="pile"></div><div class="pile" id="prev"></div></div><div id="msg"></div><div id="hist"></div></div>
+<div id="center"><div id="pileWrap"><div class="pile" id="pile"></div><div class="pile" id="prev"></div></div><div id="msg"></div><div id="hist" onclick="this.classList.toggle('open')" title="Chạm để xem lịch sử"></div></div>
 <div class="seat" id="s3"></div></div>
-<div id="me"><div id="meInfo" onclick="openTitles()" title="Cấp độ &amp; danh hiệu"></div><div id="hand"></div><div id="meBar"><div class="av"> <span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" onclick="hint()"><svg class="i"><use href="#i-bulb"/></svg> Gợi ý</button><button class="alt ic" id="bChat" onclick="toggleChat()" title="Trò chuyện" style="display:none"><svg class="i"><use href="#i-chat"/></svg></button><button class="alt ic" onclick="toggleEmotes()" title="Biểu cảm"><svg class="i"><use href="#i-smile"/></svg></button><button class="alt" onclick="sortHand()"><svg class="i"><use href="#i-sort"/></svg> Xếp</button></div></div></div>
+<div id="me"><div id="meInfo" onclick="openTitles()" title="Cấp độ &amp; danh hiệu"></div><div id="hand"></div><div id="meBar"><div class="av"> <span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" id="bHint" onclick="hint()" title="Gợi ý"><svg class="i"><use href="#i-bulb"/></svg><span class="tx"> Gợi ý</span></button><button class="alt ic" id="bChat" onclick="toggleChat()" title="Trò chuyện" style="display:none"><svg class="i"><use href="#i-chat"/></svg></button><button class="alt ic" onclick="toggleEmotes()" title="Biểu cảm"><svg class="i"><use href="#i-smile"/></svg></button><button class="alt" id="bSort" onclick="sortHand()" title="Xếp bài"><svg class="i"><use href="#i-sort"/></svg><span class="tx"> Xếp</span></button></div></div></div>
 <div id="score" onclick="if(event.target===this)this.style.display='none'"><div id="scoreIn"></div></div>
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
