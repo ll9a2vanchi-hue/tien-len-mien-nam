@@ -49,14 +49,14 @@ class OnlineHost{
   if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:true});this.st.hist.push({txt:`${this.st.seats[s].name} mất kết nối — máy chơi thay`,cls:'ps'});this.push();this.tick();}}
   else{this.players=this.players.filter(x=>x.uid!==uid);this.assign();this.push();}}
  assign(){const ps=this.players.filter(x=>!x.gone);this.seats=[0,1,2,3].map(i=>ps[i]?Object.assign({},ps[i],{bot:false}):null);}
- room(){return{bet:this.opt.bet||null,ai:this.opt.ai==null?1:this.opt.ai,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
+ room(){return{bet:this.opt.bet||null,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
  start(rng){if(this.st&&!this.st.over)return false;this.assign();const humans=this.seats.filter(Boolean).length;if(humans<2&&!this.opt.fillBots)return false;
   const seats=this.seats.slice();if(this.opt.fillBots){let k=0;for(let i=0;i<4;i++)if(!seats[i]){seats[i]={uid:null,name:OBOTS[(k++ +humans)%OBOTS.length],bot:true,av:'🤖',lv:5};}}
   if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);if(this.st.over)this.finish();this.push();this.tick();return true;}
  onIntent(m){if(!this.st||!m)return;const seat=this.st.seats.findIndex(s=>s&&s.uid===m.uid);if(seat<0)return;const r=oAct(this.st,seat,m.a||{});
   if(!r.ok){this.tr.send('reject',{uid:m.uid,err:r.err});return;}if(this.st.over)this.finish();this.push();this.tick();}
  finish(){const w=this.st.rank&&this.st.seats[this.st.rank[0]];this.lastWinner=w?w.uid:null;clearTimeout(this.timer);}
- tick(){clearTimeout(this.timer);const st=this.st;if(!st||st.over)return;const s=st.seats[st.turn];const auto=()=>{if(this.st!==st||st.over)return;oAct(st,st.turn,oBotMove(st,this.opt.ai));if(st.over)this.finish();this.push();this.tick();};
+ tick(){clearTimeout(this.timer);const st=this.st;if(!st||st.over)return;const s=st.seats[st.turn];const auto=()=>{if(this.st!==st||st.over)return;if(this._lvSt!==st){this._lvSt=st;this._lv=[0,1,2,3].map(()=>typeof aiPickLevel==='function'?aiPickLevel((this.me&&this.me.lv)||10):1);}oAct(st,st.turn,oBotMove(st,this._lv[st.turn]));if(st.over)this.finish();this.push();this.tick();};
   this.timer=setTimeout(auto,s&&s.bot?this.opt.botDelay:this.opt.turnMs);}
  push(){this.rev++;this.tr.send('room',Object.assign(this.room(),{rev:this.rev}));if(this.st)this.tr.send('state',{rev:this.rev,st:this.st});if(this.onState)this.onState(this.st,this.room());}
  stop(){clearTimeout(this.timer);}
