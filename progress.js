@@ -58,11 +58,17 @@ function onPlay(P,info,prev){const s=P.stats;
  const lv=prev&&(prev.top>>2)===12&&info.type!==prev.type?addXp(P,XP_CHOP):null;
  return{bonus,badges:checkBadges(P),lv};}
 // place: 0..3, instant: human won tới trắng
-function onGameEnd(P,place,instant){const s=P.stats;s.games++;questEvent(P,'game');
- let delta=Math.round(P.bet*(instant?(place===0?3:-1):PLACE_MULT[place]));
+// Bàn n người: hệ số XP và xu theo số người
+const TABLE_XP={2:0.5,3:0.75,4:1};
+const PLACE_XU={2:[1,-1],3:[1.5,0,-1],4:PLACE_MULT};
+const XP_PLACE_N={2:[100,20],3:[100,50,20],4:[100,60,35,20]};
+function tableXp(n,place,instant){n=XP_PLACE_N[n]?n:4;return Math.round(((XP_PLACE_N[n][place]||20)+(instant&&place===0?XP_INSTANT:0))*TABLE_XP[n]);}
+function tableXu(bet,n,place,instant){n=PLACE_XU[n]?n:4;return Math.round(bet*(instant?(place===0?n-1:-1):(PLACE_XU[n][place]==null?-1:PLACE_XU[n][place])));}
+function onGameEnd(P,place,instant,n){n=n||4;const s=P.stats;s.games++;questEvent(P,'game');
+ let delta=tableXu(P.bet,n,place,instant);
  if(place===0){s.wins++;s.streak++;s.bestStreak=Math.max(s.bestStreak,s.streak);questEvent(P,'win');}else s.streak=0;
  if(place<=1)questEvent(P,'top2');if(instant&&place===0)s.instant++;
- P.xu=Math.max(0,P.xu+delta);const lv=addXp(P,XP_PLACE[place]+(instant&&place===0?XP_INSTANT:0));return{delta,badges:checkBadges(P),lv};}
+ P.xu=Math.max(0,P.xu+delta);const lv=addXp(P,tableXp(n,place,instant));return{delta,badges:checkBadges(P),lv};}
 
 // ---------- Cấp độ / XP / Danh hiệu ----------
 const XP_PLACE=[100,60,35,20],XP_CHOP=20,XP_INSTANT=150,XP_QUEST=50;
@@ -70,17 +76,25 @@ function xpNeed(l){return 100+50*(l-1);} // XP để lên từ cấp l -> l+1
 function levelInfo(xp){xp=Math.max(0,xp||0);let l=1;while(xp>=xpNeed(l)){xp-=xpNeed(l);l++;}return{level:l,cur:xp,need:xpNeed(l)};}
 function levelReward(l){return 50*l;}
 const TITLES=[
- {id:'tan_thu',name:'Tân Thủ',min:1},{id:'tap_su',name:'Tập Sự',min:3},{id:'tay_choi',name:'Tay Chơi',min:6},{id:'lao_lang',name:'Lão Làng',min:10},
- {id:'cao_thu',name:'Cao Thủ',min:15},{id:'bac_thay',name:'Bậc Thầy',min:22},{id:'than_bai',name:'Thần Bài',min:30},{id:'huyen_thoai',name:'Huyền Thoại',min:40},
- {id:'do_te',name:'Đồ Tể',badge:'chop10'},{id:'vua_toi_trang',name:'Vua Tới Trắng',badge:'instant'},{id:'dai_gia',name:'Đại Gia',badge:'rich'},{id:'bat_bai',name:'Bất Bại',badge:'streak5'},
+ {id:'tan_binh',name:'Tân Binh Bài Bạc',min:1,tier:1},{id:'tay_mo',name:'Tay Mơ Chiếu Bạc',min:3,tier:1},
+ {id:'kiem_khach',name:'Kiếm Khách Sòng Bài',min:5,tier:2},{id:'hiep_si',name:'Hiệp Sĩ Tiến Lên',min:8,tier:2},
+ {id:'cao_thu_an',name:'Cao Thủ Ẩn Danh',min:12,tier:3},{id:'dai_su',name:'Đại Sư Chiếu Bạc',min:16,tier:3},
+ {id:'do_hiep',name:'Đổ Hiệp',min:20,tier:4},{id:'do_thanh',name:'Đổ Thánh',min:25,tier:4},
+ {id:'than_bai_vd',name:'Thần Bài Vô Địch',min:30,tier:5},{id:'chi_ton',name:'Chí Tôn Bài Thủ',min:36,tier:5},
+ {id:'ba_chu',name:'Bá Chủ Sòng Bài',min:43,tier:6},{id:'long_vuong',name:'Long Vương',min:50,tier:6},
+ {id:'doc_co',name:'Độc Cô Cầu Bại',min:60,tier:7},
+ {id:'do_te_heo',name:'Đồ Tể Sát Heo',badge:'chop10',tier:5},{id:'thien_menh',name:'Thiên Mệnh Tới Trắng',badge:'instant',tier:6},
+ {id:'phu_ho',name:'Phú Hộ Kim Tiền',badge:'rich',tier:5},{id:'bat_bai_ct',name:'Bất Bại Chiến Thần',badge:'streak5',tier:6},
 ];
+const TITLE_MIGRATE={tan_thu:'tan_binh',tap_su:'tay_mo',tay_choi:'kiem_khach',lao_lang:'hiep_si',cao_thu:'cao_thu_an',bac_thay:'dai_su',than_bai:'than_bai_vd',huyen_thoai:'chi_ton',do_te:'do_te_heo',vua_toi_trang:'thien_menh',dai_gia:'phu_ho',bat_bai:'bat_bai_ct'};
+function migrateTitle(P){if(P&&P.title&&TITLE_MIGRATE[P.title])P.title=TITLE_MIGRATE[P.title];return P;}
 function titleForLevel(l){let t=TITLES[0];for(const x of TITLES)if(x.min&&l>=x.min)t=x;return t;}
 function titleUnlocked(P,t){return t.min?levelInfo(P.xp).level>=t.min:!!(P.badges&&P.badges[t.badge]);}
 function unlockedTitles(P){return TITLES.filter(t=>titleUnlocked(P,t));}
-function currentTitle(P){const t=P.title&&TITLES.find(x=>x.id===P.title);return t&&titleUnlocked(P,t)?t:titleForLevel(levelInfo(P.xp).level);}
+function currentTitle(P){migrateTitle(P);const t=P.title&&TITLES.find(x=>x.id===P.title);return t&&titleUnlocked(P,t)?t:titleForLevel(levelInfo(P.xp).level);}
 function setTitle(P,id){const t=TITLES.find(x=>x.id===id);if(!t||!titleUnlocked(P,t))return false;P.title=id;return true;}
 function addXp(P,n){const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const after=levelInfo(P.xp).level;const ups=[];let xu=0;
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // PROGRESS_END
-if(typeof module!=='undefined')module.exports={XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
+if(typeof module!=='undefined')module.exports={TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};

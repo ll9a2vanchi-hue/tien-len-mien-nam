@@ -1,7 +1,7 @@
 // ---------- Chơi online với bạn bè (Supabase Realtime, kênh riêng tư 'tlmn:*') ----------
 const ONL={active:false,code:null,ch:null,tr:null,host:null,client:null,me:null,st:null,room:null,lastRev:-1,rewarded:null,lastEvKey:null,presence:[],chat:[]};
 let LOBBY=null,MYCODE=null;
-function meInfo(){const L=levelInfo(PR.xp);return{uid:USER.id,name:(USER.email||'').split('@')[0].slice(0,16)||'Người chơi',av:myAv(),bg:PR.avBg,frame:equipped(PR,'frame').id,lv:L.level,title:currentTitle(PR).name};}
+function meInfo(){const L=levelInfo(PR.xp);return{uid:USER.id,name:(USER.email||'').split('@')[0].slice(0,16)||'Người chơi',av:myAv(),bg:PR.avBg,frame:equipped(PR,'frame').id,lv:L.level,title:currentTitle(PR).name,tier:currentTitle(PR).tier};}
 function needLogin(){if(!CLOUD_ON){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Máy chủ online chưa được cấu hình.</p>`);return true;}
  if(navigator.onLine===false){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Bạn đang offline. Hãy kết nối mạng để chơi online.</p>`);return true;}
  if(!USER){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Cần <b>đăng nhập</b> để chơi online, kết bạn và trò chuyện.</p><button onclick="openAccount()">${I('user')} Đăng nhập / Đăng ký</button>`);return true;}return false;}
@@ -71,7 +71,7 @@ async function leaveRoom(silent){if(!ONL.active)return;if(!silent&&G&&!G.over&&!
  ONL.active=false;ONL.host=null;ONL.client=null;if(G){G.over=true;G.online=false;}history.replaceState&&history.replaceState(null,'',location.pathname);
  [1,2,3].forEach(p=>{const e=$('s'+p);if(e)e.style.visibility='';});$('bChat').style.display='none';document.body.classList.remove('onl');$('chatDraw').className='';showHome();}
 function renderRoom(){if(!ONL.active||!document.body.classList.contains('athome'))return;const r=ONL.room;if(!r)return;const amHost=!!ONL.host;
- const seats=(r.seats||[]).map((s,i)=>s?`<div class="row"><div class="av ${'fr-'+esc(s.frame||'fr_gold')}" style="--avc:${esc(s.bg||'#456')};width:44px;height:44px;font-size:24px">${esc(s.av||'🙂')}</div><div style="flex:1"><b>${esc(s.name)}</b>${s.uid===r.host?' <small style="color:#ffd84d">★ Chủ phòng</small>':''}<br><small><span class="lvb">${s.lv||1}</span>${esc(s.title||'')}</small></div></div>`:
+ const seats=(r.seats||[]).map((s,i)=>s?`<div class="row"><div class="av ${'fr-'+esc(s.frame||'fr_gold')}" style="--avc:${esc(s.bg||'#456')};width:44px;height:44px;font-size:24px">${esc(s.av||'🙂')}</div><div style="flex:1"><b>${esc(s.name)}</b>${s.uid===r.host?' <small style="color:#ffd84d">★ Chủ phòng</small>':''}<br><small><span class="lvb">${s.lv||1}</span><span class="tt t${s.tier||1}">${esc(s.title||'')}</span></small></div></div>`:
   `<div class="row" style="opacity:.6"><div class="av" style="width:44px;height:44px;font-size:22px;--avc:#333">${r.fillBots?'🤖':'·'}</div><div style="flex:1">${r.fillBots?'Máy sẽ vào ghế này':'Ghế trống'}</div></div>`).join('');
  const humans=(r.seats||[]).filter(Boolean).length;
  $('home').innerHTML=`<div class="hwrap"><div class="pcard" style="flex-direction:column;align-items:stretch;cursor:default"><div style="text-align:center"><div class="small">MÃ PHÒNG</div><div style="font:700 40px var(--serif);letter-spacing:8px;color:#ffe27a">${ONL.code}</div>
@@ -87,7 +87,9 @@ function localSeatOf(uid){const st=ONL.st;if(!st)return -1;const g=st.seats.find
 function onlineState(st,fromHost){if(!ONL.active||!st)return;ONL.st=st;const me=st.seats.findIndex(s=>s&&s.uid===USER.id);if(me<0)return;
  const L=g=>(g-me+4)%4,Gb=g=>(g+me)%4,rot=a=>[0,1,2,3].map(i=>a[Gb(i)]);
  document.body.classList.remove('athome');document.body.classList.add('onl');closeModal();$('bChat').style.display='';
- G={hands:rot(st.hands),cur:st.cur,curBy:st.curBy==null?null:L(st.curBy),pile:st.pile,prev:st.prev||[],hist:st.hist,passed:rot(st.passed),finished:st.finished.map(L),
+ const gk=JSON.stringify(st.seats.map(x=>x&&x.name))+(st.finished.length===0&&st.hist.length<=1);if(!ONL.under||st.hist.length<=1){ONL.under=[];ONL.lastPile=[];}
+ const pk=JSON.stringify(st.pile);if(pk!==JSON.stringify(ONL.lastPile||[])){if(ONL.lastPile&&ONL.lastPile.length){const k=ONL.under.length;ONL.lastPile.forEach((c,i)=>{const h=(k*7+i*13)%31;ONL.under.push({r:((h*37)%50)-25,x:((h*11)%80)-40+i*5,y:((h*17)%40)-20});});if(ONL.under.length>26)ONL.under.splice(0,ONL.under.length-26);}ONL.lastPile=st.pile.slice();}
+ G={under:ONL.under,seats:[0,1,2,3].filter(i=>st.seats[(i+me)%4]),n:st.seats.filter(Boolean).length,hands:rot(st.hands),cur:st.cur,curBy:st.curBy==null?null:L(st.curBy),pile:st.pile,prev:st.prev||[],hist:st.hist,passed:rot(st.passed),finished:st.finished.map(L),
   turn:L(st.turn),first:false,over:st.over,started:true,online:true};
  NAMES=rot(st.seats.map(s=>s?s.name+(s.bot&&s.uid?' (máy)':''):''));AVATARS=rot(st.seats.map(s=>s?[s.av||'🤖',s.bg||'#555']:['','#000']));AVATARS[0]=[myAv(),PR.avBg];BOTLV=rot(st.seats.map(s=>s?(s.lv||1):1));
  render();[1,2,3].forEach(p=>{const e=$('s'+p);if(e)e.style.visibility=rot(st.seats)[p]?'':'hidden';});
@@ -100,7 +102,7 @@ function onlineState(st,fromHost){if(!ONL.active||!st)return;ONL.st=st;const me=
   if(!st.over&&G.turn===0)setTimeout(()=>sfx('turn'),250);}
  else if(!ev)msg(G.turn===0?'Tới lượt bạn':`Lượt của ${NAMES[G.turn]}`);
  if(st.over&&st.rank){const gid=JSON.stringify(st.rank)+st.hist.length;if(ONL.rewarded!==gid){ONL.rewarded=gid;const place=st.rank.indexOf(me);const humans=st.seats.filter(s=>s).length;
-  hookEnd(Math.min(place,3),!!(st.instant&&st.instant.seat===me));setTimeout(()=>showOnlineResult(st),2200);}}}
+  hookEnd(Math.min(place,3),!!(st.instant&&st.instant.seat===me),humans);setTimeout(()=>showOnlineResult(st),2200);}}}
 function showOnlineResult(st){const me=st.seats.findIndex(s=>s&&s.uid===USER.id);
  modal(`<h3>${I('trophy')} Kết quả</h3>`+st.rank.map((g,i)=>{const s=st.seats[g];return `<div class="row"><b style="width:28px">${['🥇','🥈','🥉','4️⃣'][i]}</b><div class="av" style="--avc:${esc(s.bg||'#555')};width:36px;height:36px;font-size:20px">${esc(s.av||'🤖')}</div><div style="flex:1">${esc(s.name)}${g===me?' (bạn)':''}</div></div>`;}).join('')+
  (ONL.host?`<button onclick="closeModal();hostStart()">Ván tiếp</button>`:'<p class="small">Chờ chủ phòng bắt đầu ván tiếp…</p>')+`<button class="alt" onclick="closeModal();document.body.classList.add('athome');renderRoom()">Về phòng</button>`);}

@@ -2,7 +2,7 @@ const fs=require('fs');const el=()=>({style:{},dataset:{},classList:{add(){},rem
 global.document={getElementById:el,createElement:el,querySelectorAll:()=>[],querySelector:()=>null,body:{dataset:{},classList:{add(){},remove(){},contains(){return false}}}};global.window={addEventListener(){}};global.navigator={userAgent:'node'};global.location={protocol:'file:',hash:'',href:''};global.localStorage={getItem:()=>null,setItem(){}};
 let q=[];global.setTimeout=f=>q.push(f);
 const src=(()=>{const h=fs.readFileSync(__dirname+'/index.html','utf8');return h.slice(h.lastIndexOf('<script>')+8,h.lastIndexOf('</script>'));})().replace('\nboot();','')+`
-NAMES.length;let done=0;for(let g=0;g<300;g++){if(PR.xu<1000)PR.xu=1e5;newGame();let n=0;
-while(!G.over&&n<2000){n++;if(G.turn===0){const m=botMove(G.hands[0],G.cur,G.first?0:null,[13]);if(m)doPlay(0,m);else if(!G.cur)doPlay(0,[G.hands[0][0]]);else doPass(0);}const f=q;q=[];f.forEach(x=>x());}
-if(G.over)done++;}console.log('completed',done,'/300 games, scores',S.pts,'profile games',PR.stats.games,'badges',Object.keys(PR.badges).length,'chops',PR.stats.chops);`;
+NAMES.length;let done=0,leadOk=0,sizeOk=0;for(let g=0;g<300;g++){if(PR.xu<1000)PR.xu=1e5;const N=[2,3,4][g%3];S.lastWinner=g%10===0?null:S.lastWinner;newGame(N);if(G.first&&Math.min(...G.hands[G.turn])===G.firstCard&&G.seats.every(p=>Math.min(...G.hands[p])>=G.firstCard))leadOk++;else if(!G.first)leadOk++;if(G.seats.length===N&&G.hands.filter(h=>h.length===13).length===N)sizeOk++;let n=0;
+while(!G.over&&n<2000){n++;if(G.turn===0){const m=botMove(G.hands[0],G.cur,G.first?G.firstCard:null,[13]);if(m)doPlay(0,m);else if(!G.cur)doPlay(0,[G.hands[0][0]]);else doPass(0);}const f=q;q=[];f.forEach(x=>x());}
+if(G.over)done++;}console.log('completed',done,'/300 games (2/3/4 người), lead rule ok',leadOk,'deal ok',sizeOk,'profile games',PR.stats.games,'badges',Object.keys(PR.badges).length,'chops',PR.stats.chops);`;
 eval(src);

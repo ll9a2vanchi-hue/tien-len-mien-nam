@@ -7,19 +7,23 @@ function applyCosmetics(){const b=document.body;if(!b||!b.dataset)return;b.datas
 function inGame(){return G&&G.started&&!G.over;}
 function showHome(){document.body.classList.add('athome');renderHome();}
 function goHome(){if(inGame()&&!confirm('Rời ván đang chơi? Ván này sẽ bị hủy.'))return;if(G){G.over=true;G.aborted=true;}
- closeModal();$('score').style.display='none';$('emoBar').className='';showHome();}
-function playBots(){document.body.classList.remove('athome');newGame();}
+ closeModal();$('emoBar').className='';showHome();}
+function playBots(){openTables();}
+function openTables(){const opt=n=>{const x=TABLE_XP[n],bet=PR.bet,pl=PLACE_XU[n].map(m=>(m>0?'+':'')+fmt(Math.round(bet*m))).join(' / ');
+  return `<button class="alt" onclick="startTable(${n})"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu (cược ${fmt(bet)}): ${pl}</small></span><span class="mul">XP ×${x}</span></button>`;};
+ modal(`<h3>${I('bot')} Chọn bàn chơi với máy</h3><p class="small">Mỗi người 13 lá. Ván đầu: ai giữ lá nhỏ nhất (thường là 3♠) đánh trước.</p><div class="tsel">${opt(2)}${opt(3)}${opt(4)}</div>`);}
+function startTable(n){document.body.classList.remove('athome');newGame(n);}
 function renderHome(){const L=levelInfo(PR.xp),t=currentTitle(PR),acc=(typeof USER!=='undefined'&&USER)?USER.email.split('@')[0]:'Khách';
  const dq=PR.quests.list.some(q=>!q.claimed&&q.prog>=questDef(q.id).goal),dl=loginState(PR,new Date()).canClaim;
  const tile=(ic,lbl,fn,dot)=>`<button class="alt tile" onclick="${fn}">${I(ic)}<span>${lbl}</span>${dot?'<span class="dot"></span>':''}</button>`;
  $('home').innerHTML=`<div class="hwrap"><div class="hlogo"><img src="icons/icon-192.png" alt=""><h1>Tiến Lên Miền Nam</h1><div class="sub">Sòng bài thượng lưu</div></div>
  <div class="pcard" onclick="openAvatar()"><div class="av ${frameCls()}" style="--avc:${PR.avBg};--lp:${Math.round(100*L.cur/L.need)}">${myAv()}</div>
-  <div class="pi"><div class="pn">${acc}</div><div class="pt"><span class="lvb">${L.level}</span>${t.name}</div><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div>
+  <div class="pi"><div class="pn">${acc}</div><div class="pt"><span class="lvb">${L.level}</span>${titleHTML(t)}</div><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div>
   <div class="pxu">${I('coin')}${fmt(PR.xu)} xu <small style="opacity:.6;font-weight:400;margin-left:auto">${L.cur}/${L.need} XP</small></div></div></div>
  <button class="bigbtn" onclick="playBots()">${I('bot')} CHƠI VỚI MÁY</button>
  <button class="bigbtn alt" onclick="openOnline()">${I('friends')} CHƠI VỚI BẠN BÈ</button>
  <div class="tiles">${tile('shop','Cửa hàng','openShop()')}${tile('palette','Avatar','openAvatar()')}${tile('quest','Nhiệm vụ','openQuests()',dq)}${tile('medal','Huy hiệu','openBadges()')}
- ${tile('gift','Quà','openDaily()',dl)}${tile('trophy','Bảng điểm','showScore()')}${tile('gear','Cài đặt','openSettings()')}${tile('user','Tài khoản','openAccount()')}</div>
+ ${tile('gift','Quà','openDaily()',dl)}${tile('gear','Cài đặt','openSettings()')}${tile('user','Tài khoản','openAccount()')}</div>
  <div class="hfoot">Chơi offline hoàn toàn · Dữ liệu lưu trên máy${typeof CLOUD_ON!=='undefined'&&CLOUD_ON?' · Có sao lưu đám mây':''}</div></div>`;}
 // cửa hàng
 let shopTab='back';

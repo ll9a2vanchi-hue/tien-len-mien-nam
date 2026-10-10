@@ -26,5 +26,5 @@ function openBadges(){const n=Object.keys(PR.badges).length;
  modal(`<h3>${I('medal')} Huy hiệu (${n}/${BADGES.length})</h3><div class="grid">`+BADGES.map(b=>`<div class="badge ${PR.badges[b.id]?'':'lock'}"><div class="ic">${PR.badges[b.id]?b.icon:I('lock')}</div><b>${b.name}</b><br>${b.desc}<br>${I("coin")}${fmt(b.xu)}</div>`).join('')+'</div>'+
  `<p style="font-size:13px">Ván: ${PR.stats.games} · Thắng: ${PR.stats.wins} · Chuỗi tốt nhất: ${PR.stats.bestStreak} · Chặt heo: ${PR.stats.chops}</p>`);}
 function hookPlay(info,prev){const r=onPlay(PR,info,prev);if(r.bonus)toast(`Chặt heo! +${fmt(r.bonus)} xu`);badgeToasts(r.badges);if(r.lv)levelUpFX(r.lv);saveP();}
-function hookEnd(place,instant){const r=onGameEnd(PR,place,instant);toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
+function hookEnd(place,instant,n){const r=onGameEnd(PR,place,instant,n||4);toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);}
