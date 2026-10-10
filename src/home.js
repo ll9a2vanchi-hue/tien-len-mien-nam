@@ -54,7 +54,7 @@ function setAvBg(c){PR.avBg=c;applyCosmetics();saveP();openAvatar();if(document.
 // cài đặt
 function openSettings(){modal(`<h3>${I('gear')} Cài đặt</h3>
  <div class="row"><span style="flex:1">Âm thanh</span><button class="alt" onclick="toggleMute();openSettings()">${muted?'Đang tắt':'Đang bật'}</button></div>
- <div class="row"><span style="flex:1">Xếp bài mặc định</span><button class="alt" onclick="sortMode^=1;localStorage.setItem('tlmn_sort',sortMode);openSettings()">${sortMode?'Theo chất':'Theo số'}</button></div>
+ <div class="row"><span style="flex:1">Xếp bài mặc định</span><button class="alt" onclick="sortMode^=1;localStorage.setItem('tlmn_sort2',sortMode);openSettings()">${sortMode?'Theo số':'Thông minh (theo bộ)'}</button></div>
  <div class="row"><span style="flex:1">Mặt bàn &amp; mặt sau bài</span><button class="alt" onclick="openShop('felt')">Đổi</button></div>
  <div class="row"><span style="flex:1">Cài ứng dụng</span><button class="alt" onclick="doInstall()">Cài đặt</button></div>
  <div class="row"><span style="flex:1;color:#ffb4a8">Xóa toàn bộ dữ liệu trên máy</span><button class="alt" onclick="if(confirm('Xóa xu, cấp độ, vật phẩm trên máy này? (Bản sao lưu đám mây không bị xóa)')){['tlmn_profile','tlmn_scores','tlmn_updated'].forEach(k=>localStorage.removeItem(k));location.reload();}">Xóa</button></div>
@@ -65,6 +65,6 @@ function toggleEmotes(){const b=$('emoBar');if(b.className==='on'){b.className='
 function sendEmote(e){$('emoBar').className='';showEmote(0,e);if(typeof onlineEmote==='function'&&onlineEmote(e))return;
  if(Math.random()<.5)setTimeout(()=>{const p=1+(Math.random()*3|0);showEmote(p,pick(['😂','😮','👍','😏','Chặt đi!','Run chưa?','🙏','😡']));},700+Math.random()*900);}
 function showEmote(p,e){const host=p===0?$('meInfo'):$('s'+p);if(!host||!host.appendChild)return;const d=document.createElement('div');d.className='bubble'+([...e].length<=2?' big':'');d.textContent=e;host.appendChild(d);setTimeout(()=>d.remove&&d.remove(),2600);sfx('tap');}
-sortMode=+(localStorage.getItem('tlmn_sort')||0);
+sortMode=+(localStorage.getItem('tlmn_sort2')||0);
 applyCosmetics();
 window.addEventListener('resize',()=>{if(G&&G.started&&!document.body.classList.contains('athome'))render();});

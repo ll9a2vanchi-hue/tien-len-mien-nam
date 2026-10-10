@@ -105,4 +105,18 @@ function aiBotLevel(diff,rng){rng=rng||Math.random;const R=[[1,5],[4,12],[12,25]
 const AI_BONUS=[0,0.1,0.25,0.5];
 function aiBeatBonus(rank,me,levels){const pos=rank.indexOf(me);let b=0;rank.slice(pos+1).forEach(p=>{if(levels[p]!=null)b+=AI_BONUS[levels[p]]||0;});return Math.min(1.5,b);}
 // AI_END
-if(typeof module!=='undefined')module.exports={AI_NAMES,AI_BONUS,aiMove,aiPickLevel,aiBotLevel,aiBeatBonus,aiSplit,aiBeatable,aiUnknown,rankCounts};
+
+// Xếp bài thông minh: chia tay bài thành bộ ít lá lẻ nhất. Trả về mảng nhóm theo thứ tự hiển thị.
+function smartGroups(hand){const h=hand.slice().sort((a,b)=>a-b),memo=new Map();
+ const R=c=>c>>2,W={single:10,pair:3,triple:2,straight:1,quad:0,pairseq:0};
+ function best(cards){if(!cards.length)return{c:0,g:[]};const key=cards.join(',');if(memo.has(key))return memo.get(key);
+  const c0=cards[0],r0=R(c0),opts=[];const same=cards.filter(c=>R(c)===r0);
+  opts.push([c0]);for(let k=2;k<=same.length;k++)opts.push(same.slice(0,k));
+  if(r0<12){for(let pick of [1,2]){const g=[];let r=r0;while(r<12){const rc=cards.filter(c=>R(c)===r);if(rc.length<pick)break;g.push(...rc.slice(0,pick));r++;
+    const len=r-r0;if((pick===1&&len>=3)||(pick===2&&len>=3))opts.push(g.slice());}}}
+  let b=null;for(const g of opts){const rest=cards.filter(c=>!g.includes(c));const sub=best(rest);const t=g.length===1?(R(g[0])===12?1:W.single):(g.length===same.length&&g.length===4&&g.every(c=>R(c)===r0)?0:(new Set(g.map(R)).size===1?(g.length===2?W.pair:W.triple):(g.length===new Set(g.map(R)).size?W.straight:W.pairseq)));
+   const cost=t+sub.c;if(!b||cost<b.c)b={c:cost,g:[g,...sub.g]};}
+  memo.set(key,b);return b;}
+ const gs=best(h).g;const cat=g=>{const rs=new Set(g.map(R));if(rs.has(12)&&rs.size===1)return 0;if(g.length===4&&rs.size===1)return 0;if(rs.size>=3&&g.length===rs.size*2)return 0;if(rs.size>=3)return 1;if(g.length>=2)return 2;return 3;};
+ return gs.sort((a,b)=>cat(a)-cat(b)||(cat(a)===1?b.length-a.length:0)||a[0]-b[0]);}
+if(typeof module!=='undefined')module.exports={smartGroups,AI_NAMES,AI_BONUS,aiMove,aiPickLevel,aiBotLevel,aiBeatBonus,aiSplit,aiBeatable,aiUnknown,rankCounts};

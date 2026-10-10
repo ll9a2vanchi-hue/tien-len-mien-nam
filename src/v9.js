@@ -157,3 +157,9 @@ async function openLeaderboard(tab){if(tab)lbTab=tab;const tabs=`<div class="lbt
    ${myRow?`<div class="lbme">${row(myRow,(myRank||0)-1,true).replace(/<span class="lbn">[^<]*<\/span>/,`<span class="lbn">#${myRank||'?'}</span>`)}</div>`:''}<p class="small">Số liệu do máy bạn gửi lên khi sao lưu, máy chủ giới hạn mức tăng để chống gian lận.</p>`);
  }catch(e){modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}<p>Không tải được: ${esc(e.message||String(e))}</p>`);}}
 const _rh12=renderHome;renderHome=function(){_rh12();const g=document.querySelector('#home .tiles');if(g&&g.insertAdjacentHTML)g.insertAdjacentHTML('beforeend',`<button class="alt tile" onclick="openLeaderboard()"><span style="font-size:28px;line-height:30px">🏆</span><span>Xếp hạng</span></button>`);};
+
+// ---- Không có bài chặn: làm nổi Bỏ lượt
+const _r13=render;render=function(){_r13();if(!G)return;const bp=$('bPass'),bl=$('bPlay');if(!bp||!bp.classList)return;
+ let stuck=false;try{stuck=!G.over&&!DEALING&&G.turn===0&&!!G.cur&&G.hands[0].length>0&&!combos(G.hands[0]).some(x=>canBeat(x.info,G.cur));}catch(e){}
+ bp.classList.toggle('mustpass',stuck);bl.classList.toggle('dimmed',stuck);let h=$('noBeat');
+ if(stuck&&!h){h=document.createElement('div');h.id='noBeat';h.textContent='Không có bài chặn được';const par=bp.parentNode;if(par.style&&getComputedStyle(par).position==='static')par.style.position='relative';par.appendChild(h);}else if(!stuck&&h)h.remove();};
