@@ -79,6 +79,17 @@ svg.i{width:1.25em;height:1.25em;vertical-align:-.28em;flex:none}button.ic svg.i
 .badge .ic svg.i{width:30px;height:30px}h3 svg.i{width:1.3em;height:1.3em}
 .inp{width:100%;padding:10px;border-radius:8px;border:0;margin:4px 0;font-size:16px}.small{font-size:13px;opacity:.85}.err{color:#ffb4b4}
 #s2 .reveal{max-width:300px}
+.lvb{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 4px;margin-right:4px;border-radius:11px;font:800 12px system-ui;color:#3a2500;background:linear-gradient(#ffe680,#d89b00);border:1.5px solid #fff;box-shadow:0 1px 3px #0008}
+.lvb.big{min-width:36px;height:36px;border-radius:50%;font-size:16px;margin:0}
+.blv{font-size:11px;background:#0006;padding:1px 8px 1px 2px;border-radius:12px;display:flex;align-items:center;white-space:nowrap;color:#ffe9a8}
+#meInfo{display:flex;align-items:center;gap:6px;background:#0007;border:1px solid #f4c54255;border-radius:22px;padding:3px 10px 3px 3px;cursor:pointer;min-width:150px}
+.mi{display:flex;flex-direction:column;min-width:100px}.mt{font-weight:800;font-size:13px;color:#ffe27a;white-space:nowrap}.mt small{opacity:.6}
+.xpb{height:7px;background:#0008;border-radius:4px;overflow:hidden;margin:2px 0}.xpb i{display:block;height:100%;background:linear-gradient(90deg,#4fc3f7,#7c4dff)}.xpt{font-size:10px;opacity:.8}
+.lvup{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);text-align:center;font:900 34px system-ui;color:#ffe27a;text-shadow:0 0 18px #7c4dff,0 3px 0 #3a1a80;animation:boom 2.6s forwards;background:#1a0f3acc;padding:14px 28px;border-radius:20px;border:2px solid #b39ddb}
+.lvup .lvc{width:76px;height:76px;margin:0 auto 4px;border-radius:50%;display:grid;place-items:center;font-size:40px;color:#3a2500;background:radial-gradient(circle at 35% 30%,#fff6c0,#ffd84d 45%,#c98a00);border:3px solid #fff;animation:spin 1.2s ease-out}
+.lvup small{font-size:16px;color:#fff}@keyframes spin{from{transform:rotateY(0) scale(.3)}to{transform:rotateY(720deg) scale(1)}}
+#meBar{flex-wrap:wrap;justify-content:center}.xpb{min-width:90px;box-shadow:inset 0 0 0 1px #fff2}
+@media(max-width:700px){#meInfo{min-width:0;padding:2px 8px 2px 2px;order:-1;width:100%;max-width:360px}.lvb.big{min-width:28px;height:28px;font-size:13px}.mi{flex:1;flex-direction:row;align-items:center;gap:6px}.mi .xpb{flex:1}.mt{font-size:12px}.xpt{font-size:10px}.blv{font-size:10px;padding-right:5px}.blv .lvb{min-width:18px;height:18px;font-size:10px}.lvup{font-size:26px}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -105,7 +116,7 @@ svg.i{width:1.25em;height:1.25em;vertical-align:-.28em;flex:none}button.ic svg.i
 <div id="table"><div class="seat" id="s2"></div><div class="seat" id="s1"></div>
 <div id="center"><div id="pileWrap"><div class="pile" id="pile"></div><div class="pile" id="prev"></div></div><div id="msg"></div><div id="hist"></div></div>
 <div class="seat" id="s3"></div></div>
-<div id="me"><div id="hand"></div><div id="meBar"><div class="av">😎<span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" onclick="hint()"><svg class="i"><use href="#i-bulb"/></svg> Gợi ý</button><button class="alt" onclick="sortHand()"><svg class="i"><use href="#i-sort"/></svg> Xếp</button></div></div></div>
+<div id="me"><div id="hand"></div><div id="meBar"><div id="meInfo" onclick="openTitles()" title="Cấp độ &amp; danh hiệu"></div><div class="av">😎<span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" onclick="hint()"><svg class="i"><use href="#i-bulb"/></svg> Gợi ý</button><button class="alt" onclick="sortHand()"><svg class="i"><use href="#i-sort"/></svg> Xếp</button></div></div></div>
 <div id="score" onclick="if(event.target===this)this.style.display='none'"><div id="scoreIn"></div></div>
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="toast"></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
@@ -216,14 +227,14 @@ const QUEST_POOL=[
 function dayKey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function dayDiff(a,b){const p=k=>{const[y,m,d]=k.split('-').map(Number);return Date.UTC(y,m-1,d)/864e5;};return p(b)-p(a);}
 function newProfile(){return{xu:START_XU,bet:100,rescueDay:null,login:{last:null,streak:0},badges:{},
- stats:{games:0,wins:0,streak:0,bestStreak:0,chops:0,quads:0,pairseq4:0,longStraight:0,instant:0},quests:{day:null,list:[]}};}
+ xp:0,title:null,stats:{games:0,wins:0,streak:0,bestStreak:0,chops:0,quads:0,pairseq4:0,longStraight:0,instant:0},quests:{day:null,list:[]}};}
 function ensureDaily(P,now,rng){rng=rng||Math.random;const k=dayKey(now);
  if(P.quests.day!==k){const pool=QUEST_POOL.slice(),list=[];
   while(list.length<3){const q=pool.splice(Math.floor(rng()*pool.length),1)[0];if(list.some(x=>questDef(x.id).ev===q.ev))continue;list.push({id:q.id,prog:0,claimed:false});}
   P.quests={day:k,list};return true;}return false;}
 function questDef(id){return QUEST_POOL.find(q=>q.id===id);}
 function questEvent(P,ev,n){P.quests.list.forEach(q=>{const d=questDef(q.id);if(d.ev===ev)q.prog=Math.min(d.goal,q.prog+(n||1));});}
-function claimQuest(P,i){const q=P.quests.list[i],d=q&&questDef(q.id);if(!q||q.claimed||q.prog<d.goal)return 0;q.claimed=true;P.xu+=d.xu;return d.xu;}
+function claimQuest(P,i){const q=P.quests.list[i],d=q&&questDef(q.id);if(!q||q.claimed||q.prog<d.goal)return 0;q.claimed=true;P.xu+=d.xu;P._lastLv=addXp(P,XP_QUEST);return d.xu;}
 function loginState(P,now){const k=dayKey(now),l=P.login;if(l.last===k)return{canClaim:false,day:l.streak};
  const next=(l.last&&dayDiff(l.last,k)===1)?(l.streak%7)+1:1;return{canClaim:true,day:next,reward:LOGIN_REWARDS[next-1]};}
 function claimLogin(P,now){const s=loginState(P,now);if(!s.canClaim)return 0;P.login={last:dayKey(now),streak:s.day};P.xu+=s.reward;return s.reward;}
@@ -237,16 +248,36 @@ function onPlay(P,info,prev){const s=P.stats;
  if(info.type==='quad')s.quads++;if(info.type==='pairseq'&&info.len>=4)s.pairseq4++;
  if((info.top>>2)===12&&(info.type==='single'||info.type==='pair'||info.type==='triple'))questEvent(P,'two',info.len);
  let bonus=0;if(prev&&(prev.top>>2)===12&&info.type!==prev.type){s.chops++;questEvent(P,'chop');bonus=Math.round(P.bet*0.5*(prev.type==='pair'?2:1));P.xu+=bonus;}
- return{bonus,badges:checkBadges(P)};}
+ const lv=prev&&(prev.top>>2)===12&&info.type!==prev.type?addXp(P,XP_CHOP):null;
+ return{bonus,badges:checkBadges(P),lv};}
 // place: 0..3, instant: human won tới trắng
 function onGameEnd(P,place,instant){const s=P.stats;s.games++;questEvent(P,'game');
  let delta=Math.round(P.bet*(instant?(place===0?3:-1):PLACE_MULT[place]));
  if(place===0){s.wins++;s.streak++;s.bestStreak=Math.max(s.bestStreak,s.streak);questEvent(P,'win');}else s.streak=0;
  if(place<=1)questEvent(P,'top2');if(instant&&place===0)s.instant++;
- P.xu=Math.max(0,P.xu+delta);return{delta,badges:checkBadges(P)};}
+ P.xu=Math.max(0,P.xu+delta);const lv=addXp(P,XP_PLACE[place]+(instant&&place===0?XP_INSTANT:0));return{delta,badges:checkBadges(P),lv};}
+
+// ---------- Cấp độ / XP / Danh hiệu ----------
+const XP_PLACE=[100,60,35,20],XP_CHOP=20,XP_INSTANT=150,XP_QUEST=50;
+function xpNeed(l){return 100+50*(l-1);} // XP để lên từ cấp l -> l+1
+function levelInfo(xp){xp=Math.max(0,xp||0);let l=1;while(xp>=xpNeed(l)){xp-=xpNeed(l);l++;}return{level:l,cur:xp,need:xpNeed(l)};}
+function levelReward(l){return 50*l;}
+const TITLES=[
+ {id:'tan_thu',name:'Tân Thủ',min:1},{id:'tap_su',name:'Tập Sự',min:3},{id:'tay_choi',name:'Tay Chơi',min:6},{id:'lao_lang',name:'Lão Làng',min:10},
+ {id:'cao_thu',name:'Cao Thủ',min:15},{id:'bac_thay',name:'Bậc Thầy',min:22},{id:'than_bai',name:'Thần Bài',min:30},{id:'huyen_thoai',name:'Huyền Thoại',min:40},
+ {id:'do_te',name:'Đồ Tể',badge:'chop10'},{id:'vua_toi_trang',name:'Vua Tới Trắng',badge:'instant'},{id:'dai_gia',name:'Đại Gia',badge:'rich'},{id:'bat_bai',name:'Bất Bại',badge:'streak5'},
+];
+function titleForLevel(l){let t=TITLES[0];for(const x of TITLES)if(x.min&&l>=x.min)t=x;return t;}
+function titleUnlocked(P,t){return t.min?levelInfo(P.xp).level>=t.min:!!(P.badges&&P.badges[t.badge]);}
+function unlockedTitles(P){return TITLES.filter(t=>titleUnlocked(P,t));}
+function currentTitle(P){const t=P.title&&TITLES.find(x=>x.id===P.title);return t&&titleUnlocked(P,t)?t:titleForLevel(levelInfo(P.xp).level);}
+function setTitle(P,id){const t=TITLES.find(x=>x.id===id);if(!t||!titleUnlocked(P,t))return false;P.title=id;return true;}
+function addXp(P,n){const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const after=levelInfo(P.xp).level;const ups=[];let xu=0;
+ for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
+ const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // CLOUD_START
 // Gộp 2 bản lưu {profile, scores, updatedAt}: giữ tiến độ cao hơn, gộp huy hiệu, chỉ số lấy max.
-function saveProgress(s){if(!s||!s.profile)return -1;const p=s.profile;return (p.stats&&p.stats.games||0)*1000+Object.keys(p.badges||{}).length;}
+function saveProgress(s){if(!s||!s.profile)return -1;const p=s.profile;return (p.xp||0)*1e6+(p.stats&&p.stats.games||0)*1000+Object.keys(p.badges||{}).length;}
 function mergeSaves(a,b){
  if(!a||!a.profile)return b?JSON.parse(JSON.stringify(b)):null;if(!b||!b.profile)return JSON.parse(JSON.stringify(a));
  const pa=saveProgress(a),pb=saveProgress(b);
@@ -283,16 +314,24 @@ function doRescue(){const r=rescue(PR,new Date());if(r)toast(`Cứu trợ +${r} 
 function openQuests(){ensureDaily(PR,new Date());const m=new Date();m.setHours(24,0,0,0);const hh=Math.ceil((m-new Date())/36e5);
  modal('<h3>'+I('quest')+' Nhiệm vụ hôm nay</h3><p style="font-size:13px">Làm mới sau ~'+hh+' giờ (0h)</p>'+PR.quests.list.map((q,i)=>{const d=questDef(q.id),done=q.prog>=d.goal;
   return `<div class="row"><div style="flex:1">${d.name} <small>(${q.prog}/${d.goal})</small><div class="bar"><i style="width:${100*q.prog/d.goal}%"></i></div></div>${q.claimed?I('check'):`<button ${done?'':'disabled'} onclick="doClaimQuest(${i})">+${d.xu}</button>`}</div>`;}).join(''));}
-function doClaimQuest(i){const r=claimQuest(PR,i);if(r)toast(`Hoàn thành nhiệm vụ +${r} xu`);badgeToasts(checkBadges(PR));saveP();openQuests();}
+function doClaimQuest(i){const r=claimQuest(PR,i);if(r)toast(`Hoàn thành nhiệm vụ +${r} xu`);const lq=PR._lastLv;delete PR._lastLv;if(lq)levelUpFX(lq);badgeToasts(checkBadges(PR));saveP();openQuests();}
 function openBadges(){const n=Object.keys(PR.badges).length;
  modal(`<h3>${I('medal')} Huy hiệu (${n}/${BADGES.length})</h3><div class="grid">`+BADGES.map(b=>`<div class="badge ${PR.badges[b.id]?'':'lock'}"><div class="ic">${PR.badges[b.id]?b.icon:I('lock')}</div><b>${b.name}</b><br>${b.desc}<br>${I("coin")}${fmt(b.xu)}</div>`).join('')+'</div>'+
  `<p style="font-size:13px">Ván: ${PR.stats.games} · Thắng: ${PR.stats.wins} · Chuỗi tốt nhất: ${PR.stats.bestStreak} · Chặt heo: ${PR.stats.chops}</p>`);}
-function hookPlay(info,prev){const r=onPlay(PR,info,prev);if(r.bonus)toast(`Chặt heo! +${fmt(r.bonus)} xu`);badgeToasts(r.badges);saveP();}
-function hookEnd(place,instant){const r=onGameEnd(PR,place,instant);toast(`${r.delta>=0?'':''} ${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu`);badgeToasts(r.badges);saveP();
+function hookPlay(info,prev){const r=onPlay(PR,info,prev);if(r.bonus)toast(`Chặt heo! +${fmt(r.bonus)} xu`);badgeToasts(r.badges);if(r.lv)levelUpFX(r.lv);saveP();}
+function hookEnd(place,instant){const r=onGameEnd(PR,place,instant);toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);}
 function I(n){return `<svg class="i"><use href="#i-${n}"/></svg>`;}
-const NAMES=['Bạn','Máy Trái','Máy Trên','Máy Phải'];
-const AVATARS=[['😎','#2b6cb0'],['🤖','#7b3fa0'],['🧔','#b5651d'],['👩','#c2185b']];
+const SEATS=['Bạn','Ghế trái','Ghế trên','Ghế phải'];
+const BOT_POOL=[['Tuấn','m'],['Hùng','m'],['Minh','m'],['Nam','m'],['Dũng','m'],['Khoa','m'],['Phúc','m'],['Long','m'],['Quang','m'],['Bảo','m'],['Thắng','m'],['Sơn','m'],['Vinh','m'],['Đức','m'],['Hải','m'],['Ông Tư','o'],['Chú Bảy','o'],
+ ['Lan','f'],['Mai','f'],['Hoa','f'],['Linh','f'],['Trang','f'],['Thảo','f'],['Ngọc','f'],['Hương','f'],['Vy','f'],['Yến','f'],['Hạnh','f'],['Thu','f'],['Nhung','f'],['Phương','f'],['Bà Sáu','of'],['Cô Ba','f']];
+const AV_EMO={m:['👨','🧔','👨‍🦱','🧑','👦','🧑‍🦱','👨‍🦰'],f:['👩','👧','👩‍🦰','👩‍🦱','👱‍♀️'],o:['👴','🧓'],of:['👵']};
+const AV_COL=['#7b3fa0','#b5651d','#c2185b','#00897b','#5d4037','#3949ab','#ef6c00','#6d4c41','#2e7d32','#ad1457'];
+let NAMES=['Bạn','Lan','Tuấn','Mai'],AVATARS=[['😎','#2b6cb0'],['👩','#7b3fa0'],['👨','#b5651d'],['👧','#c2185b']],BOTLV=[0,5,12,20];
+const pick=a=>a[Math.random()*a.length|0];
+function rollBots(){const pool=BOT_POOL.slice().sort(()=>Math.random()-.5).slice(0,3),cols=AV_COL.slice().sort(()=>Math.random()-.5);
+ NAMES=['Bạn',...pool.map(x=>x[0])];AVATARS=[['😎','#2b6cb0'],...pool.map((x,i)=>[pick(AV_EMO[x[1]]),cols[i]])];
+ const my=levelInfo(PR.xp).level;BOTLV=[0,...[0,1,2].map(()=>Math.max(1,Math.min(60,Math.round(my+(Math.random()*16-6)))))];}
 const PTS=[3,1,-1,-3];
 const RM=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 let G,sel=new Set(),sortMode=0;
@@ -357,6 +396,7 @@ function flyIn(p,srcRects){if(RM)return;const els=document.querySelectorAll('#pi
 function newGame(){
  closeModal();$('score').style.display='none';
  if(PR.xu<PR.bet){const ok=BETS.filter(b=>b<=PR.xu);if(ok.length){PR.bet=ok[ok.length-1];saveP();}else{updHud();msg('Không đủ xu để cược!');openDaily();return;}}
+rollBots();
  const d=[...Array(52).keys()];for(let i=51;i>0;i--){const j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]];}
  G={hands:[0,1,2,3].map(p=>sortCards(d.slice(p*13,p*13+13))),cur:null,curBy:null,passed:[0,0,0,0],finished:[],first:false,over:false,pile:[],prev:[],hist:[],started:true};
  sel.clear();
@@ -417,26 +457,39 @@ function endGame(instant){const f=G.finished,all=[...f,...[0,1,2,3].filter(p=>!f
  setTimeout(()=>showScore(all),2200);}
 function showScore(rank){let h='<h3>'+I('trophy')+' Bảng điểm</h3>';
  if(Array.isArray(rank))h+='<p>Thứ tự về: '+rank.map((p,i)=>`${['🥇','🥈','🥉','4️⃣'][i]} ${NAMES[p]}`).join(' · ')+'</p>';
- h+='<table><tr><th>Người</th><th>Điểm</th><th>Thắng</th></tr>'+[0,1,2,3].map(p=>`<tr><td>${AVATARS[p][0]} ${NAMES[p]}</td><td>${S.pts[p]}</td><td>${S.wins[p]}</td></tr>`).join('')+`</table><p>Số ván: ${S.games}</p><button onclick="event.stopPropagation();resetScore()" class="alt">Xóa điểm</button><button onclick="newGame()">Ván mới</button>`;
+ h+='<table><tr><th>Người</th><th>Điểm</th><th>Thắng</th></tr>'+[0,1,2,3].map(p=>`<tr><td>${SEATS[p]}${p?' <small>('+NAMES[p]+')</small>':''}</td><td>${S.pts[p]}</td><td>${S.wins[p]}</td></tr>`).join('')+`</table><p>Số ván: ${S.games}</p><button onclick="event.stopPropagation();resetScore()" class="alt">Xóa điểm</button><button onclick="newGame()">Ván mới</button>`;
  $('scoreIn').innerHTML=h;$('score').style.display='flex';}
 function resetScore(){S={pts:[0,0,0,0],wins:[0,0,0,0],games:0,lastWinner:null};save();showScore();}
 function render(){
  [1,2,3].forEach(p=>{const e=$('s'+p),fin=G.finished.indexOf(p),n=G.hands[p].length;
   e.className='seat'+(G.turn===p&&!G.over?' turn':'');
   const tag=fin>=0?`<span class="tag fin">Về ${['nhất','nhì','ba','bét'][fin]}</span>`:G.passed[p]&&G.cur?'<span class="tag pass">Bỏ lượt</span>':G.turn===p&&!G.over?'<span class="tag">Đang nghĩ…</span>':'<span class="tag" style="opacity:0">.</span>';
-  e.innerHTML=`<div class="av" style="--avc:${AVATARS[p][1]}">${AVATARS[p][0]}<span class="cnt">${n}</span></div><div class="nm">${NAMES[p]}</div>${tag}<div class="${G.over?'reveal':'fan'}"></div>`;
+  e.innerHTML=`<div class="av" style="--avc:${AVATARS[p][1]}">${AVATARS[p][0]}<span class="cnt">${n}</span></div><div class="nm">${NAMES[p]}</div><div class="blv"><span class="lvb">${BOTLV[p]}</span>${titleForLevel(BOTLV[p]).name}</div>${tag}<div class="${G.over?'reveal':'fan'}"></div>`;
   const f=e.lastChild;if(G.over)G.hands[p].forEach(c=>f.appendChild(cardEl(c)));else f.innerHTML='<div class="back"></div>'.repeat(Math.min(n,13));});
  const pile=$('pile');pile.innerHTML='';G.pile.forEach(c=>pile.appendChild(cardEl(c)));
  const pv=$('prev');pv.innerHTML='';(G.prev||[]).forEach(c=>pv.appendChild(cardEl(c)));
  const hs=$('hist');hs.innerHTML=G.hist.map(h=>`<div class="${h.cls}">${h.txt}</div>`).join('');hs.scrollTop=1e6;
  let h=G.hands[0].slice();if(sortMode)h.sort((a,b)=>st(a)-st(b)||a-b);else h=sortCards(h);
  const hd=$('hand');hd.innerHTML='';h.forEach(c=>hd.appendChild(cardEl(c,true)));
- $('myCnt').textContent=G.hands[0].length;
+ $('myCnt').textContent=G.hands[0].length;renderMe();
  $('me').className=G.turn===0&&!G.over?'turn':'';
  $('bPlay').disabled=G.over||G.turn!==0;$('bPass').disabled=G.over||G.turn!==0||!G.cur;
 }
 updMute();updHud();newGame();const DEMO=typeof location!=='undefined'&&location.hash==='#demo';
 if(!DEMO&&loginState(PR,new Date()).canClaim)setTimeout(openDaily,500);
+
+function renderMe(){const e=$('meInfo');if(!e)return;const L=levelInfo(PR.xp),t=currentTitle(PR);
+ e.innerHTML=`<span class="lvb big">${L.level}</span><div class="mi"><div class="mt">${t.name} <small>▾</small></div><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><div class="xpt">${L.cur}/${L.need} XP</div></div>`;}
+function levelUpFX(lv){if(!lv)return;if(lv.xp)toast(`+${lv.xp} XP`);if(!lv.ups.length){renderMe();return;}
+ const top=lv.ups[lv.ups.length-1];renderMe();
+ setTimeout(()=>{try{[392,523,659,784,1047].forEach((f,i)=>tone(f,.22,'square',.07,i*.08));tone(1568,.5,'triangle',.12,.42);}catch(e){}
+  fx(`<div class="lvup"><div class="lvc">${top}</div><div>LÊN CẤP!</div><small>+${fmt(lv.xu)} xu</small></div>`,2600);
+  toast(`${I('medal')} Lên cấp ${top}! +${fmt(lv.xu)} xu`);lv.newTitles.forEach(t=>toast(`Mở khóa danh hiệu: <b>${t.name}</b>`));},900);}
+function openTitles(){const L=levelInfo(PR.xp),cur=currentTitle(PR);
+ modal(`<h3>${I('medal')} Cấp ${L.level} · ${cur.name}</h3><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><p class="small">${L.cur}/${L.need} XP đến cấp ${L.level+1} (thưởng ${fmt(levelReward(L.level+1))} xu). XP: về nhất ${XP_PLACE[0]}, nhì ${XP_PLACE[1]}, ba ${XP_PLACE[2]}, bét ${XP_PLACE[3]}, chặt heo +${XP_CHOP}, tới trắng +${XP_INSTANT}, nhiệm vụ +${XP_QUEST}.</p><h4>Danh hiệu</h4>`+
+ TITLES.map(t=>{const u=titleUnlocked(PR,t),req=t.min?`Cấp ${t.min}`:'Huy hiệu: '+(BADGES.find(b=>b.id===t.badge)||{}).name;
+  return `<div class="row"><div style="flex:1"><b>${t.name}</b> <small class="small">${req}</small></div>${t.id===cur.id?I('check'):u?`<button class="alt" onclick="pickTitle('${t.id}')">Chọn</button>`:I('lock')}</div>`;}).join(''));}
+function pickTitle(id){if(setTitle(PR,id)){saveP();renderMe();toast('Đã đổi danh hiệu: '+currentTitle(PR).name);}openTitles();}
 // ---------- PWA: cài đặt + service worker ----------
 let deferredPrompt=null;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||'')||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);

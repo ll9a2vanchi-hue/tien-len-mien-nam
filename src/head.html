@@ -79,6 +79,17 @@ svg.i{width:1.25em;height:1.25em;vertical-align:-.28em;flex:none}button.ic svg.i
 .badge .ic svg.i{width:30px;height:30px}h3 svg.i{width:1.3em;height:1.3em}
 .inp{width:100%;padding:10px;border-radius:8px;border:0;margin:4px 0;font-size:16px}.small{font-size:13px;opacity:.85}.err{color:#ffb4b4}
 #s2 .reveal{max-width:300px}
+.lvb{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 4px;margin-right:4px;border-radius:11px;font:800 12px system-ui;color:#3a2500;background:linear-gradient(#ffe680,#d89b00);border:1.5px solid #fff;box-shadow:0 1px 3px #0008}
+.lvb.big{min-width:36px;height:36px;border-radius:50%;font-size:16px;margin:0}
+.blv{font-size:11px;background:#0006;padding:1px 8px 1px 2px;border-radius:12px;display:flex;align-items:center;white-space:nowrap;color:#ffe9a8}
+#meInfo{display:flex;align-items:center;gap:6px;background:#0007;border:1px solid #f4c54255;border-radius:22px;padding:3px 10px 3px 3px;cursor:pointer;min-width:150px}
+.mi{display:flex;flex-direction:column;min-width:100px}.mt{font-weight:800;font-size:13px;color:#ffe27a;white-space:nowrap}.mt small{opacity:.6}
+.xpb{height:7px;background:#0008;border-radius:4px;overflow:hidden;margin:2px 0}.xpb i{display:block;height:100%;background:linear-gradient(90deg,#4fc3f7,#7c4dff)}.xpt{font-size:10px;opacity:.8}
+.lvup{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);text-align:center;font:900 34px system-ui;color:#ffe27a;text-shadow:0 0 18px #7c4dff,0 3px 0 #3a1a80;animation:boom 2.6s forwards;background:#1a0f3acc;padding:14px 28px;border-radius:20px;border:2px solid #b39ddb}
+.lvup .lvc{width:76px;height:76px;margin:0 auto 4px;border-radius:50%;display:grid;place-items:center;font-size:40px;color:#3a2500;background:radial-gradient(circle at 35% 30%,#fff6c0,#ffd84d 45%,#c98a00);border:3px solid #fff;animation:spin 1.2s ease-out}
+.lvup small{font-size:16px;color:#fff}@keyframes spin{from{transform:rotateY(0) scale(.3)}to{transform:rotateY(720deg) scale(1)}}
+#meBar{flex-wrap:wrap;justify-content:center}.xpb{min-width:90px;box-shadow:inset 0 0 0 1px #fff2}
+@media(max-width:700px){#meInfo{min-width:0;padding:2px 8px 2px 2px;order:-1;width:100%;max-width:360px}.lvb.big{min-width:28px;height:28px;font-size:13px}.mi{flex:1;flex-direction:row;align-items:center;gap:6px}.mi .xpb{flex:1}.mt{font-size:12px}.xpt{font-size:10px}.blv{font-size:10px;padding-right:5px}.blv .lvb{min-width:18px;height:18px;font-size:10px}.lvup{font-size:26px}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -105,7 +116,7 @@ svg.i{width:1.25em;height:1.25em;vertical-align:-.28em;flex:none}button.ic svg.i
 <div id="table"><div class="seat" id="s2"></div><div class="seat" id="s1"></div>
 <div id="center"><div id="pileWrap"><div class="pile" id="pile"></div><div class="pile" id="prev"></div></div><div id="msg"></div><div id="hist"></div></div>
 <div class="seat" id="s3"></div></div>
-<div id="me"><div id="hand"></div><div id="meBar"><div class="av">😎<span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" onclick="hint()"><svg class="i"><use href="#i-bulb"/></svg> Gợi ý</button><button class="alt" onclick="sortHand()"><svg class="i"><use href="#i-sort"/></svg> Xếp</button></div></div></div>
+<div id="me"><div id="hand"></div><div id="meBar"><div id="meInfo" onclick="openTitles()" title="Cấp độ &amp; danh hiệu"></div><div class="av">😎<span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" onclick="hint()"><svg class="i"><use href="#i-bulb"/></svg> Gợi ý</button><button class="alt" onclick="sortHand()"><svg class="i"><use href="#i-sort"/></svg> Xếp</button></div></div></div>
 <div id="score" onclick="if(event.target===this)this.style.display='none'"><div id="scoreIn"></div></div>
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="toast"></div><div id="fx"></div>
 <script src="cloud-config.js"></script>

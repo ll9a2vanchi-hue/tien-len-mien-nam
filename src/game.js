@@ -1,6 +1,14 @@
 function I(n){return `<svg class="i"><use href="#i-${n}"/></svg>`;}
-const NAMES=['Bạn','Máy Trái','Máy Trên','Máy Phải'];
-const AVATARS=[['😎','#2b6cb0'],['🤖','#7b3fa0'],['🧔','#b5651d'],['👩','#c2185b']];
+const SEATS=['Bạn','Ghế trái','Ghế trên','Ghế phải'];
+const BOT_POOL=[['Tuấn','m'],['Hùng','m'],['Minh','m'],['Nam','m'],['Dũng','m'],['Khoa','m'],['Phúc','m'],['Long','m'],['Quang','m'],['Bảo','m'],['Thắng','m'],['Sơn','m'],['Vinh','m'],['Đức','m'],['Hải','m'],['Ông Tư','o'],['Chú Bảy','o'],
+ ['Lan','f'],['Mai','f'],['Hoa','f'],['Linh','f'],['Trang','f'],['Thảo','f'],['Ngọc','f'],['Hương','f'],['Vy','f'],['Yến','f'],['Hạnh','f'],['Thu','f'],['Nhung','f'],['Phương','f'],['Bà Sáu','of'],['Cô Ba','f']];
+const AV_EMO={m:['👨','🧔','👨‍🦱','🧑','👦','🧑‍🦱','👨‍🦰'],f:['👩','👧','👩‍🦰','👩‍🦱','👱‍♀️'],o:['👴','🧓'],of:['👵']};
+const AV_COL=['#7b3fa0','#b5651d','#c2185b','#00897b','#5d4037','#3949ab','#ef6c00','#6d4c41','#2e7d32','#ad1457'];
+let NAMES=['Bạn','Lan','Tuấn','Mai'],AVATARS=[['😎','#2b6cb0'],['👩','#7b3fa0'],['👨','#b5651d'],['👧','#c2185b']],BOTLV=[0,5,12,20];
+const pick=a=>a[Math.random()*a.length|0];
+function rollBots(){const pool=BOT_POOL.slice().sort(()=>Math.random()-.5).slice(0,3),cols=AV_COL.slice().sort(()=>Math.random()-.5);
+ NAMES=['Bạn',...pool.map(x=>x[0])];AVATARS=[['😎','#2b6cb0'],...pool.map((x,i)=>[pick(AV_EMO[x[1]]),cols[i]])];
+ const my=levelInfo(PR.xp).level;BOTLV=[0,...[0,1,2].map(()=>Math.max(1,Math.min(60,Math.round(my+(Math.random()*16-6)))))];}
 const PTS=[3,1,-1,-3];
 const RM=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 let G,sel=new Set(),sortMode=0;
@@ -65,6 +73,7 @@ function flyIn(p,srcRects){if(RM)return;const els=document.querySelectorAll('#pi
 function newGame(){
  closeModal();$('score').style.display='none';
  if(PR.xu<PR.bet){const ok=BETS.filter(b=>b<=PR.xu);if(ok.length){PR.bet=ok[ok.length-1];saveP();}else{updHud();msg('Không đủ xu để cược!');openDaily();return;}}
+rollBots();
  const d=[...Array(52).keys()];for(let i=51;i>0;i--){const j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]];}
  G={hands:[0,1,2,3].map(p=>sortCards(d.slice(p*13,p*13+13))),cur:null,curBy:null,passed:[0,0,0,0],finished:[],first:false,over:false,pile:[],prev:[],hist:[],started:true};
  sel.clear();
@@ -125,23 +134,36 @@ function endGame(instant){const f=G.finished,all=[...f,...[0,1,2,3].filter(p=>!f
  setTimeout(()=>showScore(all),2200);}
 function showScore(rank){let h='<h3>'+I('trophy')+' Bảng điểm</h3>';
  if(Array.isArray(rank))h+='<p>Thứ tự về: '+rank.map((p,i)=>`${['🥇','🥈','🥉','4️⃣'][i]} ${NAMES[p]}`).join(' · ')+'</p>';
- h+='<table><tr><th>Người</th><th>Điểm</th><th>Thắng</th></tr>'+[0,1,2,3].map(p=>`<tr><td>${AVATARS[p][0]} ${NAMES[p]}</td><td>${S.pts[p]}</td><td>${S.wins[p]}</td></tr>`).join('')+`</table><p>Số ván: ${S.games}</p><button onclick="event.stopPropagation();resetScore()" class="alt">Xóa điểm</button><button onclick="newGame()">Ván mới</button>`;
+ h+='<table><tr><th>Người</th><th>Điểm</th><th>Thắng</th></tr>'+[0,1,2,3].map(p=>`<tr><td>${SEATS[p]}${p?' <small>('+NAMES[p]+')</small>':''}</td><td>${S.pts[p]}</td><td>${S.wins[p]}</td></tr>`).join('')+`</table><p>Số ván: ${S.games}</p><button onclick="event.stopPropagation();resetScore()" class="alt">Xóa điểm</button><button onclick="newGame()">Ván mới</button>`;
  $('scoreIn').innerHTML=h;$('score').style.display='flex';}
 function resetScore(){S={pts:[0,0,0,0],wins:[0,0,0,0],games:0,lastWinner:null};save();showScore();}
 function render(){
  [1,2,3].forEach(p=>{const e=$('s'+p),fin=G.finished.indexOf(p),n=G.hands[p].length;
   e.className='seat'+(G.turn===p&&!G.over?' turn':'');
   const tag=fin>=0?`<span class="tag fin">Về ${['nhất','nhì','ba','bét'][fin]}</span>`:G.passed[p]&&G.cur?'<span class="tag pass">Bỏ lượt</span>':G.turn===p&&!G.over?'<span class="tag">Đang nghĩ…</span>':'<span class="tag" style="opacity:0">.</span>';
-  e.innerHTML=`<div class="av" style="--avc:${AVATARS[p][1]}">${AVATARS[p][0]}<span class="cnt">${n}</span></div><div class="nm">${NAMES[p]}</div>${tag}<div class="${G.over?'reveal':'fan'}"></div>`;
+  e.innerHTML=`<div class="av" style="--avc:${AVATARS[p][1]}">${AVATARS[p][0]}<span class="cnt">${n}</span></div><div class="nm">${NAMES[p]}</div><div class="blv"><span class="lvb">${BOTLV[p]}</span>${titleForLevel(BOTLV[p]).name}</div>${tag}<div class="${G.over?'reveal':'fan'}"></div>`;
   const f=e.lastChild;if(G.over)G.hands[p].forEach(c=>f.appendChild(cardEl(c)));else f.innerHTML='<div class="back"></div>'.repeat(Math.min(n,13));});
  const pile=$('pile');pile.innerHTML='';G.pile.forEach(c=>pile.appendChild(cardEl(c)));
  const pv=$('prev');pv.innerHTML='';(G.prev||[]).forEach(c=>pv.appendChild(cardEl(c)));
  const hs=$('hist');hs.innerHTML=G.hist.map(h=>`<div class="${h.cls}">${h.txt}</div>`).join('');hs.scrollTop=1e6;
  let h=G.hands[0].slice();if(sortMode)h.sort((a,b)=>st(a)-st(b)||a-b);else h=sortCards(h);
  const hd=$('hand');hd.innerHTML='';h.forEach(c=>hd.appendChild(cardEl(c,true)));
- $('myCnt').textContent=G.hands[0].length;
+ $('myCnt').textContent=G.hands[0].length;renderMe();
  $('me').className=G.turn===0&&!G.over?'turn':'';
  $('bPlay').disabled=G.over||G.turn!==0;$('bPass').disabled=G.over||G.turn!==0||!G.cur;
 }
 updMute();updHud();newGame();const DEMO=typeof location!=='undefined'&&location.hash==='#demo';
 if(!DEMO&&loginState(PR,new Date()).canClaim)setTimeout(openDaily,500);
+
+function renderMe(){const e=$('meInfo');if(!e)return;const L=levelInfo(PR.xp),t=currentTitle(PR);
+ e.innerHTML=`<span class="lvb big">${L.level}</span><div class="mi"><div class="mt">${t.name} <small>▾</small></div><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><div class="xpt">${L.cur}/${L.need} XP</div></div>`;}
+function levelUpFX(lv){if(!lv)return;if(lv.xp)toast(`+${lv.xp} XP`);if(!lv.ups.length){renderMe();return;}
+ const top=lv.ups[lv.ups.length-1];renderMe();
+ setTimeout(()=>{try{[392,523,659,784,1047].forEach((f,i)=>tone(f,.22,'square',.07,i*.08));tone(1568,.5,'triangle',.12,.42);}catch(e){}
+  fx(`<div class="lvup"><div class="lvc">${top}</div><div>LÊN CẤP!</div><small>+${fmt(lv.xu)} xu</small></div>`,2600);
+  toast(`${I('medal')} Lên cấp ${top}! +${fmt(lv.xu)} xu`);lv.newTitles.forEach(t=>toast(`Mở khóa danh hiệu: <b>${t.name}</b>`));},900);}
+function openTitles(){const L=levelInfo(PR.xp),cur=currentTitle(PR);
+ modal(`<h3>${I('medal')} Cấp ${L.level} · ${cur.name}</h3><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><p class="small">${L.cur}/${L.need} XP đến cấp ${L.level+1} (thưởng ${fmt(levelReward(L.level+1))} xu). XP: về nhất ${XP_PLACE[0]}, nhì ${XP_PLACE[1]}, ba ${XP_PLACE[2]}, bét ${XP_PLACE[3]}, chặt heo +${XP_CHOP}, tới trắng +${XP_INSTANT}, nhiệm vụ +${XP_QUEST}.</p><h4>Danh hiệu</h4>`+
+ TITLES.map(t=>{const u=titleUnlocked(PR,t),req=t.min?`Cấp ${t.min}`:'Huy hiệu: '+(BADGES.find(b=>b.id===t.badge)||{}).name;
+  return `<div class="row"><div style="flex:1"><b>${t.name}</b> <small class="small">${req}</small></div>${t.id===cur.id?I('check'):u?`<button class="alt" onclick="pickTitle('${t.id}')">Chọn</button>`:I('lock')}</div>`;}).join(''));}
+function pickTitle(id){if(setTitle(PR,id)){saveP();renderMe();toast('Đã đổi danh hiệu: '+currentTitle(PR).name);}openTitles();}

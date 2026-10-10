@@ -8,12 +8,12 @@ t('midnight reset',X.ensureDaily(P,d('2026-10-11T00:00'))&&P.quests.day==='2026-
 P.quests.list=[{id:'play3',prog:0,claimed:false},{id:'chop1',prog:0,claimed:false},{id:'pairs5',prog:0,claimed:false}];
 t('cannot claim early',X.claimQuest(P,0)===0);
 for(let i=0;i<4;i++)X.onGameEnd(P,1,false);t('progress capped',P.quests.list[0].prog===3);
-let xu=P.xu;t('claim',X.claimQuest(P,0)===150&&P.xu===xu+150);t('no double claim',X.claimQuest(P,0)===0);
+let xu=P.xu;t('claim',X.claimQuest(P,0)===150&&P.xu===xu+150+P._lastLv.xu);t('no double claim',X.claimQuest(P,0)===0);
 X.onPlay(P,{type:'pair',len:2,top:20},null);t('pair quest',P.quests.list[2].prog===1);
 // badges
 P=X.newProfile();P.bet=100;let r=X.onGameEnd(P,0,false);
 t('first game+win badges',r.badges.map(b=>b.id).sort().join()==='first_game,first_win');
-t('payout 1st + badge xu',P.xu===1000+200+50+100);
+t('payout 1st + badge xu + level-up 2 reward',P.xu===1000+200+50+100+100);
 r=X.onPlay(P,{type:'quad',len:4,top:40},{type:'single',len:1,top:51});
 t('chop bonus',r.bonus===50&&P.stats.chops===1);t('chop+quad badges',r.badges.map(b=>b.id).sort().join()==='chop1,quad');
 t('no repeat badge',X.onPlay(P,{type:'quad',len:4,top:44},{type:'single',len:1,top:50}).badges.every(b=>b.id!=='quad'));

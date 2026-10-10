@@ -1,6 +1,6 @@
 // CLOUD_START
 // Gộp 2 bản lưu {profile, scores, updatedAt}: giữ tiến độ cao hơn, gộp huy hiệu, chỉ số lấy max.
-function saveProgress(s){if(!s||!s.profile)return -1;const p=s.profile;return (p.stats&&p.stats.games||0)*1000+Object.keys(p.badges||{}).length;}
+function saveProgress(s){if(!s||!s.profile)return -1;const p=s.profile;return (p.xp||0)*1e6+(p.stats&&p.stats.games||0)*1000+Object.keys(p.badges||{}).length;}
 function mergeSaves(a,b){
  if(!a||!a.profile)return b?JSON.parse(JSON.stringify(b)):null;if(!b||!b.profile)return JSON.parse(JSON.stringify(a));
  const pa=saveProgress(a),pb=saveProgress(b);
