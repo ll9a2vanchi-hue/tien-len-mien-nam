@@ -13,3 +13,11 @@ Game đánh bài Tiến Lên Miền Nam chạy hoàn toàn offline trong trình 
 Build: `./build.sh` (ghép src/ + rules.js + progress.js thành index.html).
 
 Kiểm thử: `node test.js`, `node test-progress.js`, `node sim.js`.
+
+## PWA (cài như ứng dụng)
+`manifest.webmanifest` + `sw.js` (cache toàn bộ, chơi offline). Trên Android/Chrome bấm nút Cài đặt; iPhone: Chia sẻ → "Thêm vào Màn hình chính".
+
+## Sao lưu đám mây (tùy chọn, Supabase)
+1. Tạo project Supabase, chạy `supabase/schema.sql`.
+2. Điền URL + publishable/anon key vào `cloud-config.js` (KHÔNG dùng service_role).
+3. Chạy `./build.sh` rồi deploy. Không cấu hình thì game chạy chế độ khách offline.

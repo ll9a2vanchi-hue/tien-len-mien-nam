@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#0b3d22"><title>Tiến Lên Miền Nam</title><style>
+<meta name="theme-color" content="#0b3d22"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon.svg" type="image/svg+xml"><link rel="icon" href="icons/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Tiến Lên"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Tiến Lên Miền Nam</title><style>
 :root{--cw:84px;--ch:120px;--ov:-44px;--pw:58px;--ph:82px;--gold:#f4c542}
 *{box-sizing:border-box}html,body{height:100%}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#fff;user-select:none;-webkit-tap-highlight-color:transparent;
@@ -71,18 +71,44 @@ table{width:100%;border-collapse:collapse}td,th{padding:4px;border-bottom:1px so
  #table{grid-template-columns:78px 1fr 78px;border-radius:60px;margin:8px 10px;padding:8px;min-height:300px}
  .av{width:46px;height:46px;font-size:24px}.fan{display:none}.seat{font-size:12px}.nm{padding:1px 6px}
  #hist{max-height:84px;font-size:12px}.boom{font-size:34px}.banner{font-size:28px}#top b.logo{font-size:15px}
- #hand{padding-top:30px}button{padding:8px 10px;font-size:14px;margin:2px}#top b.logo{display:none}#top .r{justify-content:center;width:100%}button.ic{padding:6px 7px;font-size:15px}#bet{padding:6px 2px;width:74px}#xu{padding:5px 8px}#me .av{display:none}
+ #hand{padding-top:30px}button{padding:8px 10px;font-size:14px;margin:2px}#top b.logo{display:none}#top .r{justify-content:center;width:100%;flex-wrap:nowrap}#top{padding:6px 4px}button.ic{padding:6px 7px;font-size:15px}#bet{padding:6px 2px;width:74px}#xu{padding:5px 8px}#me .av{display:none}#bNew .lbl{display:none}#bNew{padding:6px 9px}button.ic{padding:5px 4px;margin:2px 1px}button.ic svg.i{width:19px;height:19px}#xu{padding:4px 6px;font-size:12px;margin-right:2px;white-space:nowrap}#xu svg.i{margin-right:2px}#bet{width:56px;font-size:12px}#bNew{padding:5px 6px;margin-left:2px}#bInstall{display:none!important}#s2 .reveal .card{--cw:22px;--ch:32px}#s2 .reveal{max-width:250px}.banner{top:46%;background:#000a;padding:8px 18px;border-radius:16px;z-index:2}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+svg.i{width:1.25em;height:1.25em;vertical-align:-.28em;flex:none}button.ic svg.i{width:22px;height:22px}#xu svg.i{margin-right:4px}
+.logo img{vertical-align:-6px;border-radius:6px}
+.badge .ic svg.i{width:30px;height:30px}h3 svg.i{width:1.3em;height:1.3em}
+.inp{width:100%;padding:10px;border-radius:8px;border:0;margin:4px 0;font-size:16px}.small{font-size:13px;opacity:.85}.err{color:#ffb4b4}
+#s2 .reveal{max-width:300px}
 </style></head><body>
-<div id="top"><b class="logo">🃏 Tiến Lên Miền Nam</b><div class="r"><span id="xu"></span><select id="bet" onchange="setBet(this.value)"></select>
-<button class="alt ic" onclick="openDaily()" title="Quà">🎁<span id="d1"></span></button><button class="alt ic" onclick="openQuests()" title="Nhiệm vụ">📋<span id="d2"></span></button><button class="alt ic" onclick="openBadges()" title="Huy hiệu">🏅</button><button class="alt ic" onclick="showScore()" title="Bảng điểm">🏆</button><button class="alt ic" id="bMute" onclick="toggleMute()" title="Âm thanh">🔊</button><button onclick="newGame()">Ván mới</button></div></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="url(#gGold)" stroke="#8a6200" stroke-width="1.5"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#8a6200" stroke-width="1.2"/><path d="M12 8.5v7M10 10.2h3.2a1.3 1.3 0 010 2.6h-2.4a1.3 1.3 0 000 2.6H14" stroke="#8a6200" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="2" fill="#e53935"/><rect x="2" y="7" width="20" height="4" rx="1.5" fill="#ff5a52"/><rect x="10.5" y="7" width="3" height="14" fill="url(#gGold)"/><path d="M12 7C9 2 5 4 7.5 7M12 7c3-5 7-3 4.5 0" stroke="url(#gGold)" stroke-width="2" fill="none"/></symbol>
+<symbol id="i-quest" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="19" rx="2.5" fill="#f5f0e1" stroke="#7b5a2a" stroke-width="1.5"/><rect x="8" y="1.5" width="8" height="4" rx="1.5" fill="#7b5a2a"/><path d="M7.5 10l1.5 1.5 3-3M7.5 16l1.5 1.5 3-3" stroke="#2e9d57" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M14 10.5h3.5M14 16.5h3.5" stroke="#7b5a2a" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-medal" viewBox="0 0 24 24"><path d="M7 2h4l2 6H9zM17 2h-4l-2 6h4z" fill="#1e88e5"/><circle cx="12" cy="15" r="7" fill="url(#gGold)" stroke="#8a6200" stroke-width="1.3"/><path d="M12 11l1.2 2.5 2.7.3-2 1.8.6 2.7L12 17l-2.5 1.3.6-2.7-2-1.8 2.7-.3z" fill="#fff8d0"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 3h10v5a5 5 0 01-10 0z" fill="url(#gGold)" stroke="#8a6200" stroke-width="1.2"/><path d="M7 5H4a3 3 0 003 4M17 5h3a3 3 0 01-3 4" stroke="#d89b00" stroke-width="1.6" fill="none"/><rect x="10.5" y="12.5" width="3" height="4" fill="#d89b00"/><rect x="7" y="16.5" width="10" height="4" rx="1" fill="#7b5a2a"/></symbol>
+<symbol id="i-sound" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3z" fill="#455a64"/><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" stroke="#455a64" stroke-width="2" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-mute" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3z" fill="#455a64"/><path d="M16 9l6 6M22 9l-6 6" stroke="#e53935" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<symbol id="i-bulb" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z" fill="url(#gGold)" stroke="#8a6200" stroke-width="1.2"/><rect x="8.5" y="18" width="7" height="2" rx="1" fill="#607d8b"/><rect x="9.5" y="20.5" width="5" height="1.8" rx=".9" fill="#607d8b"/></symbol>
+<symbol id="i-sort" viewBox="0 0 24 24"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3" stroke="#455a64" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-new" viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-2.4-5.7M20 4v5h-5" stroke="#3a2500" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-install" viewBox="0 0 24 24"><path d="M12 3v11M7.5 9.5L12 14l4.5-4.5" stroke="#1565c0" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="3.5" y="16" width="17" height="5" rx="2" fill="#1565c0"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.5" fill="#5c6bc0"/><path d="M3.5 21a8.5 8.5 0 0117 0z" fill="#5c6bc0"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 19a5 5 0 01-.6-10A6.5 6.5 0 0119 10a4.5 4.5 0 01-1 9z" fill="#42a5f5"/><path d="M12 11v6M9.5 13.5L12 11l2.5 2.5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2" fill="#78909c"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#78909c" stroke-width="2.2" fill="none"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#2e9d57"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><rect x="5" y="9" width="14" height="12" rx="2" fill="none" stroke="#1565c0" stroke-width="2"/><path d="M12 14V2M8.5 5.5L12 2l3.5 3.5" stroke="#1565c0" stroke-width="2" fill="none" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<div id="top"><b class="logo"><img src="icons/icon-192.png" alt="" width="26" height="26"> Tiến Lên Miền Nam</b><div class="r"><span id="xu"></span><select id="bet" onchange="setBet(this.value)" aria-label="Mức cược"></select>
+<button class="alt ic" onclick="openDaily()" title="Quà điểm danh"><svg class="i"><use href="#i-gift"/></svg><span id="d1"></span></button><button class="alt ic" onclick="openQuests()" title="Nhiệm vụ"><svg class="i"><use href="#i-quest"/></svg><span id="d2"></span></button><button class="alt ic" onclick="openBadges()" title="Huy hiệu"><svg class="i"><use href="#i-medal"/></svg></button><button class="alt ic" onclick="showScore()" title="Bảng điểm"><svg class="i"><use href="#i-trophy"/></svg></button><button class="alt ic" onclick="openAccount()" title="Tài khoản &amp; sao lưu"><svg class="i"><use href="#i-user"/></svg><span id="d3"></span></button><button class="alt ic" id="bInstall" onclick="doInstall()" title="Cài đặt ứng dụng" style="display:none"><svg class="i"><use href="#i-install"/></svg></button><button class="alt ic" id="bMute" onclick="toggleMute()" title="Âm thanh"><svg class="i"><use href="#i-sound"/></svg></button><button id="bNew" onclick="newGame()" title="Ván mới"><svg class="i"><use href="#i-new"/></svg><span class="lbl"> Ván mới</span></button></div></div>
 <div id="table"><div class="seat" id="s2"></div><div class="seat" id="s1"></div>
 <div id="center"><div id="pileWrap"><div class="pile" id="pile"></div><div class="pile" id="prev"></div></div><div id="msg"></div><div id="hist"></div></div>
 <div class="seat" id="s3"></div></div>
-<div id="me"><div id="hand"></div><div id="meBar"><div class="av">😎<span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" onclick="hint()">💡 Gợi ý</button><button class="alt" onclick="sortHand()">⇅ Xếp</button></div></div></div>
+<div id="me"><div id="hand"></div><div id="meBar"><div class="av">😎<span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" onclick="hint()"><svg class="i"><use href="#i-bulb"/></svg> Gợi ý</button><button class="alt" onclick="sortHand()"><svg class="i"><use href="#i-sort"/></svg> Xếp</button></div></div></div>
 <div id="score" onclick="if(event.target===this)this.style.display='none'"><div id="scoreIn"></div></div>
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="toast"></div><div id="fx"></div>
+<script src="cloud-config.js"></script>
 <script>
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
@@ -218,36 +244,53 @@ function onGameEnd(P,place,instant){const s=P.stats;s.games++;questEvent(P,'game
  if(place===0){s.wins++;s.streak++;s.bestStreak=Math.max(s.bestStreak,s.streak);questEvent(P,'win');}else s.streak=0;
  if(place<=1)questEvent(P,'top2');if(instant&&place===0)s.instant++;
  P.xu=Math.max(0,P.xu+delta);return{delta,badges:checkBadges(P)};}
+// CLOUD_START
+// Gộp 2 bản lưu {profile, scores, updatedAt}: giữ tiến độ cao hơn, gộp huy hiệu, chỉ số lấy max.
+function saveProgress(s){if(!s||!s.profile)return -1;const p=s.profile;return (p.stats&&p.stats.games||0)*1000+Object.keys(p.badges||{}).length;}
+function mergeSaves(a,b){
+ if(!a||!a.profile)return b?JSON.parse(JSON.stringify(b)):null;if(!b||!b.profile)return JSON.parse(JSON.stringify(a));
+ const pa=saveProgress(a),pb=saveProgress(b);
+ const [base,other]=(pa>pb||(pa===pb&&(a.updatedAt||0)>=(b.updatedAt||0)))?[a,b]:[b,a];
+ const out=JSON.parse(JSON.stringify(base)),P=out.profile,O=other.profile;
+ P.badges=Object.assign({},O.badges||{},P.badges||{});
+ P.stats=P.stats||{};for(const k in (O.stats||{}))if(k!=='streak')P.stats[k]=Math.max(P.stats[k]||0,O.stats[k]||0);
+ if(O.login&&O.login.last&&(!P.login||!P.login.last||O.login.last>P.login.last))P.login=Object.assign({},O.login);
+ if(O.rescueDay&&(!P.rescueDay||O.rescueDay>P.rescueDay))P.rescueDay=O.rescueDay;
+ if(O.quests&&O.quests.day&&(!P.quests||!P.quests.day||O.quests.day>P.quests.day))P.quests=JSON.parse(JSON.stringify(O.quests));
+ else if(O.quests&&P.quests&&O.quests.day===P.quests.day)P.quests.list.forEach((q,i)=>{const o=O.quests.list.find(x=>x.id===q.id);if(o){q.prog=Math.max(q.prog,o.prog);q.claimed=q.claimed||o.claimed;}});
+ out.updatedAt=Math.max(a.updatedAt||0,b.updatedAt||0);return out;}
+// CLOUD_END
 
 let PR=JSON.parse(localStorage.getItem('tlmn_profile')||'null')||newProfile();
-function saveP(){localStorage.setItem('tlmn_profile',JSON.stringify(PR));updHud();}
+function saveP(){localStorage.setItem('tlmn_profile',JSON.stringify(PR));localStorage.setItem('tlmn_updated',String(Date.now()));updHud();}
 function fmt(n){return n.toLocaleString('vi-VN');}
 function toast(h){const d=document.createElement('div');d.className='toast';d.innerHTML=h;document.getElementById('toast').appendChild(d);setTimeout(()=>d.remove(),3200);}
 function badgeToasts(l){l.forEach(b=>toast(`${b.icon} <b>Huy hiệu mới: ${b.name}</b><br>+${fmt(b.xu)} xu`));}
-function updHud(){ensureDaily(PR,new Date());document.getElementById('xu').textContent='💰 '+fmt(PR.xu);
- const sel=document.getElementById('bet');sel.innerHTML=BETS.map(b=>`<option value="${b}" ${b==PR.bet?'selected':''}>🎲 ${fmt(b)}</option>`).join('');
+function updHud(){ensureDaily(PR,new Date());document.getElementById('xu').innerHTML=I('coin')+fmt(PR.xu);
+ const sel=document.getElementById('bet');sel.innerHTML=BETS.map(b=>`<option value="${b}" ${b==PR.bet?'selected':''}>${fmt(b)}</option>`).join('');
  document.getElementById('d1').innerHTML=loginState(PR,new Date()).canClaim?'<span class="dot"></span>':'';
  document.getElementById('d2').innerHTML=PR.quests.list.some(q=>!q.claimed&&q.prog>=questDef(q.id).goal)?'<span class="dot"></span>':'';}
 function setBet(v){if(G&&!G.over&&G.started)return msg('Đổi mức cược khi ván kết thúc');PR.bet=+v;saveP();}
 function closeModal(){document.getElementById('modal').style.display='none';}
 function modal(h){document.getElementById('modalIn').innerHTML=h+'<div style="text-align:right"><button class="alt" onclick="closeModal()">Đóng</button></div>';document.getElementById('modal').style.display='flex';}
 function openDaily(){const now=new Date(),ls=loginState(PR,now),cur=ls.canClaim?ls.day-1:ls.day;
- let h='<h3>🎁 Quà điểm danh</h3><div class="days">'+LOGIN_REWARDS.map((r,i)=>`<div class="day ${i<cur?'done':''} ${ls.canClaim&&i===ls.day-1?'today':''}">Ngày ${i+1}<br>💰${r}</div>`).join('')+'</div>';
- h+=ls.canClaim?`<p><button onclick="doClaimLogin()">Nhận ${fmt(ls.reward)} xu</button></p>`:'<p>✅ Hôm nay đã nhận. Quay lại ngày mai nhé!</p>';
- if(canRescue(PR,now))h+=`<div class="row">😢 Hết xu? <button onclick="doRescue()">Nhận cứu trợ ${RESCUE_XU} xu</button></div>`;else if(PR.xu<BETS[0])h+='<p>Đã nhận cứu trợ hôm nay.</p>';
+ let h='<h3>'+I('gift')+' Quà điểm danh</h3><div class="days">'+LOGIN_REWARDS.map((r,i)=>`<div class="day ${i<cur?'done':''} ${ls.canClaim&&i===ls.day-1?'today':''}">Ngày ${i+1}<br>${I("coin")}${r}</div>`).join('')+'</div>';
+ h+=ls.canClaim?`<p><button onclick="doClaimLogin()">Nhận ${fmt(ls.reward)} xu</button></p>`:'<p>'+I('check')+' Hôm nay đã nhận. Quay lại ngày mai nhé!</p>';
+ if(canRescue(PR,now))h+=`<div class="row">Hết xu? <button onclick="doRescue()">Nhận cứu trợ ${RESCUE_XU} xu</button></div>`;else if(PR.xu<BETS[0])h+='<p>Đã nhận cứu trợ hôm nay.</p>';
  modal(h);}
-function doClaimLogin(){const r=claimLogin(PR,new Date());if(r)toast(`🎁 Điểm danh +${fmt(r)} xu`);badgeToasts(checkBadges(PR));saveP();openDaily();}
-function doRescue(){const r=rescue(PR,new Date());if(r)toast(`🆘 Cứu trợ +${r} xu`);saveP();openDaily();}
+function doClaimLogin(){const r=claimLogin(PR,new Date());if(r)toast(`Điểm danh +${fmt(r)} xu`);badgeToasts(checkBadges(PR));saveP();openDaily();}
+function doRescue(){const r=rescue(PR,new Date());if(r)toast(`Cứu trợ +${r} xu`);saveP();openDaily();}
 function openQuests(){ensureDaily(PR,new Date());const m=new Date();m.setHours(24,0,0,0);const hh=Math.ceil((m-new Date())/36e5);
- modal('<h3>📋 Nhiệm vụ hôm nay</h3><p style="font-size:13px">Làm mới sau ~'+hh+' giờ (0h)</p>'+PR.quests.list.map((q,i)=>{const d=questDef(q.id),done=q.prog>=d.goal;
-  return `<div class="row"><div style="flex:1">${d.name} <small>(${q.prog}/${d.goal})</small><div class="bar"><i style="width:${100*q.prog/d.goal}%"></i></div></div>${q.claimed?'✅':`<button ${done?'':'disabled'} onclick="doClaimQuest(${i})">+${d.xu}</button>`}</div>`;}).join(''));}
-function doClaimQuest(i){const r=claimQuest(PR,i);if(r)toast(`📋 Hoàn thành nhiệm vụ +${r} xu`);badgeToasts(checkBadges(PR));saveP();openQuests();}
+ modal('<h3>'+I('quest')+' Nhiệm vụ hôm nay</h3><p style="font-size:13px">Làm mới sau ~'+hh+' giờ (0h)</p>'+PR.quests.list.map((q,i)=>{const d=questDef(q.id),done=q.prog>=d.goal;
+  return `<div class="row"><div style="flex:1">${d.name} <small>(${q.prog}/${d.goal})</small><div class="bar"><i style="width:${100*q.prog/d.goal}%"></i></div></div>${q.claimed?I('check'):`<button ${done?'':'disabled'} onclick="doClaimQuest(${i})">+${d.xu}</button>`}</div>`;}).join(''));}
+function doClaimQuest(i){const r=claimQuest(PR,i);if(r)toast(`Hoàn thành nhiệm vụ +${r} xu`);badgeToasts(checkBadges(PR));saveP();openQuests();}
 function openBadges(){const n=Object.keys(PR.badges).length;
- modal(`<h3>🏅 Huy hiệu (${n}/${BADGES.length})</h3><div class="grid">`+BADGES.map(b=>`<div class="badge ${PR.badges[b.id]?'':'lock'}"><div class="ic">${PR.badges[b.id]?b.icon:'🔒'}</div><b>${b.name}</b><br>${b.desc}<br>💰${fmt(b.xu)}</div>`).join('')+'</div>'+
+ modal(`<h3>${I('medal')} Huy hiệu (${n}/${BADGES.length})</h3><div class="grid">`+BADGES.map(b=>`<div class="badge ${PR.badges[b.id]?'':'lock'}"><div class="ic">${PR.badges[b.id]?b.icon:I('lock')}</div><b>${b.name}</b><br>${b.desc}<br>${I("coin")}${fmt(b.xu)}</div>`).join('')+'</div>'+
  `<p style="font-size:13px">Ván: ${PR.stats.games} · Thắng: ${PR.stats.wins} · Chuỗi tốt nhất: ${PR.stats.bestStreak} · Chặt heo: ${PR.stats.chops}</p>`);}
-function hookPlay(info,prev){const r=onPlay(PR,info,prev);if(r.bonus)toast(`🐷 Chặt heo! +${fmt(r.bonus)} xu`);badgeToasts(r.badges);saveP();}
-function hookEnd(place,instant){const r=onGameEnd(PR,place,instant);toast(`${r.delta>=0?'🎉':'💸'} ${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu`);badgeToasts(r.badges);saveP();
+function hookPlay(info,prev){const r=onPlay(PR,info,prev);if(r.bonus)toast(`Chặt heo! +${fmt(r.bonus)} xu`);badgeToasts(r.badges);saveP();}
+function hookEnd(place,instant){const r=onGameEnd(PR,place,instant);toast(`${r.delta>=0?'':''} ${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu`);badgeToasts(r.badges);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);}
+function I(n){return `<svg class="i"><use href="#i-${n}"/></svg>`;}
 const NAMES=['Bạn','Máy Trái','Máy Trên','Máy Phải'];
 const AVATARS=[['😎','#2b6cb0'],['🤖','#7b3fa0'],['🧔','#b5651d'],['👩','#c2185b']];
 const PTS=[3,1,-1,-3];
@@ -278,7 +321,7 @@ const SND={
 };
 function sfx(n){try{SND[n]&&SND[n]();}catch(e){}}
 function toggleMute(){muted=!muted;localStorage.setItem('tlmn_mute',muted?'1':'0');updMute();if(!muted)sfx('tap');}
-function updMute(){$('bMute').textContent=muted?'🔇':'🔊';}
+function updMute(){$('bMute').innerHTML=I(muted?'mute':'sound');}
 // ---------- Vẽ lá bài ----------
 const PIPS={0:[[50,30],[50,70]],1:[[50,22],[50,50],[50,78]],2:[[33,25],[67,25],[33,75],[67,75]],3:[[33,25],[67,25],[50,50],[33,75],[67,75]],
  4:[[33,25],[67,25],[33,50],[67,50],[33,75],[67,75]],5:[[33,25],[67,25],[50,37],[33,50],[67,50],[33,75],[67,75]],
@@ -370,9 +413,9 @@ function sortHand(){sortMode^=1;sfx('tap');render();}
 function endGame(instant){const f=G.finished,all=[...f,...[0,1,2,3].filter(p=>!f.includes(p))];
  if(instant){S.pts[f[0]]+=6;[0,1,2,3].forEach(p=>{if(p!==f[0])S.pts[p]-=2;});setTimeout(()=>winFX(f[0]===0?'🌟 BẠN TỚI TRẮNG!':`${NAMES[f[0]]} tới trắng`,f[0]===0),900);}
  else all.forEach((p,i)=>S.pts[p]+=PTS[i]);
- hookEnd(all.indexOf(0),instant&&f[0]===0);S.wins[all[0]]++;S.games++;S.lastWinner=all[0];save();G.rank=all;
+ hookEnd(all.indexOf(0),instant&&f[0]===0);if(typeof cloudAutoBackup==='function')setTimeout(cloudAutoBackup,50);S.wins[all[0]]++;S.games++;S.lastWinner=all[0];save();G.rank=all;
  setTimeout(()=>showScore(all),2200);}
-function showScore(rank){let h='<h3>🏆 Bảng điểm</h3>';
+function showScore(rank){let h='<h3>'+I('trophy')+' Bảng điểm</h3>';
  if(Array.isArray(rank))h+='<p>Thứ tự về: '+rank.map((p,i)=>`${['🥇','🥈','🥉','4️⃣'][i]} ${NAMES[p]}`).join(' · ')+'</p>';
  h+='<table><tr><th>Người</th><th>Điểm</th><th>Thắng</th></tr>'+[0,1,2,3].map(p=>`<tr><td>${AVATARS[p][0]} ${NAMES[p]}</td><td>${S.pts[p]}</td><td>${S.wins[p]}</td></tr>`).join('')+`</table><p>Số ván: ${S.games}</p><button onclick="event.stopPropagation();resetScore()" class="alt">Xóa điểm</button><button onclick="newGame()">Ván mới</button>`;
  $('scoreIn').innerHTML=h;$('score').style.display='flex';}
@@ -394,4 +437,62 @@ function render(){
 }
 updMute();updHud();newGame();const DEMO=typeof location!=='undefined'&&location.hash==='#demo';
 if(!DEMO&&loginState(PR,new Date()).canClaim)setTimeout(openDaily,500);
+// ---------- PWA: cài đặt + service worker ----------
+let deferredPrompt=null;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||'')||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isStandalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+if('serviceWorker' in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('bInstall').style.display='';});
+window.addEventListener('appinstalled',()=>{deferredPrompt=null;$('bInstall').style.display='none';toast(I('check')+' Đã cài đặt ứng dụng!');});
+if(isIOS&&!isStandalone&&$('bInstall'))$('bInstall').style.display='';
+async function doInstall(){
+ if(deferredPrompt){deferredPrompt.prompt();try{await deferredPrompt.userChoice;}catch(e){}deferredPrompt=null;$('bInstall').style.display='none';return;}
+ modal(`<h3>${I('install')} Cài đặt ứng dụng</h3>`+(isIOS?
+  `<p>Trên iPhone/iPad (Safari):</p><ol><li>Bấm nút <b>Chia sẻ</b> ${I('share')}</li><li>Chọn <b>“Thêm vào Màn hình chính”</b></li><li>Bấm <b>Thêm</b></li></ol><p class="small">Sau khi cài, game chơi được hoàn toàn không cần mạng.</p>`:
+  `<p>Mở menu trình duyệt (⋮) và chọn <b>“Cài đặt ứng dụng”</b> hoặc <b>“Thêm vào màn hình chính”</b>.</p>`));}
+// ---------- Tài khoản + sao lưu đám mây (Supabase) ----------
+const CFG=window.TLMN_CLOUD||{};const CLOUD_ON=!!(CFG.url&&CFG.anonKey);
+let SB=null,USER=null,lastSync=localStorage.getItem('tlmn_lastsync');
+function localSave(){return{profile:PR,scores:S,updatedAt:+(localStorage.getItem('tlmn_updated')||0)};}
+function applySave(d){if(!d||!d.profile)return;PR=d.profile;if(d.scores)S=d.scores;localStorage.setItem('tlmn_profile',JSON.stringify(PR));save();localStorage.setItem('tlmn_updated',String(d.updatedAt||Date.now()));updHud();if(G)render();}
+function loadSB(){return new Promise((res,rej)=>{if(!CLOUD_ON)return rej(new Error('Chưa cấu hình máy chủ'));if(SB)return res(SB);
+ const go=()=>{try{SB=window.supabase.createClient(CFG.url,CFG.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  SB.auth.onAuthStateChange((ev,ses)=>{const was=USER;USER=ses&&ses.user||null;updAcc();if(USER&&!was)cloudPull(true);});res(SB);}catch(e){rej(e);}};
+ if(window.supabase)return go();const sc=document.createElement('script');sc.src='vendor/supabase.js';sc.onload=go;sc.onerror=()=>rej(new Error('Không tải được thư viện'));document.head.appendChild(sc);});}
+function updAcc(){const d=$('d3');if(d)d.innerHTML=USER?'<span class="dot" style="background:#4caf50"></span>':'';}
+async function cloudPull(merge){if(!SB||!USER)return;
+ const{data,error}=await SB.from('saves').select('data,updated_at').eq('user_id',USER.id).maybeSingle();
+ if(error){toast('Lỗi tải bản lưu: '+error.message);return;}
+ if(data&&data.data){const m=merge?mergeSaves(localSave(),data.data):data.data;applySave(m);toast(I('cloud')+' Đã đồng bộ từ đám mây');}
+ await cloudPush(true);}
+async function cloudPush(quiet){if(!SB||!USER){if(!quiet)toast('Hãy đăng nhập để sao lưu');return false;}
+ const d=localSave();d.updatedAt=d.updatedAt||Date.now();
+ const{error}=await SB.from('saves').upsert({user_id:USER.id,data:d,updated_at:new Date().toISOString()});
+ if(error){if(!quiet)toast('Lỗi sao lưu: '+error.message);return false;}
+ lastSync=new Date().toLocaleString('vi-VN');localStorage.setItem('tlmn_lastsync',lastSync);if(!quiet)toast(I('cloud')+' Đã sao lưu lên đám mây');return true;}
+function cloudAutoBackup(){if(USER&&navigator.onLine!==false)cloudPush(true);}
+async function cloudRestore(){if(!SB||!USER)return;const{data,error}=await SB.from('saves').select('data').eq('user_id',USER.id).maybeSingle();
+ if(error)return toast('Lỗi: '+error.message);if(!data)return toast('Chưa có bản sao lưu');applySave(data.data);toast(I('check')+' Đã khôi phục bản sao lưu');openAccount();}
+const INSTALL_ROW=()=>isStandalone?'':`<div class="row">${I('install')} <span style="flex:1">Cài game như ứng dụng, chơi offline</span><button class="alt" onclick="doInstall()">Cài đặt</button></div>`;
+function openAccount(){
+ if(!CLOUD_ON){modal(`<h3>${I('user')} Tài khoản</h3><p>Bạn đang chơi chế độ <b>Khách</b> — mọi tiến độ lưu trên máy này.</p><p class="small">Sao lưu đám mây chưa được bật (chưa cấu hình máy chủ).</p>`+INSTALL_ROW());return;}
+ if(navigator.onLine===false){modal(`<h3>${I('user')} Tài khoản</h3><p>Bạn đang offline. Game vẫn chơi bình thường; sao lưu khi có mạng.</p>`);return;}
+ modal(`<h3>${I('user')} Tài khoản</h3><p class="small">Đang kết nối…</p>`);
+ loadSB().then(()=>SB.auth.getSession()).then(({data})=>{USER=data.session&&data.session.user||null;updAcc();renderAcc();}).catch(e=>modal(`<h3>Tài khoản</h3><p class="err">${e.message}</p>`));}
+function renderAcc(m){
+ if(USER)modal(`<h3>${I('user')} Tài khoản</h3><p>Đăng nhập: <b>${USER.email}</b></p><p class="small">Lần sao lưu gần nhất: ${lastSync||'chưa có'} · Tự động sao lưu sau mỗi ván.</p>
+  <button onclick="cloudPush()">${I('cloud')} Sao lưu</button><button class="alt" onclick="if(confirm('Thay tiến độ trên máy bằng bản sao lưu?'))cloudRestore()">Khôi phục</button><button class="alt" onclick="doLogout()">Đăng xuất</button>`+INSTALL_ROW());
+ else modal(`<h3>${I('user')} Đăng nhập / Đăng ký</h3><p class="small">Đăng nhập để sao lưu xu, huy hiệu, nhiệm vụ lên đám mây. Không bắt buộc — chơi khách vẫn đầy đủ.</p>
+  <input class="inp" id="aEmail" type="email" placeholder="Email" autocomplete="email"><input class="inp" id="aPass" type="password" placeholder="Mật khẩu (≥ 6 ký tự)" autocomplete="current-password">
+  <p class="err" id="aErr">${m||''}</p><button onclick="doAuth('in')">Đăng nhập</button><button class="alt" onclick="doAuth('up')">Đăng ký</button><button class="alt" onclick="doAuth('link')">Gửi link đăng nhập</button>`+INSTALL_ROW());}
+async function doAuth(k){const email=$('aEmail').value.trim(),password=$('aPass').value;const err=t=>{$('aErr').textContent=t;};
+ if(!/^\S+@\S+\.\S+$/.test(email))return err('Email không hợp lệ');
+ try{let r;
+  if(k==='link'){r=await SB.auth.signInWithOtp({email,options:{emailRedirectTo:location.href.split('#')[0]}});if(r.error)throw r.error;return err('Đã gửi link đăng nhập, hãy kiểm tra email.');}
+  if(password.length<6)return err('Mật khẩu tối thiểu 6 ký tự');
+  r=k==='up'?await SB.auth.signUp({email,password}):await SB.auth.signInWithPassword({email,password});if(r.error)throw r.error;
+  if(k==='up'&&!r.data.session)return err('Đã đăng ký! Hãy xác nhận email rồi đăng nhập.');
+  USER=r.data.user;localStorage.setItem('tlmn_hadlogin','1');updAcc();await cloudPull(true);renderAcc();}catch(e){err(e.message||String(e));}}
+async function doLogout(){if(SB)await SB.auth.signOut();USER=null;updAcc();renderAcc();}
+if(CLOUD_ON&&navigator.onLine!==false&&(localStorage.getItem('tlmn_hadlogin')||location.hash.includes('access_token')))loadSB().then(()=>SB.auth.getSession()).then(({data})=>{USER=data.session&&data.session.user||null;if(USER){localStorage.setItem('tlmn_hadlogin','1');updAcc();}}).catch(()=>{});
 </script></body></html>

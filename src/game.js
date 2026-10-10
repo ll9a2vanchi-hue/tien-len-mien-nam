@@ -1,3 +1,4 @@
+function I(n){return `<svg class="i"><use href="#i-${n}"/></svg>`;}
 const NAMES=['Bạn','Máy Trái','Máy Trên','Máy Phải'];
 const AVATARS=[['😎','#2b6cb0'],['🤖','#7b3fa0'],['🧔','#b5651d'],['👩','#c2185b']];
 const PTS=[3,1,-1,-3];
@@ -28,7 +29,7 @@ const SND={
 };
 function sfx(n){try{SND[n]&&SND[n]();}catch(e){}}
 function toggleMute(){muted=!muted;localStorage.setItem('tlmn_mute',muted?'1':'0');updMute();if(!muted)sfx('tap');}
-function updMute(){$('bMute').textContent=muted?'🔇':'🔊';}
+function updMute(){$('bMute').innerHTML=I(muted?'mute':'sound');}
 // ---------- Vẽ lá bài ----------
 const PIPS={0:[[50,30],[50,70]],1:[[50,22],[50,50],[50,78]],2:[[33,25],[67,25],[33,75],[67,75]],3:[[33,25],[67,25],[50,50],[33,75],[67,75]],
  4:[[33,25],[67,25],[33,50],[67,50],[33,75],[67,75]],5:[[33,25],[67,25],[50,37],[33,50],[67,50],[33,75],[67,75]],
@@ -120,9 +121,9 @@ function sortHand(){sortMode^=1;sfx('tap');render();}
 function endGame(instant){const f=G.finished,all=[...f,...[0,1,2,3].filter(p=>!f.includes(p))];
  if(instant){S.pts[f[0]]+=6;[0,1,2,3].forEach(p=>{if(p!==f[0])S.pts[p]-=2;});setTimeout(()=>winFX(f[0]===0?'🌟 BẠN TỚI TRẮNG!':`${NAMES[f[0]]} tới trắng`,f[0]===0),900);}
  else all.forEach((p,i)=>S.pts[p]+=PTS[i]);
- hookEnd(all.indexOf(0),instant&&f[0]===0);S.wins[all[0]]++;S.games++;S.lastWinner=all[0];save();G.rank=all;
+ hookEnd(all.indexOf(0),instant&&f[0]===0);if(typeof cloudAutoBackup==='function')setTimeout(cloudAutoBackup,50);S.wins[all[0]]++;S.games++;S.lastWinner=all[0];save();G.rank=all;
  setTimeout(()=>showScore(all),2200);}
-function showScore(rank){let h='<h3>🏆 Bảng điểm</h3>';
+function showScore(rank){let h='<h3>'+I('trophy')+' Bảng điểm</h3>';
  if(Array.isArray(rank))h+='<p>Thứ tự về: '+rank.map((p,i)=>`${['🥇','🥈','🥉','4️⃣'][i]} ${NAMES[p]}`).join(' · ')+'</p>';
  h+='<table><tr><th>Người</th><th>Điểm</th><th>Thắng</th></tr>'+[0,1,2,3].map(p=>`<tr><td>${AVATARS[p][0]} ${NAMES[p]}</td><td>${S.pts[p]}</td><td>${S.wins[p]}</td></tr>`).join('')+`</table><p>Số ván: ${S.games}</p><button onclick="event.stopPropagation();resetScore()" class="alt">Xóa điểm</button><button onclick="newGame()">Ván mới</button>`;
  $('scoreIn').innerHTML=h;$('score').style.display='flex';}

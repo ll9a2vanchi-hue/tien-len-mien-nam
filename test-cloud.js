@@ -1,0 +1,14 @@
+const {mergeSaves}=require('./cloud.js'),{newProfile}=require('./progress.js');let pass=0,fail=0;const t=(n,v)=>{v?pass++:(fail++,console.log('FAIL',n));};
+const mk=(games,xu,upd,extra)=>{const p=newProfile();p.stats.games=games;p.xu=xu;Object.assign(p,extra||{});return{profile:p,scores:{pts:[games,0,0,0]},updatedAt:upd};};
+t('null local',mergeSaves(null,mk(1,5,1)).profile.xu===5);t('null cloud',mergeSaves(mk(2,7,1),null).profile.xu===7);t('both null',mergeSaves(null,null)===null);
+let a=mk(10,3000,100),b=mk(4,9000,200);let m=mergeSaves(a,b);t('higher progress wins xu',m.profile.xu===3000&&m.scores.pts[0]===10);
+t('updatedAt max',m.updatedAt===200);t('symmetric',mergeSaves(b,a).profile.xu===3000);
+a=mk(5,100,100);b=mk(5,200,300);t('tie -> newer',mergeSaves(a,b).profile.xu===200);
+a=mk(5,1,1);a.profile.badges={first_win:1};a.profile.stats.chops=2;b=mk(3,1,2);b.profile.badges={quad:2};b.profile.stats.chops=7;
+m=mergeSaves(a,b);t('badges union',m.profile.badges.first_win&&m.profile.badges.quad);t('stats max',m.profile.stats.chops===7&&m.profile.stats.games===5);
+a=mk(5,1,1);a.profile.login={last:'2026-10-09',streak:3};b=mk(1,1,1);b.profile.login={last:'2026-10-10',streak:4};t('newer login',mergeSaves(a,b).profile.login.streak===4);
+a=mk(5,1,1);a.profile.quests={day:'2026-10-10',list:[{id:'play3',prog:1,claimed:false}]};b=mk(1,1,1);b.profile.quests={day:'2026-10-10',list:[{id:'play3',prog:3,claimed:true}]};
+m=mergeSaves(a,b);t('quest same day merged',m.profile.quests.list[0].prog===3&&m.profile.quests.list[0].claimed);
+b.profile.quests={day:'2026-10-11',list:[{id:'win1',prog:0,claimed:false}]};t('newer quest day',mergeSaves(a,b).profile.quests.day==='2026-10-11');
+t('no mutation',a.profile.quests.list[0].prog===1);
+console.log(`pass ${pass} fail ${fail}`);
