@@ -1,0 +1,11 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];
+const ctx=await b.newContext({viewport:{width:461,height:1024}});const p=await ctx.newPage();p.on('pageerror',e=>errs.push(e.message));
+await p.goto('http://localhost:8765/index.html');await p.waitForTimeout(900);await p.evaluate(()=>{closeModal();});await p.screenshot({path:'shots/v9-home-lb.png'});
+await p.evaluate(()=>openLeaderboard());await p.waitForTimeout(300);await p.screenshot({path:'shots/v9-lb-guest.png'});
+await p.evaluate(()=>{const names=['Hoàng Long','Mai Anh','Tuấn Kiệt','Bảo Ngọc','Quốc Huy','Thu Trang','Minh Khang'];
+ const rows=Array.from({length:12},(_,i)=>({user_id:'u'+i,name:names[i%7],avatar:{av:['🐯','👩','🧔','🦊','👨','👧','🐲'][i%7],bg:['#7a2','#a27','#27a'][i%3]},level:60-i*4,title:TITLES[Math.max(0,TITLES.length-1-i)].name,xp:200000-i*15000,xu:90000-i*6000,wins:400-i*30,week_wins:30-i*2,week_xp:9000-i*600,frame:['fr_gold','fr_jade','fr_silver'][i%3],name_style:null}));
+ USER={id:'me',email:'ban@x.vn'};window.loadSB=async()=>{};window.ensurePlayer=async()=>{};
+ const qb={select(){return this},order(){return this},limit(){return this},eq(){return this},gt(){return this},maybeSingle(){return Promise.resolve({data:{user_id:'me',name:'ban',avatar:{av:'😎',bg:'#333'},level:9,title:TITLES[2].name,xp:4000,xu:3000,wins:12,week_wins:3,week_xp:500}})},then(r){return Promise.resolve({data:rows,error:null,count:41}).then(r)}};
+ SB={from:()=>Object.create(qb)};openLeaderboard('xp');});
+await p.waitForTimeout(600);await p.screenshot({path:'shots/v9-lb.png'});console.log('errors',errs);await b.close();})();

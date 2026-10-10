@@ -193,3 +193,24 @@ function flushBadges(){if(_bShow||!BQ.length)return;if(!badgeIdle()){return;}con
  const tick=t=>{const k=RM?1:Math.min(1,(t-t0)/1100);sp.textContent=fmt(Math.round(b.xu*k));if(k<1)requestAnimationFrame(tick);};requestAnimationFrame(tick);
  const close=()=>{o.remove();_bShow=false;setTimeout(flushBadges,250);};o.addEventListener('click',close);}
 setInterval(flushBadges,1000);
+// ---- Bảng xếp hạng online
+function lbWeek(){const k=weekKey(new Date());if(!PR.wk||PR.wk.key!==k)PR.wk={key:k,wins:0,xp:0};return PR.wk;}
+const _he12=hookEnd;hookEnd=function(place,instant,n){const x0=PR.xp;_he12(place,instant,n);const w=lbWeek();w.xp+=Math.max(0,PR.xp-x0);if(place===0)w.wins++;saveP();};
+function lbStats(){const w=lbWeek();let ns=null;try{ns=equipped(PR,'name').id;}catch(e){}return{xp:PR.xp|0,xu:PR.xu|0,wins:PR.stats.wins|0,games:PR.stats.games|0,week_key:w.key,week_wins:w.wins|0,week_xp:w.xp|0,frame:equipped(PR,'frame').id,name_style:ns};}
+const _cp12=cloudPush;cloudPush=async function(q){const r=await _cp12(q);try{if(USER&&SB)await ensurePlayer();}catch(e){}return r;};
+const LB_TABS=[['xp','Cấp độ','xp'],['xu','Giàu nhất','xu'],['wins','Thắng nhiều','wins'],['week','Tuần này','week_wins']];let lbTab='xp';
+async function openLeaderboard(tab){if(tab)lbTab=tab;const tabs=`<div class="lbtabs">${LB_TABS.map(([k,n])=>`<button class="${k===lbTab?'':'alt'}" onclick="openLeaderboard('${k}')">${n}</button>`).join('')}</div>`;
+ if(typeof USER==='undefined'||!USER||navigator.onLine===false){modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}<p>${navigator.onLine===false?'Bạn đang ngoại tuyến. Kết nối mạng để xem bảng xếp hạng.':'Hãy <b>đăng nhập</b> để lên bảng xếp hạng cùng mọi người.'}</p>${navigator.onLine===false?'':`<button onclick="openAccount()">${I('user')} Đăng nhập / Đăng ký</button>`}`);return;}
+ modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}<p class="small">Đang tải…</p>`);
+ try{await loadSB();await ensurePlayer();const col=LB_TABS.find(t=>t[0]===lbTab)[2],wk=weekKey(new Date());
+  let q=SB.from('tlmn_players').select('user_id,name,avatar,level,title,xp,xu,wins,week_wins,week_xp,week_key,frame,name_style').order(col,{ascending:false}).order('xp',{ascending:false}).limit(50);if(lbTab==='week')q=q.eq('week_key',wk);
+  const {data,error}=await q;if(error)throw error;const me=data.find(r=>r.user_id===USER.id);let myRank=me?data.indexOf(me)+1:null,myRow=me;
+  if(!me){const {data:mr}=await SB.from('tlmn_players').select('user_id,name,avatar,level,title,xp,xu,wins,week_wins,week_key,frame,name_style').eq('user_id',USER.id).maybeSingle();myRow=mr;
+   if(mr){let c=SB.from('tlmn_players').select('user_id',{count:'exact',head:true}).gt(col,mr[col]||0);if(lbTab==='week')c=c.eq('week_key',wk);const {count}=await c;myRank=(count||0)+1;}}
+  const val=r=>lbTab==='xp'?`Cấp ${r.level} · ${fmt(r.xp)} XP`:lbTab==='xu'?`${I('coin')} ${fmt(r.xu)}`:lbTab==='wins'?`${fmt(r.wins)} thắng`:`${fmt(r.week_wins)} thắng · ${fmt(r.week_xp||0)} XP`;
+  const row=(r,i,mine)=>{const a=r.avatar||{};return `<div class="lbrow ${i<3?'pod p'+i:''} ${mine?'mine':''}"><span class="lbn">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><span class="av lbav ${r.frame?'fr-'+r.frame:''}" style="background:${esc(a.bg||'#345')}">${esc(a.av||'🙂')}</span><span class="lbname"><b class="${esc(r.name_style||'')}">${esc(r.name||'Người chơi')}</b><small>${titleHTML?titleHTML({name:esc(r.title||''),tier:((TITLES.find(t=>t.name===r.title)||{}).tier)||1}):esc(r.title||'')}</small></span><span class="lbv">${val(r)}</span></div>`;};
+  if(document.querySelector('#modalIn h3')?.textContent.indexOf('xếp hạng')<0)return;
+  modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}${lbTab==='week'?'<p class="small">Làm mới mỗi thứ Hai</p>':''}<div class="lblist">${data.length?data.map((r,i)=>row(r,i,r.user_id===USER.id)).join(''):'<p class="small">Chưa có ai trên bảng.</p>'}</div>
+   ${myRow?`<div class="lbme">${row(myRow,(myRank||0)-1,true).replace(/<span class="lbn">[^<]*<\/span>/,`<span class="lbn">#${myRank||'?'}</span>`)}</div>`:''}<p class="small">Số liệu do máy bạn gửi lên khi sao lưu, máy chủ giới hạn mức tăng để chống gian lận.</p>`);
+ }catch(e){modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}<p>Không tải được: ${esc(e.message||String(e))}</p>`);}}
+const _rh12=renderHome;renderHome=function(){_rh12();const g=document.querySelector('#home .tiles');if(g&&g.insertAdjacentHTML)g.insertAdjacentHTML('beforeend',`<button class="alt tile" onclick="openLeaderboard()"><span style="font-size:28px;line-height:30px">🏆</span><span>Xếp hạng</span></button>`);};

@@ -6,7 +6,7 @@ function needLogin(){if(!CLOUD_ON){modal(`<h3>${I('friends')} Chơi với bạn 
  if(navigator.onLine===false){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Bạn đang offline. Hãy kết nối mạng để chơi online.</p>`);return true;}
  if(!USER){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Cần <b>đăng nhập</b> để chơi online, kết bạn và trò chuyện.</p><button onclick="openAccount()">${I('user')} Đăng nhập / Đăng ký</button>`);return true;}return false;}
 async function ensurePlayer(){const m=meInfo();let {data}=await SB.from('tlmn_players').select('code').eq('user_id',USER.id).maybeSingle();
- const row={user_id:USER.id,name:m.name,avatar:{av:m.av,bg:m.bg,frame:m.frame},level:m.lv,title:m.title,updated_at:new Date().toISOString()};
+ const row={user_id:USER.id,name:m.name,avatar:{av:m.av,bg:m.bg,frame:m.frame},level:m.lv,title:m.title,updated_at:new Date().toISOString(),...(typeof lbStats==='function'?lbStats():{})};
  if(data){MYCODE=data.code;await SB.from('tlmn_players').update(row).eq('user_id',USER.id);return;}
  for(let i=0;i<5;i++){const code=roomCode();const r=await SB.from('tlmn_players').insert(Object.assign({code},row));if(!r.error){MYCODE=code;return;}}}
 function chan(topic){return SB.channel(topic,{config:{private:true,broadcast:{self:false},presence:{key:USER.id}}});}
