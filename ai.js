@@ -36,7 +36,7 @@ function aiMove(level,hand,cur,mustInclude,ctx,rng){rng=rng||Math.random;const o
  if(level<=0){let cs=combos(hand).filter(x=>canBeat(x.info,cur));if(mustInclude!=null)cs=cs.filter(x=>x.cards.includes(mustInclude));if(!cs.length)return null;
   const fin=cs.find(x=>x.cards.length===hand.length);if(fin)return fin.cards;if(cur&&rng()<0.3)return null;if(rng()<0.45)return cs[Math.floor(rng()*cs.length)].cards;return botMove(hand,cur,mustInclude,others);}
  if(level===1)return botMove(hand,cur,mustInclude,others);
- const k=aiSmart(2,hand,cur,mustInclude,ctx,rng);if(level>=3&&!(ctx&&ctx.noSearch)&&(hand.length<=6||Math.min(...((ctx&&ctx.others)||[13]))<=4))return aiSearch(hand,cur,mustInclude,ctx,rng,k);return k;}
+ const k=aiSmart(2,hand,cur,mustInclude,ctx,rng);if(level>=3&&!(ctx&&ctx.noSearch)&&(hand.length<=9||Math.min(...((ctx&&ctx.others)||[13]))<=6))return aiSearch(hand,cur,mustInclude,ctx,rng,k);return k;}
 function aiSmart(level,hand,cur,mustInclude,ctx,rng){const K=aiCtx(hand,ctx,level),t0=Date.now(),memo=new Map(),budget={n:level>=3?6000:2500};
  let cs=combos(hand).filter(x=>canBeat(x.info,cur));if(mustInclude!=null)cs=cs.filter(x=>x.cards.includes(mustInclude));if(!cs.length)return null;
  const fin=cs.find(x=>x.cards.length===hand.length);if(fin)return fin.cards;

@@ -98,3 +98,98 @@ openBadges=function(){const n=Object.keys(PR.badges).filter(k=>BADGES.find(b=>b.
   if(b.secret&&!u)return `<div class="badge lock secret"><div class="ic">❓</div><b>???</b><br><small>Huy hiệu bí mật</small></div>`;
   return `<div class="badge ${u?'':'lock'}" style="--tc:${T.col}"><div class="ic">${u?b.icon:I('lock')}</div><span class="tier">${b.secret?'Bí mật':T.name}</span><b>${b.name}</b><br>${b.desc}<br>${I('coin')}${fmt(b.xu)}</div>`;}).join('')+'</div>'+
  `<p style="font-size:13px">Ván: ${PR.stats.games} · Thắng: ${PR.stats.wins} · Chuỗi tốt nhất: ${PR.stats.bestStreak} · Chặt heo: ${PR.stats.chops} · Hạ Cao thủ: ${PR.stats.beatMaster||0}</p>`);};
+// ---- Hoạt cảnh chia bài
+let DEALING=false,_dealSkip=null;
+Object.assign(SND,{shuffle:()=>{for(let i=0;i<14;i++)noise(.035,.16,i*.035,2500+Math.random()*2500);},tick:()=>{noise(.025,.12,0,3500);tone(1800,.02,'triangle',.025);},
+ flip:()=>{noise(.06,.2,0,1500);noise(.06,.2,.08,2200);tone(600,.08,'triangle',.05,.05,900);}});
+function seatPt(p){const e=p===0?$('hand'):document.querySelector('#s'+p+' .av');const r=e&&e.getBoundingClientRect();return r&&r.width?{x:r.left+r.width/2,y:r.top+r.height/2}:{x:innerWidth/2,y:p===0?innerHeight-80:80};}
+function dealAnim(seats,done){const tb=($('table')||document.body).getBoundingClientRect(),cx=tb.left+tb.width/2,cy=tb.top+tb.height/2;
+ const ov=document.createElement('div');ov.id='dealFX';document.body.appendChild(ov);const hand=$('hand');if(hand)hand.classList.add('dealhide');
+ let ended=false,timers=[];const end=()=>{if(ended)return;ended=true;timers.forEach(clearTimeout);ov.remove();_dealSkip=null;
+  if(hand){hand.classList.remove('dealhide');hand.classList.add('dealflip');setTimeout(()=>hand.classList.remove('dealflip'),500);}sfx('flip');done();};
+ _dealSkip=end;ov.addEventListener('pointerdown',end);
+ const mk=(x,y)=>{const c=document.createElement('div');c.className='back dcard';c.style.left=x+'px';c.style.top=y+'px';ov.appendChild(c);return c;};
+ if(RM){mk(cx,cy);sfx('shuffle');timers.push(setTimeout(end,450));return;}
+ const deck=[];for(let i=0;i<6;i++){const c=mk(cx,cy);c.style.transform=`translate(-50%,-50%) translateY(${-i}px)`;deck.push(c);}
+ sfx('shuffle');deck.forEach((c,i)=>c.animate([{transform:c.style.transform},{transform:`translate(${i%2?-70:30}%,-50%) rotate(${i%2?-8:8}deg)`},{transform:c.style.transform}],{duration:260,iterations:2,delay:i*12}));
+ const per=Math.max(16,Math.round(1250/(13*seats.length)));let k=0;const P=Object.fromEntries(seats.map(p=>[p,seatPt(p)]));
+ timers.push(setTimeout(()=>{deck.forEach(c=>c.remove());for(let r=0;r<13;r++)for(const p of seats){const i=k++;timers.push(setTimeout(()=>{const c=mk(cx,cy),t=P[p];
+   c.animate([{transform:'translate(-50%,-50%) rotate(0)'},{transform:`translate(calc(-50% + ${t.x-cx}px),calc(-50% + ${t.y-cy}px)) rotate(${(i*47)%40-20}deg) scale(.8)`,opacity:.9}],{duration:230,easing:'ease-out',fill:'forwards'});
+   if(i%2===0)sfx('tick');setTimeout(()=>c.remove(),240);},i*per));}
+  timers.push(setTimeout(end,13*seats.length*per+280));},560));}
+const _st10=step;step=function(){if(DEALING)return;return _st10();};
+const _hpl=humanPlay;humanPlay=function(){if(DEALING)return;return _hpl();};
+const _hps=humanPass;humanPass=function(){if(DEALING)return;return _hps();};
+const _ng10=newGame;newGame=function(n){DEALING=true;try{_ng10(n);}catch(e){DEALING=false;throw e;}
+ if(!G||G.online||G.over||!G.started){DEALING=false;return;}const seats=G.seats||[0,1,2,3];
+ dealAnim(seats,()=>{DEALING=false;render();if(G&&!G.over){if(G.turn===0)sfx('turn');step();}});};
+// online: hoạt cảnh khi nhận ván mới (chỉ hình ảnh)
+let _lastDealKey=null;const _os10=onlineState;onlineState=function(st,fh){_os10(st,fh);try{if(st&&st.hands&&!st.over&&(!st.hist||!st.hist.length)){const k=JSON.stringify(st.hands.map(h=>h&&h.length))+(st.firstCard)+(st.deal||'')+(st.turn);
+  if(k!==_lastDealKey){_lastDealKey=k;if(!$('dealFX'))dealAnim(G&&G.seats||[0,1,2,3],()=>render());}}else if(st&&st.hist&&st.hist.length)_lastDealKey=null;}catch(e){}};
+// online: chủ bàn chọn độ khó máy lấp ghế
+function setTableAi(v){if(!ONL.host)return;if(ONL.st&&!ONL.st.over)return toast('Chỉ đổi giữa các ván');ONL.host.opt.ai=+v;ONL.host.push();toast('Độ khó máy: '+AI_NAMES[+v]);}
+const _rr10=renderRoom;renderRoom=function(){_rr10.apply(this,arguments);try{const sel=[...document.querySelectorAll('select')].find(s=>/setTableBet/.test(s.getAttribute('onchange')||''));
+ const lv=(ONL.room&&ONL.room.ai!=null)?ONL.room.ai:1;const row=sel?sel.closest('.row'):null;if(!row||document.getElementById('aiRow'))return;
+ row.insertAdjacentHTML('afterend',`<div class="row" id="aiRow"><span style="flex:1">Độ khó máy</span>${ONL.host?`<select onchange="setTableAi(this.value)">${AI_NAMES.map((n,i)=>`<option value="${i}" ${i===lv?'selected':''}>${n}</option>`).join('')}</select>`:`<b>${AI_NAMES[lv]}</b>`}</div>`);}catch(e){}};
+// ---- Máy nói chuyện / tính cách
+let CHAT_SET=localStorage.getItem('tlmn_chat')||'v';
+const LINES={
+ uncle:{idle:['Nhanh lên con ơi, chú đợi muốn mọc râu rồi!','Đánh lẹ đi, nồi cơm nhà chú sắp khét!','Thời chú đánh bài, nghĩ có ba giây à!','Ngủ gật rồi hả cháu?','Trời đất, suy nghĩ gì lâu dữ vậy?','Lẹ lẹ cái tay giùm chú cái!'],
+  chopped:['Trời ơi heo của tui!','Ác quá vậy trời!','Con heo chú nuôi cả năm đó!','Thôi xong, mất heo rồi!','Đánh vậy ai chơi lại!'],chop:['Ăn nè! Chú còn nghề lắm!','Gừng càng già càng cay nha!','Chặt cái cho biết mùi!','Heo này chú xin nha!'],
+  one:['Báo 1 nha, coi chừng đó!','Còn một lá thôi nghe!','Chú sắp về rồi đó!'],pass:['Thôi, bỏ.','Cho qua, cho qua.','Ván này chú nhường.','Đánh gì mà ghê vậy, bỏ!'],
+  win:['Hehe, gừng già vẫn cay!','Chú về nhất, ván nữa nào!','Thấy chưa, kinh nghiệm cả đó!'],lose:['Bài xấu quá, ván nữa!','Thua keo này ta bày keo khác!','Tại xào bài không kỹ!'],
+  instant:['Trời đất ơi, tới trắng luôn!','Hên dữ thần vậy!'],hit:['Ê ê, ném chú làm chi!','Trời, hư áo chú rồi!','Già rồi tha cho chú đi!'],gift:['Cảm ơn nha, cháu ngoan quá!','Ui, quý hóa quá!']},
+ girl:{idle:['Nhanh lên bạn ơi!','Ngủ gật rồi hả?','Ơ kìa, bạn đang nhắn tin cho ai đó?','Đánh lẹ đi, em đợi nãy giờ á!','Suy nghĩ lâu vậy, tính lừa em hả?','Bạn ơi tỉnh dậy đi nè~'],
+  chopped:['Huhu heo của em!','Ác ghê á, nhớ mặt nha!','Chặt heo con gái là không đẹp trai đâu!','Á á, sao lại chặt em!'],chop:['Ăn nè! Bất ngờ chưa?','Hihi, heo này của em nha!','Xin lỗi nha, em hông cố ý đâu~','Chặt cái cho vui!'],
+  one:['Báo 1 nha!','Em còn đúng một lá thôi á~','Cẩn thận nha, em sắp về!'],pass:['Thôi em bỏ.','Cho bạn đó!','Hông chơi lượt này.','Pass nha~'],
+  win:['Yeah! Em về nhất!','Hihi, ván nữa hông?','Dễ quá à~'],lose:['Ván nữa! Phải gỡ!','Hông chịu đâu, chơi lại!','Lần này em nhường thôi đó!'],
+  instant:['Wow, tới trắng luôn kìa!','Hên vậy trời!'],hit:['Ơ, ném em hả? Giận á!','Á, dơ đồ em rồi!','Nhớ đó nha!'],gift:['Ui, dễ thương quá!','Cảm ơn nha~ thương thương!']},
+ brag:{idle:['Nhanh lên bạn, tui đánh nhanh lắm!','Lâu vậy, sợ tui hả?','Ngủ gật rồi hả bạn?','Suy nghĩ chi, đằng nào cũng thua tui!','Đánh lẹ đi, tui còn đi khoe chiến tích!'],
+  chopped:['Trời ơi heo của tui!','Ăn may thôi, đừng vui sớm!','Chiêu này tui cố tình nhường đó!','Ê, chơi vậy ai chơi!'],chop:['Ăn nè! Đẳng cấp là đây!','Thấy trình chưa?','Chặt gọn như chơi!','Tui mà, có gì lạ!'],
+  one:['Báo 1 nha, chuẩn bị thua đi!','Một lá cuối, ai cản nổi!','Sắp về nhất rồi nha!'],pass:['Nhường đó, cho cơ hội.','Bỏ, để dành bài mạnh.','Lượt này cho mấy bạn chơi.'],
+  win:['Nhất rồi, còn ai nữa không?','Đẳng cấp khác biệt!','Ván nữa, tui chấp luôn!'],lose:['Ván nữa! Lần này tui chơi thật!','Tại tui cho nhường thôi!','Bài xấu chứ trình tui đâu có tệ!'],
+  instant:['Tới trắng hả? Hên thôi!','Ghê, nhưng chưa bằng tui!'],hit:['Ném tui hả? Gan đó!','Áo hiệu của tui đó!','Ganh tị với tui à?'],gift:['Biết điều đó!','Fan của tui hả?']},
+ master:{idle:['…','Không vội. Nhưng bài không chờ người.','Suy nghĩ lâu chưa chắc đã hay.','Ta đợi.','Gió đã nổi rồi đó.'],
+  chopped:['Hừm. Khá lắm.','Một con heo, đổi một bài học.','Ta nhớ nước này.'],chop:['Ăn.','Đúng lúc.','Bài có lúc lên lúc xuống.','Cẩn tắc vô áy náy.'],
+  one:['Báo 1.','Còn một.','Sắp kết thúc rồi.'],pass:['Qua.','…','Chưa phải lúc.'],
+  win:['Bình thường thôi.','Kiên nhẫn là chiến thắng.','Ván sau sẽ khó hơn.'],lose:['Thắng thua là chuyện thường.','Ván nữa.','Ta đã thấy sơ hở của mình.'],
+  instant:['Thiên ý.','Hiếm có.'],hit:['…Vô ích.','Ném đồ không thắng được bài.'],gift:['Đa tạ.','Lòng tốt đáng quý.']}};
+function persona(p){if(BOTAI[p]===3)return'master';const n=NAMES[p]||'',av=(AVATARS[p]||[])[0]||'';if(/^(Ông|Chú|Bác|Bà|Dì)/.test(n)||/👴|🧓|👵/.test(av))return'uncle';if(AV_EMO.f.includes(av)||AV_EMO.of.includes(av))return'girl';return'brag';}
+let _lastSay=0,_lastLine={};
+function botSay(p,ev,prob){if(CHAT_SET==='off'||!G||G.online||!p||!(G.seats||[0,1,2,3]).includes(p))return false;const many=CHAT_SET==='n';
+ const now=Date.now(),gap=many?1500:3200;if(now-_lastSay<gap)return false;if(Math.random()>(prob==null?1:prob)*(many?1.4:0.8))return false;
+ const pool=(LINES[persona(p)]||LINES.brag)[ev];if(!pool)return false;let l;do{l=pool[Math.floor(Math.random()*pool.length)];}while(pool.length>1&&l===_lastLine[p]);
+ _lastLine[p]=l;_lastSay=now;showEmote(p,l);const hb=(p===0?$('meInfo'):$('s'+p));const bb=hb&&hb.querySelector&&[...hb.querySelectorAll('.bubble')].pop();if(bb)bb.classList.add('say');sfx('pop');return true;}
+Object.assign(SND,{pop:()=>{tone(520,.06,'sine',.08,0,900);},knock:()=>{[0,.16,.32].forEach(d=>{tone(90,.12,'sine',.35,d,60);noise(.05,.3,d,400);});}});
+function botThrow(p,to,nice){if(CHAT_SET==='off'||!G||G.online)return;if(Math.random()>(CHAT_SET==='n'?.3:.15))return;const id=nice?(Math.random()<.5?'flower':'beer'):(Math.random()<.6?'egg':'tomato');
+ setTimeout(()=>{try{throwFX(p,to,id);}catch(e){}},700);}
+const _dp11=doPlay;doPlay=function(p,cards){const prev=G&&G.cur,prevBy=G&&G.curBy;const r=_dp11(p,cards);try{if(G&&!G.online){const info=detect(cards);
+  const chop=prev&&(prev.top>>2)===12&&info&&info.type!==prev.type;
+  if(chop){if(p)botSay(p,'chop',1);if(prevBy){setTimeout(()=>{_lastSay=0;botSay(prevBy,'chopped',1);botThrow(prevBy,p,false);},900);}}
+  else if(p&&G.hands[p].length===1)botSay(p,'one',.8);}}catch(e){}return r;};
+const _dps11=doPass;doPass=function(p){const r=_dps11(p);if(p)botSay(p,'pass',.18);return r;};
+const _eg11=endGame;endGame=function(instant){const r=_eg11(instant);try{if(G&&!G.online){const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(q=>!f.includes(q))];
+  const w=all[0],l=all[all.length-1];setTimeout(()=>{_lastSay=0;if(instant){botSay(seats.find(q=>q&&q!==w)||0,'instant',1);return;}if(w)botSay(w,'win',1);
+   setTimeout(()=>{_lastSay=0;if(l&&l!==w)botSay(l,'lose',1);if(w===0&&l)botThrow(l,0,Math.random()<.5);},1400);},600);}}catch(e){}return r;};
+const _tf11=throwFX;throwFX=function(from,to,id){const r=_tf11(from,to,id);try{if(to&&from!==to){const t=THROWS.find(x=>x.id===id);setTimeout(()=>{_lastSay=0;botSay(to,t&&t.nice?'gift':'hit',from===0?.9:.6);},900);}}catch(e){}return r;};
+// giục khi người chơi lâu
+let _idleT0=0,_idleTurn=null,_idleStage=0;
+setInterval(()=>{if(!G||G.online||G.over||DEALING||document.body.classList.contains('athome')){_idleTurn=null;return;}const key=G.turn===0?(G.hist.length+':'+G.hands[0].length):null;
+ if(key!==_idleTurn){_idleTurn=key;_idleT0=Date.now();_idleStage=0;return;}if(key==null||CHAT_SET==='off')return;const dt=Date.now()-_idleT0;
+ if(dt>8000&&_idleStage===0){_idleStage=1;const bs=(G.seats||[1,2,3]).filter(q=>q);_lastSay=0;botSay(bs[Math.floor(Math.random()*bs.length)],'idle',1);}
+ else if(dt>15000&&_idleStage===1){_idleStage=2;sfx('knock');const bs=(G.seats||[1,2,3]).filter(q=>q);_lastSay=0;botSay(bs[Math.floor(Math.random()*bs.length)],'idle',1);}},1000);
+const _os11=openSettings;openSettings=function(){_os11();const m=$('modalIn');const first=m&&m.querySelector&&m.querySelector('.row');if(!first)return;
+ first.insertAdjacentHTML('beforebegin',`<div class="row"><span style="flex:1">Máy nói chuyện</span><select onchange="CHAT_SET=this.value;localStorage.setItem('tlmn_chat',CHAT_SET)">${[['n','Nhiều'],['v','Vừa'],['off','Tắt']].map(([v,t])=>`<option value="${v}" ${CHAT_SET===v?'selected':''}>${t}</option>`).join('')}</select></div>`);};
+
+// ---- Ăn mừng huy hiệu toàn màn hình
+const BQ=[];let _bShow=false;
+const _bt12=badgeToasts;badgeToasts=function(list){if(!list||!list.length)return;BQ.push(...list);flushBadges();};
+function badgeIdle(){return document.body.classList.contains('athome')||!G||G.over||(G.turn===0&&!G.cur&&!DEALING&&false);}
+function flushBadges(){if(_bShow||!BQ.length)return;if(!badgeIdle()){return;}const b=BQ.shift();_bShow=true;
+ const T=b.secret?{name:'Bí mật',col:'#b388ff'}:BADGE_TIER[b.tier||1];const o=document.createElement('div');o.id='badgeFX';o.className=RM?'rm':'';o.style.setProperty('--tc',T.col);
+ const conf=RM?'':Array.from({length:40},(_,i)=>`<i style="left:${(i*37)%100}%;background:${['#ffd84d','#ff6b6b','#4dd0e1','#b388ff','#81c784',T.col][i%6]};animation-delay:${(i%10)*.12}s;animation-duration:${1.8+(i%5)*.3}s"></i>`).join('');
+ o.innerHTML=`<div class="rays"></div><div class="conf">${conf}</div><div class="bbox"><div class="btier">Huy hiệu ${T.name}</div><div class="bic">${b.icon}</div><h2>${b.name}</h2><p>${b.desc}</p><div class="bxu">${I('coin')} +<span>0</span> xu</div><button>Tuyệt vời!</button></div>`;
+ document.body.appendChild(o);sfx('fanfare');const sp=o.querySelector('.bxu span');const t0=performance.now();
+ const tick=t=>{const k=RM?1:Math.min(1,(t-t0)/1100);sp.textContent=fmt(Math.round(b.xu*k));if(k<1)requestAnimationFrame(tick);};requestAnimationFrame(tick);
+ const close=()=>{o.remove();_bShow=false;setTimeout(flushBadges,250);};o.addEventListener('click',close);}
+setInterval(flushBadges,1000);
