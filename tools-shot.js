@@ -4,14 +4,19 @@ const {chromium}=require('playwright-core');
 const url='http://localhost:8765/index.html';const errs=[];
 for(const [name,w,h] of [['desktop',1280,800],['mobile',390,844]]){
  const ctx=await b.newContext({viewport:{width:w,height:h}});const p=await ctx.newPage();p.on('pageerror',e=>errs.push(name+': '+e.message));
- await p.goto(url+'#demo');
+ await p.goto(url);await p.waitForTimeout(1200);await p.screenshot({path:`shots/${name}-home-daily.png`});await p.evaluate(()=>closeModal());await p.waitForTimeout(300);await p.screenshot({path:`shots/${name}-home.png`});
+ await p.evaluate(()=>{PR.xu=5000;openShop('back');});await p.waitForTimeout(400);await p.screenshot({path:`shots/${name}-shop.png`});
+ await p.evaluate(()=>{doBuy.length;buyItem(PR,'av_fox',1);buyItem(PR,'fr_jade',1);buyItem(PR,'felt_royal',1);buyItem(PR,'back_onyx',1);equipItem(PR,'av_fox');equipItem(PR,'fr_jade');equipItem(PR,'felt_royal');equipItem(PR,'back_onyx');applyCosmetics();saveP();openAvatar();});await p.waitForTimeout(400);await p.screenshot({path:`shots/${name}-avatar.png`});
+ await p.evaluate(()=>{closeModal();openSettings();});await p.waitForTimeout(400);await p.screenshot({path:`shots/${name}-settings.png`});await p.evaluate(()=>closeModal());
+ await p.goto(url+'?d=1#demo');await p.waitForTimeout(300);
  for(let i=0;i<40;i++){await p.waitForTimeout(500);const st=await p.evaluate(()=>({t:G.turn,h:G.hist.length,o:G.over}));
   if(st.o){await p.evaluate(()=>newGame());continue;}if(st.t===0){if(st.h>=3)break;await p.evaluate(()=>{hint();humanPlay();});}}
  await p.evaluate(()=>hint());await p.waitForTimeout(300);await p.screenshot({path:`shots/${name}-game.png`});
  await p.evaluate(()=>levelUpFX({xp:100,ups:[5],xu:250,newTitles:[TITLES[1]]}));await p.waitForTimeout(2300);await p.screenshot({path:`shots/${name}-levelup.png`});await p.waitForTimeout(2000);
  await p.evaluate(()=>{PR.xp=3000;renderMe();openTitles();});await p.waitForTimeout(400);await p.screenshot({path:`shots/${name}-titles.png`});await p.evaluate(()=>closeModal());
  await p.evaluate(()=>chopFX('CHẶT HEO!'));await p.waitForTimeout(250);await p.screenshot({path:`shots/${name}-chop.png`});await p.waitForTimeout(1200);
- await p.evaluate(()=>{G.over=true;render();winFX('🎉 BẠN VỀ NHẤT!',true);});await p.waitForTimeout(700);await p.screenshot({path:`shots/${name}-win-reveal.png`});
+ await p.evaluate(()=>{G.over=true;render();winFX('🎉 BẠN VỀ NHẤT!',true);});await p.waitForTimeout(700);await p.screenshot({path:`shots/${name}-win-reveal.png`});console.log(name,'end buttons bottom',await p.evaluate(()=>Math.round(document.getElementById('bPlay').getBoundingClientRect().bottom)),'vh',h);
+ await p.evaluate(()=>{toggleEmotes();sendEmote('Chặt nè!');showEmote(2,'😂');});await p.waitForTimeout(400);await p.screenshot({path:`shots/${name}-emote.png`});await p.evaluate(()=>toggleEmotes());
  await p.evaluate(()=>openBadges());await p.waitForTimeout(400);await p.screenshot({path:`shots/${name}-badges.png`});
  await p.evaluate(()=>doInstall());await p.waitForTimeout(400);await p.screenshot({path:`shots/${name}-install.png`});
  await p.evaluate(()=>openAccount());await p.waitForTimeout(1500);await p.screenshot({path:`shots/${name}-account.png`});

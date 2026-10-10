@@ -7,6 +7,7 @@ function mergeSaves(a,b){
  const [base,other]=(pa>pb||(pa===pb&&(a.updatedAt||0)>=(b.updatedAt||0)))?[a,b]:[b,a];
  const out=JSON.parse(JSON.stringify(base)),P=out.profile,O=other.profile;
  P.badges=Object.assign({},O.badges||{},P.badges||{});
+ P.inv=Object.assign({},O.inv||{},P.inv||{});if(!P.equip&&O.equip)P.equip=Object.assign({},O.equip);if(!P.avBg&&O.avBg)P.avBg=O.avBg;
  P.stats=P.stats||{};for(const k in (O.stats||{}))if(k!=='streak')P.stats[k]=Math.max(P.stats[k]||0,O.stats[k]||0);
  if(O.login&&O.login.last&&(!P.login||!P.login.last||O.login.last>P.login.last))P.login=Object.assign({},O.login);
  if(O.rescueDay&&(!P.rescueDay||O.rescueDay>P.rescueDay))P.rescueDay=O.rescueDay;

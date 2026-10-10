@@ -1,0 +1,15 @@
+const S=require('./shop.js'),X=require('./progress.js'),{mergeSaves}=require('./cloud.js');let pass=0,fail=0;const t=(n,v)=>{v?pass++:(fail++,console.log('FAIL',n));};
+let P=S.ensureInv(X.newProfile());t('defaults equipped',P.equip.back==='back_classic'&&S.equipped(P,'avatar').emo==='😎');
+t('free owned',S.owns(P,'av_smile')&&S.owns(P,'em_basic'));t('paid not owned',!S.owns(P,'back_navy'));
+t('equip unowned fails',!S.equipItem(P,'back_navy')&&P.equip.back==='back_classic');
+let r=S.buyItem(P,'back_navy',1);t('buy ok',r.ok&&P.xu===700&&S.owns(P,'back_navy'));t('buy twice',!S.buyItem(P,'back_navy',1).ok&&P.xu===700);
+t('equip owned',S.equipItem(P,'back_navy')&&S.equipped(P,'back').id==='back_navy');
+P.xu=100;r=S.buyItem(P,'felt_royal',1);t('not enough xu',!r.ok&&r.reason==='Không đủ xu'&&P.xu===100);
+P.xu=9999;r=S.buyItem(P,'av_dragon',5);t('level gate',!r.ok&&r.reason==='Cần cấp 10'&&P.xu===9999);r=S.buyItem(P,'av_dragon',10);t('level ok',r.ok&&P.xu===8499);
+t('unknown item',!S.buyItem(P,'zzz',1).ok&&!S.equipItem(P,'zzz'));t('cannot equip emote',!S.equipItem(P,'em_basic'));
+t('emotes basic',S.myEmotes(S.ensureInv(X.newProfile())).length===6);S.buyItem(P,'em_talk',20);t('emotes after buy',S.myEmotes(P).includes('Chặt nè!'));
+P.equip.frame='fr_diamond';t('equipped falls back if not owned',S.equipped(P,'frame').id==='fr_gold');
+t('old profile migrate',(()=>{const q=X.newProfile();delete q.inv;S.ensureInv(q);return q.inv&&q.equip.felt==='felt_green';})());
+const a=S.ensureInv(X.newProfile());a.xp=500;a.inv={back_navy:1};a.equip.back='back_navy';const b=S.ensureInv(X.newProfile());b.xp=10;b.inv={felt_royal:2};
+const m=mergeSaves({profile:a,updatedAt:1},{profile:b,updatedAt:2});t('merge inv union',m.profile.inv.back_navy&&m.profile.inv.felt_royal);t('merge equip from higher xp',m.profile.equip.back==='back_navy');
+console.log(`pass ${pass} fail ${fail}`);

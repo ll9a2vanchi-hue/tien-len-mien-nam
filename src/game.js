@@ -7,11 +7,11 @@ const AV_COL=['#7b3fa0','#b5651d','#c2185b','#00897b','#5d4037','#3949ab','#ef6c
 let NAMES=['Bạn','Lan','Tuấn','Mai'],AVATARS=[['😎','#2b6cb0'],['👩','#7b3fa0'],['👨','#b5651d'],['👧','#c2185b']],BOTLV=[0,5,12,20];
 const pick=a=>a[Math.random()*a.length|0];
 function rollBots(){const pool=BOT_POOL.slice().sort(()=>Math.random()-.5).slice(0,3),cols=AV_COL.slice().sort(()=>Math.random()-.5);
- NAMES=['Bạn',...pool.map(x=>x[0])];AVATARS=[['😎','#2b6cb0'],...pool.map((x,i)=>[pick(AV_EMO[x[1]]),cols[i]])];
+ NAMES=['Bạn',...pool.map(x=>x[0])];AVATARS=[[myAv(),PR.avBg],...pool.map((x,i)=>[pick(AV_EMO[x[1]]),cols[i]])];
  const my=levelInfo(PR.xp).level;BOTLV=[0,...[0,1,2].map(()=>Math.max(1,Math.min(60,Math.round(my+(Math.random()*16-6)))))];}
 const PTS=[3,1,-1,-3];
 const RM=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-let G,sel=new Set(),sortMode=0;
+let G=null,sel=new Set(),sortMode=0;
 let S=JSON.parse(localStorage.getItem('tlmn_scores')||'null')||{pts:[0,0,0,0],wins:[0,0,0,0],games:0,lastWinner:null};
 function save(){localStorage.setItem('tlmn_scores',JSON.stringify(S));}
 const $=id=>document.getElementById(id);
@@ -152,8 +152,8 @@ function render(){
  $('me').className=G.turn===0&&!G.over?'turn':'';
  $('bPlay').disabled=G.over||G.turn!==0;$('bPass').disabled=G.over||G.turn!==0||!G.cur;
 }
-updMute();updHud();newGame();const DEMO=typeof location!=='undefined'&&location.hash==='#demo';
-if(!DEMO&&loginState(PR,new Date()).canClaim)setTimeout(openDaily,500);
+const DEMO=typeof location!=='undefined'&&location.hash==='#demo';
+function boot(){updMute();updHud();if(DEMO){document.body.classList.remove('athome');newGame();}else{showHome();if(loginState(PR,new Date()).canClaim)setTimeout(openDaily,600);}}
 
 function renderMe(){const e=$('meInfo');if(!e)return;const L=levelInfo(PR.xp),t=currentTitle(PR);const a=document.querySelector('#meBar .av');if(a&&a.style)a.style.setProperty&&a.style.setProperty('--lp',Math.round(100*L.cur/L.need));
  e.innerHTML=`<span class="lvb big">${L.level}</span><div class="mi"><div class="mt">${t.name} <small>▾</small></div><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><div class="xpt">${L.cur}/${L.need} XP</div></div>`;}

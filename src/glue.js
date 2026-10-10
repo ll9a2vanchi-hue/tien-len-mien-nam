@@ -1,6 +1,6 @@
 
 let PR=JSON.parse(localStorage.getItem('tlmn_profile')||'null')||newProfile();
-function saveP(){localStorage.setItem('tlmn_profile',JSON.stringify(PR));localStorage.setItem('tlmn_updated',String(Date.now()));updHud();}
+function saveP(){if(typeof renderHome==='function'&&document.body&&document.body.classList&&document.body.classList.contains('athome'))setTimeout(renderHome,0);localStorage.setItem('tlmn_profile',JSON.stringify(PR));localStorage.setItem('tlmn_updated',String(Date.now()));updHud();}
 function fmt(n){return n.toLocaleString('vi-VN');}
 function toast(h){const d=document.createElement('div');d.className='toast';d.innerHTML=h;document.getElementById('toast').appendChild(d);setTimeout(()=>d.remove(),3200);}
 function badgeToasts(l){l.forEach(b=>toast(`${b.icon} <b>Huy hiệu mới: ${b.name}</b><br>+${fmt(b.xu)} xu`));}
