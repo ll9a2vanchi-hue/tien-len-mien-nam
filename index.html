@@ -461,17 +461,17 @@ function loadSB(){return new Promise((res,rej)=>{if(!CLOUD_ON)return rej(new Err
  if(window.supabase)return go();const sc=document.createElement('script');sc.src='vendor/supabase.js';sc.onload=go;sc.onerror=()=>rej(new Error('Không tải được thư viện'));document.head.appendChild(sc);});}
 function updAcc(){const d=$('d3');if(d)d.innerHTML=USER?'<span class="dot" style="background:#4caf50"></span>':'';}
 async function cloudPull(merge){if(!SB||!USER)return;
- const{data,error}=await SB.from('saves').select('data,updated_at').eq('user_id',USER.id).maybeSingle();
+ const{data,error}=await SB.from('tlmn_saves').select('data,updated_at').eq('user_id',USER.id).maybeSingle();
  if(error){toast('Lỗi tải bản lưu: '+error.message);return;}
  if(data&&data.data){const m=merge?mergeSaves(localSave(),data.data):data.data;applySave(m);toast(I('cloud')+' Đã đồng bộ từ đám mây');}
  await cloudPush(true);}
 async function cloudPush(quiet){if(!SB||!USER){if(!quiet)toast('Hãy đăng nhập để sao lưu');return false;}
  const d=localSave();d.updatedAt=d.updatedAt||Date.now();
- const{error}=await SB.from('saves').upsert({user_id:USER.id,data:d,updated_at:new Date().toISOString()});
+ const{error}=await SB.from('tlmn_saves').upsert({user_id:USER.id,data:d,updated_at:new Date().toISOString()});
  if(error){if(!quiet)toast('Lỗi sao lưu: '+error.message);return false;}
  lastSync=new Date().toLocaleString('vi-VN');localStorage.setItem('tlmn_lastsync',lastSync);if(!quiet)toast(I('cloud')+' Đã sao lưu lên đám mây');return true;}
 function cloudAutoBackup(){if(USER&&navigator.onLine!==false)cloudPush(true);}
-async function cloudRestore(){if(!SB||!USER)return;const{data,error}=await SB.from('saves').select('data').eq('user_id',USER.id).maybeSingle();
+async function cloudRestore(){if(!SB||!USER)return;const{data,error}=await SB.from('tlmn_saves').select('data').eq('user_id',USER.id).maybeSingle();
  if(error)return toast('Lỗi: '+error.message);if(!data)return toast('Chưa có bản sao lưu');applySave(data.data);toast(I('check')+' Đã khôi phục bản sao lưu');openAccount();}
 const INSTALL_ROW=()=>isStandalone?'':`<div class="row">${I('install')} <span style="flex:1">Cài game như ứng dụng, chơi offline</span><button class="alt" onclick="doInstall()">Cài đặt</button></div>`;
 function openAccount(){

@@ -18,6 +18,6 @@ Kiểm thử: `node test.js`, `node test-progress.js`, `node sim.js`.
 `manifest.webmanifest` + `sw.js` (cache toàn bộ, chơi offline). Trên Android/Chrome bấm nút Cài đặt; iPhone: Chia sẻ → "Thêm vào Màn hình chính".
 
 ## Sao lưu đám mây (tùy chọn, Supabase)
-1. Tạo project Supabase, chạy `supabase/schema.sql`.
+1. Đang dùng chung project Supabase "todo-game" (bảng riêng `public.tlmn_saves`, xem `supabase/schema.sql`).
 2. Điền URL + publishable/anon key vào `cloud-config.js` (KHÔNG dùng service_role).
 3. Chạy `./build.sh` rồi deploy. Không cấu hình thì game chạy chế độ khách offline.
