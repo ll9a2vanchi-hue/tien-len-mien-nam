@@ -51,7 +51,7 @@ async function enterRoom(code,isHost,bots){if(ONL.active)await leaveRoom(true);a
  const ch=chan('tlmn:room:'+code),tr=mkTr(ch);ONL.ch=ch;ONL.tr=tr;
  ONL.client=new OnlineClient(tr,ONL.me);ONL.client.onState=s=>onlineState(s);ONL.client.onRoom=r=>{ONL.room=r;renderRoom();};ONL.client.onReject=e=>{sfx('bad');msg(e);};ONL.client.onFull=()=>{toast('Phòng đã đủ 4 người');leaveRoom(true);};
  tr.on('chat',m=>addChat(m));tr.on('emote',m=>{const ls=localSeatOf(m.uid);if(ls>=0)showEmote(ls,String(m.e).slice(0,24));});
- tr.on('bye',m=>onPresenceLeave(m.uid));tr.on('throw',m=>{if(!m||!ONL.st)return;const f=localSeatOf(m.from),me=ONL.st.seats.findIndex(s=>s&&s.uid===USER.id);let to=localSeatOf(m.to);if(to<0&&/^seat\d$/.test(m.to||''))to=(+m.to.slice(4)-me+4)%4;if(f>=0&&to>=0)throwFX(f,to,m.id);});
+ tr.on('bye',m=>onPresenceLeave(m.uid));tr.on('throw',m=>{if(!m||!ONL.st)return;const f=localSeatOf(m.from),me=ONL.st.seats.findIndex(s=>s&&s.uid===USER.id);let to=localSeatOf(m.to);if(to<0&&/^seat\d$/.test(m.to||''))to=(+m.to.slice(4)-me+4)%4;if(f>=0&&to>=0){throwFX(f,to,m.id);const t=THROWS.find(x=>x.id===m.id);if(t)toast(`${t.emo} ${esc(NAMES[f]||'')} ${throwVerb(t)} ${to===0?'bạn':esc(NAMES[to]||'')}`);}});
  if(isHost){ONL.host=new OnlineHost(tr,ONL.me,{fillBots:bots});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};}
  ch.on('presence',{event:'sync'},()=>{const s=ch.presenceState();ONL.presence=Object.keys(s);});
  ch.on('presence',{event:'leave'},({key})=>onPresenceLeave(key));

@@ -297,6 +297,8 @@ html,body{overflow-x:hidden}
 .av.fr-fr_fire{box-shadow:0 0 0 3px #2a0700,0 0 0 5px #ff5722,0 0 0 7px #ffcc80,0 0 22px #ff5722cc,0 8px 18px #000c;animation:dia 1.6s linear infinite}
 .av.fr-fr_dragon{box-shadow:0 0 0 3px #2e2408,0 0 0 6px #d4af37,0 0 0 8px #fff3b0,0 0 26px #ffd84dcc,0 8px 18px #000c;animation:dia 2s linear infinite}
 .pv.dk{width:46px;height:64px;border-radius:6px;background:#fff;color:#c00;font-weight:800;display:grid;place-items:center;font-size:18px}
+.splat.rm{font-size:64px;filter:drop-shadow(0 0 10px #fff8)}.proj{will-change:transform}
+#updBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 8px);z-index:60;display:none;gap:8px;align-items:center;padding:8px 12px;border-radius:14px;background:#1b1209f2;border:1px solid #e9c45a;box-shadow:0 8px 24px #000c;font-weight:700}#updBar.on{display:flex}#updBar button{margin:0}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -334,6 +336,6 @@ html,body{overflow-x:hidden}
 <div class="seat" id="s3"></div></div>
 <div id="me"><div id="meInfo" onclick="openTitles()" title="Cấp độ &amp; danh hiệu"></div><div id="meBar"><div class="av"> <span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" id="bHint" onclick="hint()" title="Gợi ý"><svg class="i"><use href="#i-bulb"/></svg><span class="tx"> Gợi ý</span></button><button class="alt ic" id="bChat" onclick="toggleChat()" title="Trò chuyện" style="display:none"><svg class="i"><use href="#i-chat"/></svg></button><button class="alt ic" onclick="toggleEmotes()" title="Biểu cảm"><svg class="i"><use href="#i-smile"/></svg></button><button class="alt" id="bSort" onclick="sortHand()" title="Xếp bài"><svg class="i"><use href="#i-sort"/></svg><span class="tx"> Xếp</span></button></div></div><div id="hand"></div></div>
 
-<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="fx"></div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>

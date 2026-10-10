@@ -297,6 +297,8 @@ html,body{overflow-x:hidden}
 .av.fr-fr_fire{box-shadow:0 0 0 3px #2a0700,0 0 0 5px #ff5722,0 0 0 7px #ffcc80,0 0 22px #ff5722cc,0 8px 18px #000c;animation:dia 1.6s linear infinite}
 .av.fr-fr_dragon{box-shadow:0 0 0 3px #2e2408,0 0 0 6px #d4af37,0 0 0 8px #fff3b0,0 0 26px #ffd84dcc,0 8px 18px #000c;animation:dia 2s linear infinite}
 .pv.dk{width:46px;height:64px;border-radius:6px;background:#fff;color:#c00;font-weight:800;display:grid;place-items:center;font-size:18px}
+.splat.rm{font-size:64px;filter:drop-shadow(0 0 10px #fff8)}.proj{will-change:transform}
+#updBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 8px);z-index:60;display:none;gap:8px;align-items:center;padding:8px 12px;border-radius:14px;background:#1b1209f2;border:1px solid #e9c45a;box-shadow:0 8px 24px #000c;font-weight:700}#updBar.on{display:flex}#updBar button{margin:0}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -334,10 +336,10 @@ html,body{overflow-x:hidden}
 <div class="seat" id="s3"></div></div>
 <div id="me"><div id="meInfo" onclick="openTitles()" title="Cấp độ &amp; danh hiệu"></div><div id="meBar"><div class="av"> <span class="cnt" id="myCnt"></span></div><div id="ctrl"><button id="bPlay" onclick="humanPlay()">Đánh</button><button id="bPass" class="alt" onclick="humanPass()">Bỏ lượt</button><button class="alt" id="bHint" onclick="hint()" title="Gợi ý"><svg class="i"><use href="#i-bulb"/></svg><span class="tx"> Gợi ý</span></button><button class="alt ic" id="bChat" onclick="toggleChat()" title="Trò chuyện" style="display:none"><svg class="i"><use href="#i-chat"/></svg></button><button class="alt ic" onclick="toggleEmotes()" title="Biểu cảm"><svg class="i"><use href="#i-smile"/></svg></button><button class="alt" id="bSort" onclick="sortHand()" title="Xếp bài"><svg class="i"><use href="#i-sort"/></svg><span class="tx"> Xếp</span></button></div></div><div id="hand"></div></div>
 
-<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="fx"></div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='59e09920dc';
+const APP_VER='744984a3e2';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -944,7 +946,9 @@ function titleHTML(t){return `<span class="tt t${t.tier||1}">${t.name}</span>`;}
 let deferredPrompt=null;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||'')||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const isStandalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
-if('serviceWorker' in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+if('serviceWorker' in navigator&&location.protocol!=='file:'){const hadCtl=!!navigator.serviceWorker.controller;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadCtl){const u=document.getElementById('updBar');if(u)u.className='on';}});
+ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>{const chk=()=>reg.update().catch(()=>{});setInterval(chk,30*60*1000);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')chk();});}).catch(()=>{}));}
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('bInstall').style.display='';});
 window.addEventListener('appinstalled',()=>{deferredPrompt=null;$('bInstall').style.display='none';toast(I('check')+' Đã cài đặt ứng dụng!');});
 if(isIOS&&!isStandalone&&$('bInstall'))$('bInstall').style.display='';
@@ -1121,7 +1125,7 @@ async function enterRoom(code,isHost,bots){if(ONL.active)await leaveRoom(true);a
  const ch=chan('tlmn:room:'+code),tr=mkTr(ch);ONL.ch=ch;ONL.tr=tr;
  ONL.client=new OnlineClient(tr,ONL.me);ONL.client.onState=s=>onlineState(s);ONL.client.onRoom=r=>{ONL.room=r;renderRoom();};ONL.client.onReject=e=>{sfx('bad');msg(e);};ONL.client.onFull=()=>{toast('Phòng đã đủ 4 người');leaveRoom(true);};
  tr.on('chat',m=>addChat(m));tr.on('emote',m=>{const ls=localSeatOf(m.uid);if(ls>=0)showEmote(ls,String(m.e).slice(0,24));});
- tr.on('bye',m=>onPresenceLeave(m.uid));tr.on('throw',m=>{if(!m||!ONL.st)return;const f=localSeatOf(m.from),me=ONL.st.seats.findIndex(s=>s&&s.uid===USER.id);let to=localSeatOf(m.to);if(to<0&&/^seat\d$/.test(m.to||''))to=(+m.to.slice(4)-me+4)%4;if(f>=0&&to>=0)throwFX(f,to,m.id);});
+ tr.on('bye',m=>onPresenceLeave(m.uid));tr.on('throw',m=>{if(!m||!ONL.st)return;const f=localSeatOf(m.from),me=ONL.st.seats.findIndex(s=>s&&s.uid===USER.id);let to=localSeatOf(m.to);if(to<0&&/^seat\d$/.test(m.to||''))to=(+m.to.slice(4)-me+4)%4;if(f>=0&&to>=0){throwFX(f,to,m.id);const t=THROWS.find(x=>x.id===m.id);if(t)toast(`${t.emo} ${esc(NAMES[f]||'')} ${throwVerb(t)} ${to===0?'bạn':esc(NAMES[to]||'')}`);}});
  if(isHost){ONL.host=new OnlineHost(tr,ONL.me,{fillBots:bots});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};}
  ch.on('presence',{event:'sync'},()=>{const s=ch.presenceState();ONL.presence=Object.keys(s);});
  ch.on('presence',{event:'leave'},({key})=>onPresenceLeave(key));
@@ -1247,19 +1251,22 @@ function spinNow(){if(spinning)return;const r=doSpin(PR,new Date(),Math.random,l
   toast(t);if(g.lv)levelUpFX(g.lv);updHud();saveP();openSpin();if(document.body.classList.contains('athome'))renderHome();},RM?300:4400);}
 const _dcq=doClaimQuest;doClaimQuest=function(i){const before=PR.quests.list[i]&&PR.quests.list[i].claimed;_dcq(i);if(!before&&PR.quests.list[i]&&PR.quests.list[i].claimed){ensureSpin(PR,new Date()).extra++;saveP();toast('+1 lượt quay may mắn 🎡');}};
 // ---- Ném đồ / tặng quà
-function avRect(ls){const e=ls===0?document.querySelector('#meBar .av'):document.querySelector('#s'+ls+' .av');const r=e&&e.getBoundingClientRect?e.getBoundingClientRect():null;return r&&r.width?{x:r.left+r.width/2,y:r.top+r.height/2}:null;}
+function avRect(ls){const sels=ls===0?['#meBar .av','#meInfo .lvb','#meInfo','#hand']:['#s'+ls+' .av','#s'+ls];
+ for(const q of sels){const e=document.querySelector(q);const r=e&&e.getBoundingClientRect?e.getBoundingClientRect():null;if(r&&r.width>0&&r.height>0)return{x:r.left+r.width/2,y:r.top+r.height/2};}
+ return{x:(typeof innerWidth!=='undefined'?innerWidth:400)/2,y:(typeof innerHeight!=='undefined'?innerHeight:800)*(ls===0?.8:.3)};}
+function throwVerb(t){return /^(Ném|Tặng|Tạt|Mời|Hun)/.test(t.name)?t.name.toLowerCase():'ném '+t.name.toLowerCase();}
 function openThrow(ls){if(!G||!G.started)return;const nm=NAMES[ls]||'';
  modal(`<h3>Ném / tặng cho ${esc(nm)}</h3><div class="sgrid">${THROWS.map(t=>`<button class="alt sitem ${t.prem?'prem':''}" onclick="closeModal();sendThrow(${ls},'${t.id}')" ${PR.xu<t.cost?'disabled':''}><span style="font-size:30px">${t.emo}</span><b>${t.name}</b><small>${I('coin')} ${t.cost} xu</small></button>`).join('')}</div>`);}
-function sendThrow(ls,id){const r=throwItem(PR,id);if(!r.ok){sfx('bad');return toast(r.reason);}saveP();updHud();throwFX(0,ls,id);
+function sendThrow(ls,id){closeModal();const r=throwItem(PR,id);if(!r.ok){sfx('bad');return toast(r.reason);}saveP();updHud();throwFX(0,ls,id);toast(`${r.t.emo} Bạn ${throwVerb(r.t)} ${esc(NAMES[ls]||'')} -${r.t.cost} xu`);
  if(ONL.active){const st=ONL.st,me=st?st.seats.findIndex(s=>s&&s.uid===USER.id):-1;const tg=st&&st.seats[(ls+me)%4];if(tg)ONL.tr.send('throw',{from:USER.id,to:tg.uid||('seat'+((ls+me)%4)),id});}
- else if(Math.random()<.4)setTimeout(()=>{if(!G||G.over&&!G.rank)return;const back=pick(THROWS.filter(x=>!x.prem));throwFX(ls,0,THROWS.find(x=>x.id===id).nice?'flower':back.id);},1300+Math.random()*900);}
-function throwFX(from,to,id){const t=THROWS.find(x=>x.id===id);if(!t)return;const a=avRect(from),b=avRect(to);if(!a||!b||!document.body.appendChild)return;
+ else if(Math.random()<.4)setTimeout(()=>{if(!G||G.over&&!G.rank)return;const back=pick(THROWS.filter(x=>!x.prem));const bid=THROWS.find(x=>x.id===id).nice?'flower':back.id,bt=THROWS.find(x=>x.id===bid);throwFX(ls,0,bid);toast(`${bt.emo} ${esc(NAMES[ls]||'')} ${throwVerb(bt)} bạn!`);},1300+Math.random()*900);}
+function throwFX(from,to,id){const t=THROWS.find(x=>x.id===id);if(!t)return;const a=avRect(from),b=avRect(to);if(!document.body||!document.body.appendChild)return;
  const d=document.createElement('div');d.className='proj';d.textContent=t.emo;document.body.appendChild(d);
  const done=()=>{d.remove&&d.remove();splat(b,t);};
- if(RM||!d.animate){done();return;}const mx=(a.x+b.x)/2,my=Math.min(a.y,b.y)-120;
+ if(RM||!d.animate){d.style.transform=`translate(${b.x}px,${b.y}px)`;setTimeout(done,350);sfx('throw');return;}const mx=(a.x+b.x)/2,my=Math.min(a.y,b.y)-120;
  const an=d.animate([{transform:`translate(${a.x}px,${a.y}px) rotate(0) scale(.7)`},{transform:`translate(${mx}px,${my}px) rotate(360deg) scale(1.25)`},{transform:`translate(${b.x}px,${b.y}px) rotate(720deg) scale(1)`}],{duration:750,easing:'cubic-bezier(.3,.1,.5,1)'});
  an.onfinish=done;sfx('throw');}
-function splat(p,t){const d=document.createElement('div');d.className='splat';d.style.left=p.x+'px';d.style.top=p.y+'px';d.textContent=t.splat;document.body.appendChild(d);setTimeout(()=>d.remove&&d.remove(),1400);
+function splat(p,t){const d=document.createElement('div');d.className='splat';d.style.left=p.x+'px';d.style.top=p.y+'px';d.textContent=t.splat;if(RM)d.classList.add('rm');document.body.appendChild(d);setTimeout(()=>d.remove&&d.remove(),RM?1600:1400);
  for(let i=0;i<8&&!RM;i++){const q=document.createElement('div');q.className='spk';q.textContent=t.nice?'✨':'•';q.style.left=p.x+'px';q.style.top=p.y+'px';q.style.setProperty('--dx',(Math.cos(i/8*6.28)*50)+'px');q.style.setProperty('--dy',(Math.sin(i/8*6.28)*50)+'px');q.style.color=t.nice?'#ffd84d':'#ffe0b2';document.body.appendChild(q);setTimeout(()=>q.remove&&q.remove(),800);}
  sfx(t.snd);}
 Object.assign(SND,{throw:()=>tone(500,.25,'sine',.06,0,1200),splat:()=>{tone(180,.15,'sawtooth',.12);tone(90,.2,'square',.08,.03);},thud:()=>tone(110,.18,'triangle',.18),
