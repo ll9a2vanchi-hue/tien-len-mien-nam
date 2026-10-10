@@ -163,3 +163,16 @@ const _r13=render;render=function(){_r13();if(!G)return;const bp=$('bPass'),bl=$
  let stuck=false;try{stuck=!G.over&&!DEALING&&G.turn===0&&!!G.cur&&G.hands[0].length>0&&!combos(G.hands[0]).some(x=>canBeat(x.info,G.cur));}catch(e){}
  bp.classList.toggle('mustpass',stuck);bl.classList.toggle('dimmed',stuck);let h=$('noBeat');
  if(stuck&&!h){h=document.createElement('div');h.id='noBeat';h.textContent='Không có bài chặn được';const par=bp.parentNode;if(par.style&&getComputedStyle(par).position==='static')par.style.position='relative';par.appendChild(h);}else if(!stuck&&h)h.remove();};
+
+// ---- Chống treo cuối ván: luôn kết thúc + hiện bảng kết quả
+let _overAt=0;
+setInterval(()=>{try{if(!G||G.online||!G.started||DEALING)return;const seats=G.seats||[0,1,2,3];
+ if(!G.over){const left=seats.filter(p=>G.hands[p].length>0);if(left.length<=1&&G.finished.length>=seats.length-1){console.warn('watchdog: force end');G.finished.push(...left.filter(p=>!G.finished.includes(p)));G.over=true;try{endGame(false);}catch(e){console.error(e);showResult([...G.finished]);}render();}
+  // lượt kẹt vào người đã hết bài
+  else if(G.hands[G.turn].length===0){try{nextTurn();render();step();}catch(e){}}return;}
+ if(!_overAt)_overAt=Date.now();const shown=($('modalIn')?.textContent||'').includes('Kết quả');
+ if(!shown&&Date.now()-_overAt>4500&&!document.getElementById('badgeFX')&&!G._resShown){const f=G.finished,all=[...f,...seats.filter(p=>!f.includes(p))];G._resShown=true;showResult(all);}}catch(e){}},1500);
+const _ng14=newGame;newGame=function(n){_overAt=0;return _ng14(n);};
+const _sr14=showResult;showResult=function(r){if(G)G._resShown=true;return _sr14(r);};
+// endGame không được phép ném lỗi trước khi hẹn bảng kết quả
+const _eg14=endGame;endGame=function(i){try{return _eg14(i);}catch(e){console.error('endGame',e);const seats=G.seats||[0,1,2,3],f=G.finished;setTimeout(()=>showResult([...f,...seats.filter(p=>!f.includes(p))]),1500);}};
