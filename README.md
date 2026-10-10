@@ -21,3 +21,9 @@ Kiểm thử: `node test.js`, `node test-progress.js`, `node test-cloud.js`, `no
 1. Đang dùng chung project Supabase "todo-game" (bảng riêng `public.tlmn_saves`, xem `supabase/schema.sql`).
 2. Điền URL + publishable/anon key vào `cloud-config.js` (KHÔNG dùng service_role).
 3. Chạy `./build.sh` rồi deploy. Không cấu hình thì game chạy chế độ khách offline.
+
+## Chơi online (Supabase Realtime)
+- Cần đăng nhập. Tạo phòng (mã 6 ký tự) / vào bằng mã / link `?room=MÃ`. 2–4 người, ghế trống có thể cho máy chơi.
+- Chủ phòng giữ trạng thái chuẩn (chia bài, kiểm tra nước đi); người khác chỉ gửi ý định. Mất kết nối → máy chơi thay; chủ phòng rời → chuyển chủ phòng.
+- Trò chuyện, biểu cảm, bạn bè (mã kết bạn), mời bạn vào phòng.
+- Kiểm thử: `node test-online.js` (giao thức với bus giả lập), `tools-rt-e2e.js` (qua Realtime thật), `tools-online-ui.js` (2 trình duyệt).

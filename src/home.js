@@ -61,6 +61,5 @@ function toggleEmotes(){const b=$('emoBar');if(b.className==='on'){b.className='
 function sendEmote(e){$('emoBar').className='';showEmote(0,e);if(typeof onlineEmote==='function'&&onlineEmote(e))return;
  if(Math.random()<.5)setTimeout(()=>{const p=1+(Math.random()*3|0);showEmote(p,pick(['😂','😮','👍','😏','Chặt đi!','Run chưa?','🙏','😡']));},700+Math.random()*900);}
 function showEmote(p,e){const host=p===0?$('meInfo'):$('s'+p);if(!host||!host.appendChild)return;const d=document.createElement('div');d.className='bubble'+([...e].length<=2?' big':'');d.textContent=e;host.appendChild(d);setTimeout(()=>d.remove&&d.remove(),2600);sfx('tap');}
-function openOnline(){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Chế độ chơi online đang được hoàn thiện và sẽ có trong bản cập nhật tới.</p><p class="small">Trong lúc chờ, hãy luyện tay với máy nhé!</p><button onclick="closeModal();playBots()">${I('bot')} Chơi với máy</button>`);}
 sortMode=+(localStorage.getItem('tlmn_sort')||0);
 applyCosmetics();

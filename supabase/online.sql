@@ -1,0 +1,5 @@
+-- Đã áp dụng qua migration "tlmn_online" (dự án dùng chung todo-game; chỉ thêm đối tượng tiền tố tlmn_)
+-- public.tlmn_players: hồ sơ công khai (mã kết bạn 6 ký tự, tên, avatar, cấp, danh hiệu) — người đã đăng nhập đọc được, chỉ sửa của mình
+-- public.tlmn_friends: lời mời/kết bạn (user_id -> friend_id, pending/accepted) — chỉ 2 bên liên quan thấy; người nhận mới được chấp nhận
+-- realtime.messages: policy tlmn_realtime_read / tlmn_realtime_write chỉ cho authenticated, chỉ topic 'tlmn:%' (kênh private)
+-- Xem nội dung đầy đủ trong lịch sử migration của dự án.
