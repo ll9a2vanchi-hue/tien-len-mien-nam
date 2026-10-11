@@ -383,6 +383,11 @@ body.rewardfx #top{position:relative;z-index:25}
 .comp{margin:6px 0 10px}.srow2{display:flex;gap:6px;align-items:center;margin-bottom:6px}.srow2 button{margin:0;padding:6px 14px}
 .seatgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.sg{border-radius:12px;padding:8px;text-align:center;background:#ffffff0d;border:1px solid #ffffff1a;font-size:13px;position:relative;min-height:38px;display:flex;align-items:center;justify-content:center;gap:4px}
 .sg.hum{border-color:#e9c45a66}.sg.bot{border-color:#4dd0e166}.sg.empty{border-style:dashed}.sg button{margin:0;padding:5px 10px;font-size:12px}.sg .x{position:absolute;right:4px;top:4px;padding:1px 6px!important;background:#c62828!important;border:none!important;color:#fff!important;border-radius:50%!important}
+#afkBar{position:fixed;left:50%;top:56px;transform:translateX(-50%);z-index:300;background:#000d;color:#ffe9a8;border:1px solid #e9c45a;padding:8px 14px;border-radius:14px;font-size:13px;font-weight:700;max-width:92vw;text-align:center}
+@media (max-width:470px){#ctrl{gap:4px!important;padding:0 4px!important}#ctrl #bPlay,#ctrl #bPass{flex:1 1 0;max-width:120px;min-width:72px;padding-left:4px!important;padding-right:4px!important;font-size:14px}
+ #ctrl .alt.ic,#bHint,#bSort{width:38px!important}#ctrl #bChat{display:none!important}}
+.seat .tag{white-space:nowrap;font-size:10px;padding:1px 7px;line-height:15px;min-height:0;max-width:96px;overflow:hidden;text-overflow:ellipsis}
+.emochat{width:100%;margin:0 0 6px!important}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -423,7 +428,7 @@ body.rewardfx #top{position:relative;z-index:25}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='82a7a8f5d5';
+const APP_VER='3a755e3b1d';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -783,7 +788,7 @@ function oBotMove(st,lv){const p=st.turn,others=oActive(st).filter(q=>q!==p).map
  if(m&&!(detect(m)&&canBeat(detect(m),st.cur)&&(!st.first||m.includes(st.firstCard))))m=botMove(st.hands[p],st.cur,st.first?st.firstCard:null,others);if(m)return{type:'play',cards:m};if(!st.cur)return{type:'play',cards:[st.hands[p][0]]};return{type:'pass'};}
 // ---- Host ----
 class OnlineHost{
- constructor(tr,me,opt){this.tr=tr;this.me=me;this.opt=Object.assign({fillBots:true,botDelay:900,turnMs:30000},opt||{});this.players=[me];this.seats=[null,null,null,null];this.st=null;this.lastWinner=null;this.timer=null;this.rev=0;
+ constructor(tr,me,opt){this.tr=tr;this.me=me;this.opt=Object.assign({fillBots:true,botDelay:900,turnMs:15000},opt||{});this.players=[me];this.seats=[null,null,null,null];this.st=null;this.lastWinner=null;this.timer=null;this.rev=0;
   tr.on('intent',m=>this.onIntent(m));tr.on('hello',m=>this.addPlayer(m));this.assign();}
  addPlayer(p){if(!p||!p.uid)return;const i=this.players.findIndex(x=>x.uid===p.uid);if(i>=0)this.players[i]=Object.assign(this.players[i],p,{gone:false});else{if(this.players.filter(x=>!x.gone).length>=(this.opt.size||4))return this.tr.send('full',{uid:p.uid});this.players.push(p);}
   if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===p.uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:false});this.push();return;}}
@@ -801,11 +806,15 @@ class OnlineHost{
  start(rng){if(this.st&&!this.st.over)return false;this.assign();const humans=this.seats.filter(Boolean).length;if(humans<2&&!this.opt.fillBots)return false;
   const seats=this.seats.slice();if(this.opt.fillBots&&!this._cfg){let k=0;for(let i=0;i<(this.opt.size||4);i++)if(!seats[i]){seats[i]={uid:null,name:OBOTS[(k++ +humans)%OBOTS.length],bot:true,av:'🤖',lv:5};}}
   if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);this.st.bet=this.opt.bet||100;if(this.st.over)this.finish();this.push();this.tick();return true;}
- onIntent(m){if(!this.st||!m)return;const seat=this.st.seats.findIndex(s=>s&&s.uid===m.uid);if(seat<0)return;const r=oAct(this.st,seat,m.a||{});
+ onIntent(m){if(!this.st||!m)return;const seat=this.st.seats.findIndex(s=>s&&s.uid===m.uid);if(seat<0)return;const st0=this.st;st0.to=st0.to||[0,0,0,0];st0.afk=st0.afk||[false,false,false,false];const wasAfk=st0.afk[seat];st0.to[seat]=0;st0.afk[seat]=false;if(m.a&&m.a.type==='wake'){this.push();if(wasAfk&&st0.turn===seat)this.tick();return;}const r=oAct(this.st,seat,m.a||{});
   if(!r.ok){this.tr.send('reject',{uid:m.uid,err:r.err});return;}if(this.st.over)this.finish();this.push();this.tick();}
  finish(){const w=this.st.rank&&this.st.seats[this.st.rank[0]];this.lastWinner=w?w.uid:null;clearTimeout(this.timer);}
- tick(){clearTimeout(this.timer);const st=this.st;if(!st||st.over)return;const s=st.seats[st.turn];const auto=()=>{if(this.st!==st||st.over)return;if(this._lvSt!==st){this._lvSt=st;this._lv=[0,1,2,3].map(()=>typeof aiPickLevel==='function'?aiPickLevel((this.me&&this.me.lv)||10):1);}oAct(st,st.turn,oBotMove(st,this._lv[st.turn]));if(st.over)this.finish();this.push();this.tick();};
-  this.timer=setTimeout(auto,s&&s.bot?this.opt.botDelay:this.opt.turnMs);}
+ tick(){clearTimeout(this.timer);const st=this.st;if(!st||st.over)return;const s=st.seats[st.turn];st.to=st.to||[0,0,0,0];st.afk=st.afk||[false,false,false,false];const human=s&&!s.bot,afk=human&&st.afk[st.turn];
+  const timeout=()=>{if(this.st!==st||st.over)return;const p=st.turn;st.to[p]=(st.to[p]||0)+1;let a;if(st.cur)a={type:'pass'};else{const c=st.first?st.firstCard:Math.min(...st.hands[p]);a={type:'play',cards:[c]};}
+   oAct(st,p,a);st.ev=Object.assign(st.ev||{},{timeout:true,tseat:p});if(st.to[p]>=3){st.afk[p]=true;st.hist.push({txt:`${seatName(st,p)} treo máy — máy chơi thay`,cls:'ps'});}if(st.over)this.finish();this.push();this.tick();};
+  if(human&&!afk){this.timer=setTimeout(timeout,this.opt.turnMs);return;}
+  const auto=()=>{if(this.st!==st||st.over)return;if(this._lvSt!==st){this._lvSt=st;this._lv=[0,1,2,3].map(()=>typeof aiPickLevel==='function'?aiPickLevel((this.me&&this.me.lv)||10):1);}oAct(st,st.turn,oBotMove(st,this._lv[st.turn]));if(st.over)this.finish();this.push();this.tick();};
+  this.timer=setTimeout(auto,this.opt.botDelay);}
  push(){this.rev++;this.tr.send('room',Object.assign(this.room(),{rev:this.rev}));if(this.st)this.tr.send('state',{rev:this.rev,st:this.st});if(this.onState)this.onState(this.st,this.room());}
  stop(){clearTimeout(this.timer);}
  resume(st,players,rev){this.st=st;this.rev=(rev||0)+1;this.players=players.slice();if(!this.players.find(x=>x.uid===this.me.uid))this.players.unshift(this.me);
@@ -1927,5 +1936,27 @@ const _rr20=renderRoom;renderRoom=function(){_rr20.apply(this,arguments);try{con
   if(s&&s.bot)return `<div class="sg bot">🤖 Máy ${amHost&&!playing?`<button class="x" onclick="hostBot(${i},false)" title="Bỏ máy">✕</button>`:''}</div>`;
   return `<div class="sg empty">${amHost&&!playing?`<button class="alt" onclick="hostBot(${i},true)">+ Thêm máy</button>`:'Ghế trống'}</div>`;}).join('')}</div><p class="small">Máy có độ khó ngẫu nhiên · XP/xu tính theo tổng số ghế có người/máy (${seats.filter(Boolean).length} ghế).</p></div>`;
  h4.insertAdjacentHTML('afterend',html);if(r.cfg){const lab=[...document.querySelectorAll('#home label')].find(l=>/Thêm máy vào ghế trống/.test(l.textContent));if(lab)lab.style.display='none';}}catch(e){}};
+// ---- Hết giờ lượt (15s): tự bỏ / tự đánh lá nhỏ nhất; 3 lần liền → treo máy, máy chơi thay
+const TURN_MS=15000;let _tKey=null,_tT0=0,_toCount=0,AFK=false;
+function myTurnKey(){return G&&!G.over&&G.turn===0&&!DEALING&&!G.online?(G.hist.length+':'+G.hands[0].length+':'+(G.cur?1:0)):null;}
+function afkBanner(on){let b=$('afkBar');if(on&&!b){b=document.createElement('div');b.id='afkBar';b.textContent='😴 Bạn đang treo máy — máy chơi thay. Chạm để chơi tiếp';document.body.appendChild(b);}else if(!on&&b)b.remove();}
+function wakeUp(){if(!AFK&&!(G&&G.online&&ONL.st&&ONL.st.afk&&ONL.st.afk[myOnlineSeat()]))return;AFK=false;_toCount=0;afkBanner(false);toast('Chào mừng trở lại!');
+ if(G&&G.online){const a={uid:USER.id,a:{type:'wake'}};if(ONL.host)ONL.host.onIntent(a);else ONL.tr&&ONL.tr.send('intent',a);}else if(G&&G.turn===0)setTimeout(()=>{_tKey=null;},0);}
+function myOnlineSeat(){return ONL.st&&USER?ONL.st.seats.findIndex(s=>s&&s.uid===USER.id):-1;}
+if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('pointerdown',()=>{try{wakeUp();}catch(e){}},{capture:true,passive:true});
+const _hp21=humanPlay;humanPlay=function(){if(!window._autoAct)_toCount=0;return _hp21();};
+const _hs21=humanPass;humanPass=function(){if(!window._autoAct)_toCount=0;return _hs21();};
+function autoMove(reason){if(!G||G.over||G.turn!==0||G.online)return;window._autoAct=true;try{
+ if(AFK){let m=aiMove(1,G.hands[0],G.cur,G.first?G.firstCard:null,{others:[13]});if(m){sel=new Set(m);humanPlay();}else if(G.cur)humanPass();else{sel=new Set([G.first?G.firstCard:Math.min(...G.hands[0])]);humanPlay();}return;}
+ if(G.cur){humanPass();toast('Hết giờ, tự bỏ lượt');}else{const c=G.first?G.firstCard:Math.min(...G.hands[0]);sel=new Set([c]);humanPlay();toast('Hết giờ, tự đánh lá nhỏ nhất');}
+ _toCount++;if(_toCount>=3){AFK=true;afkBanner(true);}}finally{window._autoAct=false;}}
+setInterval(()=>{try{const k=myTurnKey();if(k!==_tKey){_tKey=k;_tT0=Date.now();return;}if(!k)return;
+ if(AFK){if(Date.now()-_tT0>1000)autoMove();return;}if(Date.now()-_tT0>TURN_MS)autoMove();}catch(e){}},300);
+// online: thông báo hết giờ / treo máy
+const _os21=onlineState;onlineState=function(st,fh){_os21(st,fh);try{const me=myOnlineSeat();if(me<0)return;
+ if(st.ev&&st.ev.timeout&&st.ev.tseat===me){const k=(st.hist||[]).length+':'+st.turn;if(ONL._toK!==k){ONL._toK=k;toast(st.ev.cards||st.cur&&st.curBy===me?'Hết giờ, tự đánh lá nhỏ nhất':'Hết giờ, tự bỏ lượt');}}
+ afkBanner(!!(st.afk&&st.afk[me]&&!st.over));}catch(e){}};
+// gộp chat vào nút biểu cảm khi online trên màn hình hẹp
+const _te21=toggleEmotes;toggleEmotes=function(){_te21();const b=$('emoBar');if(b&&b.className==='on'&&G&&G.online&&!b.querySelector('.emochat'))b.insertAdjacentHTML('afterbegin',`<button class="alt emochat" onclick="$('emoBar').className='';toggleChat()">💬 Trò chuyện</button>`);};
 boot();
 </script></body></html>

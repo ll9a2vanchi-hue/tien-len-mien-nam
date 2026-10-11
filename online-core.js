@@ -42,7 +42,7 @@ function oBotMove(st,lv){const p=st.turn,others=oActive(st).filter(q=>q!==p).map
  if(m&&!(detect(m)&&canBeat(detect(m),st.cur)&&(!st.first||m.includes(st.firstCard))))m=botMove(st.hands[p],st.cur,st.first?st.firstCard:null,others);if(m)return{type:'play',cards:m};if(!st.cur)return{type:'play',cards:[st.hands[p][0]]};return{type:'pass'};}
 // ---- Host ----
 class OnlineHost{
- constructor(tr,me,opt){this.tr=tr;this.me=me;this.opt=Object.assign({fillBots:true,botDelay:900,turnMs:30000},opt||{});this.players=[me];this.seats=[null,null,null,null];this.st=null;this.lastWinner=null;this.timer=null;this.rev=0;
+ constructor(tr,me,opt){this.tr=tr;this.me=me;this.opt=Object.assign({fillBots:true,botDelay:900,turnMs:15000},opt||{});this.players=[me];this.seats=[null,null,null,null];this.st=null;this.lastWinner=null;this.timer=null;this.rev=0;
   tr.on('intent',m=>this.onIntent(m));tr.on('hello',m=>this.addPlayer(m));this.assign();}
  addPlayer(p){if(!p||!p.uid)return;const i=this.players.findIndex(x=>x.uid===p.uid);if(i>=0)this.players[i]=Object.assign(this.players[i],p,{gone:false});else{if(this.players.filter(x=>!x.gone).length>=(this.opt.size||4))return this.tr.send('full',{uid:p.uid});this.players.push(p);}
   if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===p.uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:false});this.push();return;}}
@@ -60,11 +60,15 @@ class OnlineHost{
  start(rng){if(this.st&&!this.st.over)return false;this.assign();const humans=this.seats.filter(Boolean).length;if(humans<2&&!this.opt.fillBots)return false;
   const seats=this.seats.slice();if(this.opt.fillBots&&!this._cfg){let k=0;for(let i=0;i<(this.opt.size||4);i++)if(!seats[i]){seats[i]={uid:null,name:OBOTS[(k++ +humans)%OBOTS.length],bot:true,av:'🤖',lv:5};}}
   if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);this.st.bet=this.opt.bet||100;if(this.st.over)this.finish();this.push();this.tick();return true;}
- onIntent(m){if(!this.st||!m)return;const seat=this.st.seats.findIndex(s=>s&&s.uid===m.uid);if(seat<0)return;const r=oAct(this.st,seat,m.a||{});
+ onIntent(m){if(!this.st||!m)return;const seat=this.st.seats.findIndex(s=>s&&s.uid===m.uid);if(seat<0)return;const st0=this.st;st0.to=st0.to||[0,0,0,0];st0.afk=st0.afk||[false,false,false,false];const wasAfk=st0.afk[seat];st0.to[seat]=0;st0.afk[seat]=false;if(m.a&&m.a.type==='wake'){this.push();if(wasAfk&&st0.turn===seat)this.tick();return;}const r=oAct(this.st,seat,m.a||{});
   if(!r.ok){this.tr.send('reject',{uid:m.uid,err:r.err});return;}if(this.st.over)this.finish();this.push();this.tick();}
  finish(){const w=this.st.rank&&this.st.seats[this.st.rank[0]];this.lastWinner=w?w.uid:null;clearTimeout(this.timer);}
- tick(){clearTimeout(this.timer);const st=this.st;if(!st||st.over)return;const s=st.seats[st.turn];const auto=()=>{if(this.st!==st||st.over)return;if(this._lvSt!==st){this._lvSt=st;this._lv=[0,1,2,3].map(()=>typeof aiPickLevel==='function'?aiPickLevel((this.me&&this.me.lv)||10):1);}oAct(st,st.turn,oBotMove(st,this._lv[st.turn]));if(st.over)this.finish();this.push();this.tick();};
-  this.timer=setTimeout(auto,s&&s.bot?this.opt.botDelay:this.opt.turnMs);}
+ tick(){clearTimeout(this.timer);const st=this.st;if(!st||st.over)return;const s=st.seats[st.turn];st.to=st.to||[0,0,0,0];st.afk=st.afk||[false,false,false,false];const human=s&&!s.bot,afk=human&&st.afk[st.turn];
+  const timeout=()=>{if(this.st!==st||st.over)return;const p=st.turn;st.to[p]=(st.to[p]||0)+1;let a;if(st.cur)a={type:'pass'};else{const c=st.first?st.firstCard:Math.min(...st.hands[p]);a={type:'play',cards:[c]};}
+   oAct(st,p,a);st.ev=Object.assign(st.ev||{},{timeout:true,tseat:p});if(st.to[p]>=3){st.afk[p]=true;st.hist.push({txt:`${seatName(st,p)} treo máy — máy chơi thay`,cls:'ps'});}if(st.over)this.finish();this.push();this.tick();};
+  if(human&&!afk){this.timer=setTimeout(timeout,this.opt.turnMs);return;}
+  const auto=()=>{if(this.st!==st||st.over)return;if(this._lvSt!==st){this._lvSt=st;this._lv=[0,1,2,3].map(()=>typeof aiPickLevel==='function'?aiPickLevel((this.me&&this.me.lv)||10):1);}oAct(st,st.turn,oBotMove(st,this._lv[st.turn]));if(st.over)this.finish();this.push();this.tick();};
+  this.timer=setTimeout(auto,this.opt.botDelay);}
  push(){this.rev++;this.tr.send('room',Object.assign(this.room(),{rev:this.rev}));if(this.st)this.tr.send('state',{rev:this.rev,st:this.st});if(this.onState)this.onState(this.st,this.room());}
  stop(){clearTimeout(this.timer);}
  resume(st,players,rev){this.st=st;this.rev=(rev||0)+1;this.players=players.slice();if(!this.players.find(x=>x.uid===this.me.uid))this.players.unshift(this.me);

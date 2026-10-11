@@ -282,3 +282,25 @@ const _rr20=renderRoom;renderRoom=function(){_rr20.apply(this,arguments);try{con
   if(s&&s.bot)return `<div class="sg bot">🤖 Máy ${amHost&&!playing?`<button class="x" onclick="hostBot(${i},false)" title="Bỏ máy">✕</button>`:''}</div>`;
   return `<div class="sg empty">${amHost&&!playing?`<button class="alt" onclick="hostBot(${i},true)">+ Thêm máy</button>`:'Ghế trống'}</div>`;}).join('')}</div><p class="small">Máy có độ khó ngẫu nhiên · XP/xu tính theo tổng số ghế có người/máy (${seats.filter(Boolean).length} ghế).</p></div>`;
  h4.insertAdjacentHTML('afterend',html);if(r.cfg){const lab=[...document.querySelectorAll('#home label')].find(l=>/Thêm máy vào ghế trống/.test(l.textContent));if(lab)lab.style.display='none';}}catch(e){}};
+// ---- Hết giờ lượt (15s): tự bỏ / tự đánh lá nhỏ nhất; 3 lần liền → treo máy, máy chơi thay
+const TURN_MS=15000;let _tKey=null,_tT0=0,_toCount=0,AFK=false;
+function myTurnKey(){return G&&!G.over&&G.turn===0&&!DEALING&&!G.online?(G.hist.length+':'+G.hands[0].length+':'+(G.cur?1:0)):null;}
+function afkBanner(on){let b=$('afkBar');if(on&&!b){b=document.createElement('div');b.id='afkBar';b.textContent='😴 Bạn đang treo máy — máy chơi thay. Chạm để chơi tiếp';document.body.appendChild(b);}else if(!on&&b)b.remove();}
+function wakeUp(){if(!AFK&&!(G&&G.online&&ONL.st&&ONL.st.afk&&ONL.st.afk[myOnlineSeat()]))return;AFK=false;_toCount=0;afkBanner(false);toast('Chào mừng trở lại!');
+ if(G&&G.online){const a={uid:USER.id,a:{type:'wake'}};if(ONL.host)ONL.host.onIntent(a);else ONL.tr&&ONL.tr.send('intent',a);}else if(G&&G.turn===0)setTimeout(()=>{_tKey=null;},0);}
+function myOnlineSeat(){return ONL.st&&USER?ONL.st.seats.findIndex(s=>s&&s.uid===USER.id):-1;}
+if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('pointerdown',()=>{try{wakeUp();}catch(e){}},{capture:true,passive:true});
+const _hp21=humanPlay;humanPlay=function(){if(!window._autoAct)_toCount=0;return _hp21();};
+const _hs21=humanPass;humanPass=function(){if(!window._autoAct)_toCount=0;return _hs21();};
+function autoMove(reason){if(!G||G.over||G.turn!==0||G.online)return;window._autoAct=true;try{
+ if(AFK){let m=aiMove(1,G.hands[0],G.cur,G.first?G.firstCard:null,{others:[13]});if(m){sel=new Set(m);humanPlay();}else if(G.cur)humanPass();else{sel=new Set([G.first?G.firstCard:Math.min(...G.hands[0])]);humanPlay();}return;}
+ if(G.cur){humanPass();toast('Hết giờ, tự bỏ lượt');}else{const c=G.first?G.firstCard:Math.min(...G.hands[0]);sel=new Set([c]);humanPlay();toast('Hết giờ, tự đánh lá nhỏ nhất');}
+ _toCount++;if(_toCount>=3){AFK=true;afkBanner(true);}}finally{window._autoAct=false;}}
+setInterval(()=>{try{const k=myTurnKey();if(k!==_tKey){_tKey=k;_tT0=Date.now();return;}if(!k)return;
+ if(AFK){if(Date.now()-_tT0>1000)autoMove();return;}if(Date.now()-_tT0>TURN_MS)autoMove();}catch(e){}},300);
+// online: thông báo hết giờ / treo máy
+const _os21=onlineState;onlineState=function(st,fh){_os21(st,fh);try{const me=myOnlineSeat();if(me<0)return;
+ if(st.ev&&st.ev.timeout&&st.ev.tseat===me){const k=(st.hist||[]).length+':'+st.turn;if(ONL._toK!==k){ONL._toK=k;toast(st.ev.cards||st.cur&&st.curBy===me?'Hết giờ, tự đánh lá nhỏ nhất':'Hết giờ, tự bỏ lượt');}}
+ afkBanner(!!(st.afk&&st.afk[me]&&!st.over));}catch(e){}};
+// gộp chat vào nút biểu cảm khi online trên màn hình hẹp
+const _te21=toggleEmotes;toggleEmotes=function(){_te21();const b=$('emoBar');if(b&&b.className==='on'&&G&&G.online&&!b.querySelector('.emochat'))b.insertAdjacentHTML('afterbegin',`<button class="alt emochat" onclick="$('emoBar').className='';toggleChat()">💬 Trò chuyện</button>`);};
