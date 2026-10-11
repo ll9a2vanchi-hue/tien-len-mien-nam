@@ -44,10 +44,10 @@ function oBotMove(st,lv){const p=st.turn,others=oActive(st).filter(q=>q!==p).map
 class OnlineHost{
  constructor(tr,me,opt){this.tr=tr;this.me=me;this.opt=Object.assign({fillBots:true,botDelay:900,turnMs:15000,dealMs:0},opt||{});this.players=[me];this.seats=[null,null,null,null];this.st=null;this.lastWinner=null;this.timer=null;this.rev=0;
   tr.on('intent',m=>this.onIntent(m));tr.on('hello',m=>this.addPlayer(m));this.assign();}
- addPlayer(p){if(!p||!p.uid)return;const i=this.players.findIndex(x=>x.uid===p.uid);if(i>=0)this.players[i]=Object.assign(this.players[i],p,{gone:false});else{if(this.players.filter(x=>!x.gone).length>=(this.opt.size||4))return this.tr.send('full',{uid:p.uid});this.players.push(p);}
+ addPlayer(p){if(!p||!p.uid)return;this.specs=this.specs||{};if(p.spec){if(!this.players.find(x=>x.uid===p.uid&&!x.gone)){this.specs[p.uid]={uid:p.uid,name:p.name,av:p.av,lv:p.lv};this.push();return;}}else if(this.specs[p.uid]){delete this.specs[p.uid];if(this.st&&!this.st.over){this.push();return this.tr.send('specwait',{uid:p.uid});}}const i=this.players.findIndex(x=>x.uid===p.uid);if(i>=0)this.players[i]=Object.assign(this.players[i],p,{gone:false});else{if(this.players.filter(x=>!x.gone).length>=(this.opt.size||4))return this.tr.send('full',{uid:p.uid});this.players.push(p);}
   if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===p.uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:false});if(this.st.afk)this.st.afk[s]=false;if(this.st.to)this.st.to[s]=0;if(this.resendHands)this.resendHands(p.uid);this.push();if(this.st.turn===s)this.tick();return;}}
   this.assign();this.push();}
- removePlayer(uid){const p=this.players.find(x=>x.uid===uid);if(!p)return;p.gone=true;
+ removePlayer(uid){if(this.specs&&this.specs[uid]){delete this.specs[uid];this.push();return;}const p=this.players.find(x=>x.uid===uid);if(!p)return;p.gone=true;
   if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:true});this.st.hist.push({txt:`${this.st.seats[s].name} mất kết nối — máy chơi thay`,cls:'ps'});this.push();this.tick();}}
   else{this.players=this.players.filter(x=>x.uid!==uid);this.assign();this.push();}}
  assign(){const ps=this.players.filter(x=>!x.gone),size=this.opt.size||4;this.bots=this.bots||[false,false,false,false];
@@ -56,7 +56,7 @@ class OnlineHost{
  setSize(n){if(this.st&&!this.st.over)return false;n=Math.max(2,Math.min(4,n|0));const hum=this.players.filter(x=>!x.gone).length;if(n<hum)return false;this.opt.size=n;this._cfg=true;this.bots=(this.bots||[]).map((v,i)=>i<n&&v);this.assign();this.push();return true;}
  setBot(i,on){if(this.st&&!this.st.over)return false;if(i<0||i>=(this.opt.size||4))return false;this.bots=this.bots||[false,false,false,false];
   if(on){if(this.seats[i]&&!this.seats[i].bot)return false;this.bots[i]=true;}else this.bots[i]=false;this._cfg=true;this.assign();this.push();return true;}
- room(){return{size:this.opt.size||4,cfg:!!this._cfg,bet:this.opt.bet||100,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
+ room(){return{size:this.opt.size||4,cfg:!!this._cfg,bet:this.opt.bet||100,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over),specs:Object.values(this.specs||{})};}
  start(rng){if(this.st&&!this.st.over)return false;this.assign();const humans=this.seats.filter(Boolean).length;if(humans<2&&!this.opt.fillBots)return false;
   const seats=this.seats.slice();if(this.opt.fillBots&&!this._cfg){let k=0;for(let i=0;i<(this.opt.size||4);i++)if(!seats[i]){{const bi=(this.opt.botInfo||[])[k];const nm=OBOTS[(k++ +humans)%OBOTS.length];seats[i]=bi?Object.assign({uid:null,bot:true},bi):{uid:null,name:nm,bot:true,av:'🤖',lv:5};}}}
   if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);this.st.bet=this.opt.bet||100;this.st.dealId=Date.now().toString(36)+Math.random().toString(36).slice(2,6);this.st.dealMs=this.opt.dealMs||0;this._dealUntil=Date.now()+(this.opt.dealMs||0);this._lvSt=this.st;this._lv=[0,1,2,3].map(()=>typeof aiPickLevel==='function'?aiPickLevel((this.me&&this.me.lv)||10):1);this.st.ai=this._lv.slice();if(this.st.over)this.finish();this.push();this.tick();return true;}

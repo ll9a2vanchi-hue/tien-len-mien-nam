@@ -452,7 +452,7 @@ function mergeHidden(st){if(!st||!st.hid||st.over)return st;const me=st.seats.fi
 function onHandMsg(m){if(!m||m.to!==USER.id)return;(async()=>{try{let body;if(m.plain)body=m.plain;else{if(!KP)return;const key=await aesFor(m.hpk);body=new TextDecoder().decode(await CRY.decrypt({name:'AES-GCM',iv:unb64(m.iv)},key,unb64(m.ct)));}
   const o=JSON.parse(body);if(!o||!Array.isArray(o.h))return;ONL.myHand={d:o.d,h:o.h.map(Number)};if(ONL.pendSt){const s=mergeHidden(ONL.pendSt);if(s){ONL.pendSt=null;onlineState(s);}}}catch(e){console.warn('hand',e);}})();}
 // ---- bầu chủ bàn theo thời điểm vào (presence), dùng cho bàn công khai
-function presList(){try{const s=ONL.ch.presenceState();return Object.values(s).map(a=>a&&a[0]).filter(Boolean).map(x=>({uid:x.uid,at:x.at}));}catch(e){return[];}}
+function presList(){try{const s=ONL.ch.presenceState();return Object.values(s).map(a=>a&&a[a.length-1]).filter(x=>x&&!x.spec).map(x=>({uid:x.uid,at:x.at}));}catch(e){return[];}}
 function becomeHost(bet){if(ONL.host)return;ONL.host=new OnlineHost(ONL.tr,ONL.me,{fillBots:true,dealMs:2300,bet:bet||((BETS2||[]).includes(PR.bet)&&PR.bet<MASTER_BET?PR.bet:100)});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};installHostHands(ONL.host);ONL.room=ONL.host.room();ONL.host.push();renderRoom();}
 // ---- giao thức phụ trên kênh phòng
 function hookTr25(){if(!ONL.active||!ONL.tr||ONL._h25===ONL.tr)return;ONL._h25=ONL.tr;const tr=ONL.tr;
@@ -643,7 +643,7 @@ function wireRoomPresence(ch){ch.on('presence',{event:'sync'},()=>{try{ONL.prese
  ch.on('presence',{event:'join'},({key})=>{if(ONL.host&&key!==USER.id){ONL.host.resendHands&&ONL.host.resendHands(key);setTimeout(()=>ONL.host&&ONL.host.push(),300);}});}
 async function reconnectRoom(why){if(!ONL.active||!ONL.tr||_rcBusy)return;_rcBusy=true;_wasDown=true;netBanner(true);
  try{const old=ONL.ch;try{await SB.removeChannel(old);}catch(e){}const ch=chan('tlmn:room:'+ONL.code);ONL.ch=ch;ONL.tr.bind(ch);wireRoomPresence(ch);
-  ch.subscribe(async st=>{if(st==='SUBSCRIBED'){try{await ch.track({uid:USER.id,name:ONL.me.name,at:ONL.joinAt||Date.now()});}catch(e){}
+  ch.subscribe(async st=>{if(st==='SUBSCRIBED'){try{await ch.track({uid:USER.id,name:ONL.me.name,at:ONL.joinAt||Date.now(),spec:!!ONL.me.spec});}catch(e){}
     if(ONL.host){ONL.host.resendHands&&ONL.host.resendHands();ONL.host.push();}else{ONL.client.hello();try{if(ONL.st&&!ONL.st.over)ONL.client.intent?ONL.client.intent({type:'wake'}):ONL.tr.send('intent',{uid:USER.id,a:{type:'wake'}});}catch(e){}}
     _rcBusy=false;_netDown=0;if(_wasDown){_wasDown=false;netBanner(false);toast('✅ Đã kết nối lại');}}
    else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){_rcBusy=false;}});
@@ -736,8 +736,10 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.37';
+const APP_V='1.39';
 const CHANGELOG=[
+ ['1.39','11/10',['Chế độ người xem bàn online: nút Xem ở sảnh, danh sách người online, link ?room=MÃ&xem=1; chat có nhãn 👁; Ngồi vào khi hết ván','32 danh hiệu mới (cấp 2→100, Luộc Sư, Vua Đếm Lá, Thánh Ba Cào, Thần Xì Dách, Ngũ Linh Tướng, Sát Thủ Thúi Heo, Phong Lưu, Đại Sứ Thân Thiện, Top Server…) có hiệu ứng động','21 khung avatar mới (giá tới 500k): Băng, Lửa, Thiên Hà, Nguyệt Quế Vàng, Rồng Ngọc… một số mở bằng cấp/huy hiệu','Bảng danh hiệu chia nhóm, hiện điều kiện mở']],
+ ['1.38','11/10',['3 Cào: nặn bài — vuốt từng lá để hé dần, nút Lật hết','Điểm hiển thị nổi bật (N nút / N điểm / Ba cào, Xì bàng, Xì dách, Ngũ linh, Quắc, Non)','Dấu THẮNG / THUA / HÒA đóng lên từng tay bài khi tính tiền']],
  ['1.37','11/10',['Chọn chế độ dạng lưới 2x2 đẹp hơn, không tràn màn hình','Kết quả Đếm lá: danh sách dọc từng người (số lá, phần, xu), tiền từng người theo hàng','3 Cào / Xì dách dùng mặt sau bài bạn đã mua']],
  ['1.36','11/10',['Chế độ mới: Xì dách — đấu nhà cái: Xì bàng x3, Xì dách x2, Ngũ linh x2, non dưới 16, quắc quá 21; nhà cái rút tới 15','Nhiệm vụ + huy hiệu Xì dách']],
  ['1.35','11/10',['Đếm lá: tính theo giá lá (3–10 = 1, J/Q/K = 1,5, A = 2, 2 đen = 3, 2 đỏ = 4 phần cược/5), cháy 13 lá x2','Chế độ mới: 3 Cào — đấu nhà cái, tổng điểm lấy số cuối, Ba cào (3 lá J/Q/K) thắng x2','Bàn 4 người cân đối: avatar của bạn ở giữa cạnh dưới bàn']],
@@ -919,3 +921,45 @@ function placeMeAv(){try{const t=$('table');if(!t)return;const a=document.queryS
  const lab=a.querySelector('.msn');if(!lab)a.insertAdjacentHTML('beforeend',`<span class="msn">Bạn</span>`);}catch(e){}}
 const _r45=render;render=function(){const r=_r45.apply(this,arguments);placeMeAv();return r;};
 const _rm45=renderMe;renderMe=function(){const r=_rm45.apply(this,arguments);placeMeAv();return r;};
+// ======== v49: chế độ người xem ========
+let SPEC=false;
+const _mi49=meInfo;meInfo=function(){const m=_mi49();if(SPEC)m.spec=true;return m;};
+const _lm49=lobbyMe;lobbyMe=function(){const m=_lm49();if(SPEC&&ONL.active){m.watch=ONL.code;m.table=null;m.room=null;m.seats=0;}return m;};
+const _ps49=plStatus;plStatus=function(p){if(p.watch)return '👁 đang xem bàn '+p.watch;return _ps49(p);};
+async function spectate(code){if(!validCode(code))return toast('Mã phòng không hợp lệ');if(needLogin())return;closeModal();SPEC=true;await enterRoom(code,false,true);document.body.classList.add('spec');specBar();toast('👁 Bạn đang xem bàn '+code);}
+function specSit(){if(!ONL.active||!ONL.client)return;const r=ONL.room||{};if(r.playing)return toast('Chờ hết ván mới ngồi vào được');const used=(r.seats||[]).filter(s=>s&&!s.bot).length;if(used>=(r.size||4))return toast('Bàn đã đủ người');
+ SPEC=false;document.body.classList.remove('spec');ONL.me=meInfo();ONL.client.me=ONL.me;ONL.client.hello();try{ONL.ch.track({uid:USER.id,name:ONL.me.name,at:Date.now(),spec:false});}catch(e){}lobbyTrack();specBar();toast('Đã ngồi vào bàn');}
+function specBar(){let b=$('specBar');if(!(SPEC&&ONL.active)){if(b)b.remove();return;}if(!b){b=document.createElement('div');b.id='specBar';document.body.appendChild(b);}
+ const r=ONL.room||{};const free=!r.playing&&(r.seats||[]).filter(s=>s&&!s.bot).length<(r.size||4);
+ b.innerHTML=`<span>👁 Bạn đang xem</span><button class="alt" onclick="openChatSheet('tbl')">💬</button><button ${free?'':'disabled'} onclick="specSit()">${free?'Ngồi vào':'Chờ hết ván'}</button>`;}
+function specCount(){const r=ONL.room||{};const n=(r.specs||[]).length;let e=$('specCnt');if(!ONL.active||!n){if(e)e.remove();return;}if(!e){e=document.createElement('div');e.id='specCnt';(document.getElementById('table')||document.body).appendChild(e);}e.textContent='👁 '+n;e.title=(r.specs||[]).map(s=>s.name).join(', ');}
+setInterval(()=>{try{specBar();specCount();if(!ONL.active&&SPEC){SPEC=false;document.body.classList.remove('spec');}}catch(e){}},1000);
+// người xem không được đánh
+['humanPlay','humanPass','autoMove','hint'].forEach(f=>{const o=window[f];if(typeof o!=='function')return;window[f]=function(){if(SPEC&&ONL.active)return;return o.apply(this,arguments);};});
+try{const _hp49=humanPlay;humanPlay=window.humanPlay;humanPass=window.humanPass;autoMove=window.autoMove;}catch(e){}
+// chat của người xem có nhãn
+const _cs49=csSend;csSend=function(q){if(SPEC&&ONL.active&&CS.tab==='tbl'){const i=$('csIn');const t=(q||(i&&i.value)||'').trim();if(!t)return;const m={uid:USER.id,name:'👁 '+ONL.me.name+' (người xem)',t:cleanMsg(t).slice(0,120),at:Date.now(),spec:1};ONL.tr.send('chat',m);addChat(m);if(i&&!q)i.value='';csRender();return;}return _cs49(q);};
+const _sc49=sendChat;sendChat=function(){if(SPEC&&ONL.active){const i=$('chatIn');const t=(i&&i.value||'').trim().slice(0,120);if(!t)return;i.value='';const m={uid:USER.id,name:'👁 '+ONL.me.name+' (người xem)',t,at:Date.now(),spec:1};ONL.tr.send('chat',m);addChat(m);return;}return _sc49();};
+// lối vào: thẻ người chơi, bàn ở sảnh, link ?room=CODE&xem=1
+const _pt49=plTap;plTap=function(uid){_pt49(uid);try{const p=lobbyPres().find(x=>x.uid===uid);const m=$('modalIn');const code=p&&(p.room||p.table||p.watch);if(!m||!code||(ONL.active&&ONL.code===code))return;const b=document.createElement('button');b.className='alt';b.textContent='👁 Xem bàn';b.onclick=()=>spectate(code);const h=m.querySelector('p');h&&h.after(b);}catch(e){}};
+const _rl49=renderLobby;renderLobby=function(){_rl49.apply(this,arguments);try{const T=lobbyTables(lobbyPres()).filter(t=>t.tier===LOBBY_TIERS[lobbyTier]);const W=lobbyPres().filter(p=>p.watch);
+ [...document.querySelectorAll('#lobbyList .ltab')].forEach((el,i)=>{const t=T[i];if(!t||!t.count)return;const n=W.filter(p=>p.watch===t.code).length;el.querySelector('.lf').insertAdjacentHTML('beforeend',`<span class="lw" onclick="event.stopPropagation();spectate('${t.code}')">👁${n?' '+n:''} Xem</span>`);});}catch(e){}};
+(function(){try{const q=new URLSearchParams(location.search);if(q.get('xem')&&q.get('room')){const c=q.get('room').toUpperCase();const _jr=joinRoom;joinRoom=function(code){joinRoom=_jr;if(code===c)return spectate(c);return _jr.apply(this,arguments);};}}catch(e){}})();
+// người xem: dựng góc nhìn như ghế 0 nhưng tuyệt đối không đụng tới tiền/XP/thống kê của mình
+const _os49=onlineState;onlineState=function(st,fh){if(!(SPEC&&ONL.active&&st&&st.seats))return _os49.apply(this,arguments);
+ const v=Object.assign({},st,{seats:st.seats.map((s,i)=>i===0&&s?Object.assign({},s,{uid:USER.id,_real:s.uid}):(s&&s.uid===USER.id?Object.assign({},s,{uid:'x-'+i}):s))});
+ const snap=JSON.stringify(PR);let r;try{r=_os49.call(this,v,fh);}finally{if(JSON.stringify(PR)!==snap){const o=JSON.parse(snap);Object.keys(PR).forEach(k=>{if(!(k in o))delete PR[k];});Object.assign(PR,o);try{saveP();}catch(e){}}}
+ ONL.st=st;specSeat0();return r;};
+function specSeat0(){try{const st=ONL.st;if(!(SPEC&&ONL.active&&st))return;const s0=st.seats[0];const t=$('table');if(!t)return;let e=$('specSeat');if(!e||e.parentNode!==t){if(e)e.remove();e=document.createElement('div');e.id='specSeat';t.appendChild(e);}const h=s0?`<span class="av" style="--avc:${esc(s0.bg||'#456')}">${esc(s0.av||'🙂')}</span><b>${esc(s0.name)}</b><small>${(st.hands[0]||[]).length} lá</small>`:'';if(e._h!==h){e._h=h;e.innerHTML=h;try{svaScan(e);}catch(_){}}e.classList.toggle('turn',st.turn===0&&!st.over);}catch(e){}}
+setInterval(specSeat0,700);
+const _wl49=window.showOnlineResult;if(typeof _wl49==='function')window.showOnlineResult=function(){if(SPEC&&ONL.active){toast('Ván kết thúc');return;}return _wl49.apply(this,arguments);};
+const _mod49=modal;modal=function(h){if(SPEC&&ONL.active&&/Kết quả/.test(h||''))return;return _mod49.apply(this,arguments);};
+// ======== v49: danh hiệu mới + khung mới ========
+function stInc(k,n){PR.stats=PR.stats||{};PR.stats[k]=(PR.stats[k]||0)+(n||1);}
+function titleReq(t){if(t.min)return 'Đạt cấp '+t.min;if(t.stat){const n={thuiGive:'Bắt thúi heo/hàng',giftSent:'Tặng quà',friends:'Có bạn bè'}[t.stat[0]]||t.stat[0];const v=(PR.stats||{})[t.stat[0]]||0;return `${n} ${Math.min(v,t.stat[1])}/${t.stat[1]}`;}const b=BADGES.find(x=>x.id===t.badge)||{};return 'Huy hiệu «'+(b.name||t.badge)+'»'+(b.desc?' — '+b.desc:'');}
+openTitles=function(){const L=levelInfo(PR.xp),cur=currentTitle(PR);
+ const cats=[['Cấp độ',TITLES.filter(t=>t.min)]];const g={};TITLES.filter(t=>!t.min).forEach(t=>{const c=t.cat||'Thành tích';(g[c]=g[c]||[]).push(t);});Object.keys(g).forEach(c=>cats.push([c,g[c]]));
+ const own=TITLES.filter(t=>titleUnlocked(PR,t)).length;
+ modal(`<h3>${I('medal')} Cấp ${L.level} · ${titleHTML(cur)}</h3><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><p class="small">${fmt(L.cur)}/${fmt(L.need)} XP đến cấp ${L.level+1} (thưởng ${fmt(levelReward(L.level+1))} xu). Đã mở ${own}/${TITLES.length} danh hiệu.</p>`+
+ cats.map(([c,arr])=>`<div class="tcat">${c} <small class="small">(${arr.filter(t=>titleUnlocked(PR,t)).length}/${arr.length})</small></div>`+arr.map(t=>{const u=titleUnlocked(PR,t);return `<div class="trow ${u?'':'lk'}"><div style="flex:1;min-width:0">${titleHTML(t)}<small>${titleReq(t)}</small></div>${t.id===cur.id?I('check'):u?`<button class="alt" onclick="pickTitle('${t.id}')">Chọn</button>`:I('lock')}</div>`;}).join('')).join(''));};
+const _osh49=openShop;openShop=function(tab){_osh49(tab);try{document.querySelectorAll('#modalIn [onclick^="doBuy("]').forEach(b=>{const id=(b.getAttribute('onclick').match(/doBuy\('([^']+)'/)||[])[1];const it=SHOP.find(x=>x.id===id);if(it&&it.lv&&levelInfo(PR.xp).level<it.lv&&!it.badge){const s=document.createElement('span');s.className='lk';s.innerHTML=I('lock')+' Cấp '+it.lv;b.replaceWith(s);return;}if(it&&it.badge&&!(PR.badges&&PR.badges[it.badge])){const bd=BADGES.find(x=>x.id===it.badge)||{};const s=document.createElement('span');s.className='lk';s.innerHTML=I('lock')+' '+esc(bd.name||'Huy hiệu');s.title='Cần huy hiệu: '+(bd.name||'');b.replaceWith(s);}});}catch(e){}};

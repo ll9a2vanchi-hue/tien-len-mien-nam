@@ -191,11 +191,26 @@ const TITLES=[
  {id:'doc_co',name:'Độc Cô Cầu Bại',min:60,tier:7},
  {id:'do_te_heo',name:'Đồ Tể Sát Heo',badge:'chop10',tier:5},{id:'thien_menh',name:'Thiên Mệnh Tới Trắng',badge:'instant',tier:6},
  {id:'phu_ho',name:'Phú Hộ Kim Tiền',badge:'rich',tier:5},{id:'bat_bai_ct',name:'Bất Bại Chiến Thần',badge:'streak5',tier:6},
+ {id:'lv2',name:'Học Việc Sòng Bài',min:2,tier:1},{id:'lv4',name:'Tiểu Bài Thủ',min:4,tier:1},{id:'lv6',name:'Lãng Khách Giang Hồ',min:6,tier:2},
+ {id:'lv10',name:'Tay Chơi Phố Cổ',min:10,tier:2},{id:'lv14',name:'Cao Thủ Hẻm Nhỏ',min:14,tier:3},{id:'lv18',name:'Quân Sư Bài Bạc',min:18,tier:3},
+ {id:'lv22',name:'Đại Hiệp Chiếu Bạc',min:22,tier:4},{id:'lv28',name:'Đổ Vương',min:28,tier:4},{id:'lv33',name:'Thánh Thủ Tiến Lên',min:33,tier:5},
+ {id:'lv40',name:'Kỳ Tài Thiên Hạ',min:40,tier:5},{id:'lv46',name:'Thiên Vương Sòng Bạc',min:46,tier:6},{id:'lv55',name:'Hoàng Đế Bài Bạc',min:55,tier:6},
+ {id:'lv65',name:'Bài Thánh Vạn Cổ',min:65,tier:8},{id:'lv70',name:'Thần Bài Thượng Cổ',min:70,tier:8},{id:'lv80',name:'Thiên Đế Bài Bạc',min:80,tier:9},
+ {id:'lv90',name:'Bất Tử Đổ Tôn',min:90,tier:9},{id:'lv100',name:'Vạn Cổ Chí Tôn',min:100,tier:9},
+ {id:'luoc_su',name:'Luộc Sư',badge:'luoc_2',tier:4,cat:'Luộc máy'},{id:'luoc_ton',name:'Luộc Tôn Đại Đế',badge:'luoc_4',tier:8,cat:'Luộc máy'},
+ {id:'vua_demla',name:'Vua Đếm Lá',badge:'demla_3',tier:6,cat:'Chế độ chơi'},{id:'thanh_bacao',name:'Thánh Ba Cào',badge:'bc_3',tier:6,cat:'Chế độ chơi'},
+ {id:'than_xd',name:'Thần Xì Dách',badge:'xd_3',tier:6,cat:'Chế độ chơi'},{id:'ngu_linh',name:'Ngũ Linh Tướng',badge:'xd_nl',tier:5,cat:'Chế độ chơi'},
+ {id:'ba_tay',name:'Tam Tây Chi Vương',badge:'bc_bacao',tier:5,cat:'Chế độ chơi'},{id:'sat_thu_thui',name:'Sát Thủ Thúi Heo',stat:['thuiGive',20],tier:5,cat:'Thành tích'},
+ {id:'phong_luu',name:'Phong Lưu Công Tử',stat:['giftSent',30],tier:5,cat:'Xã giao'},{id:'dai_su_tt',name:'Đại Sứ Thân Thiện',stat:['friends',10],tier:5,cat:'Xã giao'},
+ {id:'top10',name:'Top 10 Server',badge:'lb10',tier:6,cat:'Xếp hạng'},{id:'top3',name:'Top Server Chí Tôn',badge:'lb3',tier:9,cat:'Xếp hạng'},
+ {id:'diet_ct',name:'Diệt Cao Thủ',badge:'master25',tier:6,cat:'Thành tích'},{id:'ty_phu',name:'Tỷ Phú Sòng Bài',badge:'rich200k',tier:8,cat:'Thành tích'},
+ {id:'chien_than',name:'Chiến Thần Bất Bại',badge:'streak10',tier:8,cat:'Thành tích'},
 ];
 const TITLE_MIGRATE={tan_thu:'tan_binh',tap_su:'tay_mo',tay_choi:'kiem_khach',lao_lang:'hiep_si',cao_thu:'cao_thu_an',bac_thay:'dai_su',than_bai:'than_bai_vd',huyen_thoai:'chi_ton',do_te:'do_te_heo',vua_toi_trang:'thien_menh',dai_gia:'phu_ho',bat_bai:'bat_bai_ct'};
 function migrateTitle(P){if(P&&P.title&&TITLE_MIGRATE[P.title])P.title=TITLE_MIGRATE[P.title];return P;}
 function titleForLevel(l){let t=TITLES[0];for(const x of TITLES)if(x.min&&l>=x.min)t=x;return t;}
-function titleUnlocked(P,t){return t.min?levelInfo(P.xp).level>=t.min:!!(P.badges&&P.badges[t.badge]);}
+TITLES.sort((a,b)=>(a.min?0:1)-(b.min?0:1)||(a.min||0)-(b.min||0));
+function titleUnlocked(P,t){if(t.min)return levelInfo(P.xp).level>=t.min;if(t.stat)return ((P.stats||{})[t.stat[0]]||0)>=t.stat[1];return !!(P.badges&&P.badges[t.badge]);}
 function unlockedTitles(P){return TITLES.filter(t=>titleUnlocked(P,t));}
 function currentTitle(P){migrateTitle(P);const t=P.title&&TITLES.find(x=>x.id===P.title);return t&&titleUnlocked(P,t)?t:titleForLevel(levelInfo(P.xp).level);}
 function setTitle(P,id){const t=TITLES.find(x=>x.id===id);if(!t||!titleUnlocked(P,t))return false;P.title=id;return true;}
