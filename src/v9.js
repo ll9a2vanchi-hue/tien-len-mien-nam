@@ -37,7 +37,7 @@ const _sr=showResult;showResult=function(rank){_sr(rank);const m=$('modalIn');if
 const BETS2=[100,200,500,1000,2000,5000];let pickN=TBL||4;
 function suggestBet(){const ok=BETS2.filter(b=>b*8<=PR.xu);return ok.length?ok[ok.length-1]:BETS2[0];}
 openTables=function(){if(!BETS2.includes(PR.bet)||PR.bet>PR.xu)PR.bet=Math.min(suggestBet(),PR.xu>=100?suggestBet():100);const sug=suggestBet();
- const opt=n=>{const x=TABLE_XP[n],pl=PLACE_XU[n].map(m=>(m>0?'+':'')+fmt(Math.round(PR.bet*m))).join(' / ');
+ const opt=n=>{const x=TABLE_XP[n],pl=PLACE_XU[n].map(m=>{const v=Math.round(PR.bet*m);return (v>0?'+':v<0?'−':'')+kxu(Math.abs(v));}).join(' / ');
   return `<button class="alt ${pickN===n?'on':''}" onclick="pickN=${n};openTables()"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu: ${pl}</small></span><span class="mul">XP ×${x}</span></button>`;};
  modal(`<h3>${I('bot')} Chơi với máy</h3><p class="small">1. Chọn số người</p><div class="tsel">${opt(2)}${opt(3)}${opt(4)}</div>
  <p class="small" style="margin-top:12px">2. Chọn mức cược · Bạn có ${I('coin')} ${fmt(PR.xu)}</p><div class="betrow">${BETS2.map(b=>`<button class="${b===PR.bet?'':'alt'}" ${b>PR.xu?'disabled':''} onclick="PR.bet=${b};saveP();updHud();openTables()">${fmt(b)}${b===sug?'<small>gợi ý</small>':''}</button>`).join('')}</div>
