@@ -225,7 +225,7 @@ const _md18=modal;modal=function(){document.body.classList.add('mopen2');return 
 const _cm18=closeModal;closeModal=function(){document.body.classList.remove('mopen2');return _cm18.apply(this,arguments);};
 // ---- Hiệu ứng nhận thưởng xu / XP (luôn hiển thị, kể cả giảm chuyển động)
 let _px=null,_pxp=null,_endHold=null;
-function floatText(x,y,txt,cls){const d=document.createElement('div');d.className='ftxt '+(cls||'')+(RM?' rm':'');d.textContent=txt;d.style.left=x+'px';d.style.top=y+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),RM?2200:1700);}
+function floatText(x,y,txt,cls){const d=document.createElement('div');d.className='ftxt '+(cls||'')+(RM?' rm':'');d.textContent=txt;x=Math.max(70,Math.min(innerWidth-70,x));y=Math.max(40,y);d.style.left=x+'px';d.style.top=y+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),RM?2200:1700);}
 function rectOf(sel){const e=typeof sel==='string'?document.querySelector(sel):sel;if(!e)return null;const r=e.getBoundingClientRect();return r.width?r:null;}
 function xuAnchor(){return rectOf('#xu')||{left:innerWidth/2-30,top:8,width:60,height:24};}
 function xpAnchor(){return rectOf('#meInfo .xpb')||rectOf('#meInfo')||rectOf('#home .pn')||{left:innerWidth/2-40,top:innerHeight-260,width:80,height:10};}
@@ -250,3 +250,35 @@ const _sr19=showResult;showResult=function(rank){_sr19(rank);const h=_endHold;co
  const D=RM?0:1100,t0=performance.now();let lastTick=0;const fx=$('rwXu'),fp=$('rwXp');
  const step=t=>{const k=D?Math.min(1,(t-t0)/D):1,q=1-Math.pow(1-k,3);fx.textContent=(h.dx>=0?'+':'−')+fmt(Math.round(Math.abs(h.dx)*q));fp.textContent='+'+fmt(Math.round(h.dp*q));if(t-lastTick>90&&k<1){lastTick=t;sfx('tick');}
   if(k<1)requestAnimationFrame(step);else{sfx(h.dx>=0?'coin':'bad');setTimeout(()=>finishRewards(rectOf(box)),RM?200:350);}};requestAnimationFrame(step);};
+// ---- Tiền chặt heo (chuyển xu thật giữa người chặt và người bị chặt)
+function seatCenter(p){const e=p===0?(rectOf('#meBar .av')||rectOf('#meInfo .lvb')||rectOf('#hand')):rectOf('#s'+p+' .av');return e?{x:e.left+e.width/2,y:e.top+e.height/2,r:e}:{x:innerWidth/2,y:p===0?innerHeight-200:120};}
+function moneyFX(payer,receiver,amt,label){const a=seatCenter(payer),b=seatCenter(receiver);
+ floatText(a.x,a.y-40,'−'+fmt(amt)+' xu','loss big');floatText(b.x,b.y-40,'+'+fmt(amt)+' xu','gain big');sfx('coin');setTimeout(()=>sfx('coin'),250);
+ if(!RM)for(let i=0;i<8;i++){const c=document.createElement('div');c.className='flycoin';c.innerHTML=I('coin');c.style.left=a.x+'px';c.style.top=a.y+'px';document.body.appendChild(c);
+  c.animate([{transform:'translate(-50%,-50%)'},{transform:`translate(calc(-50% + ${(b.x-a.x)/2}px),calc(-50% + ${(b.y-a.y)/2-50}px)) scale(1.2)`,offset:.5},{transform:`translate(calc(-50% + ${b.x-a.x}px),calc(-50% + ${b.y-a.y}px)) scale(.7)`}],{duration:700,delay:i*60,easing:'ease-in-out',fill:'forwards'});setTimeout(()=>c.remove(),760+i*60);}
+ if(label){msg(label);toast(label);}}
+function settleChop(){if(!G||!G.pend)return;const r=chopSettle(G.pend,{0:PR.xu});G.pend=null;if(!r||!r.amount)return;
+ if(r.payer===0)PR.xu=Math.max(0,PR.xu-r.amount);if(r.receiver===0)PR.xu+=r.amount;G.chopNet=(G.chopNet||0)+(r.receiver===0?r.amount:r.payer===0?-r.amount:0);
+ if(r.payer===0||r.receiver===0)saveP();moneyFX(r.payer,r.receiver,r.amount,`${NAMES[r.receiver]} ${r.chain>1?'chặt chồng':'chặt heo'} ${NAMES[r.payer]}: +${fmt(r.amount)} xu`);}
+const _dp20=doPlay;doPlay=function(p,cards,src){if(G&&!G.online){try{G.pend=chopStep(G.pend||null,G.cur,G.pile,G.curBy,detect(cards),p,PR.bet);}catch(e){}}return _dp20(p,cards,src);};
+const _nt20=nextTurn;nextTurn=function(){const had=G&&G.cur;_nt20();if(G&&!G.online&&had&&!G.cur&&G.pend)settleChop();};
+const _eg20=endGame;endGame=function(i){if(G&&!G.online)try{settleChop();}catch(e){}return _eg20(i);};
+const _sr20=showResult;showResult=function(rank){_sr20(rank);if(!G||!G.chopNet)return;const m=$('modalIn');const rb=m&&m.querySelector('.rewbox');const html=`<div class="row" style="color:${G.chopNet>0?'#ffd84d':'#ff6b6b'}"><b style="flex:1">🐷 Tiền chặt heo trong ván</b><span>${G.chopNet>0?'+':'−'}${fmt(Math.abs(G.chopNet))} xu</span></div>`;
+ if(rb)rb.insertAdjacentHTML('beforebegin',html);else{const b=m&&m.querySelector('button');if(b)b.insertAdjacentHTML('beforebegin',html);}};
+// online: chủ bàn thanh toán, máy khách hiển thị + cộng/trừ xu của mình
+const _os20=onlineState;onlineState=function(st,fh){_os20(st,fh);try{if(!st||!st.settle||!st.seats)return;const key=JSON.stringify(st.seats.map(s=>s&&s.uid))+':'+st.settle.id+':'+(st.firstCard)+':'+(st.hands||[]).map(h=>h&&h.length).join('');
+  if(ONL._setKey===st.settle.id+'@'+(st.dealId||st.firstCard))return;ONL._setKey=st.settle.id+'@'+(st.dealId||st.firstCard);
+  const me=st.seats.findIndex(s=>s&&s.uid===(USER&&USER.id));const L=s=>(s-me+4)%4,r=st.settle;let amt=r.amount;
+  if(r.payer===me){amt=Math.min(amt,PR.xu);PR.xu-=amt;}if(r.receiver===me)PR.xu+=amt;if(r.payer===me||r.receiver===me){G.chopNet=(G.chopNet||0)+(r.receiver===me?amt:-amt);saveP();}
+  const nm=i=>(st.seats[i]&&st.seats[i].name)||'?';moneyFX(L(r.payer),L(r.receiver),amt,`${nm(r.receiver)} ${r.chain>1?'chặt chồng':'chặt heo'} ${nm(r.payer)}: +${fmt(amt)} xu`);}catch(e){}};
+// ---- Chủ phòng chỉnh số ghế / thêm bớt máy
+function hostSize(n){if(!ONL.host)return;if(!ONL.host.setSize(n))toast('Không đổi được (đang chơi hoặc quá ít ghế)');}
+function hostBot(i,on){if(!ONL.host)return;if(!ONL.host.setBot(i,on))toast('Không đổi được lúc này');}
+const _rr20=renderRoom;renderRoom=function(){_rr20.apply(this,arguments);try{const r=ONL.room;if(!ONL.active||!r)return;const h4=[...document.querySelectorAll('#home h4')].find(e=>/Người chơi/.test(e.textContent));if(!h4)return;
+ const size=r.size||4,seats=r.seats||[],hum=seats.filter(s=>s&&!s.bot).length,bots=seats.filter(s=>s&&s.bot).length;h4.textContent=`Người chơi (${hum} người + ${bots} máy / ${size} ghế)`;
+ const amHost=!!ONL.host,playing=r.playing;let html=`<div class="comp">`;
+ if(amHost)html+=`<div class="srow2"><span class="small">Số ghế:</span>${[2,3,4].map(n=>`<button class="${n===size?'':'alt'}" ${playing?'disabled':''} onclick="hostSize(${n})">${n}</button>`).join('')}</div>`;
+ html+=`<div class="seatgrid">${[0,1,2,3].slice(0,size).map(i=>{const s=seats[i];if(s&&!s.bot)return `<div class="sg hum">👤 ${esc(s.name||'')}</div>`;
+  if(s&&s.bot)return `<div class="sg bot">🤖 Máy ${amHost&&!playing?`<button class="x" onclick="hostBot(${i},false)" title="Bỏ máy">✕</button>`:''}</div>`;
+  return `<div class="sg empty">${amHost&&!playing?`<button class="alt" onclick="hostBot(${i},true)">+ Thêm máy</button>`:'Ghế trống'}</div>`;}).join('')}</div><p class="small">Máy có độ khó ngẫu nhiên · XP/xu tính theo tổng số ghế có người/máy (${seats.filter(Boolean).length} ghế).</p></div>`;
+ h4.insertAdjacentHTML('afterend',html);if(r.cfg){const lab=[...document.querySelectorAll('#home label')].find(l=>/Thêm máy vào ghế trống/.test(l.textContent));if(lab)lab.style.display='none';}}catch(e){}};

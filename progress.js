@@ -102,7 +102,7 @@ function onPlay(P,info,prev){const s=P.stats;
  if(info.type==='pair')questEvent(P,'pair');if(info.type==='single')questEvent(P,'single');if(info.type==='pairseq')questEvent(P,'pairseq');if(info.type==='quad')questEvent(P,'quad');if(info.type==='straight'&&info.len>=5)questEvent(P,'straight5');if(!prev)questEvent(P,'lead');if(info.type==='triple')questEvent(P,'triple');if(info.type==='straight'){questEvent(P,'straight');s.longStraight=Math.max(s.longStraight,info.len);}
  if(info.type==='quad')s.quads++;if(info.type==='pairseq'&&info.len>=4)s.pairseq4++;
  if((info.top>>2)===12&&(info.type==='single'||info.type==='pair'||info.type==='triple'))questEvent(P,'two',info.len);
- let bonus=0;if(prev&&(prev.top>>2)===12&&info.type!==prev.type){s.chops++;questEvent(P,'chop');if(P._tbl===2)questEvent(P,'chop2');bonus=Math.round(P.bet*0.5*(prev.type==='pair'?2:1));P.xu+=bonus;}
+ let bonus=0;if(prev&&(prev.top>>2)===12&&info.type!==prev.type){s.chops++;questEvent(P,'chop');if(P._tbl===2)questEvent(P,'chop2');}
  const lv=prev&&(prev.top>>2)===12&&info.type!==prev.type?addXp(P,XP_CHOP):null;
  return{bonus,badges:checkBadges(P),lv};}
 // place: 0..3, instant: human won tới trắng

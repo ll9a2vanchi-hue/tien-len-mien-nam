@@ -17,8 +17,9 @@ function oDeal(seats,lastWinnerUid,rng){const deck=shuffleDeck(rng),act=seats.ma
  if(lw!==undefined)st.turn=lw;else{let low=99,who=act[0];for(const p of act){const m=Math.min(...hands[p]);if(m<low){low=m;who=p;}}st.turn=who;st.first=true;st.firstCard=low;}
  st.hist.push({txt:`${seatName(st,st.turn)} đánh trước`,cls:'ps'});return st;}
 function oActive(st){return [0,1,2,3].filter(p=>st.seats[p]&&st.hands[p].length>0);}
+function oSettle(st){if(!st.pend||typeof chopSettle!=='function'){st.pend=null;return;}const r=chopSettle(st.pend,null);st.pend=null;if(r&&r.amount)st.settle=Object.assign(r,{id:((st.settle&&st.settle.id)||0)+1});}
 function oNext(st){let p=st.turn;for(let k=0;k<4;k++){p=(p+1)%4;if(!st.seats[p])continue;if(st.hands[p].length===0&&p!==st.curBy)continue;
-  if(p===st.curBy){st.cur=null;st.passed=[0,0,0,0];if(st.hands[p].length===0){let q=p;do{q=(q+1)%4}while(!st.seats[q]||st.hands[q].length===0);st.turn=q;}else st.turn=p;
+  if(p===st.curBy){oSettle(st);st.cur=null;st.passed=[0,0,0,0];if(st.hands[p].length===0){let q=p;do{q=(q+1)%4}while(!st.seats[q]||st.hands[q].length===0);st.turn=q;}else st.turn=p;
    st.curBy=null;st.prev=st.pile;st.pile=[];st.hist=[{txt:`— Vòng mới: ${seatName(st,st.turn)} cầm cái —`,cls:'ps'}];return;}
   if(st.passed[p]||st.hands[p].length===0)continue;st.turn=p;return;}}
 // Áp dụng hành động của ghế `seat`. Trả {ok,err}
@@ -28,11 +29,12 @@ function oAct(st,seat,a){if(!st||st.over)return{ok:false,err:'Ván đã kết th
  const info=detect(cards);if(!info)return{ok:false,err:'Bộ bài không hợp lệ'};if(st.first&&!cards.includes(st.firstCard))return{ok:false,err:'Phải đánh kèm lá nhỏ nhất'};
  if(!canBeat(info,st.cur))return{ok:false,err:'Không chặn được bài trên bàn'};
  const prev=st.cur,prevBy=st.curBy,prevCards=st.pile,chop=!!(prev&&info.type!==prev.type),heo=chop&&(prev.top>>2)===12;
+ if(typeof chopStep==='function')st.pend=chopStep(st.pend||null,prev,prevCards,prevBy,info,seat,st.bet||100);
  st.hands[seat]=st.hands[seat].filter(c=>!cards.includes(c));
  st.hist.push({txt:prev?`<b>${seatName(st,seat)}</b>: ${cardTxt(cards)} ${chop?'<b>CHẶT</b>':'ăn'} ${cardTxt(prevCards)} của ${seatName(st,prevBy)}`:`<b>${seatName(st,seat)}</b> đánh: ${cardTxt(cards)}`,cls:chop?'chop':''});
  st.cur=info;st.curBy=seat;st.prev=prevCards;st.pile=sortCards(cards);st.first=false;st.ev={kind:'play',seat,info,prev,chop,heo,cards};
  if(st.hands[seat].length===0){st.finished.push(seat);st.hist.push({txt:`🏁 ${seatName(st,seat)} về ${['nhất','nhì','ba','bét'][st.finished.length-1]}!`,cls:''});st.ev.fin=st.finished.length;}
- const act=oActive(st);if(st.hands[seat].length===0&&act.length<=1){st.finished.push(...act);st.over=true;st.rank=st.finished.slice();return{ok:true};}
+ const act=oActive(st);if(st.hands[seat].length===0&&act.length<=1){oSettle(st);st.finished.push(...act);st.over=true;st.rank=st.finished.slice();return{ok:true};}
  oNext(st);return{ok:true};}
 function oBotMove(st,lv){const p=st.turn,others=oActive(st).filter(q=>q!==p).map(q=>st.hands[q].length);
  const played=[];(st.hist||[]).forEach(h=>{if(h&&h.cards)played.push(...h.cards);});
@@ -42,17 +44,22 @@ function oBotMove(st,lv){const p=st.turn,others=oActive(st).filter(q=>q!==p).map
 class OnlineHost{
  constructor(tr,me,opt){this.tr=tr;this.me=me;this.opt=Object.assign({fillBots:true,botDelay:900,turnMs:30000},opt||{});this.players=[me];this.seats=[null,null,null,null];this.st=null;this.lastWinner=null;this.timer=null;this.rev=0;
   tr.on('intent',m=>this.onIntent(m));tr.on('hello',m=>this.addPlayer(m));this.assign();}
- addPlayer(p){if(!p||!p.uid)return;const i=this.players.findIndex(x=>x.uid===p.uid);if(i>=0)this.players[i]=Object.assign(this.players[i],p,{gone:false});else{if(this.players.filter(x=>!x.gone).length>=4)return this.tr.send('full',{uid:p.uid});this.players.push(p);}
+ addPlayer(p){if(!p||!p.uid)return;const i=this.players.findIndex(x=>x.uid===p.uid);if(i>=0)this.players[i]=Object.assign(this.players[i],p,{gone:false});else{if(this.players.filter(x=>!x.gone).length>=(this.opt.size||4))return this.tr.send('full',{uid:p.uid});this.players.push(p);}
   if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===p.uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:false});this.push();return;}}
   this.assign();this.push();}
  removePlayer(uid){const p=this.players.find(x=>x.uid===uid);if(!p)return;p.gone=true;
   if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:true});this.st.hist.push({txt:`${this.st.seats[s].name} mất kết nối — máy chơi thay`,cls:'ps'});this.push();this.tick();}}
   else{this.players=this.players.filter(x=>x.uid!==uid);this.assign();this.push();}}
- assign(){const ps=this.players.filter(x=>!x.gone);this.seats=[0,1,2,3].map(i=>ps[i]?Object.assign({},ps[i],{bot:false}):null);}
- room(){return{bet:this.opt.bet||null,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
+ assign(){const ps=this.players.filter(x=>!x.gone),size=this.opt.size||4;this.bots=this.bots||[false,false,false,false];
+  let freeSeats=[0,1,2,3].filter(i=>i<size&&!this.bots[i]).length;for(let i=size-1;i>=0&&freeSeats<ps.length;i--)if(this.bots[i]){this.bots[i]=false;freeSeats++;}
+  let k=0,b=0;this.seats=[0,1,2,3].map(i=>{if(i>=size)return null;if(this.bots[i])return{uid:null,name:OBOTS[(b++ + ps.length)%OBOTS.length],bot:true,av:'🤖',lv:5+((i*7)%20)};const h=ps[k++];return h?Object.assign({},h,{bot:false}):null;});}
+ setSize(n){if(this.st&&!this.st.over)return false;n=Math.max(2,Math.min(4,n|0));const hum=this.players.filter(x=>!x.gone).length;if(n<hum)return false;this.opt.size=n;this._cfg=true;this.bots=(this.bots||[]).map((v,i)=>i<n&&v);this.assign();this.push();return true;}
+ setBot(i,on){if(this.st&&!this.st.over)return false;if(i<0||i>=(this.opt.size||4))return false;this.bots=this.bots||[false,false,false,false];
+  if(on){if(this.seats[i]&&!this.seats[i].bot)return false;this.bots[i]=true;}else this.bots[i]=false;this._cfg=true;this.assign();this.push();return true;}
+ room(){return{size:this.opt.size||4,cfg:!!this._cfg,bet:this.opt.bet||null,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
  start(rng){if(this.st&&!this.st.over)return false;this.assign();const humans=this.seats.filter(Boolean).length;if(humans<2&&!this.opt.fillBots)return false;
-  const seats=this.seats.slice();if(this.opt.fillBots){let k=0;for(let i=0;i<4;i++)if(!seats[i]){seats[i]={uid:null,name:OBOTS[(k++ +humans)%OBOTS.length],bot:true,av:'🤖',lv:5};}}
-  if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);if(this.st.over)this.finish();this.push();this.tick();return true;}
+  const seats=this.seats.slice();if(this.opt.fillBots&&!this._cfg){let k=0;for(let i=0;i<(this.opt.size||4);i++)if(!seats[i]){seats[i]={uid:null,name:OBOTS[(k++ +humans)%OBOTS.length],bot:true,av:'🤖',lv:5};}}
+  if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);this.st.bet=this.opt.bet||100;if(this.st.over)this.finish();this.push();this.tick();return true;}
  onIntent(m){if(!this.st||!m)return;const seat=this.st.seats.findIndex(s=>s&&s.uid===m.uid);if(seat<0)return;const r=oAct(this.st,seat,m.a||{});
   if(!r.ok){this.tr.send('reject',{uid:m.uid,err:r.err});return;}if(this.st.over)this.finish();this.push();this.tick();}
  finish(){const w=this.st.rank&&this.st.seats[this.st.rank[0]];this.lastWinner=w?w.uid:null;clearTimeout(this.timer);}

@@ -1,0 +1,14 @@
+const R=require('./rules.js');Object.assign(global,R);const K=require('./chop.js');let ok=0,bad=0;const t=(n,c)=>{c?ok++:(bad++,console.log('FAIL',n));};
+const C=(r,s)=>r*4+s,B=100;
+const two_s=[C(12,0)],two_h=[C(12,3)],pair2=[C(12,1),C(12,2)];
+const ps3=[C(3,0),C(3,1),C(4,0),C(4,1),C(5,0),C(5,1)],quad=[C(7,0),C(7,1),C(7,2),C(7,3)],ps4=[C(8,0),C(8,1),C(9,0),C(9,1),C(10,0),C(10,1),C(11,0),C(11,1)];
+t('black 2 = 0.5x',K.chopValue(two_s,detect(two_s),B)===50);t('red 2 = 1x',K.chopValue(two_h,detect(two_h),B)===100);t('pair ♣♦ = 1.5x',K.chopValue(pair2,detect(pair2),B)===150);
+t('bomb = 1x',K.chopValue(ps3,detect(ps3),B)===100);
+let p=K.chopStep(null,detect(two_h),two_h,0,detect(ps3),1,B);t('A->B 100',p.payer===0&&p.receiver===1&&p.amount===100);
+p=K.chopStep(p,detect(ps3),ps3,1,detect(quad),2,B);t('chain B->C 200',p.payer===1&&p.receiver===2&&p.amount===200&&p.chain===2);
+p=K.chopStep(p,detect(quad),quad,2,detect(ps4),3,B);t('chain C->D 300',p.payer===2&&p.receiver===3&&p.amount===300);
+t('normal beat not chop',K.chopStep(null,detect(two_s),two_s,0,detect(two_h),1,B)===null);
+t('non-2 single not chop',K.chopStep(null,detect([C(11,0)]),[C(11,0)],0,detect(quad),1,B)===null);
+t('settle clamp to wallet',K.chopSettle({payer:0,receiver:1,amount:300},{0:120}).amount===120);t('settle bot unlimited',K.chopSettle({payer:2,receiver:0,amount:300},{0:5}).amount===300);
+t('pair of 2 chopped by quad',K.chopStep(null,detect(pair2),pair2,1,detect(quad),0,B).amount===150);
+console.log('pass',ok,'fail',bad);

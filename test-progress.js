@@ -15,7 +15,7 @@ P=X.newProfile();P.bet=100;let r=X.onGameEnd(P,0,false);
 t('first game+win badges',r.badges.map(b=>b.id).sort().join()==='first_game,first_win');
 t('payout 1st + badge xu + level-up 2 reward',P.xu===1000+200+50+100+100);
 r=X.onPlay(P,{type:'quad',len:4,top:40},{type:'single',len:1,top:51});
-t('chop bonus',r.bonus===50&&P.stats.chops===1);t('chop+quad badges',r.badges.map(b=>b.id).sort().join()==='chop1,quad');
+t('chop: no free bonus (paid by transfer)',r.bonus===0&&P.stats.chops===1);t('chop+quad badges',r.badges.map(b=>b.id).sort().join()==='chop1,quad');
 t('no repeat badge',X.onPlay(P,{type:'quad',len:4,top:44},{type:'single',len:1,top:50}).badges.every(b=>b.id!=='quad'));
 X.onGameEnd(P,0,false);X.onGameEnd(P,0,false);t('streak3',!!P.badges.streak3);X.onGameEnd(P,3,false);t('streak reset',P.stats.streak===0&&P.stats.bestStreak===3);
 P.xu=9990;X.onGameEnd(P,1,false);t('rich badge',!!P.badges.rich);
