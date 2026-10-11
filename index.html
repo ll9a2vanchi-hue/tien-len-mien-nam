@@ -601,6 +601,17 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 .pkact button{padding-left:4px;padding-right:4px}
 .pkboard{display:flex;justify-content:center;gap:4px;min-height:64px;align-items:center}.pkboard .cgc{--cw:44px}.pkboard .slot{width:44px;height:62px;border:1.5px dashed #ffffff33;border-radius:6px}
 .pkdb{position:absolute;top:0;right:4px;font-size:10px;font-weight:900;background:#fff;color:#000;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center}.pkdb.sb,.pkdb.bb{width:auto;border-radius:6px;padding:0 3px;background:#4fc3f7}
+.pk .pkopp{grid-template-columns:repeat(3,1fr);gap:4px}.pk .pkopp.n2{grid-template-columns:1fr}.pk .pkopp.n3{grid-template-columns:1fr 1fr}.pk .pkopp.n5{grid-template-columns:1fr 1fr}.pk .pkopp>.pks:last-child:nth-child(odd){grid-column:auto}.pk .pkopp.n4>.pks:last-child{grid-column:auto}
+.pk .pkh .cgc{--cw:30px;margin-left:-10px}.pk .pkh{padding-left:10px}.pk .pks.me .pkh .cgc{--cw:56px;margin-left:-8px}.pk .mgseat .av{width:32px;height:32px;font-size:18px}.pkstk{font-size:10px;color:#ddd}.pkall{background:linear-gradient(#ff7043,#c62828)!important;color:#fff!important}
+.dmchain{position:relative;display:block!important;overflow:hidden!important}.dmchain>.small{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.dmchain .dmt{border-radius:3px}.dmchain .dmt .dmh{width:calc(var(--u)*1.7);height:calc(var(--u)*1.7);padding:1px}
+.dmt.eL .dmh:first-child,.dmt.eR .dmh:last-child,.dmt.eD{box-shadow:0 0 0 2px #ffd84d,0 0 10px #ffd84d;border-radius:3px;background:#fff6c8}
+.dmt.pick{cursor:pointer;animation:xetp 1s infinite;outline:3px solid #ffd84d}
+.dmends{position:absolute;right:6px;bottom:2px;font-size:11px;color:#ffe48a;background:#0007;border-radius:8px;padding:0 6px}.dmends b{color:#fff}
+.dmme .dmt.bad{opacity:.38;filter:grayscale(.6)}.dmme .dmt.ok{opacity:1;box-shadow:0 0 0 1.5px #7dffb0aa;transform:none}.dmme .dmt.sel{transform:translateY(-12px);box-shadow:0 0 0 3px #ffd84d,0 6px 10px #000a}
+.bcc.land{animation:cgpop .35s}.xtmul{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:5px}.xtmul button{margin:0;padding:6px 0;font-size:13px;font-weight:800;min-width:0}.xtnote{text-align:center;margin:2px 0 0;font-size:11px}
+.pkdeck{--cw:26px;display:inline-block;margin-right:6px;box-shadow:2px 2px 0 #3a0610,4px 4px 0 #2a0408}.pkh>.cgc.cgflip{animation:cgflip .42s cubic-bezier(.3,.7,.3,1)}
+.pkall{box-shadow:0 0 12px #ff5722aa!important;font-weight:900!important}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -641,7 +652,7 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='49da947ccc';
+const APP_VER='5ef32b957b';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -817,6 +828,10 @@ const BADGES=[
  BG('xt_2','🎩','Cao thủ xì tố','Thắng 50 ván Xì tố',2000,2,s=>V(s,'xtWin')>=50,{series:'games',k:'xtWin',goal:50}),
  BG('xt_big','💣','Tứ quý xì tố','Thắng Xì tố bằng Tứ quý trở lên',1500,3,s=>V(s,'xtBig')>=1,{series:'combo',k:'xtBig',goal:1}),
  BG('sec_xtsf','🌈','Thùng phá sảnh!','Thắng Xì tố bằng Thùng phá sảnh',5000,3,s=>V(s,'xtSF')>=1,{secret:true}),
+ BG('pk_1','♠️','Tay poker','Thắng 1 ván Poker',200,1,s=>V(s,'pkWin')>=1,{series:'games',k:'pkWin',goal:1}),
+ BG('pk_2','🎰','Cá mập poker','Thắng 50 ván Poker',2000,2,s=>V(s,'pkWin')>=50,{series:'games',k:'pkWin',goal:50}),
+ BG('pk_allin','🔥','Tất tay thắng','Thắng ván Poker khi đã tất tay',1000,2,s=>V(s,'pkAllin')>=1,{series:'combo',k:'pkAllin',goal:1}),
+ BG('sec_pksf','🌟','Royal!','Thắng Poker bằng Thùng phá sảnh',5000,3,s=>V(s,'pkSF')>=1,{secret:true}),
  BG('sec_xibang','🅰️','Xì bàng!','Thắng bằng hai con Át',3000,3,s=>V(s,'xibang')>=1,{secret:true}),
  BG('sec_chain','⛓️','Chặt chồng','Chặt ngược lại người vừa chặt mình',2500,3,s=>V(s,'chain')>=1,{secret:true}),
  BG('sec_allin','🎲','Tất tay','Thắng ván khi số xu chỉ vừa đủ cược',2500,3,s=>V(s,'allin')>=1,{secret:true}),
@@ -827,7 +842,7 @@ const BADGE_TIER=[null,{name:'Đồng',col:'#cd7f32'},{name:'Bạc',col:'#c0c8d0
 const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu});
 const QUEST_POOL=[
  Q('play3','Chơi 3 ván','game',3,150),Q('play5','Chơi 5 ván','game',5,250),Q('win1','Về nhất 1 ván','win',1,200),Q('win2','Về nhất 2 ván','win',2,400),
- Q('demla1','Về nhất 1 ván Đếm lá','demlawin',1,300),Q('dom1','Thắng 1 ván Domino','domwin',1,300),Q('xt1','Thắng 1 ván Xì tố','xtwin',1,300),Q('bcua1','Thắng 2 ván Bầu cua','bcuawin',2,250),Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
+ Q('demla1','Về nhất 1 ván Đếm lá','demlawin',1,300),Q('dom1','Thắng 1 ván Domino','domwin',1,300),Q('xt1','Thắng 1 ván Xì tố','xtwin',1,300),Q('pk1','Thắng 1 ván Poker','pkwin',1,300),Q('bcua1','Thắng 2 ván Bầu cua','bcuawin',2,250),Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
  Q('two3','Đánh ra 3 con heo (2)','two',3,200),Q('chop1','Chặt 1 heo','chop',1,400),
  Q('pairs10','Đánh 10 đôi','pair',10,300),Q('straight5l','Đánh 1 sảnh từ 5 lá','straight5',1,250),Q('pairseq1','Đánh 1 đôi thông','pairseq',1,350),
  Q('quad1','Đánh 1 tứ quý','quad',1,500),Q('win2p','Thắng 1 ván bàn 2 người','win2',1,200),Q('win3p','Thắng 1 ván bàn 3 người','win3',1,250),Q('win4p','Thắng 1 ván bàn 4 người','win4',1,300),
@@ -931,6 +946,7 @@ const TITLES=[
  {id:'vua_baucua',name:'Vua Bầu Cua',badge:'bcua_2',tier:5,cat:'Chế độ chơi'},
  {id:'than_domino',name:'Thần Domino',badge:'dom_2',tier:5,cat:'Chế độ chơi'},
  {id:'vua_xito',name:'Vua Xì Tố',badge:'xt_2',tier:5,cat:'Chế độ chơi'},
+ {id:'than_poker',name:'Thần Poker',badge:'pk_2',tier:6,cat:'Chế độ chơi'},
  {id:'chien_than',name:'Chiến Thần Bất Bại',badge:'streak10',tier:8,cat:'Thành tích'},
 ];
 const TITLE_MIGRATE={tan_thu:'tan_binh',tap_su:'tay_mo',tay_choi:'kiem_khach',lao_lang:'hiep_si',cao_thu:'cao_thu_an',bac_thay:'dai_su',than_bai:'than_bai_vd',huyen_thoai:'chi_ton',do_te:'do_te_heo',vua_toi_trang:'thien_menh',dai_gia:'phu_ho',bat_bai:'bat_bai_ct'};
@@ -1400,7 +1416,7 @@ function eval5(cs,mode){const v=cs.map(pkV).sort((a,b)=>b-a);const su=cs.map(c=>
  const sc=[cat,...tb];if(mode==='xt'){const top=Math.max(...cs.map(c=>pkV(c)*4+(c&3)));sc.push(top);}return sc;}
 function cmpSc(a,b){for(let i=0;i<Math.max(a.length,b.length);i++){const d=(a[i]||0)-(b[i]||0);if(d)return d;}return 0;}
 function best5(cs,mode){if(cs.length<=5)return{sc:eval5(cs,mode),cards:cs};let best=null;const n=cs.length;
- for(let a=0;a<n;a++)for(let b=a+1;b<n;b++){const pick=cs.filter((_,i)=>i!==a&&i!==b);if(pick.length!==5)continue;const sc=eval5(pick,mode);if(!best||cmpSc(sc,best.sc)>0)best={sc,cards:pick};}return best;}
+ const rec=(st,pick)=>{if(pick.length===5){const sc=eval5(pick,mode);if(!best||cmpSc(sc,best.sc)>0)best={sc,cards:pick.slice()};return;}for(let i=st;i<n;i++){if(n-i<5-pick.length)break;pick.push(cs[i]);rec(i+1,pick);pick.pop();}};rec(0,[]);return best;}
 function handName(sc,mode){return (mode==='xt'?XT_NAMES:PK_NAMES)[sc[0]];}
 // đánh giá phần bài chưa đủ 5 lá (xì tố đang chia): chỉ xét đôi/sám/tứ + lá cao
 function evalPartial(cs){if(cs.length>=5)return eval5(cs.slice(0,5),'xt');const v=cs.map(pkV).sort((a,b)=>b-a);const cnt={};v.forEach(x=>cnt[x]=(cnt[x]||0)+1);const g=Object.entries(cnt).map(([k,n])=>[n,+k]).sort((a,b)=>b[0]-a[0]||b[1]-a[1]);
@@ -2917,8 +2933,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.44';
+const APP_V='1.45';
 const CHANGELOG=[
+ ['1.45','11/10',['Chế độ mới: Poker Texas Hold’em — 2-6 người, mù nhỏ/mù lớn, flop/turn/river, xem/theo/tố/tố hũ/tất tay, hũ phụ, máy chơi theo sức bài + ngẫu nhiên','Domino: dây nối dạng rắn quay đầu ở mép, đôi đặt dọc, tự co giãn, hai đầu mở phát sáng; chọn quân rồi bấm Đánh, chọn đầu trái/phải, nút Bốc/Bỏ lượt, quân không hợp mờ đi','Xì tố: tố x1–x10 tiền xâu, Úp/Theo/Xem, Tố tất (xác nhận), máy cũng tố tất; chia bài từng vòng có bay bài + lật','Bầu cua: chip bay vòng cung từ người đặt tới ô cược, máy đặt lần lượt','Huy hiệu/nhiệm vụ/danh hiệu Poker']],
  ['1.44','11/10',['Chế độ mới: Xì tố 32 lá (7→A) — 2-5 người, lá tẩy úp, 4 vòng cược Xem/Theo/Tố/Bỏ, tất tay có hũ phụ, máy cược theo sức bài','Bầu cua: mỗi người một màu, chip có avatar trên từng ô, chip thắng bay về chủ, chip thua về nhà cái','Huy hiệu/nhiệm vụ/danh hiệu Xì tố']],
  ['1.43','11/10',['Chế độ mới: Domino đôi sáu — 2-4 người, bốc nọc khi không đi được, bí bài tính người ít nút nhất, người thua trả xu theo số nút còn lại','Huy hiệu/nhiệm vụ/danh hiệu Domino']],
  ['1.42','11/10',['Chế độ mới: Bầu cua tôm cá — đặt chip nhiều ô, lắc bát có âm thanh, mở bát, trả 1 ăn 1 mỗi mặt trùng; chơi con hoặc làm cái','Huy hiệu/nhiệm vụ/danh hiệu Bầu cua; ô chọn chế độ 3 cột']],
@@ -3362,7 +3379,15 @@ const BC_COL=['#ffd84d','#4fc3f7','#ff7ab6','#7dff9a'];
 function bcChipsOn(s){const st=MG.st;const out=[];if(st.bets[s])out.push({o:0,a:st.bets[s],av:myAv()});st.bots.forEach((b,i)=>{const a=(b.bets||{})[s];if(a)out.push({o:i+1,a,av:b.av});});return out;}
 function bcBetTxt(b){return Object.entries(b).filter(([,v])=>v).map(([s,v])=>BC_EMO[s]+kxu(v)).join(' ');}
 function bcTot(b){return Object.values(b||{}).reduce((a,x)=>a+x,0);}
-function bcBotBets(){const st=MG.st;mgRefill(st.bots,500);st.bots.forEach(b=>{b.bets={};if(st.role==='con')return;const k=1+Math.floor(Math.random()*3);for(let i=0;i<k;i++){const s=BC_SYM[Math.floor(Math.random()*6)];const a=[100,200,500,1000][Math.floor(Math.random()*4)];if(bcTot(b.bets)+a<=(MG.bxu[b.name]||0)/2)b.bets[s]=(b.bets[s]||0)+a;}});}
+function bcPlan(maxK,amts){const st=MG.st;const plan=[];st.bots.forEach((b,i)=>{let tot=0;const k=1+Math.floor(Math.random()*maxK);for(let j=0;j<k;j++){const sy=BC_SYM[Math.floor(Math.random()*6)];const a=amts[Math.floor(Math.random()*amts.length)];if(tot+a<=(MG.bxu[b.name]||0)/2){tot+=a;plan.push([i,sy,a]);}}});
+ for(let i=plan.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[plan[i],plan[j]]=[plan[j],plan[i]];}return plan;}
+function bcPlay(plan,done){const st=MG.st;st.placing=true;let q=0;const gap=RM?160:380;(function nx(){if(MG.st!==st)return;if(q>=plan.length){st.placing=false;bcR();if(done)done();return;}const [i,sy,a]=plan[q++];const b=st.bots[i];b.bets[sy]=(b.bets[sy]||0)+a;bcR();bcFlyIn(i+1,sy);setTimeout(nx,gap);})();}
+function bcBotBets(){const st=MG.st;mgRefill(st.bots,500);st.bots.forEach(b=>b.bets={});if(st.role==='con')return;bcPlay(bcPlan(3,[100,200,500,1000]));}
+function bcFlyIn(o,sy){const chip=document.querySelector(`#mg .bct[data-s="${sy}"] .bcc[data-o="${o}"]`);const src=o===0?document.querySelector('#mg .bcleg .av'):document.querySelector(`#mg .bcs[data-o="${o}"] .av`);if(!chip)return;sfx('cgChip');if(!src)return;
+ const a=src.getBoundingClientRect(),b=chip.getBoundingClientRect();const f=chip.cloneNode(true);f.classList.add('bcfly');f.style.left=(a.left+a.width/2-b.width/2)+'px';f.style.top=(a.top+a.height/2-b.height/2)+'px';document.body.appendChild(f);chip.style.opacity='0';
+ const dx=b.left-(a.left+a.width/2-b.width/2),dy=b.top-(a.top+a.height/2-b.height/2);const dur=RM?220:520;
+ const kf=RM?[{opacity:.4,transform:'translate(0,0)'},{opacity:1,transform:`translate(${dx}px,${dy}px)`}]:[{transform:'translate(0,0) scale(.6) rotate(0)'},{transform:`translate(${dx*.5}px,${dy*.5-60}px) scale(1.25) rotate(200deg)`,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(1) rotate(360deg)`}];
+ f.animate(kf,{duration:dur,easing:'cubic-bezier(.3,.6,.4,1)',fill:'forwards'}).onfinish=()=>{f.remove();chip.style.opacity='';chip.classList.add('land');setTimeout(()=>sfx('cgChip'),0);};}
 function bcR(){const o=$('mg');const st=MG.st;if(!o||!st)return;const show=st.phase==='open'||st.phase==='done';
  const tile=s=>{const hit=show?st.dice.filter(d=>d===s).length:0;const chips=bcChipsOn(s);
   return `<button class="bct ${hit?'hit':''} ${show&&!hit&&chips.length?'miss':''}" data-s="${s}" onclick="bcPut('${s}')"><span class="bce">${BC_EMO[s]}</span><b>${BC_NAME[s]}</b>${hit?`<em class="bcx">×${hit}</em>`:''}<div class="bcch">${chips.map(c=>`<i class="bcc ${c.o===0?'me':''}" data-o="${c.o}" style="--cc:${BC_COL[c.o]}"><span>${c.av}</span>${kxu(c.a)}</i>`).join('')}</div></button>`;};
@@ -3379,11 +3404,12 @@ function bcCtl(){const st=MG.st;if(st.phase==='shake')return '<p class="small" s
 function bcChip(b){MG.st.chip=b;MG.bet=b;sfx('tap');bcR();}
 function bcRole(r){const st=MG.st;if(st.phase!=='bet'&&st.phase!=='done')return;localStorage.setItem('tlmn_bcrole',r);st.role=r;bcNew();}
 function bcNew(){const st=MG.st;st.phase='bet';st.bets={};st.res=null;st.msg='';st.ledger=null;bcBotBets();bcR();}
-function bcPut(s){const st=MG.st;if(st.phase==='done')bcNew();if(st.phase!=='bet'||st.role!=='con')return;const tot=bcTot(st.bets);if(tot+st.chip>PR.xu)return toast('Không đủ xu');st.bets[s]=(st.bets[s]||0)+st.chip;sfx('cgChip');bcR();}
+function bcPut(s){const st=MG.st;if(st.placing)return;if(st.phase==='done')bcNew();if(st.phase!=='bet'||st.role!=='con')return;const tot=bcTot(st.bets);if(tot+st.chip>PR.xu)return toast('Không đủ xu');st.bets[s]=(st.bets[s]||0)+st.chip;bcR();bcFlyIn(0,s);}
 function bcClear(){MG.st.bets={};bcR();}
-function bcShake(){const st=MG.st;if(st.phase==='done'){st.res=null;st.ledger=null;st.msg='';if(st.role==='con'&&bcTot(st.bets)>PR.xu)st.bets={};if(st.role==='cai')bcBotBets();st.phase='bet';}if(st.role==='con'&&!bcTot(st.bets))return;
- if(st.role==='con')st.bots.forEach(b=>{b.bets={};const k=1+Math.floor(Math.random()*2);for(let i=0;i<k;i++){const s=BC_SYM[Math.floor(Math.random()*6)];const a=[100,200,500][Math.floor(Math.random()*3)];if(bcTot(b.bets)+a<=(MG.bxu[b.name]||0)/2)b.bets[s]=(b.bets[s]||0)+a;}});
- st.dice=bcuaRoll();st.phase='shake';st.busy=true;st.bet=st.role==='con'?bcTot(st.bets):0;bcR();bcRattle();setTimeout(()=>{if(MG.st!==st)return;st.phase='open';st.msg='Bát đã lắc xong — mở bát!';bcR();},RM?300:1400);}
+function bcShake(){const st=MG.st;if(st.placing)return;if(st.phase==='done'){st.res=null;st.ledger=null;st.msg='';if(st.role==='con'&&bcTot(st.bets)>PR.xu)st.bets={};if(st.role==='cai'){st.phase='bet';mgRefill(st.bots,500);st.bots.forEach(b=>b.bets={});bcR();return bcPlay(bcPlan(3,[100,200,500,1000]),bcShake2);}st.phase='bet';}if(st.role==='con'&&!bcTot(st.bets))return;
+ if(st.placing)return;if(st.role==='con'&&!st._botsIn){st.bots.forEach(b=>b.bets={});st._botsIn=1;return bcPlay(bcPlan(2,[100,200,500]),()=>{st._botsIn=0;bcShake2();});}
+ bcShake2();}
+function bcShake2(){const st=MG.st; st.dice=bcuaRoll();st.phase='shake';st.busy=true;st.bet=st.role==='con'?bcTot(st.bets):0;bcR();bcRattle();setTimeout(()=>{if(MG.st!==st)return;st.phase='open';st.msg='Bát đã lắc xong — mở bát!';bcR();},RM?300:1400);}
 function bcRattle(){const n=RM?4:14;for(let i=0;i<n;i++){const t=i*0.085+Math.random()*0.02;noise(.04,.12,t,1800+Math.random()*1500);tone(900+Math.random()*700,.03,'triangle',.04,t);}noise(.12,.15,n*0.085,500);}
 function bcOpen(){const st=MG.st;if(st.phase!=='open')return;st.phase='done';st.busy=false;sfx('cgSnap');noise(.15,.08,0,2500);
  const bv=st.bots.map(b=>bcuaPay(b.bets||{},st.dice));let me;
@@ -3415,16 +3441,21 @@ function dmDeal(){if(PR.xu<MG.bet)return toast('Không đủ xu');mgRefill(MG.dm
  sfx('cgRiffle');dmR();setTimeout(dmStep,900);}
 function dmStep(){const st=MG.st;if(!st||st.phase!=='play'||MG.g!=='domino')return;const i=st.turn;const h=st.hands[i];
  const can=()=>h.some(t=>st.first?(t[0]===st.first[0]&&t[1]===st.first[1]):dmFits(t,st.ends).length);
+ if(!can()&&i===0){st.need=st.bone.length?'draw':'pass';st.msg=st.bone.length?'Không có quân hợp — bấm Bốc':'Không đi được — bấm Bỏ lượt';dmR();return;}
  if(!can()){if(st.bone.length){h.push(st.bone.pop());sfx('cgSlide');st.msg=`${i===0?'Bạn':st.seats[i].name} bốc nọc`;dmR();return setTimeout(dmStep,i===0?350:420);}
-  st.pass++;st.msg=`${i===0?'Bạn':st.seats[i].name} không đi được — qua lượt`;sfx('pass');if(st.pass>=st.seats.length)return dmEnd(dmBlockedWinner(st.hands),true);st.turn=(i+1)%st.seats.length;dmR();return setTimeout(dmStep,700);}
- if(i===0){st.msg='Lượt bạn: chạm quân sáng để đánh';dmR();return;}
+  dmPassT(i);return;}
+ if(i===0){st.msg='Lượt bạn: chạm quân để chọn rồi bấm Đánh';dmR();return;}
  if(st._bt===i)return;st._bt=i;setTimeout(()=>{st._bt=null;if(MG.st!==st||st.turn!==i||st.phase!=='play')return;let pick;if(st.first){pick={k:h.findIndex(t=>t[0]===st.first[0]&&t[1]===st.first[1]),side:'L'};}else pick=dmBotPick(h,st.ends);if(!pick||pick.k<0)return dmStep();dmPlay(i,pick.k,pick.side);},650+Math.random()*350);}
+function dmPassT(i){const st=MG.st;st.pass++;st.need=null;st.msg=`${i===0?'Bạn':st.seats[i].name} không đi được — qua lượt`;sfx('pass');if(st.pass>=st.seats.length)return dmEnd(dmBlockedWinner(st.hands),true);st.turn=(i+1)%st.seats.length;dmR();setTimeout(dmStep,700);}
+function dmDraw(){const st=MG.st;if(!st||st.turn!==0||st.need!=='draw')return;st.hands[0].push(st.bone.pop());st.need=null;sfx('cgSlide');st.msg='Bạn bốc nọc';st.sel=null;dmR();setTimeout(dmStep,250);}
+function dmPassBtn(){const st=MG.st;if(!st||st.turn!==0||st.need!=='pass')return;dmPassT(0);}
+function dmOk(t){const st=MG.st;return st.first?(t[0]===st.first[0]&&t[1]===st.first[1]):dmFits(t,st.ends).length>0;}
+function dmGo(side){const st=MG.st;if(!st||st.turn!==0||st.phase!=='play'||st.sel==null)return;const t=st.hands[0][st.sel];if(!dmOk(t))return sfx('bad');
+ if(st.first)return dmPlay(0,st.sel,'L');const f=dmFits(t,st.ends);if(side&&f.includes(side))return dmPlay(0,st.sel,side);if(f.length===2&&st.ends[0]!==st.ends[1]){st.choose=true;st.msg='Chọn đầu dây để nối (chạm đầu sáng hoặc nút ◀ ▶)';dmR();return;}dmPlay(0,st.sel,f[0]);}
 function dmPlay(i,k,side){const st=MG.st;const t=st.hands[i][k];const r=dmPlace(st.ends,t,side);st.hands[i].splice(k,1);st.ends=r.ends;const piece={a:r.placed[0],b:r.placed[1],dbl:t[0]===t[1],fresh:1};
- st.chain.forEach(c=>c.fresh=0);if(side==='L')st.chain.unshift(piece);else st.chain.push(piece);st.first=null;st.pass=0;st.sel=null;sfx('cgThud');setTimeout(()=>sfx('cgSnap'),60);
+ st.chain.forEach(c=>c.fresh=0);if(side==='L')st.chain.unshift(piece);else st.chain.push(piece);st.first=null;st.pass=0;st.sel=null;st.choose=false;st.need=null;sfx('cgThud');setTimeout(()=>sfx('cgSnap'),60);
  st.msg=`${i===0?'Bạn':st.seats[i].name} đánh [${t[0]}|${t[1]}]`;if(!st.hands[i].length)return dmEnd(i,false);st.turn=(i+1)%st.seats.length;dmR();setTimeout(dmStep,500);}
-function dmTap(k){const st=MG.st;if(!st||st.phase!=='play'||st.turn!==0)return;const t=st.hands[0][k];
- if(st.first){if(t[0]===st.first[0]&&t[1]===st.first[1])return dmPlay(0,k,'L');return toast('Phải đánh quân ['+st.first.join('|')+'] trước');}
- const f=dmFits(t,st.ends);if(!f.length){sfx('bad');return;}if(f.length===2&&st.ends[0]!==st.ends[1]){st.sel=k;dmR();return;}dmPlay(0,k,f[0]);}
+function dmTap(k){const st=MG.st;if(!st||st.phase!=='play'||st.turn!==0)return;st.choose=false;st.sel=st.sel===k?null:k;sfx('tap');dmR();}
 function dmEnd(w,blocked){const st=MG.st;st.phase='done';st.busy=false;const u=dmUnit();const raw=dmSettle(st.hands,w,u);
  // trần: người thua chỉ trả tối đa số xu đang có
  const pay=raw.map((v,i)=>{if(v>=0)return v;const have=i===0?PR.xu:(MG.bxu[st.seats[i].name]||0);return -Math.min(-v,have);});const got=-pay.reduce((a,v,i)=>a+(i===w?0:v),0);pay[w]=got;
@@ -3434,12 +3465,13 @@ function dmEnd(w,blocked){const st=MG.st;st.phase='done';st.busy=false;const u=d
  const xp=mgEnd(pay[0],{stats:w===0&&blocked?['domBlockWin']:[]});st.msg+=` · +${xp} XP`;dmR();}
 function dmR(){const o=$('mg');if(!o)return;const st=MG.st;const n=st?st.seats.length:MG.dmN;const opp=st?st.seats.slice(1):MG.dmBots.slice(0,n-1);
  const oppH=opp.map((b,j)=>{const i=j+1;const h=st?st.hands[i]:[];const up=st&&st.phase==='done';return `<div class="dmo ${st&&st.turn===i&&st.phase==='play'?'turn':''}">${mgSeat(b,st&&st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:'')}<div class="dmoh">${up?h.map(t=>dmTileH(t[0],t[1],true,'sm')).join(''):h.map(()=>'<div class="dmt v sm back"></div>').join('')}</div>${up?`<small>${dmPips(h)} nút</small>`:`<small>${h.length} quân</small>`}</div>`;}).join('');
- const chain=st?st.chain.map(c=>dmTileH(c.a,c.b,c.dbl,c.fresh?'fresh':'')).join(''):'';
- const my=st?st.hands[0].map((t,k)=>{const ok=st.phase==='play'&&st.turn===0&&(st.first?(t[0]===st.first[0]&&t[1]===st.first[1]):dmFits(t,st.ends).length>0);return dmTileH(t[0],t[1],true,(ok?'ok':'')+(st.sel===k?' sel':''),`dmTap(${k})`);}).join(''):'';
- o.innerHTML=mgTop()+`<div class="dmtbl"><div class="dmopp n${n}">${oppH}</div><div class="dmchain">${chain||'<span class="small">Dây domino</span>'}</div>${st?`<div class="dmbone">Nọc: ${st.bone.length}</div>`:''}<div class="cgmsg">${esc(st?st.msg:'Domino đôi sáu · bốc nọc khi không đi được · thắng: người thua trả '+fmt(dmUnit())+' xu mỗi nút còn lại')}</div>
- <div class="dmme ${st&&st.turn===0&&st.phase==='play'?'turn':''}">${my}</div></div><div class="cgctl">${dmCtl()}</div>`;try{svaScan(o);}catch(e){}}
-function dmCtl(){const st=MG.st;if(st&&st.sel!=null)return `<div class="cgrow"><button class="cgbig" onclick="dmPlay(0,${st.sel},'L')">◀ Đầu trái (${st.ends[0]})</button><button class="cgbig" onclick="dmPlay(0,${st.sel},'R')">Đầu phải (${st.ends[1]}) ▶</button></div>`;
- if(st&&st.phase==='play')return '';
+ const chain='';
+ const my=st?st.hands[0].map((t,k)=>{const my=st.phase==='play'&&st.turn===0;const ok=my&&dmOk(t);return dmTileH(t[0],t[1],true,(my?(ok?'ok':'bad'):'')+(st.sel===k?' sel':''),`dmTap(${k})`);}).join(''):'';
+ o.innerHTML=mgTop()+`<div class="dmtbl"><div class="dmopp n${n}">${oppH}</div><div class="dmchain" id="dmChain"></div>${st?`<div class="dmbone">Nọc: ${st.bone.length}</div>`:''}<div class="cgmsg">${esc(st?st.msg:'Domino đôi sáu · bốc nọc khi không đi được · thắng: người thua trả '+fmt(dmUnit())+' xu mỗi nút còn lại')}</div>
+ <div class="dmme ${st&&st.turn===0&&st.phase==='play'?'turn':''}">${my}</div></div><div class="cgctl">${dmCtl()}</div>`;try{svaScan(o);}catch(e){}dmSnake();}
+function dmCtl(){const st=MG.st;if(st&&st.choose&&st.sel!=null&&st.ends)return `<div class="cgrow"><button class="cgbig" onclick="dmGo('L')">◀ Đầu trái (${st.ends[0]})</button><button class="cgbig" onclick="dmGo('R')">Đầu phải (${st.ends[1]}) ▶</button></div>`;
+ if(st&&st.phase==='play'){if(st.turn!==0)return '<p class="small" style="text-align:center">Đang chờ…</p>';if(st.need==='draw')return `<button class="cgbig" onclick="dmDraw()">Bốc nọc (${st.bone.length})</button>`;if(st.need==='pass')return `<button class="cgbig alt" onclick="dmPassBtn()">Bỏ lượt</button>`;
+  const t=st.sel!=null?st.hands[0][st.sel]:null;return `<div class="cgrow"><button class="cgbig" ${t&&dmOk(t)?'':'disabled'} onclick="dmGo()">Đánh</button></div>`;}
  return `${st?mgLedger(st.ledger):''}<div class="cgset"><div class="cgn">${[2,3,4].map(k=>`<button class="${k===MG.dmN?'':'alt'}" onclick="dmSet('n',${k})">${k}</button>`).join('')}<span class="small">người</span></div></div>${mgBets(DM_BETS,MG.bet,"dmSet.bind(null,'bet')",b=>b<=PR.xu)}<button class="cgbig" ${PR.xu<MG.bet?'disabled':''} onclick="dmDeal()">${st?'Ván mới':'Chia bài'} · ${fmt(dmUnit())} xu/nút</button>`;}
 
 // ===================== Bộ cược chung (Xì tố & Poker) =====================
@@ -3467,6 +3499,11 @@ function botBet(b,i,eq,opt){const tc=btToCall(b,i),pot=btPot(b);const odds=tc/(p
  return{a:tc?'call':'check'};}
 function btSeatLab(b,i){return b.fold[i]?'<i class="pkst f">Bỏ</i>':b.allin[i]?'<i class="pkst a">Tất tay</i>':b.rb[i]?`<i class="pkchip">${kxu(b.rb[i])}</i>`:'';}
 
+function mgFly(src,target,delay,dur,flip){return new Promise(res=>{if(!src||!target){res();return;}target.style.opacity='0';setTimeout(()=>{const sr=src.getBoundingClientRect(),tr=target.getBoundingClientRect();if(!tr.width){target.style.opacity='';res();return;}
+ if(RM){target.style.opacity='';sfx('cgSlide');res();return;}const f=document.createElement('div');f.className='card back cgc cgfly';f.style.cssText=`left:${sr.left+sr.width/2-tr.width/2}px;top:${sr.top+sr.height/2-tr.height/2}px;width:${tr.width}px;height:${tr.height}px`;document.body.appendChild(f);
+ const dx=tr.left-(sr.left+sr.width/2-tr.width/2),dy=tr.top-(sr.top+sr.height/2-tr.height/2);sfx('cgSlide');
+ f.animate([{transform:'translate(0,0) rotate(0) scale(.7)'},{transform:`translate(${dx*.5}px,${dy*.5-40}px) rotate(${dx<0?-200:200}deg) scale(1.05)`,offset:.5},{transform:`translate(${dx}px,${dy}px) rotate(${dx<0?-360:360}deg) scale(1)`}],{duration:dur,easing:'cubic-bezier(.3,.6,.4,1)',fill:'forwards'}).onfinish=()=>{f.remove();target.style.opacity='';sfx('cgThud');if(flip){target.classList.add('cgflip');sfx('cgSnap');}res();};},delay);});}
+
 // ===================== XÌ TỐ =====================
 MODES.push(['xito','Xì tố','🂡']);
 const XT_BETS=[100,200,500,1000,2000,5000];
@@ -3479,17 +3516,20 @@ function xtSet(k,v){if(MG.st&&MG.st.busy)return;if(k==='n'){MG.xtN=v;localStorag
 function xtRaise(st){return st.bet*(st.round>=2?2:1);}
 function xtDeal(){if(PR.xu<MG.bet*3)return toast('Cần ít nhất '+fmt(MG.bet*3)+' xu');mgRefill(MG.xtBots,MG.bet*10);const n=MG.xtN;const seats=[{name:'Bạn',av:myAv(),me:1}].concat(MG.xtBots.slice(0,n-1));
  const deck=shuf(DECK32);const hands=seats.map(()=>deck.splice(0,2));const b=btNew(n,seats.map((s,i)=>i===0?PR.xu:(MG.bxu[s.name]||0)));seats.forEach((s,i)=>btPay(b,i,MG.bet));btNewRound(b);
- MG.st={seats,deck,hands,b,round:0,phase:'bet',busy:true,bet:MG.bet,res:null,msg:'Mỗi nhà đặt '+fmt(MG.bet)+' xu. Lá đầu là tẩy (úp)',fresh:1};b.minR=MG.bet;b.cur=xtFirst();sfx('cgRiffle');sfx('cgChip');xtR();setTimeout(xtStep,900);}
+ MG.st={seats,deck,hands,b,round:0,phase:'bet',busy:true,bet:MG.bet,res:null,msg:'Mỗi nhà đặt '+fmt(MG.bet)+' xu tiền xâu. Lá đầu là tẩy (úp)'};b.minR=MG.bet;b.cur=xtFirst();sfx('cgRiffle');sfx('cgChip');xtR();xtAnim([0,1],xtStep);}
+function xtAnim(ks,done){const st=MG.st;st.anim=true;const src=document.querySelector('#mg .pkdeck');const order=[];const n=st.seats.length;const s0=Math.max(0,st.b.cur);ks.forEach(k=>{for(let j=0;j<n;j++){const i=(s0+j)%n;if(st.b.fold[i]||st.hands[i].length<=k)continue;order.push([i,k]);}});
+ const els=order.map(([i,k])=>document.querySelector(`#mg .pks[data-i="${i}"] .pkh > .cgc:nth-child(${k+1})`));els.forEach(e=>e&&(e.style.opacity='0'));const step=RM?60:Math.min(220,1300/Math.max(1,order.length));
+ Promise.all(order.map(([i,k],q)=>mgFly(src,els[q],q*step,RM?0:380,k>0||i===0))).then(()=>{if(MG.st!==st)return;st.anim=false;setTimeout(done,200);});}
 function xtFirst(){const st=MG.st,b=st.b;let best=-1,bs=null;st.hands.forEach((h,i)=>{if(!btCanAct(b,i))return;const sc=evalPartial(h.slice(1)).concat([Math.max(...h.slice(1).map(c=>pkV(c)*4+(c&3)))]);if(!bs||cmpSc(sc,bs)>0){bs=sc;best=i;}});return best;}
-function xtStep(){const st=MG.st;if(!st||MG.g!=='xito'||st.phase!=='bet')return;const b=st.b;
+function xtStep(){const st=MG.st;if(!st||MG.g!=='xito'||st.phase!=='bet'||st.anim)return;const b=st.b;
  if(btLive(b).length===1)return xtShow();
- if(btRoundDone(b)||b.cur<0){if(st.round>=3)return xtShow();st.round++;btNewRound(b);b.minR=xtRaise(st);st.hands.forEach((h,i)=>{if(!b.fold[i])h.push(st.deck.pop());});st.fresh=1;sfx('cgSlide');setTimeout(()=>sfx('cgThud'),200);
-  const acts=b.fold.filter((f,i)=>!f&&!b.allin[i]).length;b.cur=xtFirst();st.msg='Chia lá thứ '+(st.round+2);xtR();if(acts<=1){b.cur=-1;return setTimeout(()=>{btNewRound(b);b.acted=b.acted.map(()=>true);xtStep();},700);}return setTimeout(xtStep,700);}
+ if(btRoundDone(b)||b.cur<0){if(st.round>=3)return xtShow();st.round++;btNewRound(b);b.minR=xtRaise(st);st.hands.forEach((h,i)=>{if(!b.fold[i])h.push(st.deck.pop());});
+  const acts=b.fold.filter((f,i)=>!f&&!b.allin[i]).length;b.cur=xtFirst();st.msg='Chia lá thứ '+(st.round+2);xtR();const k=st.round+1;if(acts<=1){const c=b.cur;b.cur=-1;return xtAnim([k],()=>{btNewRound(b);b.acted=b.acted.map(()=>true);xtStep();});}return xtAnim([k],xtStep);}
  const i=b.cur;if(i===0){st.msg='Lượt bạn';xtR();return;}
  if(st._bt===i)return;st._bt=i;setTimeout(()=>{st._bt=null;if(MG.st!==st||b.cur!==i)return;const opps=st.hands.map((h,j)=>j!==i&&!b.fold[j]?h.slice(1):null).filter(Boolean);
-  const eq=xtEq(st.hands[i],opps,DECK32,80);const d=botBet(b,i,eq,{maxR:3,raise:()=>xtRaise(st)});xtDo(i,d.a,d.T);},420+Math.random()*350);}
+  const eq=xtEq(st.hands[i],opps,DECK32,80);let d=botBet(b,i,eq,{maxR:3,raise:()=>{const ms=eq>0.85?[5,7,10]:eq>0.75?[3,4,5]:[1,2,3];return ms[Math.random()*3|0]*st.bet;}});if(eq>0.88&&Math.random()<0.25&&st.round>=2)d={a:'allin'};if(d.a==='raise'&&d.T-b.rb[i]>=b.stack[i])d={a:'allin'};xtDo(i,d.a,d.T);},420+Math.random()*350);}
 function xtDo(i,a,T){const st=MG.st,b=st.b;if(b.cur!==i)return;const tc=btToCall(b,i);if(a==='check'&&tc)a='call';btAct(b,i,a,T);const nm=i===0?'Bạn':st.seats[i].name;
- st.msg=nm+' '+({fold:'bỏ',check:'xem',call:tc?'theo '+kxu(tc):'xem',raise:'tố '+kxu(b.hi),allin:'tất tay'})[a];sfx(a==='fold'?'pass':a==='raise'||a==='allin'?'cgChip':'tap');if(a==='raise'||a==='allin')setTimeout(()=>sfx('cgChip'),120);
+ st.msg=nm+' '+({fold:'úp bỏ',check:'xem',call:tc?'theo '+kxu(tc):'xem',raise:'tố '+kxu(b.hi),allin:'TỐ TẤT '+kxu(b.rb[i])})[a];if(a==='allin'){sfx('cgFan');}sfx(a==='fold'?'pass':a==='raise'||a==='allin'?'cgChip':'tap');if(a==='raise'||a==='allin')setTimeout(()=>sfx('cgChip'),120);
  b.cur=btRoundDone(b)?-1:btNextFrom(b,i);xtR();setTimeout(xtStep,350);}
 function xtShow(){const st=MG.st,b=st.b;st.phase='done';st.busy=false;while(st.hands.some((h,i)=>!b.fold[i]&&h.length<5)){st.hands.forEach((h,i)=>{if(!b.fold[i]&&h.length<5)h.push(st.deck.pop());});}
  const scores=st.hands.map((h,i)=>b.fold[i]?null:eval5(h,'xt'));const win=awardPots(sidePots(b.contrib,b.fold),scores);st.res=win.map((w,i)=>w-b.contrib[i]);st.scores=scores;
@@ -3500,10 +3540,68 @@ function xtShow(){const st=MG.st,b=st.b;st.phase='done';st.busy=false;while(st.h
 function xtR(){const o=$('mg');if(!o)return;const st=MG.st;const n=st?st.seats.length:MG.xtN;const seats=st?st.seats:[{name:'Bạn',av:myAv(),me:1}].concat(MG.xtBots.slice(0,n-1));const fr=st&&st.fresh;if(st)st.fresh=0;
  const seat=(s,i)=>{const b=st&&st.b;const h=st?st.hands[i]:[];const sd=st&&st.phase==='done';const cards=h.map((c,k)=>cgCard(c,i===0||k>0||(sd&&!b.fold[i]),k,(fr&&k===h.length-1?'cgnew':'')+(k===0&&i===0&&!sd?' tay':''))).join('');
   const lab=st&&(i===0||sd)&&h.length&&!b.fold[i]?`<div class="cgsc">${sd?handName(eval5(h.concat(h.length<5?[]:[]).slice(0,5),'xt'),'xt'):handName(evalPartial(h),'xt')}</div>`:'';
-  return `<div class="pks ${i===0?'me':''} ${st&&st.phase==='bet'&&b.cur===i?'turn':''} ${b&&b.fold[i]?'fold':''}">${mgSeat(i===0?{name:'Bạn',av:myAv(),me:1}:s,st?(sd?'':btSeatLab(b,i))+(st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:''):'')}<div class="pkh">${cards}</div>${lab}</div>`;};
- o.innerHTML=mgTop()+`<div class="pktbl"><div class="pkopp n${n}">${seats.slice(1).map((s,j)=>seat(s,j+1)).join('')}</div><div class="pkpot">${st?`${I('coin')} Hũ: <b>${fmt(btPot(st.b))}</b>`:''}</div><div class="cgmsg">${esc(st?st.msg:'Xì tố 32 lá (7→A) · 5 lá, lá đầu úp · Thùng phá sảnh > Tứ quý > Thùng > Cù lũ > Sảnh > Sám > Thú > Đôi')}</div>${seat(seats[0],0)}</div><div class="cgctl">${xtCtl()}</div>`;try{svaScan(o);}catch(e){}}
-function xtCtl(){const st=MG.st;if(st&&st.phase==='bet'){const b=st.b;if(b.cur!==0)return '<p class="small" style="text-align:center">Đang chờ…</p>';const tc=btToCall(b,0),R=b.hi+Math.max(xtRaise(st),b.minR);const canR=b.raises<3&&b.stack[0]>tc;
-  return `<div class="cgrow pkact"><button class="cgbig alt" onclick="xtDo(0,'fold')">Bỏ</button><button class="cgbig alt" onclick="xtDo(0,'${tc?'call':'check'}')">${tc?(tc>=b.stack[0]?'Tất tay':'Theo '+kxu(tc)):'Xem'}</button><button class="cgbig" ${canR?'':'disabled'} onclick="xtDo(0,'raise',${R})">Tố ${kxu(R-b.rb[0])}</button></div>`;}
+  return `<div class="pks ${i===0?'me':''} ${st&&st.phase==='bet'&&b.cur===i?'turn':''} ${b&&b.fold[i]?'fold':''}" data-i="${i}">${mgSeat(i===0?{name:'Bạn',av:myAv(),me:1}:s,st?(sd?'':btSeatLab(b,i))+(st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:''):'')}<div class="pkh">${cards}</div>${lab}</div>`;};
+ o.innerHTML=mgTop()+`<div class="pktbl"><div class="pkopp n${n}">${seats.slice(1).map((s,j)=>seat(s,j+1)).join('')}</div><div class="pkpot"><div class="card back cgc pkdeck"></div>${st?`${I('coin')} Hũ: <b>${fmt(btPot(st.b))}</b>`:''}</div><div class="cgmsg">${esc(st?st.msg:'Xì tố 32 lá (7→A) · 5 lá, lá đầu úp · Thùng phá sảnh > Tứ quý > Thùng > Cù lũ > Sảnh > Sám > Thú > Đôi')}</div>${seat(seats[0],0)}</div><div class="cgctl">${xtCtl()}</div>`;try{svaScan(o);}catch(e){}}
+function xtCtl(){const st=MG.st;if(st&&st.phase==='bet'){const b=st.b;if(b.cur!==0||st.anim)return '<p class="small" style="text-align:center">Đang chờ…</p>';const tc=btToCall(b,0),stk=b.stack[0];const canR=b.raises<3&&stk>tc;
+  const mult=[1,2,3,4,5,6,7,8,9,10].map(m=>{const T=b.hi+m*st.bet;const ok=canR&&T-b.rb[0]<stk&&m*st.bet>=b.minR;return `<button class="${ok?'':'alt'}" ${ok?'':'disabled'} onclick="xtDo(0,'raise',${T})">x${m}</button>`;}).join('');
+  return `<div class="xtmul">${mult}</div><div class="cgrow pkact"><button class="cgbig alt" onclick="xtDo(0,'fold')">Úp</button><button class="cgbig alt" onclick="xtDo(0,'${tc?'call':'check'}')">${tc?(tc>=stk?'Theo (tất)':'Theo '+kxu(tc)):'Xem'}</button><button class="cgbig pkall" ${stk>0?'':'disabled'} onclick="if(confirm('Tố tất ${fmt(stk)} xu?'))xtDo(0,'allin')">Tố tất</button></div><p class="small xtnote">Tố x1–x10 tiền xâu (${fmt(st.bet)})</p>`;}
  return `${st?mgLedger(st.ledger):''}<div class="cgset"><div class="cgn">${[2,3,4,5].map(k=>`<button class="${k===MG.xtN?'':'alt'}" onclick="xtSet('n',${k})">${k}</button>`).join('')}<span class="small">người</span></div></div>${mgBets(XT_BETS,MG.bet,"xtSet.bind(null,'bet')",b=>b*3<=PR.xu)}<button class="cgbig" ${PR.xu<MG.bet*3?'disabled':''} onclick="xtDeal()">${st?'Ván mới':'Chia bài'} · tiền xâu ${fmt(MG.bet)}</button>`;}
+
+// ===================== POKER TEXAS HOLD'EM =====================
+MODES.push(['poker','Poker','♠️']);
+const PK_BETS=[100,200,500,1000,2000,5000];// = big blind
+MG_MODE.poker={
+ open(){MG.st=null;MG.pkN=+(localStorage.getItem('tlmn_pkn')||6);if(!PK_BETS.includes(MG.bet))MG.bet=200;MG.pkBots=mgBots(MG.pkN-1);MG.pkBtn=MG.pkBtn||0;pkR();},
+ pub(){const st=MG.st;if(!st)return{seats:[],msg:'Đang chọn bàn'};const sd=st.phase==='done';return{msg:(st.msg||'')+' · Bài chung: '+(st.board.length?st.board.map(c=>cName(c)).join(' '):'—')+' · Hũ '+kxu(btPot(st.b)),seats:st.seats.map((s,i)=>({name:i===0?(PR.name||'Người chơi'):s.name,av:i===0?myAv():s.av,cards:sd&&st.shown&&st.shown[i]?st.hands[i].slice():null,cnt:2,lab:st.b.fold[i]?'Bỏ':'',v:st.res?st.res[i]:null}))};},
+ quit(){const st=MG.st;if(st&&st.busy){PR.xu=Math.max(0,PR.xu-st.b.contrib[0]);saveP();}}
+};
+function cName(c){return ['3','4','5','6','7','8','9','10','J','Q','K','A','2'][c>>2]+'♠♣♦♥'[c&3];}
+function pkSet(k,v){if(MG.st&&MG.st.busy)return;if(k==='n'){MG.pkN=v;localStorage.setItem('tlmn_pkn',v);MG.pkBots=mgBots(v-1);}else MG.bet=v;if(MG.st&&MG.st.phase!=='done')MG.st=null;pkR();}
+function pkDeal(){const bb=MG.bet;if(PR.xu<bb*10)return toast('Cần ít nhất '+fmt(bb*10)+' xu');mgRefill(MG.pkBots,bb*20);const n=MG.pkN;const seats=[{name:'Bạn',av:myAv(),me:1}].concat(MG.pkBots.slice(0,n-1));
+ const deck=shuf(DECK52);const hands=seats.map(()=>[deck.pop(),deck.pop()]);const b=btNew(n,seats.map((s,i)=>i===0?Math.min(PR.xu,bb*100):Math.min(MG.bxu[s.name]||0,bb*150)));
+ MG.pkBtn=(MG.pkBtn+1)%n;const D=MG.pkBtn;const sb=n===2?D:(D+1)%n,bbi=n===2?(D+1)%n:(D+2)%n;btPay(b,sb,Math.floor(bb/2));btPay(b,bbi,bb);b.hi=bb;b.minR=bb;
+ MG.st={seats,deck,hands,b,board:[],street:0,phase:'bet',busy:true,bet:bb,D,sb,bbi,res:null,msg:'Bài tẩy đã chia · mù nhỏ '+fmt(Math.floor(bb/2))+' / mù lớn '+fmt(bb),fresh:1};b.cur=btNextFrom(b,bbi);sfx('cgRiffle');sfx('cgChip');pkR();setTimeout(pkStep,900);}
+function pkStep(){const st=MG.st;if(!st||MG.g!=='poker'||st.phase!=='bet')return;const b=st.b;
+ if(btLive(b).length===1)return pkShow();
+ if(btRoundDone(b)||b.cur<0){if(st.street>=3)return pkShow();st.street++;btNewRound(b);b.minR=st.bet;const k=st.street===1?3:1;for(let j=0;j<k;j++)st.board.push(st.deck.pop());st.fresh=1;for(let j=0;j<k;j++)setTimeout(()=>sfx('cgSlide'),j*140);
+  st.msg=['','Lật 3 lá (flop)','Lá thứ 4 (turn)','Lá cuối (river)'][st.street];b.cur=btNextFrom(b,st.D);const acts=b.fold.filter((f,i)=>!f&&!b.allin[i]).length;pkR();
+  if(acts<=1){b.cur=-1;b.acted=b.acted.map(()=>true);return setTimeout(pkStep,900);}return setTimeout(pkStep,700);}
+ const i=b.cur;if(i===0){st.msg='Lượt bạn';pkR();return;}
+ if(st._bt===i)return;st._bt=i;setTimeout(()=>{st._bt=null;if(MG.st!==st||b.cur!==i)return;const nOpp=btLive(b).length-1;const eq=pkEq(st.hands[i],st.board,Math.max(1,nOpp),st.street?80:50);
+  const d=botBet(b,i,eq,{maxR:4,raise:bb=>Math.max(st.bet,Math.round(btPot(b)*0.6/st.bet)*st.bet)});pkDo(i,d.a,d.T);},420+Math.random()*380);}
+function pkDo(i,a,T){const st=MG.st,b=st.b;if(b.cur!==i)return;const tc=btToCall(b,i);if(a==='check'&&tc)a='call';btAct(b,i,a,T);const nm=i===0?'Bạn':st.seats[i].name;
+ st.msg=nm+' '+({fold:'bỏ bài',check:'xem',call:tc?'theo '+kxu(Math.min(tc,b.rb[i])):'xem',raise:'tố lên '+kxu(b.hi),allin:'tất tay '+kxu(b.rb[i])})[a];sfx(a==='fold'?'pass':a==='raise'||a==='allin'?'cgChip':'tap');
+ b.cur=btRoundDone(b)?-1:btNextFrom(b,i);pkR();setTimeout(pkStep,350);}
+function pkShow(){const st=MG.st,b=st.b;st.phase='done';st.busy=false;const live=btLive(b);if(live.length>1)while(st.board.length<5)st.board.push(st.deck.pop());
+ const scores=st.hands.map((h,i)=>b.fold[i]?null:(live.length>1?best5(h.concat(st.board),'pk').sc:[0]));const win=awardPots(sidePots(b.contrib,b.fold),scores);st.res=win.map((w,i)=>w-b.contrib[i]);st.shown=live.length>1?b.fold.map(f=>!f):b.fold.map(()=>false);st.shown[0]=true;
+ st.res.forEach((v,i)=>{if(i>0)MG.bxu[st.seats[i].name]=Math.max(0,(MG.bxu[st.seats[i].name]||0)+v);});const me=st.res[0];const wi=st.res.indexOf(Math.max(...st.res));
+ st.msg=(wi===0?'🎉 Bạn thắng':st.seats[wi].name+' thắng')+(live.length>1&&scores[wi]?' · '+handName(scores[wi],'pk'):' (mọi người bỏ)')+` · Bạn ${me>=0?'+':''}${fmt(me)}`;
+ st.ledger=st.seats.map((s,i)=>[(i===0?'Bạn':s.name)+(scores[i]&&live.length>1?' · '+handName(scores[i],'pk'):b.fold[i]?' · bỏ':''),st.res[i]]).filter(l=>l[1]);
+ const stats=[];if(me>0&&scores[0]&&scores[0][0]>=8)stats.push('pkSF');if(me>0&&b.allin[0])stats.push('pkAllin');const xp=mgEnd(me,{stats});st.msg+=` · +${xp} XP`;sfx('cgSnap');pkR();}
+function pkR(){const o=$('mg');if(!o)return;const st=MG.st;const n=st?st.seats.length:MG.pkN;const seats=st?st.seats:[{name:'Bạn',av:myAv(),me:1}].concat(MG.pkBots.slice(0,n-1));const fr=st&&st.fresh;if(st)st.fresh=0;const sd=st&&st.phase==='done';
+ const seat=(s,i)=>{const b=st&&st.b;const h=st?st.hands[i]:[];const up=i===0||(sd&&st.shown[i]);const cards=h.map((c,k)=>cgCard(c,up,k)).join('');
+  const tag=st?(i===st.D?'<i class="pkdb">D</i>':i===st.sb?'<i class="pkdb sb">SB</i>':i===st.bbi?'<i class="pkdb bb">BB</i>':''):'';
+  const lab=st&&up&&!b.fold[i]&&(st.board.length||sd)?`<div class="cgsc">${handName(best5(h.concat(st.board),'pk').sc,'pk')}</div>`:'';
+  return `<div class="pks ${i===0?'me':''} ${st&&st.phase==='bet'&&b.cur===i?'turn':''} ${b&&b.fold[i]?'fold':''}">${tag}${mgSeat(i===0?{name:'Bạn',av:myAv(),me:1}:s,st?(sd?'':btSeatLab(b,i))+(st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:`<small class="pkstk">${kxu(b.stack[i])}</small>`):'')}<div class="pkh">${cards}</div>${lab}</div>`;};
+ const board=st?st.board.map((c,k)=>cgCard(c,true,k,fr&&k>=st.board.length-(st.street===1?3:1)?'cgnew':'')).join('')+'<div class="slot"></div>'.repeat(5-st.board.length):'';
+ o.innerHTML=mgTop()+`<div class="pktbl pk"><div class="pkopp n${n}">${seats.slice(1).map((s,j)=>seat(s,j+1)).join('')}</div><div class="pkboard">${board}</div><div class="pkpot">${st?`${I('coin')} Hũ: <b>${fmt(btPot(st.b))}</b>`:''}</div><div class="cgmsg">${esc(st?st.msg:"Texas Hold'em · mù lớn = mức cược · mang vào tối đa 100 mù lớn")}</div>${seat(seats[0],0)}</div><div class="cgctl">${pkCtl()}</div>`;try{svaScan(o);}catch(e){}}
+function pkCtl(){const st=MG.st;if(st&&st.phase==='bet'){const b=st.b;if(b.cur!==0)return '<p class="small" style="text-align:center">Đang chờ…</p>';const tc=btToCall(b,0);const st0=b.stack[0];const mn=b.hi+Math.max(b.minR,st.bet);const pot=b.hi+btPot(b)+tc;const canR=b.raises<4&&st0>tc;
+  return `<div class="cgrow pkact"><button class="cgbig alt" onclick="pkDo(0,'fold')">Bỏ</button><button class="cgbig alt" onclick="pkDo(0,'${tc?'call':'check'}')">${tc?(tc>=st0?'Tất tay':'Theo '+kxu(tc)):'Xem'}</button></div><div class="cgrow pkact"><button class="cgbig" ${canR&&mn-b.rb[0]<st0?'':'disabled'} onclick="pkDo(0,'raise',${mn})">Tố ${kxu(mn)}</button><button class="cgbig" ${canR&&pot>mn&&pot-b.rb[0]<st0?'':'disabled'} onclick="pkDo(0,'raise',${pot})">Tố hũ ${kxu(pot)}</button><button class="cgbig pkall" ${st0>0?'':'disabled'} onclick="pkDo(0,'allin')">Tất tay</button></div>`;}
+ return `${st?mgLedger(st.ledger):''}<div class="cgset"><div class="cgn">${[2,3,4,5,6].map(k=>`<button class="${k===MG.pkN?'':'alt'}" onclick="pkSet('n',${k})">${k}</button>`).join('')}<span class="small">người</span></div></div>${mgBets(PK_BETS,MG.bet,"pkSet.bind(null,'bet')",b=>b*10<=PR.xu)}<button class="cgbig" ${PR.xu<MG.bet*10?'disabled':''} onclick="pkDeal()">${st?'Ván mới':'Chia bài'} · mù ${kxu(MG.bet/2)}/${kxu(MG.bet)}</button>`;}
+
+// dây domino dạng rắn: trái→phải, quay đầu ở mép, phải→trái; đôi đặt dọc; tự co giãn
+function dmSnake(){const box=$('dmChain');const st=MG.st;if(!box)return;if(!st||!st.chain.length){box.innerHTML='<span class="small">Dây domino</span>';return;}
+ const W=box.clientWidth-8,H=box.clientHeight-8;const ch=st.chain;let lay=null,S=22;
+ for(S=22;S>=7;S--){const rows=[];let x=0,dir=1,r=0,cur=[];let ok=true;ch.forEach((c,idx)=>{const w=c.dbl?S:2*S;let nx=dir>0?x+w:x-w;if(dir>0?nx>W:nx<0){rows.push(cur);cur=[];r++;dir=-dir;nx=dir>0?x+w:x-w;if(dir>0?nx>W:nx<0){ok=false;}}cur.push({c,idx,x:dir>0?x:nx,w,dir,r});x=nx;});rows.push(cur);
+  const rh=2*S+4;if(ok&&rows.length*rh<=H){lay={rows,rh};break;}}
+ if(!lay){S=7;const rows=[];let x=0,dir=1,r=0,cur=[];ch.forEach((c,idx)=>{const w=c.dbl?S:2*S;let nx=dir>0?x+w:x-w;if(dir>0?nx>W:nx<0){rows.push(cur);cur=[];r++;dir=-dir;nx=dir>0?x+w:x-w;}cur.push({c,idx,x:dir>0?x:nx,w,dir,r});x=nx;});rows.push(cur);lay={rows,rh:2*S+4};}
+ const all=lay.rows.flat();const minX=Math.min(...all.map(p=>p.x)),maxX=Math.max(...all.map(p=>p.x+p.w));const offX=(W-(maxX-minX))/2-minX+4,offY=Math.max(4,(H-lay.rows.length*lay.rh)/2+4);const u=S/1.7;const last=ch.length-1;
+ box.innerHTML=all.map(p=>{const c=p.c;const L=p.dir>0?c.a:c.b,R=p.dir>0?c.b:c.a;const top=offY+p.r*lay.rh+(c.dbl?2:2+S/2);
+  // đầu mở: nửa a của quân đầu, nửa b của quân cuối
+  const endA=p.idx===0,endB=p.idx===last;const halves=c.dbl?[c.a,c.b]:[L,R];let cls=[];if(!c.dbl){if(endA)cls.push(p.dir>0?'eL':'eR');if(endB)cls.push(p.dir>0?'eR':'eL');}else{if(endA||endB)cls.push('eD');}
+  const side=endA&&endB?'':endA?'L':endB?'R':'';const click=st.choose&&side?`onclick="dmGo('${side}')"`:'';
+  return `<div class="dmt ${c.dbl?'v':''} ${c.fresh?'fresh':''} ${cls.join(' ')} ${st.choose&&side?'pick':''}" style="position:absolute;left:${offX+p.x}px;top:${top}px;--u:${u}px" ${click}>${dmHalf(halves[0])}${dmHalf(halves[1])}</div>`;}).join('')+
+  `<div class="dmends">Đầu mở: <b>${st.ends[0]}</b> · <b>${st.ends[1]}</b></div>`;}
+addEventListener('resize',()=>{if(MG.g==='domino')dmSnake();});
 boot();
 </script></body></html>

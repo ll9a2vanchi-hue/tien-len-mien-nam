@@ -18,4 +18,4 @@ let w=G.awardPots(pots,[[9],[5],[3]]);ok(w.join()==='300,400,0','all-in thắng 
 pots=G.sidePots([50,100,100],[false,true,false]);w=G.awardPots(pots,[[1],null,[2]]);ok(w.join()==='0,0,250','fold không được chia');
 w=G.awardPots(G.sidePots([100,100],[false,false]),[[3,5],[3,5]]);ok(w.join()==='100,100','chia đều');
 const eq=G.pkEquity([C(14),C(14,1)],[],1,300,'pk',G.DECK52);ok(eq>0.75,'AA equity '+eq.toFixed(2));
-ok(G.DECK32.length===32,'bộ 32 lá');process.exit(f?1:0);
+ok(G.DECK32.length===32,'bộ 32 lá');ok(G.best5([C(14),C(14,1),C(5),C(9,2),C(14,2),C(5,3)],'pk').sc[0]===6,'best5 6 lá');process.exit(f?1:0);

@@ -601,6 +601,17 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 .pkact button{padding-left:4px;padding-right:4px}
 .pkboard{display:flex;justify-content:center;gap:4px;min-height:64px;align-items:center}.pkboard .cgc{--cw:44px}.pkboard .slot{width:44px;height:62px;border:1.5px dashed #ffffff33;border-radius:6px}
 .pkdb{position:absolute;top:0;right:4px;font-size:10px;font-weight:900;background:#fff;color:#000;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center}.pkdb.sb,.pkdb.bb{width:auto;border-radius:6px;padding:0 3px;background:#4fc3f7}
+.pk .pkopp{grid-template-columns:repeat(3,1fr);gap:4px}.pk .pkopp.n2{grid-template-columns:1fr}.pk .pkopp.n3{grid-template-columns:1fr 1fr}.pk .pkopp.n5{grid-template-columns:1fr 1fr}.pk .pkopp>.pks:last-child:nth-child(odd){grid-column:auto}.pk .pkopp.n4>.pks:last-child{grid-column:auto}
+.pk .pkh .cgc{--cw:30px;margin-left:-10px}.pk .pkh{padding-left:10px}.pk .pks.me .pkh .cgc{--cw:56px;margin-left:-8px}.pk .mgseat .av{width:32px;height:32px;font-size:18px}.pkstk{font-size:10px;color:#ddd}.pkall{background:linear-gradient(#ff7043,#c62828)!important;color:#fff!important}
+.dmchain{position:relative;display:block!important;overflow:hidden!important}.dmchain>.small{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.dmchain .dmt{border-radius:3px}.dmchain .dmt .dmh{width:calc(var(--u)*1.7);height:calc(var(--u)*1.7);padding:1px}
+.dmt.eL .dmh:first-child,.dmt.eR .dmh:last-child,.dmt.eD{box-shadow:0 0 0 2px #ffd84d,0 0 10px #ffd84d;border-radius:3px;background:#fff6c8}
+.dmt.pick{cursor:pointer;animation:xetp 1s infinite;outline:3px solid #ffd84d}
+.dmends{position:absolute;right:6px;bottom:2px;font-size:11px;color:#ffe48a;background:#0007;border-radius:8px;padding:0 6px}.dmends b{color:#fff}
+.dmme .dmt.bad{opacity:.38;filter:grayscale(.6)}.dmme .dmt.ok{opacity:1;box-shadow:0 0 0 1.5px #7dffb0aa;transform:none}.dmme .dmt.sel{transform:translateY(-12px);box-shadow:0 0 0 3px #ffd84d,0 6px 10px #000a}
+.bcc.land{animation:cgpop .35s}.xtmul{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:5px}.xtmul button{margin:0;padding:6px 0;font-size:13px;font-weight:800;min-width:0}.xtnote{text-align:center;margin:2px 0 0;font-size:11px}
+.pkdeck{--cw:26px;display:inline-block;margin-right:6px;box-shadow:2px 2px 0 #3a0610,4px 4px 0 #2a0408}.pkh>.cgc.cgflip{animation:cgflip .42s cubic-bezier(.3,.7,.3,1)}
+.pkall{box-shadow:0 0 12px #ff5722aa!important;font-weight:900!important}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>

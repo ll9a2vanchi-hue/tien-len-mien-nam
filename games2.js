@@ -30,7 +30,7 @@ function eval5(cs,mode){const v=cs.map(pkV).sort((a,b)=>b-a);const su=cs.map(c=>
  const sc=[cat,...tb];if(mode==='xt'){const top=Math.max(...cs.map(c=>pkV(c)*4+(c&3)));sc.push(top);}return sc;}
 function cmpSc(a,b){for(let i=0;i<Math.max(a.length,b.length);i++){const d=(a[i]||0)-(b[i]||0);if(d)return d;}return 0;}
 function best5(cs,mode){if(cs.length<=5)return{sc:eval5(cs,mode),cards:cs};let best=null;const n=cs.length;
- for(let a=0;a<n;a++)for(let b=a+1;b<n;b++){const pick=cs.filter((_,i)=>i!==a&&i!==b);if(pick.length!==5)continue;const sc=eval5(pick,mode);if(!best||cmpSc(sc,best.sc)>0)best={sc,cards:pick};}return best;}
+ const rec=(st,pick)=>{if(pick.length===5){const sc=eval5(pick,mode);if(!best||cmpSc(sc,best.sc)>0)best={sc,cards:pick.slice()};return;}for(let i=st;i<n;i++){if(n-i<5-pick.length)break;pick.push(cs[i]);rec(i+1,pick);pick.pop();}};rec(0,[]);return best;}
 function handName(sc,mode){return (mode==='xt'?XT_NAMES:PK_NAMES)[sc[0]];}
 // đánh giá phần bài chưa đủ 5 lá (xì tố đang chia): chỉ xét đôi/sám/tứ + lá cao
 function evalPartial(cs){if(cs.length>=5)return eval5(cs.slice(0,5),'xt');const v=cs.map(pkV).sort((a,b)=>b-a);const cnt={};v.forEach(x=>cnt[x]=(cnt[x]||0)+1);const g=Object.entries(cnt).map(([k,n])=>[n,+k]).sort((a,b)=>b[0]-a[0]||b[1]-a[1]);

@@ -1,0 +1,15 @@
+const {chromium}=require('playwright-core');(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const R={};
+const mk=async(w,rm)=>{const p=await (await b.newContext({viewport:{width:w,height:w===360?800:1024},reducedMotion:rm||'no-preference'})).newPage();p.on('pageerror',e=>errs.push(w+': '+e.stack.slice(0,300)));p.on('dialog',d=>d.accept());await p.goto('http://localhost:8765/index.html?t='+Date.now());await p.waitForTimeout(800);
+ await p.evaluate(()=>{closeModal();PR.xu=100000;saveP();setInterval(()=>document.querySelectorAll('#badgeFX').forEach(e=>e.remove()),100);});return p;};
+// bầu cua bay chip
+for(const w of [360,461]){const p=await mk(w);await p.evaluate(()=>{setMode('baucua');openTables();bcRole('con');bcChip(500);bcPut('cua');});await p.waitForTimeout(250);await p.screenshot({path:`shots/v57-bc-fly-me-${w}.png`});
+ await p.evaluate(()=>bcShake());await p.waitForTimeout(500);await p.screenshot({path:`shots/v57-bc-fly-bots-${w}.png`});await p.waitForFunction(()=>MG.st.phase==='open',null,{timeout:15000});await p.evaluate(()=>bcOpen());await p.waitForTimeout(400);
+ await p.evaluate(()=>{bcRole('cai');});await p.waitForTimeout(400);await p.screenshot({path:`shots/v57-bc-cai-bets-${w}.png`});await p.waitForFunction(()=>!MG.st.placing,null,{timeout:15000});await p.evaluate(()=>bcShake());await p.waitForFunction(()=>MG.st.phase==='open',null,{timeout:15000});await p.evaluate(()=>bcOpen());
+ R['bc'+w]=await p.evaluate(()=>({me:MG.st.res.me,sum:MG.st.res.me+MG.st.res.b.reduce((a,x)=>a+x,0),ov:document.documentElement.scrollWidth-innerWidth}));await p.close();}
+// xì tố
+for(const [w,n,rm] of [[360,5],[461,3],[360,2,'reduce']]){const p=await mk(w,rm);await p.evaluate((n)=>{setMode('xito');openTables();xtSet('n',n);xtSet('bet',500);window._h=0;window._bad=[];window._ai=0;
+  setInterval(()=>{const st=MG.st;if(!st)return;if(st.phase==='bet'&&st.b.cur===0&&!st.anim){if(window._snap===undefined&&st.round>=1){window._snap=1;return;}if(window._snap===1)return;const r=Math.random();if(r<0.08){const bs=[...document.querySelectorAll('.xtmul button:not([disabled])')];if(bs.length){bs[Math.random()*bs.length|0].click();return;}}if(r<0.11&&window._h===1){document.querySelector('.pkall').click();return;}xtDo(0,'call');}
+   if(st.phase==='done'&&!st._c){st._c=1;window._h++;if(st.b.allin.some(Boolean))window._ai++;const s=st.res.reduce((a,x)=>a+x,0);if(s)window._bad.push(s);if(window._h<3)setTimeout(xtDeal,300);}},200);xtDeal();},n);
+ await p.waitForFunction(()=>window._snap===1,null,{timeout:60000}).catch(()=>{});await p.screenshot({path:`shots/v57-xt-act-${w}-${n}.png`});R['xtov'+w+n]=await p.evaluate(()=>document.documentElement.scrollWidth-innerWidth);await p.evaluate(()=>window._snap=2);
+ await p.waitForFunction(()=>window._h>=3,null,{timeout:150000}).catch(()=>{});R['xt'+w+n]=await p.evaluate(()=>({h:window._h,bad:window._bad,ai:window._ai}));await p.screenshot({path:`shots/v57-xt-end-${w}-${n}.png`});await p.close();}
+console.log(JSON.stringify(R),errs);await b.close();})();
