@@ -269,7 +269,7 @@ function moneyFX(payer,receiver,amt,label){const a=seatCenter(payer),b=seatCente
  if(label){msg(label);toast(label);}}
 function settleChop(){if(!G||!G.pend)return;const r=chopSettle(G.pend,{0:PR.xu});G.pend=null;if(!r||!r.amount)return;
  if(r.payer===0)PR.xu=Math.max(0,PR.xu-r.amount);if(r.receiver===0)PR.xu+=r.amount;G.chopNet=(G.chopNet||0)+(r.receiver===0?r.amount:r.payer===0?-r.amount:0);
- if(r.payer===0||r.receiver===0)saveP();moneyFX(r.payer,r.receiver,r.amount,`${NAMES[r.receiver]} ${r.chain>1?'chặt chồng':'chặt heo'} ${NAMES[r.payer]}: +${fmt(r.amount)} xu`);}
+ if(r.receiver===0&&r.chain>1){try{bst('chain');}catch(e){}}if(r.payer===0||r.receiver===0)saveP();moneyFX(r.payer,r.receiver,r.amount,`${NAMES[r.receiver]} ${r.chain>1?'chặt chồng':'chặt heo'} ${NAMES[r.payer]}: +${fmt(r.amount)} xu`);}
 const _dp20=doPlay;doPlay=function(p,cards,src){if(G&&!G.online){try{G.pend=chopStep(G.pend||null,G.cur,G.pile,G.curBy,detect(cards),p,PR.bet);}catch(e){}}return _dp20(p,cards,src);};
 const _nt20=nextTurn;nextTurn=function(){const had=G&&G.cur;_nt20();if(G&&!G.online&&had&&!G.cur&&G.pend)settleChop();};
 const _eg20=endGame;endGame=function(i){if(G&&!G.online)try{settleChop();}catch(e){}return _eg20(i);};
@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.47';
+const APP_V='1.48';
 const CHANGELOG=[
+ ['1.48','11/10',['Huy hiệu riêng cho từng chế độ: Đếm lá, 3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker — mỗi chế độ 70 huy hiệu như Miền Nam (số ván, thắng, chuỗi, thắng lớn, làm cái, vét túi máy, cược cao, bài hiếm, bí mật…), có hạng Đồng/Bạc/Vàng/Huyền thoại','Màn Huy hiệu chia tab theo chế độ + lọc Đã mở/Chưa mở/Bí mật','Mọi chế độ hiển thị cấp, danh hiệu và khung avatar của bạn và máy; báo +XP sau mỗi ván','Sửa huy hiệu bí mật “Chặt chồng” không mở được']],
  ['1.47','11/10',['Giao diện màn hình chính gọn hơn: chọn chế độ 4×2, các ô công cụ đều nhau, Gói trợ cấp thành dải ngang riêng với biểu tượng 💰']],
  ['1.46','11/10',['Gói trợ cấp: khi hết sạch xu (đúng 0), nhận 1.000 xu × cấp, 1 lần mỗi ngày — ô mới ở màn hình chính, có đếm ngược, đồng bộ đám mây chống nhận 2 lần','Xì tố: bài to rõ hơn (bài của bạn và bài ngửa của máy)','Poker: bỏ số xu bị hiện trùng ở ghế máy']],
  ['1.45','11/10',['Chế độ mới: Poker Texas Hold’em — 2-6 người, mù nhỏ/mù lớn, flop/turn/river, xem/theo/tố/tố hũ/tất tay, hũ phụ, máy chơi theo sức bài + ngẫu nhiên','Domino: dây nối dạng rắn quay đầu ở mép, đôi đặt dọc, tự co giãn, hai đầu mở phát sáng; chọn quân rồi bấm Đánh, chọn đầu trái/phải, nút Bốc/Bỏ lượt, quân không hợp mờ đi','Xì tố: tố x1–x10 tiền xâu, Úp/Theo/Xem, Tố tất (xác nhận), máy cũng tố tất; chia bài từng vòng có bay bài + lật','Bầu cua: chip bay vòng cung từ người đặt tới ô cược, máy đặt lần lượt','Huy hiệu/nhiệm vụ/danh hiệu Poker']],
@@ -907,7 +908,8 @@ let MODE=localStorage.getItem('tlmn_mode')||'mn';const MODES=[['mn','Miền Nam'
 function setMode(m){MODE=m;try{localStorage.setItem('tlmn_mode',m);}catch(e){}renderHome();}
 function modeOf(){return (typeof ONL!=='undefined'&&ONL.active)?'mn':MODE;}
 function modeCtx(place,instant){if(!G||G.online||G.mode!=='demla')return{};const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];
- G.dl=demlaSettle(G.hands,all,curBet());if(all[0]===0){bst('demlaWin');questEvent(PR,'demlawin');}const d=G.dl[0]||0;return{xuDelta:d<0?-Math.min(-d,PR.xu):d,noXuBonus:true};}
+ G.dl=demlaSettle(G.hands,all,curBet());if(all[0]===0){bst('demlaWin');questEvent(PR,'demlawin');}const d=G.dl[0]||0;
+ try{const w=all[0]===0,opp=seats.filter(p=>p!==0),lens=opp.map(p=>G.hands[p].length),below=all.slice(all.indexOf(0)+1).filter(p=>p);modeRecord(PR,'demla',{win:w,net:d,bet:curBet(),n:seats.length,full:seats.length>=4,role:w&&below.some(p=>BOTAI[p]===3),dealer:true,bust:lens.filter(l=>l>=13).length,sp1:w&&!!instant,sp2:w&&lens.some(l=>l>=10),sp3:w&&lens.every(l=>l>=5),s4:w&&lens.reduce((a,b)=>a+b,0)>=30,s5:w&&!G.usedTwo});}catch(e){console.warn(e)}return{xuDelta:d<0?-Math.min(-d,PR.xu):d,noXuBonus:true};}
 const _ng44=newGame;newGame=function(){const r=_ng44.apply(this,arguments);try{if(G&&!G.online){G.mode=modeOf();if(G.mode==='demla')setTimeout(()=>finCaption('🔢 Đếm lá',1400,false),300);}}catch(e){}return r;};
 const _ts44=thuiSettle;thuiSettle=function(){if(G&&!G.online&&G.mode==='demla')return[];return _ts44.apply(this,arguments);};
 const _lp44=ledgerParts;ledgerParts=function(){const r=_lp44();if(G&&G.mode==='demla'&&r.parts.place!=null){r.parts.demla=r.parts.place;r.parts.place=0;}return r;};

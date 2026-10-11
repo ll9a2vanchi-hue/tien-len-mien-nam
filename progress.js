@@ -112,6 +112,45 @@ const BADGES=[
  BG('sec_allin','🎲','Tất tay','Thắng ván khi số xu chỉ vừa đủ cược',2500,3,s=>V(s,'allin')>=1,{secret:true}),
  BG('sec_bigthui','🐖','Cả đàn heo','Bắt thúi 3 con heo trong một ván',3000,3,s=>V(s,'bigThui')>=1,{secret:true}),
 ];
+
+// ---- v1.48: huy hiệu theo từng chế độ (mỗi chế độ 66 huy hiệu như Miền Nam)
+const MODE_BADGE_INFO={
+ demla:{n:'Đếm lá',ic:'🔢',role:['Hạ Cao thủ','Về nhất khi có máy Cao thủ trong bàn'],bust:['Luộc','Để đối thủ ôm nguyên 13 lá'],sp:[['Tới trắng','Thắng tới trắng','🌟'],['Ôm bài','Thắng khi có đối thủ còn ≥10 lá','🃏'],['Càn quét','Thắng khi mọi đối thủ còn ≥5 lá','🧹']],sec:[['Gom cả chiếu','Thắng khi đối thủ còn tổng ≥30 lá','🧺'],['Không cần heo','Thắng Đếm lá mà không đánh con 2 nào','🙅']]},
+ '3cao':{n:'3 Cào',ic:'🃏',role:['Làm cái','Làm cái'],bust:['Vét túi','Làm máy cháy túi (hết xu)'],sp:[['Ba cào','Thắng bằng Ba cào','🤴'],['Chín nút','Thắng bằng 9 nút','9️⃣'],['Cái ăn hết','Làm cái thắng tất cả nhà con','🧲']],sec:[['Cái ba cào','Làm cái có Ba cào','👑'],['Chín vẫn thua','Có 9 nút mà vẫn thua','😵']]},
+ xidach:{n:'Xì dách',ic:'🂱',role:['Làm cái','Làm cái'],bust:['Vét túi','Làm máy cháy túi (hết xu)'],sp:[['Xì dách','Thắng bằng Xì dách','🂡'],['Ngũ linh','Thắng bằng Ngũ linh','🖐️'],['Xì bàng','Thắng bằng Xì bàng','🅰️']],sec:[['Ngũ linh 21','Ngũ linh đúng 21 điểm','🎯'],['Cái ăn hết','Làm cái thắng tất cả nhà con','🧲']]},
+ baucua:{n:'Bầu cua',ic:'🦀',role:['Làm cái','Làm cái'],bust:['Vét túi','Làm máy cháy túi (hết xu)'],sp:[['Bão','Thắng khi 3 xúc xắc cùng mặt','🌪️'],['Ăn đôi','Một cửa trúng 2 xúc xắc','✌️'],['Ăn gấp','Lãi ≥2 lần tổng tiền đặt','📈']],sec:[['Bão trúng cửa','Cửa mình đặt ra cả 3 xúc xắc','🎆'],['Rải khắp chiếu','Đặt đủ 6 cửa trong một ván','🌈']]},
+ domino:{n:'Domino',ic:'🁫',role:['Đi đầu','Thắng ván mình đi trước'],bust:['Vét túi','Làm máy cháy túi (hết xu)'],sp:[['Chặn đứng','Thắng khi bàn bí','🧱'],['Đè nút','Thắng khi đối thủ còn tổng ≥30 nút','⚖️'],['Kết đôi','Thắng bằng quân đôi cuối cùng','🀄']],sec:[['Không bốc','Thắng mà không bốc nọc lần nào','🙌'],['Rắn dài','Thắng khi dây có ≥20 quân','🐍']]},
+ xito:{n:'Xì tố',ic:'🂡',role:['Tố tất','Thắng ván đã tố tất'],bust:['Vét túi','Làm máy cháy túi (hết xu)'],sp:[['Thùng/Cù lũ','Thắng bằng Cù lũ trở lên','🏠'],['Thùng','Thắng bằng Thùng trở lên','♦️'],['Tứ quý','Thắng bằng Tứ quý trở lên','💣']],sec:[['Thùng phá sảnh','Thắng bằng Thùng phá sảnh','🌈'],['Không cần lật','Thắng khi mọi người bỏ bài','🙈']]},
+ poker:{n:'Poker',ic:'♠️',role:['Tất tay','Thắng ván đã tất tay'],bust:['Vét túi','Làm máy cháy túi (hết xu)'],sp:[['Sảnh','Thắng bằng Sảnh trở lên','📏'],['Cù lũ','Thắng bằng Cù lũ trở lên','🏠'],['Tứ quý','Thắng bằng Tứ quý trở lên','💣']],sec:[['Royal','Thắng bằng Thùng phá sảnh','🌟'],['Bluff','Thắng khi mọi người bỏ bài','🎭']]}};
+const MB_SERIES=[['games','Chơi',[1,50,300],'🎴','ván'],['wins','Thắng',[1,10,50,200],'🏆','ván'],['streak','Chuỗi thắng',[3,5,10],'🔥','ván liên tiếp'],['big','Thắng lớn (lãi ≥10× cược)',[1,10,50],'💥','lần'],['earn','Tổng xu thắng',[5000,50000,500000],'💵','xu'],
+ ['roleG','',[1,25,150],'🎩','lần'],['roleW','',[1,20,100],'🎖️','lần'],['bust','',[1,10,50],'🍲','lần'],['hi','Thắng cược ≥1.000',[1,10,50],'💎','ván'],['max','Thắng cược ≥5.000',[1,5,25],'🎲','ván'],
+ ['full','Chơi bàn đông nhất',[5,50,200],'👥','ván'],['duo','Thắng bàn 2 người',[5,20,100],'⚔️','ván'],['sp1','',[1,5,25],'',''],['sp2','',[1,5,25],'',''],['sp3','',[1,3,10],'',''],
+ ['loss','Thua mà không bỏ cuộc',[10,100,500],'🥀','ván'],['comeback','Thắng sau chuỗi thua ≥3',[1,5,20],'🦅','lần'],['night','Chơi lúc 0h–4h',[1,20,100],'🦉','ván'],['days','Số ngày đã chơi',[3,7,30],'📅','ngày'],['huge','Thắng ≥50.000 xu trong một ván',[1,3,10],'🤑','lần']];
+const MB_TN=[['Tập sự','Lão luyện','Bậc thầy','Huyền thoại']];
+const MB_SEC=[['s4'],['s5'],['day10','Trúng 10 ván trong một ngày','📆'],['x100','Lãi ≥100× tiền cược trong một ván','🚀'],['bust3','Làm 3 máy cháy túi trong một ván','☠️']];
+const mk=(m,k)=>'m_'+m+'_'+k;
+for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];
+ for(const [k,lab,goals,ic,unit] of MB_SERIES){let L=lab,icon=ic,u=unit;if(k==='roleG'){L=I.role[1]+(m==='demla'||m==='domino'||m==='xito'||m==='poker'?'':'');u='lần';}
+  if(k==='roleW')L=I.role[0]+' thắng';if(k==='roleG'&&['demla','domino','xito','poker'].includes(m))L=I.role[1];if(k==='roleW'&&['demla','domino','xito','poker'].includes(m))L=I.role[1]+' với lãi ≥3× cược';
+  if(k==='bust')L=I.bust[1];const spi=k.startsWith('sp')?I.sp[+k[2]-1]:null;if(spi){L=spi[1];icon=spi[2];u='lần';}
+  goals.forEach((g,i)=>{const tier=Math.min(3,i+1),nm=(spi?spi[0]:k==='bust'?I.bust[0]:k==='roleG'?I.role[0]:k==='roleW'?I.role[0]+' thắng lớn':L.split(' (')[0])+' · '+MB_TN[0][i];
+   BADGES.push(BG(m+'_'+k+'_'+(i+1),icon,I.n+': '+nm,L+' '+g.toLocaleString('vi-VN')+' '+u+' ('+I.n+')',[150,800,3000,10000][i],tier,s=>V(s,mk(m,k==='streak'?'bestStreak':k))>=g,{series:'m_'+k,mode:m,k:mk(m,k==='streak'?'bestStreak':k),goal:g,legend:i===3}));});}
+ MB_SEC.forEach(([k,d,ic],j)=>{const sd=k==='s4'?I.sec[0]:k==='s5'?I.sec[1]:[null,d,ic];BADGES.push(BG(m+'_sec_'+k,sd[2],I.n+': '+(sd[0]||d.split(' ')[0]+' '+(d.split(' ')[1]||'')),sd[1],[3000,3000,4000,5000,5000][j],3,s=>V(s,mk(m,k))>=1,{secret:true,mode:m,k:mk(m,k),goal:1}));});}
+// cân số lượng: mỗi chế độ đúng bằng số huy hiệu Miền Nam
+{const cnt=m=>BADGES.filter(b=>badgeMode(b)===m).length;const T=cnt('mn');for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];let j=0;const extra=[100,200,365,500];
+ while(cnt(m)<T&&j<extra.length){const g=extra[j++];BADGES.push(BG(m+'_days_x'+j,'🗓️',I.n+': Trung thành · '+g+' ngày','Chơi '+I.n+' trong '+g+' ngày khác nhau',5000+j*2000,3,s=>V(s,mk(m,'days'))>=g,{series:'m_days',mode:m,k:mk(m,'days'),goal:g,legend:true}));}
+ while(cnt(m)>T){const i=BADGES.findIndex(b=>b.mode===m&&b.series==='m_night'&&b.goal===100)>=0?BADGES.findIndex(b=>b.mode===m&&b.series==='m_night'&&b.goal===100):BADGES.findIndex(b=>b.mode===m&&b.series==='m_huge'&&b.goal===10);if(i<0)break;BADGES.splice(i,1);}}}
+// ghi nhận kết quả ván của mọi chế độ (dùng chung)
+function modeRecord(P,m,ev,now){now=now||new Date();const s=P.stats=P.stats||{};const inc=(k,v)=>{s[mk(m,k)]=(s[mk(m,k)]||0)+(v==null?1:v);};const g=k=>s[mk(m,k)]||0;
+ const bet=Math.max(1,ev.bet||1),net=ev.net||0,win=!!ev.win;inc('games');if(ev.full)inc('full');if(now.getHours()<4)inc('night');const dk=dayKey(now);
+ if(s[mk(m,'lastDay')]!==dk){s[mk(m,'lastDay')]=dk;inc('days');s[mk(m,'dWins')]=0;}if(ev.role)inc('roleG');
+ if(win){inc('wins');s[mk(m,'dWins')]=(s[mk(m,'dWins')]||0)+1;if(g('dWins')>=10)s[mk(m,'day10')]=1;if(g('lossRun')>=3)inc('comeback');s[mk(m,'lossRun')]=0;s[mk(m,'cur')]=g('cur')+1;s[mk(m,'bestStreak')]=Math.max(g('bestStreak'),g('cur'));
+  if(net>0)inc('earn',net);if(net>=10*bet)inc('big');if(net>=100*bet)s[mk(m,'x100')]=1;if(net>=50000)inc('huge');if(bet>=1000)inc('hi');if(bet>=5000)inc('max');if(ev.n===2)inc('duo');if(ev.role&&(ev.dealer||net>=3*bet))inc('roleW');}
+ else{s[mk(m,'cur')]=0;if(net<0){inc('loss');s[mk(m,'lossRun')]=g('lossRun')+1;}}
+ if(ev.bust){inc('bust',ev.bust);if(ev.bust>=3)s[mk(m,'bust3')]=1;}
+ for(const k of ['sp1','sp2','sp3'])if(ev[k])inc(k);for(const k of ['s4','s5'])if(ev[k])s[mk(m,k)]=1;}
+function badgeMode(b){if(b.mode)return b.mode;const id=b.id;if(/^demla_/.test(id))return 'demla';if(/^bc_/.test(id))return '3cao';if(/^(xd_|sec_xibang)/.test(id))return 'xidach';if(/^bcua_/.test(id))return 'baucua';if(/^dom_/.test(id))return 'domino';if(/^(xt_|sec_xtsf)/.test(id))return 'xito';if(/^(pk_|sec_pksf)/.test(id))return 'poker';
+ const ser=b.series;if(['games','wins','streak','chop','bomb','table','ai','combo','thui','chay','b3','skill','luoc','earn'].includes(ser)||(b.secret&&/^sec_(notwo|3s|bigbet|comeback|luoc3|chain|bigthui|allin)/.test(id)))return 'mn';return 'chung';}
 const BADGE_TIER=[null,{name:'Đồng',col:'#cd7f32'},{name:'Bạc',col:'#c0c8d0'},{name:'Vàng',col:'#ffd84d'}];
 // Nhiệm vụ: 3 hằng ngày + 3 hằng tuần (thưởng lớn). Giữ id cũ.
 const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu});
@@ -240,4 +279,4 @@ function addXp(P,n){const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const af
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // PROGRESS_END
-if(typeof module!=='undefined')module.exports={allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
+if(typeof module!=='undefined')module.exports={MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};

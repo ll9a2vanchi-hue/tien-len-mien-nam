@@ -22,7 +22,7 @@ function cgRender(){const o=$('cg');if(!o)return;const st=CG.st;const seats=st?s
   const show=r&&r.done&&(i>0||st.phase==='done');const lab=i===0?(r&&r.v>0?'CÁI ĂN':r&&r.v<0?'CÁI THUA':'HÒA'):(r&&r.v>0?'THẮNG':r&&r.v<0?'THUA':'HÒA');
   const stamp=show?`<div class="cgstamp ${r.v>0?'w':r.v<0?'l':'d'} ${r.fresh?'in':''}" style="--sd:${(r.fresh?i:0)*120}ms"><b>${lab}</b>${r.v?`<small>${r.v>0?'+':''}${fmt(r.v)}</small>`:''}</div>`:'';if(r)r.fresh=false;
   const canX=st&&st.phase==='deal'&&i!==0&&!(r&&r.done);
-  return `<div class="cgs ${i===ME?'me':i===0?'top':'mid'} ${st&&st.turn===i?'turn':''} ${canX?'xet':''}" data-i="${i}" ${canX?`onclick="xdXet(${i})"`:''}><div class="cgp"><span class="av" style="--avc:#3a5">${s.av}</span><b>${esc(s.name)}${s.dealer?' <i class="cgdl">CÁI</i>':''}</b><small class="cgbx">${I('coin')}${kxu(cgXuOf(s))}</small></div>
+  return `<div class="cgs ${i===ME?'me':i===0?'top':'mid'} ${st&&st.turn===i?'turn':''} ${canX?'xet':''}" data-i="${i}" ${canX?`onclick="xdXet(${i})"`:''}><div class="cgp"><span class="av ${s.me?frameCls():''}" style="--avc:#3a5">${s.me?myAv():s.av}</span><b>${esc(s.name)}${s.dealer?' <i class="cgdl">CÁI</i>':''}</b>${seatLv(s)}<small class="cgbx">${I('coin')}${kxu(cgXuOf(s))}</small></div>
   <div class="cgh ${sq?'sqh':''}">${cards}${stamp}</div>${st&&up&&h.length&&!sq?`<div class="cgsc ${cgSpecial(h,i)?'sp':''}">${cgScoreLab(h,i)}</div>`:''}${canX?'<em class="cgxet">Chạm để xét</em>':''}</div>`;};
  const top=seats.map((s,i)=>i===0&&i!==ME?seatHTML(s,i):'').join('');const mids=seats.map((s,i)=>i!==0&&i!==ME?seatHTML(s,i):'').filter(Boolean);
  o.classList.toggle('cgfresh',!!(st&&st.fresh));if(st)st.fresh=false;
@@ -87,7 +87,11 @@ function cgSettle(){const st=CG.st;if(st.phase==='done')return;st.phase='done';s
  const me=fin[st.me];st.ledger=ledger;
  const mh=st.hands[st.me];if(CG.g==='3cao'){if(bcScore(mh).bacao&&me>0)bst('bacao');}else{const k=xdKind(mh,st.me===0?15:16).kind;if(me>0&&k==='xibang')bst('xibang');if(me>0&&k==='ngulinh')bst('ngulinh');}
  PR.xu=Math.max(0,PR.xu+me);const won=me>0;bst(CG.g==='3cao'?'bcGames':'xdGames');if(st.me===0)bst('cgDealer');if(won){bst(CG.g==='3cao'?'bcWin':'xdWin');questEvent(PR,CG.g==='3cao'?'bcwin':'xdwin');}questEvent(PR,'cgplay');
- const xp=won?30:me===0?15:10;const up=addXp(PR,xp);st.msg=(me>0?`🎉 Bạn ${st.me===0?'(cái) ':''}thắng +${fmt(me)} xu`:me<0?`Bạn ${st.me===0?'(cái) ':''}thua ${fmt(me)} xu`:'Hòa')+` · +${xp} XP`;
+ try{const n=st.seats.length,deal=st.me===0,bots=st.seats.filter(x=>!x.me&&x.name);const bust=st.seats.reduce((a,x,i)=>a+(i!==st.me&&!x.me&&fin[i]<0&&(CG.bxu[x.name]||0)<=0?1:0),0);const allLost=deal&&fin.slice(1).every(v=>v<0);const ev={win:won,net:me,bet:CG.bet,n,full:n>=6,role:deal,dealer:true,bust,s5:false};
+  if(CG.g==='3cao'){const sc=bcScore(mh);Object.assign(ev,{sp1:won&&sc.bacao,sp2:won&&!sc.bacao&&sc.score===9,sp3:allLost&&n>1,s4:deal&&sc.bacao,s5:!sc.bacao&&sc.score===9&&me<0});}
+  else{const kd=xdKind(mh,st.me===0?15:16);Object.assign(ev,{sp1:won&&kd.kind==='xidach',sp2:won&&kd.kind==='ngulinh',sp3:won&&kd.kind==='xibang',s4:kd.kind==='ngulinh'&&kd.total===21,s5:allLost&&n>1});}
+  modeRecord(PR,CG.g,ev);}catch(e){console.warn(e)}
+ const xp=won?30:me===0?15:10;const up=addXp(PR,xp);xpFloat(xp,up);st.msg=(me>0?`🎉 Bạn ${st.me===0?'(cái) ':''}thắng +${fmt(me)} xu`:me<0?`Bạn ${st.me===0?'(cái) ':''}thua ${fmt(me)} xu`:'Hòa')+` · +${xp} XP`;
  sfx(me>0?'win':me<0?'thud':'tap');if(me>0)sfx('coin');cgRender();try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(me>=0?'+':'')+fmt(me)+' xu',me>=0?'gain':'loss');}catch(e){}
  try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);}
 // ---- vào từ màn hình chính

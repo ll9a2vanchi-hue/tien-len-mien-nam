@@ -7,12 +7,12 @@ function mgRefill(bots,need){const msg=[];bots.forEach((b,i)=>{if((MG.bxu[b.name
 function mgOpen(g){closeModal();MG.g=g;MG.st=null;let o=$('mg');if(!o){o=document.createElement('div');o.id='mg';document.body.appendChild(o);}o.className='mg-'+g;document.body.classList.add('cgon','mgon');sfx('cgChip');MG_MODE[g].open();}
 function mgClose(force){const st=MG.st;if(!force&&st&&st.busy){if(!confirm('Đang chơi dở, rời bàn sẽ mất tiền cược. Rời?'))return;if(MG_MODE[MG.g].quit)MG_MODE[MG.g].quit();}const o=$('mg');if(o)o.remove();document.body.classList.remove('cgon','mgon');MG.st=null;MG.g=null;showHome();}
 function mgTop(){return `<div class="cgtop"><button class="alt ic" onclick="mgClose()">${I('back')}</button><b>${MG_TITLE[MG.g]}</b><span class="cgxu">${I('coin')} <span id="cgXu">${fmt(PR.xu)}</span></span></div>`;}
-function mgSeat(b,extra){return `<div class="mgseat"><span class="av" style="--avc:#3a5">${b.av}</span><b>${esc(b.name)}</b><small class="cgbx">${I('coin')}${kxu(b.me?PR.xu:(MG.bxu[b.name]||0))}</small>${extra||''}</div>`;}
+function mgSeat(b,extra){return `<div class="mgseat"><span class="av ${b.me?frameCls():''}" style="--avc:#3a5">${b.me?myAv():b.av}</span><b>${esc(b.name)}</b>${seatLv(b)}<small class="cgbx">${I('coin')}${kxu(b.me?PR.xu:(MG.bxu[b.name]||0))}</small>${extra||''}</div>`;}
 function mgBets(list,cur,on,maxOk){return `<div class="cgbets">${list.map(b=>`<button class="${b===cur?'':'alt'}" ${maxOk&&!maxOk(b)?'disabled':''} onclick="${on}(${b})">${kxu(b)}</button>`).join('')}</div>`;}
 // kết thúc ván: cập nhật xu/XP/thống kê/nhiệm vụ
 const MG_STAT={baucua:'bcua',domino:'dom',xito:'xt',poker:'pk'};
-function mgEnd(net,o){o=o||{};const k=MG_STAT[MG.g];PR.xu=Math.max(0,PR.xu+net);bst(k+'Games');const won=net>0;if(won){bst(k+'Win');questEvent(PR,k+'win');}questEvent(PR,'cgplay');(o.stats||[]).forEach(s=>bst(s));
- const xp=o.xp!=null?o.xp:(won?30:net===0?15:10);const up=addXp(PR,xp);sfx(won?'cgJingle':net<0?'cgLose':'cgChip');
+function mgEnd(net,o){o=o||{};const k=MG_STAT[MG.g];PR.xu=Math.max(0,PR.xu+net);bst(k+'Games');const won=net>0;if(won){bst(k+'Win');questEvent(PR,k+'win');}questEvent(PR,'cgplay');(o.stats||[]).forEach(s=>bst(s));try{const st=MG.st||{};const tbl=(st.bots||(st.seats||[]).slice(1)).map(b=>b.name);const n=tbl.length+1;const bust=tbl.filter(nm=>nm!=='Nhà cái'&&(MG.bxu[nm]||0)<=0).length;modeRecord(PR,MG.g,Object.assign({win:won,net,bet:MG.bet,n,full:n>=(MG.g==='domino'?4:6),bust},o.ev||{}));}catch(e){console.warn(e)}
+ const xp=o.xp!=null?o.xp:(won?30:net===0?15:10);const up=addXp(PR,xp);xpFloat(xp,up);sfx(won?'cgJingle':net<0?'cgLose':'cgChip');
  try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(net>=0?'+':'')+fmt(net)+' xu',net>=0?'gain':'loss');}catch(e){}
  try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);return xp;}
 function mgLedger(rows){return rows&&rows.length?`<div class="cgled">${rows.map(l=>`<div><span>${esc(l[0])}</span><b class="${l[1]>0?'pos':l[1]<0?'neg':''}">${l[1]>0?'+':''}${fmt(l[1])}</b></div>`).join('')}</div>`:'';}
@@ -48,7 +48,7 @@ function bcR(){const o=$('mg');const st=MG.st;if(!o||!st)return;const show=st.ph
  const tile=s=>{const hit=show?st.dice.filter(d=>d===s).length:0;const chips=bcChipsOn(s);
   return `<button class="bct ${hit?'hit':''} ${show&&!hit&&chips.length?'miss':''}" data-s="${s}" onclick="bcPut('${s}')"><span class="bce">${BC_EMO[s]}</span><b>${BC_NAME[s]}</b>${hit?`<em class="bcx">×${hit}</em>`:''}<div class="bcch">${chips.map(c=>`<i class="bcc ${c.o===0?'me':''}" data-o="${c.o}" style="--cc:${BC_COL[c.o]}"><span>${c.av}</span>${kxu(c.a)}</i>`).join('')}</div></button>`;};
  const dealer=st.role==='cai'?{name:'Bạn (cái)',av:myAv(),me:1}:{name:'Nhà cái',av:'🎩'};
- o.innerHTML=mgTop()+`<div class="bctbl"><div class="bcseats"><div class="bcs dl" data-o="d" style="--cc:${st.role==='cai'?BC_COL[0]:'#bbb'}">${mgSeat(dealer,'<i class="cgdl">CÁI</i>')}</div>${st.bots.map((b,i)=>`<div class="bcs" data-o="${i+1}" style="--cc:${BC_COL[i+1]}">`+mgSeat(b,st.res?`<i class="mgv ${st.res.b[i]>0?'pos':st.res.b[i]<0?'neg':''}">${st.res.b[i]>0?'+':''}${kxu(st.res.b[i])}</i>`:(bcTot(b.bets)?`<i class="mgv">${kxu(bcTot(b.bets))}</i>`:''))+'</div>').join('')}</div>${st.role==='con'?`<div class="bcleg"><span class="bcs me" data-o="0" style="--cc:${BC_COL[0]}"><span class="av" style="--avc:#3a5">${myAv()}</span><b>Bạn</b>${bcTot(st.bets)?' · '+kxu(bcTot(st.bets)):''}</span></div>`:''}
+ o.innerHTML=mgTop()+`<div class="bctbl"><div class="bcseats"><div class="bcs dl" data-o="d" style="--cc:${st.role==='cai'?BC_COL[0]:'#bbb'}">${mgSeat(dealer,'<i class="cgdl">CÁI</i>')}</div>${st.bots.map((b,i)=>`<div class="bcs" data-o="${i+1}" style="--cc:${BC_COL[i+1]}">`+mgSeat(b,st.res?`<i class="mgv ${st.res.b[i]>0?'pos':st.res.b[i]<0?'neg':''}">${st.res.b[i]>0?'+':''}${kxu(st.res.b[i])}</i>`:(bcTot(b.bets)?`<i class="mgv">${kxu(bcTot(b.bets))}</i>`:''))+'</div>').join('')}</div>${st.role==='con'?`<div class="bcleg"><span class="bcs me" data-o="0" style="--cc:${BC_COL[0]}"><span class="av ${frameCls()}" style="--avc:#3a5">${myAv()}</span><b>Bạn</b>${seatLv({me:1})}${bcTot(st.bets)?' · '+kxu(bcTot(st.bets)):''}</span></div>`:''}
  <div class="bcplate ${st.phase==='shake'?'shaking':''} ${show?'open':''}"><div class="bcdice">${st.dice.map((d,i)=>`<span class="bcd" style="--i:${i}">${BC_EMO[d]}</span>`).join('')}</div><div class="bcbowl"></div></div>
  <div class="cgmsg">${esc(st.msg||(st.phase==='bet'?(st.role==='con'?'Chọn chip rồi chạm vào ô để đặt (đặt được nhiều ô)':'Các nhà đã đặt. Bạn làm cái — bấm Lắc'):''))}</div>
  <div class="bcboard">${BC_SYM.map(tile).join('')}</div></div><div class="cgctl">${bcCtl()}</div>`;try{svaScan(o);}catch(e){}}
@@ -72,7 +72,7 @@ function bcOpen(){const st=MG.st;if(st.phase!=='open')return;st.phase='done';st.
  if(st.role==='con'){me=bcuaPay(st.bets,st.dice);bv.forEach((v,i)=>{MG.bxu[st.bots[i].name]=Math.max(0,(MG.bxu[st.bots[i].name]||0)+v);});st.ledger=[['Với nhà cái',me]];}
  else{const v=cgCap([0].concat(bv),PR.xu);me=v[0];v.slice(1).forEach((x,i)=>{bv[i]=x;MG.bxu[st.bots[i].name]=Math.max(0,(MG.bxu[st.bots[i].name]||0)+x);});st.ledger=st.bots.map((b,i)=>[b.name,-bv[i]]);}
  st.res={me,b:bv};const triple=st.dice[0]===st.dice[1]&&st.dice[1]===st.dice[2];st.msg=(me>0?`🎉 Bạn thắng +${fmt(me)} xu`:me<0?`Bạn thua ${fmt(me)} xu`:'Hòa')+(triple?' · Bão '+BC_NAME[st.dice[0]]+'!':'');
- const xp=mgEnd(me,{stats:triple&&me>0?['bcuaTriple']:[]});st.msg+=` · +${xp} XP`;bcR();bcFlyChips();}
+ const _tb=bcTot(st.bets),_cnt=k=>st.dice.filter(d=>d==k).length;const xp=mgEnd(me,{stats:triple&&me>0?['bcuaTriple']:[],ev:st.role==='cai'?{role:true,dealer:true,sp1:triple&&me>0}:{sp1:triple&&me>0,sp2:Object.keys(st.bets).some(k=>st.bets[k]>0&&_cnt(k)>=2),sp3:_tb>0&&me>=2*_tb,s4:triple&&st.bets[st.dice[0]]>0,s5:Object.keys(st.bets).filter(k=>st.bets[k]>0).length>=6}});st.msg+=` · +${xp} XP`;bcR();bcFlyChips();}
 function bcFlyChips(){const st=MG.st;const dl=document.querySelector('#mg .bcs.dl .av');document.querySelectorAll('#mg .bct .bcc').forEach((c,q)=>{const s=c.closest('.bct').dataset.s;const hit=st.dice.includes(s);const o=c.dataset.o;
   const tgt=hit?(o==='0'?(st.role==='con'?document.querySelector('#mg .bcleg .av'):dl):document.querySelector(`#mg .bcs[data-o="${o}"] .av`)):(st.role==='cai'?dl:document.querySelector('#mg .bcs.dl .av'));if(!tgt)return;
   if(hit)c.classList.add('win');if(RM)return;const a=c.getBoundingClientRect(),b=tgt.getBoundingClientRect();const f=c.cloneNode(true);f.classList.add('bcfly');f.style.left=a.left+'px';f.style.top=a.top+'px';document.body.appendChild(f);
@@ -93,7 +93,7 @@ function dmSet(k,v){if(MG.st&&MG.st.busy)return;if(k==='n'){MG.dmN=v;localStorag
 function dmUnit(){return Math.max(1,Math.round(MG.bet/10));}
 function dmDeal(){if(PR.xu<MG.bet)return toast('Không đủ xu');mgRefill(MG.dmBots,MG.bet*3);const n=MG.dmN;const t=dmTiles();for(let i=t.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[t[i],t[j]]=[t[j],t[i]];}
  const seats=[{name:'Bạn',av:myAv(),me:1}].concat(MG.dmBots.slice(0,n-1));const hands=seats.map(()=>t.splice(0,7));const s0=dmStarter(hands);
- MG.st={seats,hands,bone:t,chain:[],ends:null,turn:s0.i,first:s0.t,pass:0,phase:'play',busy:true,bet:MG.bet,msg:`${s0.i===0?'Bạn':seats[s0.i].name} đi trước với [${s0.t[0]}|${s0.t[1]}]`,res:null,sel:null};
+ MG.st={seats,hands,bone:t,chain:[],ends:null,starter:s0.i,turn:s0.i,first:s0.t,pass:0,phase:'play',busy:true,bet:MG.bet,msg:`${s0.i===0?'Bạn':seats[s0.i].name} đi trước với [${s0.t[0]}|${s0.t[1]}]`,res:null,sel:null};
  sfx('cgRiffle');dmR();setTimeout(dmStep,900);}
 function dmStep(){const st=MG.st;if(!st||st.phase!=='play'||MG.g!=='domino')return;const i=st.turn;const h=st.hands[i];
  const can=()=>h.some(t=>st.first?(t[0]===st.first[0]&&t[1]===st.first[1]):dmFits(t,st.ends).length);
@@ -103,12 +103,12 @@ function dmStep(){const st=MG.st;if(!st||st.phase!=='play'||MG.g!=='domino')retu
  if(i===0){st.msg='Lượt bạn: chạm quân để chọn rồi bấm Đánh';dmR();return;}
  if(st._bt===i)return;st._bt=i;setTimeout(()=>{st._bt=null;if(MG.st!==st||st.turn!==i||st.phase!=='play')return;let pick;if(st.first){pick={k:h.findIndex(t=>t[0]===st.first[0]&&t[1]===st.first[1]),side:'L'};}else pick=dmBotPick(h,st.ends);if(!pick||pick.k<0)return dmStep();dmPlay(i,pick.k,pick.side);},650+Math.random()*350);}
 function dmPassT(i){const st=MG.st;st.pass++;st.need=null;st.msg=`${i===0?'Bạn':st.seats[i].name} không đi được — qua lượt`;sfx('pass');if(st.pass>=st.seats.length)return dmEnd(dmBlockedWinner(st.hands),true);st.turn=(i+1)%st.seats.length;dmR();setTimeout(dmStep,700);}
-function dmDraw(){const st=MG.st;if(!st||st.turn!==0||st.need!=='draw')return;st.hands[0].push(st.bone.pop());st.need=null;sfx('cgSlide');st.msg='Bạn bốc nọc';st.sel=null;dmR();setTimeout(dmStep,250);}
+function dmDraw(){const st=MG.st;if(!st||st.turn!==0||st.need!=='draw')return;st.hands[0].push(st.bone.pop());st.drew0=1;st.need=null;sfx('cgSlide');st.msg='Bạn bốc nọc';st.sel=null;dmR();setTimeout(dmStep,250);}
 function dmPassBtn(){const st=MG.st;if(!st||st.turn!==0||st.need!=='pass')return;dmPassT(0);}
 function dmOk(t){const st=MG.st;return st.first?(t[0]===st.first[0]&&t[1]===st.first[1]):dmFits(t,st.ends).length>0;}
 function dmGo(side){const st=MG.st;if(!st||st.turn!==0||st.phase!=='play'||st.sel==null)return;const t=st.hands[0][st.sel];if(!dmOk(t))return sfx('bad');
  if(st.first)return dmPlay(0,st.sel,'L');const f=dmFits(t,st.ends);if(side&&f.includes(side))return dmPlay(0,st.sel,side);if(f.length===2&&st.ends[0]!==st.ends[1]){st.choose=true;st.msg='Chọn đầu dây để nối (chạm đầu sáng hoặc nút ◀ ▶)';dmR();return;}dmPlay(0,st.sel,f[0]);}
-function dmPlay(i,k,side){const st=MG.st;const t=st.hands[i][k];const r=dmPlace(st.ends,t,side);st.hands[i].splice(k,1);st.ends=r.ends;const piece={a:r.placed[0],b:r.placed[1],dbl:t[0]===t[1],fresh:1};
+function dmPlay(i,k,side){const st=MG.st;const t=st.hands[i][k];const r=dmPlace(st.ends,t,side);st.hands[i].splice(k,1);st.ends=r.ends;const piece={a:r.placed[0],b:r.placed[1],dbl:t[0]===t[1],fresh:1};if(i===0)st.lastDbl0=piece.dbl;
  st.chain.forEach(c=>c.fresh=0);if(side==='L')st.chain.unshift(piece);else st.chain.push(piece);st.first=null;st.pass=0;st.sel=null;st.choose=false;st.need=null;sfx('cgThud');setTimeout(()=>sfx('cgSnap'),60);
  st.msg=`${i===0?'Bạn':st.seats[i].name} đánh [${t[0]}|${t[1]}]`;if(!st.hands[i].length)return dmEnd(i,false);st.turn=(i+1)%st.seats.length;dmR();setTimeout(dmStep,500);}
 function dmTap(k){const st=MG.st;if(!st||st.phase!=='play'||st.turn!==0)return;st.choose=false;st.sel=st.sel===k?null:k;sfx('tap');dmR();}
@@ -118,12 +118,12 @@ function dmEnd(w,blocked){const st=MG.st;st.phase='done';st.busy=false;const u=d
  st.res=pay;pay.forEach((v,i)=>{if(i>0)MG.bxu[st.seats[i].name]=Math.max(0,(MG.bxu[st.seats[i].name]||0)+v);});
  st.ledger=w===0?st.seats.slice(1).map((s,i)=>[s.name+' ('+dmPips(st.hands[i+1])+' nút)',-pay[i+1]]):[[st.seats[w].name+' thắng · bạn còn '+dmPips(st.hands[0])+' nút',pay[0]]];
  st.msg=(blocked?'Bí bài! ':'')+(w===0?`🎉 Bạn thắng +${fmt(pay[0])} xu`:`${st.seats[w].name} thắng · bạn ${fmt(pay[0])} xu`);
- const xp=mgEnd(pay[0],{stats:w===0&&blocked?['domBlockWin']:[]});st.msg+=` · +${xp} XP`;dmR();}
+ const _op=st.hands.slice(1).reduce((a,h)=>a+dmPips(h),0);const xp=mgEnd(pay[0],{stats:w===0&&blocked?['domBlockWin']:[],ev:w===0?{role:st.starter===0,sp1:blocked,sp2:_op>=30,sp3:!blocked&&!!st.lastDbl0,s4:!st.drew0,s5:st.chain.length>=20}:{}});st.msg+=` · +${xp} XP`;dmR();}
 function dmR(){const o=$('mg');if(!o)return;const st=MG.st;const n=st?st.seats.length:MG.dmN;const opp=st?st.seats.slice(1):MG.dmBots.slice(0,n-1);
  const oppH=opp.map((b,j)=>{const i=j+1;const h=st?st.hands[i]:[];const up=st&&st.phase==='done';return `<div class="dmo ${st&&st.turn===i&&st.phase==='play'?'turn':''}">${mgSeat(b,st&&st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:'')}<div class="dmoh">${up?h.map(t=>dmTileH(t[0],t[1],true,'sm')).join(''):h.map(()=>'<div class="dmt v sm back"></div>').join('')}</div>${up?`<small>${dmPips(h)} nút</small>`:`<small>${h.length} quân</small>`}</div>`;}).join('');
  const chain='';
  const my=st?st.hands[0].map((t,k)=>{const my=st.phase==='play'&&st.turn===0;const ok=my&&dmOk(t);return dmTileH(t[0],t[1],true,(my?(ok?'ok':'bad'):'')+(st.sel===k?' sel':''),`dmTap(${k})`);}).join(''):'';
- o.innerHTML=mgTop()+`<div class="dmtbl"><div class="dmopp n${n}">${oppH}</div><div class="dmchain" id="dmChain"></div>${st?`<div class="dmbone">Nọc: ${st.bone.length}</div>`:''}<div class="cgmsg">${esc(st?st.msg:'Domino đôi sáu · bốc nọc khi không đi được · thắng: người thua trả '+fmt(dmUnit())+' xu mỗi nút còn lại')}</div>
+ o.innerHTML=mgTop()+`<div class="dmtbl"><div class="dmopp n${n}">${oppH}</div><div class="dmchain" id="dmChain"></div><div class="dmme"><span class="av ${frameCls()}" style="--avc:#3a5">${myAv()}</span><b>Bạn</b>${seatLv({me:1})}<small class="cgbx">${I('coin')}${kxu(PR.xu)}</small>${st?`<span class="dmbone">Nọc: ${st.bone.length}</span>`:''}</div><div class="cgmsg">${esc(st?st.msg:'Domino đôi sáu · bốc nọc khi không đi được · thắng: người thua trả '+fmt(dmUnit())+' xu mỗi nút còn lại')}</div>
  <div class="dmme ${st&&st.turn===0&&st.phase==='play'?'turn':''}">${my}</div></div><div class="cgctl">${dmCtl()}</div>`;try{svaScan(o);}catch(e){}dmSnake();}
 function dmCtl(){const st=MG.st;if(st&&st.choose&&st.sel!=null&&st.ends)return `<div class="cgrow"><button class="cgbig" onclick="dmGo('L')">◀ Đầu trái (${st.ends[0]})</button><button class="cgbig" onclick="dmGo('R')">Đầu phải (${st.ends[1]}) ▶</button></div>`;
  if(st&&st.phase==='play'){if(st.turn!==0)return '<p class="small" style="text-align:center">Đang chờ…</p>';if(st.need==='draw')return `<button class="cgbig" onclick="dmDraw()">Bốc nọc (${st.bone.length})</button>`;if(st.need==='pass')return `<button class="cgbig alt" onclick="dmPassBtn()">Bỏ lượt</button>`;
@@ -192,7 +192,7 @@ function xtShow(){const st=MG.st,b=st.b;st.phase='done';st.busy=false;while(st.h
  st.res.forEach((v,i)=>{if(i>0)MG.bxu[st.seats[i].name]=Math.max(0,(MG.bxu[st.seats[i].name]||0)+v);});const me=st.res[0];
  const wi=st.res.indexOf(Math.max(...st.res));const wn=scores[wi]?handName(scores[wi],'xt'):'';st.msg=(wi===0?'🎉 Bạn thắng':st.seats[wi].name+' thắng')+(wn&&btLive(b).length>1?' · '+wn:'')+` · Bạn ${me>=0?'+':''}${fmt(me)} xu`;
  st.ledger=st.seats.map((s,i)=>[(i===0?'Bạn':s.name)+(scores[i]?' · '+handName(scores[i],'xt'):' · bỏ'),st.res[i]]);
- const stats=[];if(me>0&&scores[0]&&scores[0][0]>=8)stats.push('xtSF');if(me>0&&scores[0]&&scores[0][0]>=7)stats.push('xtBig');const xp=mgEnd(me,{stats});st.msg+=` · +${xp} XP`;sfx('cgSnap');xtR();}
+ const stats=[];const _r=me>0&&scores[0]?scores[0][0]:-1,_solo=btLive(b).length<=1;const ev={role:me>0&&!!b.allin[0],sp1:_r>=5,sp2:_r>=6,sp3:_r>=7,s4:_r>=8,s5:me>0&&_solo};if(me>0&&scores[0]&&scores[0][0]>=8)stats.push('xtSF');if(me>0&&scores[0]&&scores[0][0]>=7)stats.push('xtBig');const xp=mgEnd(me,{stats,ev});st.msg+=` · +${xp} XP`;sfx('cgSnap');xtR();}
 function xtR(){const o=$('mg');if(!o)return;const st=MG.st;const n=st?st.seats.length:MG.xtN;const seats=st?st.seats:[{name:'Bạn',av:myAv(),me:1}].concat(MG.xtBots.slice(0,n-1));const fr=st&&st.fresh;if(st)st.fresh=0;
  const seat=(s,i)=>{const b=st&&st.b;const h=st?st.hands[i]:[];const sd=st&&st.phase==='done';const cards=h.map((c,k)=>cgCard(c,i===0||k>0||(sd&&!b.fold[i]),k,(fr&&k===h.length-1?'cgnew':'')+(k===0&&i===0&&!sd?' tay':''))).join('');
   const lab=st&&(i===0||sd)&&h.length&&!b.fold[i]?`<div class="cgsc">${sd?handName(eval5(h.concat(h.length<5?[]:[]).slice(0,5),'xt'),'xt'):handName(evalPartial(h),'xt')}</div>`:'';
@@ -233,7 +233,7 @@ function pkShow(){const st=MG.st,b=st.b;st.phase='done';st.busy=false;const live
  st.res.forEach((v,i)=>{if(i>0)MG.bxu[st.seats[i].name]=Math.max(0,(MG.bxu[st.seats[i].name]||0)+v);});const me=st.res[0];const wi=st.res.indexOf(Math.max(...st.res));
  st.msg=(wi===0?'🎉 Bạn thắng':st.seats[wi].name+' thắng')+(live.length>1&&scores[wi]?' · '+handName(scores[wi],'pk'):' (mọi người bỏ)')+` · Bạn ${me>=0?'+':''}${fmt(me)}`;
  st.ledger=st.seats.map((s,i)=>[(i===0?'Bạn':s.name)+(scores[i]&&live.length>1?' · '+handName(scores[i],'pk'):b.fold[i]?' · bỏ':''),st.res[i]]).filter(l=>l[1]);
- const stats=[];if(me>0&&scores[0]&&scores[0][0]>=8)stats.push('pkSF');if(me>0&&b.allin[0])stats.push('pkAllin');const xp=mgEnd(me,{stats});st.msg+=` · +${xp} XP`;sfx('cgSnap');pkR();}
+ const stats=[];const _r=me>0&&scores[0]&&live.length>1?scores[0][0]:-1;const ev={role:me>0&&!!b.allin[0],sp1:_r>=4,sp2:_r>=6,sp3:_r>=7,s4:_r>=8,s5:me>0&&live.length<=1};if(me>0&&scores[0]&&scores[0][0]>=8)stats.push('pkSF');if(me>0&&b.allin[0])stats.push('pkAllin');const xp=mgEnd(me,{stats,ev});st.msg+=` · +${xp} XP`;sfx('cgSnap');pkR();}
 function pkR(){const o=$('mg');if(!o)return;const st=MG.st;const n=st?st.seats.length:MG.pkN;const seats=st?st.seats:[{name:'Bạn',av:myAv(),me:1}].concat(MG.pkBots.slice(0,n-1));const fr=st&&st.fresh;if(st)st.fresh=0;const sd=st&&st.phase==='done';
  const seat=(s,i)=>{const b=st&&st.b;const h=st?st.hands[i]:[];const up=i===0||(sd&&st.shown[i]);const cards=h.map((c,k)=>cgCard(c,up,k)).join('');
   const tag=st?(i===st.D?'<i class="pkdb">D</i>':i===st.sb?'<i class="pkdb sb">SB</i>':i===st.bbi?'<i class="pkdb bb">BB</i>':''):'';
@@ -282,3 +282,24 @@ async function doAllowance(){if(_alwBusy)return;_alwBusy=true;const btn=$('alwGo
 // nhắc khi vừa hết xu sau ván
 let _alwAsked='';
 const _sp60=saveP;saveP=function(){const r=_sp60.apply(this,arguments);try{if(canAllowance(PR)&&_alwAsked!==dayKey()){_alwAsked=dayKey();let n=0;const t=setInterval(()=>{n++;if(n>60)return clearInterval(t);if(modalOpen()||document.getElementById('badgeFX')||(typeof FIN!=='undefined'&&FIN.active))return;if(G&&!G.over&&!document.body.classList.contains('athome')&&!document.body.classList.contains('cgon'))return;if(MG.st&&MG.st.busy)return;clearInterval(t);if(canAllowance(PR))openAllowance();},1000);}}catch(e){}return r;};
+
+// ===================== v1.48: cấp/danh hiệu/khung trên ghế mọi chế độ
+function botLvFor(n){let h=0;for(const c of String(n||''))h=(h*31+c.charCodeAt(0))>>>0;return 3+h%43;}
+function seatLv(s){if(!s||(!s.me&&(s.name==='Nhà cái'||!s.name)))return '';if(s.me){const L=levelInfo(PR.xp||0);let t;try{t=currentTitle(PR);}catch(e){t=titleForLevel(L.level);}
+ return `<span class="slv me"><span class="lvb">${L.level}</span>${titleHTML(t)}</span><span class="sxp"><i style="width:${Math.round(100*L.cur/L.need)}%"></i></span>`;}
+ const lv=s.lv||botLvFor(s.name);return `<span class="slv"><span class="lvb">${lv}</span>${titleHTML(titleForLevel(lv))}</span>`;}
+function xpFloat(xp,up){try{const L=levelInfo(PR.xp);toast(`⭐ +${xp} XP · Cấp ${L.level} (${L.cur}/${L.need})`+(up&&up.length?' · Lên cấp!':''));}catch(e){}}
+// ===================== v1.48: Huy hiệu theo chế độ =====================
+const BG_TABS=[['mn','Miền Nam','🂡'],['demla','Đếm lá','🔢'],['3cao','3 Cào','🃏'],['xidach','Xì dách','🂱'],['baucua','Bầu cua','🦀'],['domino','Domino','🁫'],['xito','Xì tố','🂡'],['poker','Poker','♠️'],['chung','Chung','⭐']];
+let bgTab=null,bgFil='all';
+openBadges=function(t,f){if(t)bgTab=t;if(f)bgFil=f;if(!bgTab){const mm={mn:'mn',demla:'demla','3cao':'3cao',xidach:'xidach',baucua:'baucua',domino:'domino',xito:'xito',poker:'poker'};bgTab=mm[typeof MODE!=='undefined'?MODE:'mn']||'mn';}
+ const inTab=BADGES.filter(b=>badgeMode(b)===bgTab);const has=b=>!!PR.badges[b.id];
+ const list=inTab.filter(b=>bgFil==='all'||(bgFil==='on'?has(b):bgFil==='off'?!has(b)&&!b.secret:b.secret)).sort((a,b)=>(has(b)-has(a))||((a.secret?1:0)-(b.secret?1:0)));
+ const n=Object.keys(PR.badges).filter(k=>BADGES.find(b=>b.id===k)).length,tn=inTab.filter(has).length;
+ const cnt=k=>{const l=BADGES.filter(b=>badgeMode(b)===k);return l.filter(has).length+'/'+l.length;};
+ modal(`<h3>${I('medal')} Huy hiệu (${n}/${BADGES.length})</h3><div class="bgtabs" id="bgTabs">${BG_TABS.map(([k,t,ic])=>`<button class="${k===bgTab?'on':''}" onclick="openBadges('${k}')"><span>${ic}</span>${t}<small>${cnt(k)}</small></button>`).join('')}</div>
+ <div class="bgfil">${[['all','Tất cả'],['on','Đã mở'],['off','Chưa mở'],['sec','Bí mật']].map(([k,t])=>`<button class="${k===bgFil?'on':''}" onclick="openBadges(null,'${k}')">${t}</button>`).join('')}<span class="bgsum">${tn}/${inTab.length}</span></div><div class="grid bggrid">`+(list.length?list.map(b=>{const u=has(b),T=BADGE_TIER[b.tier||1];
+  if(b.secret&&!u)return `<div class="badge lock secret"><div class="ic">❓</div><span class="tier">Bí mật</span><b>???</b><br><small>Huy hiệu bí mật</small></div>`;
+  const pr=!u&&b.k&&b.goal?Math.min(1,(PR.stats[b.k]||0)/b.goal):null;
+  return `<div class="badge ${u?'':'lock'} t${b.legend?4:b.tier||1}" style="--tc:${b.legend?'#ff7ae0':T.col}"><div class="ic">${u?b.icon:I('lock')}</div><span class="tier">${b.secret?'Bí mật':b.legend?'Huyền thoại':T.name}</span><b>${esc(b.name.replace(/^[^:]+: /,''))}</b><br>${esc(b.desc)}<br>${I('coin')}${fmt(b.xu)}${pr!=null?`<div class="bprog"><i style="width:${Math.round(pr*100)}%"></i></div><small>${fmt(Math.min(PR.stats[b.k]||0,b.goal))}/${fmt(b.goal)}</small>`:''}</div>`;}).join(''):'<p class="small">Chưa có huy hiệu nào ở mục này</p>')+'</div>');
+ setTimeout(()=>{const o=document.querySelector('#bgTabs .on');if(o)o.scrollIntoView({inline:'center',block:'nearest'});},0);};
