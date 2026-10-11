@@ -1,0 +1,5 @@
+const {chromium}=require('playwright-core');(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const R={};
+for(const w of [360,461])for(const g of ['baucua','domino']){const p=await b.newPage({viewport:{width:w,height:800}});await p.goto('http://localhost:8765/index.html?t='+Date.now());await p.waitForTimeout(900);
+ R[g+w]=await p.evaluate(g=>{closeModal();setInterval(()=>document.querySelectorAll('#badgeFX').forEach(e=>e.remove()),80);setMode(g);openTables();if(g==='domino'){dmSet('n',4);dmDeal();}const e=document.querySelector('#mg .av.'+frameCls());const r=e.getBoundingClientRect();return{fc:frameCls(),bs:getComputedStyle(e).boxShadow.slice(0,60),x:Math.round(r.left),ov:document.documentElement.scrollWidth-innerWidth};},g);
+ await p.waitForTimeout(1200);const e=await p.$('#mg .av[class*="fr-"]');await p.screenshot({path:`shots/v63-${g}-${w}.png`});const bx=await e.boundingBox();await p.screenshot({path:`shots/v63-${g}-${w}-zoom.png`,clip:{x:Math.max(0,bx.x-40),y:Math.max(0,bx.y-30),width:220,height:bx.height+60}});await p.close();}
+console.log(JSON.stringify(R));await b.close();})();

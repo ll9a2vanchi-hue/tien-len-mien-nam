@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.48';
+const APP_V='1.48.1';
 const CHANGELOG=[
+ ['1.48.1','11/10',['Sửa: khung avatar của bạn hiển thị đúng ở Bầu cua và Domino']],
  ['1.48','11/10',['Huy hiệu riêng cho từng chế độ: Đếm lá, 3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker — mỗi chế độ 70 huy hiệu như Miền Nam (số ván, thắng, chuỗi, thắng lớn, làm cái, vét túi máy, cược cao, bài hiếm, bí mật…), có hạng Đồng/Bạc/Vàng/Huyền thoại','Màn Huy hiệu chia tab theo chế độ + lọc Đã mở/Chưa mở/Bí mật','Mọi chế độ hiển thị cấp, danh hiệu và khung avatar của bạn và máy; báo +XP sau mỗi ván','Sửa huy hiệu bí mật “Chặt chồng” không mở được']],
  ['1.47','11/10',['Giao diện màn hình chính gọn hơn: chọn chế độ 4×2, các ô công cụ đều nhau, Gói trợ cấp thành dải ngang riêng với biểu tượng 💰']],
  ['1.46','11/10',['Gói trợ cấp: khi hết sạch xu (đúng 0), nhận 1.000 xu × cấp, 1 lần mỗi ngày — ô mới ở màn hình chính, có đếm ngược, đồng bộ đám mây chống nhận 2 lần','Xì tố: bài to rõ hơn (bài của bạn và bài ngửa của máy)','Poker: bỏ số xu bị hiện trùng ở ghế máy']],

@@ -583,7 +583,7 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 .dmt.fresh{animation:cgpop .4s;box-shadow:0 0 0 2px #ffd84d,0 2px 3px #0008}
 .dmme{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;padding:4px;border-radius:12px;min-height:56px}.dmme .dmt{--u:16px;cursor:pointer;opacity:.75;transition:transform .15s}.dmme .dmt.ok{opacity:1;box-shadow:0 0 0 2px #7dffb0,0 0 10px #7dffb0aa;transform:translateY(-4px)}.dmme .dmt.sel{box-shadow:0 0 0 3px #ffd84d;transform:translateY(-8px)}
 .dmbone{text-align:center;font-size:11px;color:#ffe48a}
-.bcs{border-radius:12px;padding:2px 3px}.bcs .av{box-shadow:0 0 0 3px var(--cc),0 0 10px var(--cc)}.bcs.dl .av{box-shadow:0 0 0 3px var(--cc)}
+.bcs{border-radius:12px;padding:2px 3px}.bcs:not(.me) .av{box-shadow:0 0 0 3px var(--cc),0 0 10px var(--cc)}.bcs.me .av{outline:2px solid var(--cc);outline-offset:6px}.bcs.dl .av{box-shadow:0 0 0 3px var(--cc)}
 .bcleg{display:flex;justify-content:center}.bcleg .bcs{display:flex;align-items:center;gap:6px;font-size:12px;background:#0005;border-radius:16px;padding:2px 10px 2px 2px}.bcleg .av{width:26px;height:26px;font-size:15px}
 .bcch{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;margin-top:2px;min-height:16px;max-width:100%}
 .bcc{display:inline-flex;align-items:center;gap:1px;font-style:normal;font-size:10px;font-weight:900;color:#1a1000;background:radial-gradient(circle at 50% 40%,#fff 0 18%,var(--cc) 20%);border:2px dashed #fff9;border-radius:10px;padding:0 4px 0 1px;line-height:14px;box-shadow:0 1px 2px #0008}
@@ -634,7 +634,7 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 .badge.t4{box-shadow:0 0 0 1.5px #ff7ae0,0 0 12px #ff7ae066}
 .slv{display:flex;align-items:center;justify-content:center;gap:2px;max-width:100%;overflow:hidden;white-space:nowrap;line-height:1.1;margin:1px 0}.slv .lvb{font-size:9px;min-width:14px;height:14px;line-height:14px;padding:0 2px;flex:none}.slv .tt{font-size:9px;padding:0 4px;max-width:78px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .slv.me .tt{max-width:110px;font-size:9.5px}.sxp{display:block;width:58px;height:3px;border-radius:2px;background:#0006;margin:1px auto 0;overflow:hidden}.sxp i{display:block;height:100%;background:linear-gradient(90deg,#7dffb0,#4dd0ff)}
-.dmme{display:flex;align-items:center;gap:5px;justify-content:center;margin:2px 0;font-size:12px;flex-wrap:nowrap;min-width:0}.dmme .av{width:28px;height:28px;font-size:16px;flex:none}.dmme .slv{flex-direction:row}.dmme .sxp{display:none}.dmme .dmbone{margin-left:6px;opacity:.85}
+.dmme{display:flex;align-items:center;gap:5px;justify-content:center;margin:2px 0;font-size:12px;flex-wrap:nowrap;min-width:0}.dmme .av{width:34px;height:34px;font-size:19px;flex:none;margin:6px 8px 6px 4px}.dmme .slv{flex-direction:row}.dmme .sxp{display:none}.dmme .dmbone{margin-left:6px;opacity:.85}
 #mg.mg-baucua .slv .tt{max-width:56px}#mg.mg-baucua .slv{flex-wrap:nowrap}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -676,7 +676,7 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='a3660f7b8a';
+const APP_VER='5a1f409093';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -3001,8 +3001,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.48';
+const APP_V='1.48.1';
 const CHANGELOG=[
+ ['1.48.1','11/10',['Sửa: khung avatar của bạn hiển thị đúng ở Bầu cua và Domino']],
  ['1.48','11/10',['Huy hiệu riêng cho từng chế độ: Đếm lá, 3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker — mỗi chế độ 70 huy hiệu như Miền Nam (số ván, thắng, chuỗi, thắng lớn, làm cái, vét túi máy, cược cao, bài hiếm, bí mật…), có hạng Đồng/Bạc/Vàng/Huyền thoại','Màn Huy hiệu chia tab theo chế độ + lọc Đã mở/Chưa mở/Bí mật','Mọi chế độ hiển thị cấp, danh hiệu và khung avatar của bạn và máy; báo +XP sau mỗi ván','Sửa huy hiệu bí mật “Chặt chồng” không mở được']],
  ['1.47','11/10',['Giao diện màn hình chính gọn hơn: chọn chế độ 4×2, các ô công cụ đều nhau, Gói trợ cấp thành dải ngang riêng với biểu tượng 💰']],
  ['1.46','11/10',['Gói trợ cấp: khi hết sạch xu (đúng 0), nhận 1.000 xu × cấp, 1 lần mỗi ngày — ô mới ở màn hình chính, có đếm ngược, đồng bộ đám mây chống nhận 2 lần','Xì tố: bài to rõ hơn (bài của bạn và bài ngửa của máy)','Poker: bỏ số xu bị hiện trùng ở ghế máy']],
