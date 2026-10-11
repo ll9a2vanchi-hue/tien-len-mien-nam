@@ -156,6 +156,10 @@ function loginState(P,now){const k=dayKey(now),l=P.login;if(l.last===k)return{ca
  const next=(l.last&&dayDiff(l.last,k)===1)?(l.streak%7)+1:1;return{canClaim:true,day:next,reward:LOGIN_REWARDS[next-1]};}
 function claimLogin(P,now){const s=loginState(P,now);if(!s.canClaim)return 0;P.login={last:dayKey(now),streak:s.day};P.xu+=s.reward;return s.reward;}
 function canRescue(P,now){return P.xu<BETS[0]&&P.rescueDay!==dayKey(now);}
+const ALLOW_PER_LV=1000;
+function allowanceAmt(P){return ALLOW_PER_LV*levelInfo(P.xp||0).level;}
+function canAllowance(P,now){return (P.xu|0)===0&&P.allowDay!==dayKey(now);}
+function claimAllowance(P,now){if(!canAllowance(P,now))return 0;const a=allowanceAmt(P);P.allowDay=dayKey(now);P.xu+=a;return a;}
 function rescue(P,now){if(!canRescue(P,now))return 0;P.rescueDay=dayKey(now);P.xu+=RESCUE_XU;return RESCUE_XU;}
 function checkBadges(P){const out=[];let again=true;while(again){again=false;
  for(const b of BADGES)if(!P.badges[b.id]&&b.test(P.stats,P)){P.badges[b.id]=Date.now();P.xu+=b.xu;out.push(b);again=true;}}return out;}
@@ -236,4 +240,4 @@ function addXp(P,n){const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const af
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // PROGRESS_END
-if(typeof module!=='undefined')module.exports={ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
+if(typeof module!=='undefined')module.exports={allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};

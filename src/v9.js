@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.45';
+const APP_V='1.46';
 const CHANGELOG=[
+ ['1.46','11/10',['Gói trợ cấp: khi hết sạch xu (đúng 0), nhận 1.000 xu × cấp, 1 lần mỗi ngày — ô mới ở màn hình chính, có đếm ngược, đồng bộ đám mây chống nhận 2 lần','Xì tố: bài to rõ hơn (bài của bạn và bài ngửa của máy)','Poker: bỏ số xu bị hiện trùng ở ghế máy']],
  ['1.45','11/10',['Chế độ mới: Poker Texas Hold’em — 2-6 người, mù nhỏ/mù lớn, flop/turn/river, xem/theo/tố/tố hũ/tất tay, hũ phụ, máy chơi theo sức bài + ngẫu nhiên','Domino: dây nối dạng rắn quay đầu ở mép, đôi đặt dọc, tự co giãn, hai đầu mở phát sáng; chọn quân rồi bấm Đánh, chọn đầu trái/phải, nút Bốc/Bỏ lượt, quân không hợp mờ đi','Xì tố: tố x1–x10 tiền xâu, Úp/Theo/Xem, Tố tất (xác nhận), máy cũng tố tất; chia bài từng vòng có bay bài + lật','Bầu cua: chip bay vòng cung từ người đặt tới ô cược, máy đặt lần lượt','Huy hiệu/nhiệm vụ/danh hiệu Poker']],
  ['1.44','11/10',['Chế độ mới: Xì tố 32 lá (7→A) — 2-5 người, lá tẩy úp, 4 vòng cược Xem/Theo/Tố/Bỏ, tất tay có hũ phụ, máy cược theo sức bài','Bầu cua: mỗi người một màu, chip có avatar trên từng ô, chip thắng bay về chủ, chip thua về nhà cái','Huy hiệu/nhiệm vụ/danh hiệu Xì tố']],
  ['1.43','11/10',['Chế độ mới: Domino đôi sáu — 2-4 người, bốc nọc khi không đi được, bí bài tính người ít nút nhất, người thua trả xu theo số nút còn lại','Huy hiệu/nhiệm vụ/danh hiệu Domino']],

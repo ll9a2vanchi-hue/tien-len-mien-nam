@@ -1,0 +1,10 @@
+const {chromium}=require('playwright-core');(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const R={};
+const p=await b.newPage({viewport:{width:360,height:800}});p.on('pageerror',e=>errs.push(e.message));await p.goto('http://localhost:8765/index.html?t='+Date.now());await p.waitForTimeout(900);
+await p.evaluate(()=>{closeModal();setInterval(()=>{document.querySelectorAll('#badgeFX').forEach(e=>e.remove());},50);PR.xu=500;PR.xp=5000;PR.allowDay=null;saveP();renderHome();});await p.waitForTimeout(1200);
+R.lock=await p.evaluate(()=>$('allowTile').className+' | '+$('allowTile').textContent);await p.evaluate(()=>$('allowTile').scrollIntoView());await p.screenshot({path:'shots/v60-allow-lock.png'});
+await p.evaluate(()=>{PR.xu=0;saveP();});await p.waitForTimeout(2500);R.prompt=await p.evaluate(()=>!!$('alwGo'));await p.screenshot({path:'shots/v60-allow-prompt.png'});
+const x=await p.evaluate(()=>{const lv=levelInfo(PR.xp).level;return lv*1000;});await p.evaluate(()=>$('alwGo').click());await p.waitForTimeout(400);await p.screenshot({path:'shots/v60-allow-claim.png'});await p.waitForTimeout(1200);
+R.claim=await p.evaluate((x)=>({xu:PR.xu,exp:x,day:PR.allowDay===dayKey()}),x);
+await p.evaluate(()=>{PR.xu=0;saveP();closeModal();renderHome();});await p.waitForTimeout(1500);R.done=await p.evaluate(()=>$('allowTile').className+' | '+$('allowTile').textContent+' | prompt:'+!!$('alwGo'));await p.evaluate(()=>{closeModal();$('allowTile').scrollIntoView();});await p.screenshot({path:'shots/v60-allow-countdown.png'});
+await p.evaluate(()=>doAllowance());await p.waitForTimeout(300);R.second=await p.evaluate(()=>PR.xu);
+console.log(JSON.stringify(R),errs);await b.close();})();

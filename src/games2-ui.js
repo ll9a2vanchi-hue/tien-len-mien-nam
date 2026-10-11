@@ -238,7 +238,7 @@ function pkR(){const o=$('mg');if(!o)return;const st=MG.st;const n=st?st.seats.l
  const seat=(s,i)=>{const b=st&&st.b;const h=st?st.hands[i]:[];const up=i===0||(sd&&st.shown[i]);const cards=h.map((c,k)=>cgCard(c,up,k)).join('');
   const tag=st?(i===st.D?'<i class="pkdb">D</i>':i===st.sb?'<i class="pkdb sb">SB</i>':i===st.bbi?'<i class="pkdb bb">BB</i>':''):'';
   const lab=st&&up&&!b.fold[i]&&(st.board.length||sd)?`<div class="cgsc">${handName(best5(h.concat(st.board),'pk').sc,'pk')}</div>`:'';
-  return `<div class="pks ${i===0?'me':''} ${st&&st.phase==='bet'&&b.cur===i?'turn':''} ${b&&b.fold[i]?'fold':''}">${tag}${mgSeat(i===0?{name:'Bạn',av:myAv(),me:1}:s,st?(sd?'':btSeatLab(b,i))+(st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:`<small class="pkstk">${kxu(b.stack[i])}</small>`):'')}<div class="pkh">${cards}</div>${lab}</div>`;};
+  return `<div class="pks ${i===0?'me':''} ${st&&st.phase==='bet'&&b.cur===i?'turn':''} ${b&&b.fold[i]?'fold':''}">${tag}${mgSeat(i===0?{name:'Bạn',av:myAv(),me:1}:s,st?(sd?'':btSeatLab(b,i))+(st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:`<small class="pkstk">${I('coin')}${kxu(b.stack[i])}</small>`):'')}<div class="pkh">${cards}</div>${lab}</div>`;};
  const board=st?st.board.map((c,k)=>cgCard(c,true,k,fr&&k>=st.board.length-(st.street===1?3:1)?'cgnew':'')).join('')+'<div class="slot"></div>'.repeat(5-st.board.length):'';
  o.innerHTML=mgTop()+`<div class="pktbl pk"><div class="pkopp n${n}">${seats.slice(1).map((s,j)=>seat(s,j+1)).join('')}</div><div class="pkboard">${board}</div><div class="pkpot">${st?`${I('coin')} Hũ: <b>${fmt(btPot(st.b))}</b>`:''}</div><div class="cgmsg">${esc(st?st.msg:"Texas Hold'em · mù lớn = mức cược · mang vào tối đa 100 mù lớn")}</div>${seat(seats[0],0)}</div><div class="cgctl">${pkCtl()}</div>`;try{svaScan(o);}catch(e){}}
 function pkCtl(){const st=MG.st;if(st&&st.phase==='bet'){const b=st.b;if(b.cur!==0)return '<p class="small" style="text-align:center">Đang chờ…</p>';const tc=btToCall(b,0);const st0=b.stack[0];const mn=b.hi+Math.max(b.minR,st.bet);const pot=b.hi+btPot(b)+tc;const canR=b.raises<4&&st0>tc;
@@ -259,3 +259,26 @@ function dmSnake(){const box=$('dmChain');const st=MG.st;if(!box)return;if(!st||
   return `<div class="dmt ${c.dbl?'v':''} ${c.fresh?'fresh':''} ${cls.join(' ')} ${st.choose&&side?'pick':''}" style="position:absolute;left:${offX+p.x}px;top:${top}px;--u:${u}px" ${click}>${dmHalf(halves[0])}${dmHalf(halves[1])}</div>`;}).join('')+
   `<div class="dmends">Đầu mở: <b>${st.ends[0]}</b> · <b>${st.ends[1]}</b></div>`;}
 addEventListener('resize',()=>{if(MG.g==='domino')dmSnake();});
+
+// ===================== Gói trợ cấp (chỉ khi hết xu, 1 lần/ngày, 1000 × cấp) =====================
+function allowLeft(){const d=new Date();const n=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);const s=Math.max(0,Math.floor((n-d)/1000));return String(Math.floor(s/3600)).padStart(2,'0')+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function allowState(){if(PR.allowDay===dayKey())return 'done';if((PR.xu|0)!==0)return 'lock';return 'ok';}
+function allowTileHTML(){const s=allowState();return `${I('gift')}<span>Gói trợ cấp</span><small class="altl">${s==='ok'?'+'+kxu(allowanceAmt(PR))+' xu':s==='done'?'Làm mới sau '+allowLeft():'Chỉ nhận khi hết xu'}</small>`;}
+const _rh60=renderHome;renderHome=function(){_rh60.apply(this,arguments);try{const t=document.querySelector('#home .tiles');if(!t)return;let b=$('allowTile');if(!b){b=document.createElement('button');b.id='allowTile';b.onclick=()=>openAllowance();t.appendChild(b);}b.className='alt tile allow '+allowState();b.innerHTML=allowTileHTML();}catch(e){}};
+setInterval(()=>{const b=$('allowTile');if(b&&document.body.classList.contains('athome')){b.className='alt tile allow '+allowState();b.innerHTML=allowTileHTML();}},1000);
+function openAllowance(){const s=allowState();const amt=allowanceAmt(PR);
+ modal(`<h3>${I('gift')} Gói trợ cấp</h3><div class="alwbig">${I('coin')} ${fmt(amt)} xu</div><p class="small" style="text-align:center">1.000 xu × cấp ${levelInfo(PR.xp).level}. Chỉ nhận được khi số dư <b>đúng 0 xu</b>, tối đa 1 lần mỗi ngày.</p>
+ ${s==='ok'?`<button class="cgbig" id="alwGo" onclick="doAllowance()">Nhận ${fmt(amt)} xu</button>`:s==='done'?`<p style="text-align:center">Hôm nay bạn đã nhận rồi.<br>Làm mới sau <b id="alwCd">${allowLeft()}</b></p>`:`<p style="text-align:center">🔒 Chỉ nhận khi hết xu (hiện có ${fmt(PR.xu)} xu)</p>`}`);
+ if(s==='done'){const iv=setInterval(()=>{const e=$('alwCd');if(!e)return clearInterval(iv);e.textContent=allowLeft();},1000);}}
+let _alwBusy=false;
+async function doAllowance(){if(_alwBusy)return;_alwBusy=true;const btn=$('alwGo');if(btn){btn.disabled=true;btn.textContent='Đang kiểm tra…';}
+ try{// chống nhận 2 lần trên nhiều máy: đọc bản lưu đám mây trước
+  if(typeof SB!=='undefined'&&SB&&typeof USER!=='undefined'&&USER&&navigator.onLine!==false){try{const{data}=await SB.from('tlmn_saves').select('data').eq('user_id',USER.id).maybeSingle();const cd=data&&data.data;if(cd&&cd.allowDay&&(!PR.allowDay||cd.allowDay>PR.allowDay))PR.allowDay=cd.allowDay;}catch(e){}}
+  const got=claimAllowance(PR);if(!got){saveP();closeModal();toast(PR.allowDay===dayKey()?'Hôm nay bạn đã nhận trợ cấp rồi':'Chỉ nhận khi hết xu');return;}
+  saveP();try{if(typeof cloudPush==='function'&&USER)await cloudPush(true);}catch(e){}
+  const from=btn?btn.getBoundingClientRect():null;closeModal();sfx('cgJingle');try{coinFly(from||{left:innerWidth/2-40,top:innerHeight/2,width:80,height:40},got);}catch(e){}
+  try{const r=xuAnchor();floatText(r.left,r.top+r.height+10,'+'+fmt(got)+' xu','gain');}catch(e){}try{animCoin&&animCoin(got);}catch(e){}toast(`${I('gift')} Nhận gói trợ cấp +${fmt(got)} xu`);try{renderHome();}catch(e){}
+ }finally{_alwBusy=false;}}
+// nhắc khi vừa hết xu sau ván
+let _alwAsked='';
+const _sp60=saveP;saveP=function(){const r=_sp60.apply(this,arguments);try{if(canAllowance(PR)&&_alwAsked!==dayKey()){_alwAsked=dayKey();let n=0;const t=setInterval(()=>{n++;if(n>60)return clearInterval(t);if(modalOpen()||document.getElementById('badgeFX')||(typeof FIN!=='undefined'&&FIN.active))return;if(G&&!G.over&&!document.body.classList.contains('athome')&&!document.body.classList.contains('cgon'))return;if(MG.st&&MG.st.busy)return;clearInterval(t);if(canAllowance(PR))openAllowance();},1000);}}catch(e){}return r;};
