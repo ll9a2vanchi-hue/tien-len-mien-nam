@@ -1,0 +1,11 @@
+const {chromium}=require('playwright-core');(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const R={};
+for(const [w,n] of [[360,2],[360,3],[360,4],[360,5],[461,2],[461,3],[461,4],[461,5]]){const p=await b.newPage({viewport:{width:w,height:w===360?800:1024}});p.on('pageerror',e=>errs.push(e.message));await p.goto('http://localhost:8765/index.html?t='+Date.now());await p.waitForTimeout(800);
+ await p.evaluate((n)=>{closeModal();PR.xu=100000;PR.badges=Object.assign(PR.badges||{},{rich:1,first_game:1});saveP();setInterval(()=>{document.querySelectorAll('#badgeFX').forEach(e=>e.remove());try{BQ.length=0}catch(e){}},50);setMode('xito');openTables();xtSet('n',n);xtSet('bet',500);xtDeal();setInterval(()=>{const st=MG.st;if(st&&st.phase==='bet'&&st.b.cur===0&&!st.anim&&st.hands[0].length<5)xtDo(0,'call');},300);},n);
+ await p.waitForFunction(()=>{const st=MG.st;return st&&((st.hands[0].length>=5&&st.b.cur===0&&!st.anim)||st.phase==='done');},null,{timeout:40000}).catch(()=>{});await p.waitForTimeout(300);
+ R[w+'-'+n]=await p.evaluate(()=>{const ctl=document.querySelector('#mg .cgctl').getBoundingClientRect();const me=[...document.querySelectorAll('#mg .pks.me .cgc')].map(e=>e.getBoundingClientRect());const all=[...document.querySelectorAll('#mg .pks .cgc')].map(e=>e.getBoundingClientRect());
+  return{ov:document.documentElement.scrollWidth-innerWidth,meW:Math.round(me[0]&&me[0].width),botW:Math.round(document.querySelector('#mg .pkopp .cgc').getBoundingClientRect().width),overlapCtl:all.some(r=>r.bottom>ctl.top+1),offR:all.some(r=>r.right>innerWidth||r.left<0),ph:MG.st.phase};});
+ await p.screenshot({path:`shots/v64-xt-${w}-${n}.png`});await p.close();}
+// poker seat
+const p=await b.newPage({viewport:{width:360,height:800}});await p.goto('http://localhost:8765/index.html?t='+Date.now());await p.waitForTimeout(800);await p.evaluate(()=>{closeModal();PR.xu=100000;setMode('poker');openTables();pkSet('n',6);pkDeal();});await p.waitForTimeout(1500);
+R.pk=await p.evaluate(()=>[...document.querySelectorAll('#mg .pkopp .pks')].map(s=>[...s.querySelectorAll('small')].filter(e=>getComputedStyle(e).display!=='none').length));await p.screenshot({path:'shots/v64-pk-360.png'});
+console.log(JSON.stringify(R),errs);await b.close();})();

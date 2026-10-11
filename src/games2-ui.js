@@ -194,7 +194,7 @@ function xtShow(){const st=MG.st,b=st.b;st.phase='done';st.busy=false;while(st.h
  st.ledger=st.seats.map((s,i)=>[(i===0?'Bạn':s.name)+(scores[i]?' · '+handName(scores[i],'xt'):' · bỏ'),st.res[i]]);
  const stats=[];const _r=me>0&&scores[0]?scores[0][0]:-1,_solo=btLive(b).length<=1;const ev={role:me>0&&!!b.allin[0],sp1:_r>=5,sp2:_r>=6,sp3:_r>=7,s4:_r>=8,s5:me>0&&_solo};if(me>0&&scores[0]&&scores[0][0]>=8)stats.push('xtSF');if(me>0&&scores[0]&&scores[0][0]>=7)stats.push('xtBig');const xp=mgEnd(me,{stats,ev});st.msg+=` · +${xp} XP`;sfx('cgSnap');xtR();}
 function xtR(){const o=$('mg');if(!o)return;const st=MG.st;const n=st?st.seats.length:MG.xtN;const seats=st?st.seats:[{name:'Bạn',av:myAv(),me:1}].concat(MG.xtBots.slice(0,n-1));const fr=st&&st.fresh;if(st)st.fresh=0;
- const seat=(s,i)=>{const b=st&&st.b;const h=st?st.hands[i]:[];const sd=st&&st.phase==='done';const cards=h.map((c,k)=>cgCard(c,i===0||k>0||(sd&&!b.fold[i]),k,(fr&&k===h.length-1?'cgnew':'')+(k===0&&i===0&&!sd?' tay':''))).join('');
+ const seat=(s,i)=>{const b=st&&st.b;const h=st?st.hands[i]:[];const sd=st&&st.phase==='done';const cards=h.map((c,k)=>xtCard(c,i===0||k>0||(sd&&!b.fold[i]),k,(fr&&k===h.length-1?'cgnew':'')+(k===0&&i===0&&!sd?' tay':''))).join('');
   const lab=st&&(i===0||sd)&&h.length&&!b.fold[i]?`<div class="cgsc">${sd?handName(eval5(h.concat(h.length<5?[]:[]).slice(0,5),'xt'),'xt'):handName(evalPartial(h),'xt')}</div>`:'';
   return `<div class="pks ${i===0?'me':''} ${st&&st.phase==='bet'&&b.cur===i?'turn':''} ${b&&b.fold[i]?'fold':''}" data-i="${i}">${mgSeat(i===0?{name:'Bạn',av:myAv(),me:1}:s,st?(sd?'':btSeatLab(b,i))+(st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:''):'')}<div class="pkh">${cards}</div>${lab}</div>`;};
  o.innerHTML=mgTop()+`<div class="pktbl"><div class="pkopp n${n}">${seats.slice(1).map((s,j)=>seat(s,j+1)).join('')}</div><div class="pkpot"><div class="card back cgc pkdeck"></div>${st?`${I('coin')} Hũ: <b>${fmt(btPot(st.b))}</b>`:''}</div><div class="cgmsg">${esc(st?st.msg:'Xì tố 32 lá (7→A) · 5 lá, lá đầu úp · Thùng phá sảnh > Tứ quý > Thùng > Cù lũ > Sảnh > Sám > Thú > Đôi')}</div>${seat(seats[0],0)}</div><div class="cgctl">${xtCtl()}</div>`;try{svaScan(o);}catch(e){}}
@@ -283,6 +283,14 @@ async function doAllowance(){if(_alwBusy)return;_alwBusy=true;const btn=$('alwGo
 let _alwAsked='';
 const _sp60=saveP;saveP=function(){const r=_sp60.apply(this,arguments);try{if(canAllowance(PR)&&_alwAsked!==dayKey()){_alwAsked=dayKey();let n=0;const t=setInterval(()=>{n++;if(n>60)return clearInterval(t);if(modalOpen()||document.getElementById('badgeFX')||(typeof FIN!=='undefined'&&FIN.active))return;if(G&&!G.over&&!document.body.classList.contains('athome')&&!document.body.classList.contains('cgon'))return;if(MG.st&&MG.st.busy)return;clearInterval(t);if(canAllowance(PR))openAllowance();},1000);}}catch(e){}return r;};
 
+// ===================== v1.48.2: lá bài Xì tố lớn, góc to, chất SVG
+const XT_SUIT={0:'M30 6C22 18 8 26 8 38c0 8 9 12 16 6-1 6-4 10-8 12h28c-4-2-7-6-8-12 7 6 16 2 16-6C52 26 38 18 30 6z',1:'M30 6a10 10 0 0 0-9 15 10 10 0 1 0 6 18c-1 6-4 9-8 11h22c-4-2-7-5-8-11a10 10 0 1 0 6-18 10 10 0 0 0-9-15z',2:'M30 4L50 30 30 56 10 30z',3:'M30 54C14 40 6 32 6 21 6 12 13 6 20 6c5 0 8 3 10 7 2-4 5-7 10-7 7 0 14 6 14 15 0 11-8 19-24 33z'};
+const XT_COL=['#111','#111','#e04a00','#d0102a'];
+function xtSuit(si,x,y,sz){return `<path d="${XT_SUIT[si]}" fill="${XT_COL[si]}" transform="translate(${x},${y}) scale(${sz/60})"/>`;}
+function xtCard(c,up,k,cls){if(!up)return cgCard(c,false,k,cls);const r=RANKS[rk(c)],si=st(c),col=XT_COL[si];const fs=r==='10'?17:21;
+ return `<div class="card cgc xtc ${si>=2?'red':''} ${cls||''}" data-c="${c}" style="--d:${k||0}"><svg viewBox="0 0 60 84" preserveAspectRatio="none"><rect x="0.5" y="0.5" width="59" height="83" rx="5" fill="#fff" stroke="#bbb"/>
+ <text x="${r==='10'?3:5}" y="20" font-size="${fs}" font-weight="900" font-family="Arial,Helvetica,sans-serif" fill="${col}" letter-spacing="${r==='10'?-1.5:0}">${r}</text>${xtSuit(si,4,23,15)}${xtSuit(si,17,30,36)}
+ <g transform="rotate(180 30 42)"><text x="${r==='10'?3:5}" y="20" font-size="${fs*0.8}" font-weight="900" font-family="Arial,Helvetica,sans-serif" fill="${col}">${r}</text></g></svg></div>`;}
 // ===================== v1.48: cấp/danh hiệu/khung trên ghế mọi chế độ
 function botLvFor(n){let h=0;for(const c of String(n||''))h=(h*31+c.charCodeAt(0))>>>0;return 3+h%43;}
 function seatLv(s){if(!s||(!s.me&&(s.name==='Nhà cái'||!s.name)))return '';if(s.me){const L=levelInfo(PR.xp||0);let t;try{t=currentTitle(PR);}catch(e){t=titleForLevel(L.level);}
