@@ -595,7 +595,7 @@ function ledgerParts(){const r=LEDG.res||(G&&G.lastRes)||{},L=r.ledger||{};const
  const parts=Object.assign({},L,t,{chop});const known=ledgerItems(parts).total;const actual=LEDG.xu0==null?known:PR.xu-LEDG.xu0;parts.misc=actual-known;return{parts,actual};}
 function ledgerBox(){const m=$('modalIn');if(!m||m.querySelector('.ledger'))return;const {parts,actual}=ledgerParts();const {items,total}=ledgerItems(parts);
  const sg=v=>(v>=0?'+':'−')+fmt(Math.abs(v));const d=document.createElement('div');d.className='ledger';
- let others='';try{others=(G.seats||[0,1,2,3]).map(p=>{const v=p===0?actual:(seatXu(p)-(LEDG.s0[p]!=null?LEDG.s0[p]:seatXu(p)));return `<span class="${v>=0?'gain':'loss'}">${p===0?'Bạn':esc(NAMES[p])} ${sg(v)}</span>`;}).join(' · ');}catch(e){}
+ let others='';try{others=(G.seats||[0,1,2,3]).map(p=>{const v=p===0?actual:(seatXu(p)-(LEDG.s0[p]!=null?LEDG.s0[p]:seatXu(p)));return `<div class="pnr"><span>${p===0?'Bạn':esc(NAMES[p])}</span><b class="${v>=0?'gain':'loss'}">${sg(v)}</b></div>`;}).join('');}catch(e){}
  d.innerHTML=`<div class="lh">Sổ xu ván này</div>${items.map(x=>`<div class="li"><span>${x.l}</span><b class="${x.v>=0?'gain':'loss'}">${sg(x.v)}</b></div>`).join('')}<div class="li tot"><span>Tổng thay đổi</span><b class="${total>=0?'gain':'loss'}">${sg(total)} xu</b></div><div class="small pn">${others}</div>`;
  const rb=m.querySelector('.rewbox')||m.querySelector('button');if(rb)rb.before(d);else m.appendChild(d);}
 thuiRow=function(){};
@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.36';
+const APP_V='1.37';
 const CHANGELOG=[
+ ['1.37','11/10',['Chọn chế độ dạng lưới 2x2 đẹp hơn, không tràn màn hình','Kết quả Đếm lá: danh sách dọc từng người (số lá, phần, xu), tiền từng người theo hàng','3 Cào / Xì dách dùng mặt sau bài bạn đã mua']],
  ['1.36','11/10',['Chế độ mới: Xì dách — đấu nhà cái: Xì bàng x3, Xì dách x2, Ngũ linh x2, non dưới 16, quắc quá 21; nhà cái rút tới 15','Nhiệm vụ + huy hiệu Xì dách']],
  ['1.35','11/10',['Đếm lá: tính theo giá lá (3–10 = 1, J/Q/K = 1,5, A = 2, 2 đen = 3, 2 đỏ = 4 phần cược/5), cháy 13 lá x2','Chế độ mới: 3 Cào — đấu nhà cái, tổng điểm lấy số cuối, Ba cào (3 lá J/Q/K) thắng x2','Bàn 4 người cân đối: avatar của bạn ở giữa cạnh dưới bàn']],
  ['1.34','11/10',['Chế độ mới: Tiến Lên đếm lá — người thua trả người nhất cược/13 mỗi lá còn lại (heo tính 2 lá), không thúi heo','Chọn chế độ chơi ở màn hình chính','Nhiệm vụ + huy hiệu Đếm lá']],
@@ -910,8 +911,8 @@ const _dp44=doPlay;doPlay=function(p,c,s){const r=_dp44.apply(this,arguments);tr
 
 // Đếm lá: chi tiết từng người thua trong bảng kết quả
 setInterval(()=>{try{if(!G||G.mode!=='demla'||!G.over||!G.dl||$('dlBrk'))return;const m=$('modalIn');if(!m||!/Sổ xu/.test(m.textContent))return;const box=[...m.querySelectorAll('div')].find(d=>/^Sổ xu/.test(d.textContent.trim()));if(!box)return;
- const u=curBet()/5,w=(G.rank||G.finished)[0];const rows=(G.rank||G.finished).slice(1).map(p=>{const h=G.hands[p]||[];return `<div class="row"><span style="flex:1">${p===0?'Bạn':esc(NAMES[p])} · ${h.length} lá${h.length===13?' (cháy x2)':''} · ${demlaUnits(h)} phần</span><b class="loss">−${fmt(Math.round(u*demlaUnits(h)))}</b></div>`;}).join('');
- box.insertAdjacentHTML('afterend',`<div id="dlBrk" class="rewbox small"><b>🔢 Đếm lá → ${w===0?'Bạn':esc(NAMES[w])}</b>${rows}</div>`);}catch(e){}},600);
+ const u=curBet()/5,w=(G.rank||G.finished)[0];const rows=(G.rank||G.finished).slice(1).map(p=>{const h=G.hands[p]||[];const av=(AVATARS[p]||['🙂','#456']);const chips=h.slice().sort((a,b)=>a-b).map(c=>`<i class="${(c&3)>=2?'r':''}">${RANKS[c>>2]}${SUITS[c&3]}</i>`).join('');return `<div class="dlr"><span class="av dlav" style="--avc:${esc(av[1]||'#456')}">${esc(av[0])}</span><div class="dli"><b>${p===0?'Bạn':esc(NAMES[p])}</b><small>${h.length} lá · ${demlaUnits(h)} phần${h.length===13?' · cháy x2':''}</small><div class="dlc">${chips}</div></div><b class="loss dlx">−${fmt(Math.round(u*demlaUnits(h)))}</b></div>`;}).join('');
+ box.insertAdjacentHTML('afterend',`<div id="dlBrk"><div class="dlh">🔢 Đếm lá → ${w===0?'Bạn':esc(NAMES[w])}</div>${rows}</div>`);try{svaScan($('dlBrk'));}catch(e){}}catch(e){}},600);
 // ======== v45: avatar của mình ở giữa cạnh dưới bàn (cân đối với ghế trên) ========
 function placeMeAv(){try{const t=$('table');if(!t)return;const a=document.querySelector('#meInfo #meAvM');if(innerWidth>700){const o=t.querySelector('.meseat');if(o&&a)o.remove();else if(o){o.classList.remove('meseat');const mi=$('meInfo');mi&&mi.prepend(o);}return;}if(!a)return;
  const old=t.querySelector('.meseat');if(old)old.remove();a.classList.add('meseat');t.appendChild(a);
