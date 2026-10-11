@@ -149,7 +149,8 @@ function render(){
  let h=G.hands[0].slice(),gaps=new Set();if(sortMode)h=sortCards(h);else if(typeof smartGroups==='function'){const gs=smartGroups(h);h=[];gs.forEach(g=>{if(h.length)gaps.add(h.length);h.push(...sortCards(g));});}else h=sortCards(h);
  const hd=$('hand');hd.innerHTML='';const W=(typeof innerWidth!=='undefined'?innerWidth:1000),two=W<=700&&h.length>7,k=two?Math.ceil(h.length/2):h.length;
  h.forEach((c,i)=>{if(two&&i===k){const b=document.createElement('div');b.className='brk';hd.appendChild(b);}const e=cardEl(c,true);if(two&&i>=k)e.className+=' r2';if(gaps.has(i)&&!(two&&i===k))e.className+=' gap';hd.appendChild(e);});
- hd.className=two?'two':'';if(hd.style&&hd.style.setProperty){if(W<=700){const n=Math.max(k,1),av=W-28,cw=Math.min(Math.min(84,(typeof innerHeight!=='undefined'?innerHeight:900)*0.1),av/(1+0.58*(n-1)));const ov=n>1?Math.min(-cw*0.42,(av-n*cw)/(n-1)):0;
+ hd.className=two?'two':'';if(hd.style&&hd.style.setProperty){if(W<=700){let ng=0;{const rows=two?[[0,k],[k,h.length]]:[[0,h.length]];rows.forEach(([a,b])=>{let c=0;gaps.forEach(i=>{if(i>a&&i<b)c++;});ng=Math.max(ng,c);});}
+  const n=Math.max(k,1),av=W-28,cw=Math.min(Math.min(84,(typeof innerHeight!=='undefined'?innerHeight:900)*0.1),av/(1+0.58*(n-1)));let gp=ng?8:0;let ov=n>1?Math.min(-cw*0.42,(av-n*cw-ng*gp)/(n-1)):0;if(n>1&&ov<-cw*0.72){gp=ng?Math.max(2,(av-n*cw-(n-1)*(-cw*0.72))/ng):0;ov=Math.min(-cw*0.42,(av-n*cw-ng*gp)/(n-1));}hd.style.setProperty('--gp',gp.toFixed(1)+'px');
   hd.style.setProperty('--cw',cw.toFixed(1)+'px');hd.style.setProperty('--ch',(cw*1.43).toFixed(1)+'px');hd.style.setProperty('--ov',ov.toFixed(1)+'px');const cw2=Math.min(84,(typeof innerHeight!=='undefined'?innerHeight:900)*0.1,av/(1+0.58*6));hd.style.height=(cw2*1.43*1.58+20).toFixed(0)+'px';}else{['--cw','--ch','--ov','height'].forEach(v=>hd.style.removeProperty(v));}}
  $('myCnt').textContent=G.hands[0].length;renderMe();
  $('me').className=G.turn===0&&!G.over?'turn':'';

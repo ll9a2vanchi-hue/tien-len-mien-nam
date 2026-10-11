@@ -13,6 +13,7 @@ function mergeSaves(a,b){
  if(O.rescueDay&&(!P.rescueDay||O.rescueDay>P.rescueDay))P.rescueDay=O.rescueDay;
  if(O.quests&&O.quests.day&&(!P.quests||!P.quests.day||O.quests.day>P.quests.day))P.quests=JSON.parse(JSON.stringify(O.quests));
  else if(O.quests&&P.quests&&O.quests.day===P.quests.day)P.quests.list.forEach((q,i)=>{const o=O.quests.list.find(x=>x.id===q.id);if(o){q.prog=Math.max(q.prog,o.prog);q.claimed=q.claimed||o.claimed;}});
+ if(O.name&&(!P.name||(O.nameAt||0)>(P.nameAt||0))){P.name=O.name;P.nameAt=O.nameAt||0;}
  out.updatedAt=Math.max(a.updatedAt||0,b.updatedAt||0);return out;}
 // CLOUD_END
 if(typeof module!=='undefined')module.exports={mergeSaves,saveProgress};

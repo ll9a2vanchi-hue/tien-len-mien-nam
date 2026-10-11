@@ -334,7 +334,8 @@ html,body{overflow-x:hidden}
 .lbrow.p0{--pc:#ffd84d}.lbrow.p1{--pc:#c0c8d0}.lbrow.p2{--pc:#cd7f32}.lbrow.pod .lbn{font-size:20px}
 .lbrow.mine{outline:1px dashed #4dd0e1}.lbme{border-top:1px solid #e9c45a55;margin-top:6px;padding-top:4px}
 #top #bNew{display:none!important}
-#hand .card.gap{margin-left:calc(var(--ov,0px) + 14px)}
+#hand .card.gap{margin-left:calc(var(--ov,0px) + var(--gp,14px))}
+#hand.two{flex-wrap:wrap}#hand:not(.two){flex-wrap:nowrap}
 #bPass.mustpass{border:2px solid #ffd84d!important;color:#ffe9a8!important;box-shadow:0 0 14px #ffd84daa;animation:mpulse 1.1s ease-in-out infinite}
 @keyframes mpulse{50%{box-shadow:0 0 26px #ffd84d,0 0 4px #fff8}}
 @media (prefers-reduced-motion:reduce){#bPass.mustpass{animation:none}}
@@ -343,6 +344,26 @@ html,body{overflow-x:hidden}
 .pwrap{position:relative}.pwrap .inp{padding-right:46px}.pwrap .eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);margin:0;padding:4px 8px;min-width:0;background:transparent!important;border:none!important;box-shadow:none!important;font-size:18px;color:#ccc;opacity:.75}.pwrap .eye.on{opacity:1}
 .pwmsg{font-size:12px;min-height:16px;margin:2px 0}.pwmsg.bad{color:#ff8a80}.pwmsg.ok{color:#81c784}
 .linkbtn{background:none!important;border:none!important;box-shadow:none!important;color:#e9c45a!important;text-decoration:underline;font-size:13px;padding:4px!important;margin:0 0 6px!important;display:block}
+#startOv{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+#startOv .sbig{font-size:22px;font-weight:900;letter-spacing:1px;padding:16px 46px;border-radius:40px;background:linear-gradient(180deg,#ffe9a8,#e9c45a 45%,#b8862b);color:#3a2500;border:2px solid #fff3c4;box-shadow:0 0 0 4px #0006,0 0 28px #e9c45a99,0 10px 24px #000a;animation:spulse 1.6s ease-in-out infinite}
+@keyframes spulse{50%{box-shadow:0 0 0 4px #0006,0 0 44px #ffd84d,0 10px 24px #000a}}
+@media (prefers-reduced-motion:reduce){#startOv .sbig{animation:none}}
+#startOv .srow{display:flex;gap:8px}#startOv .srow button{font-size:13px;padding:7px 14px}
+#startOv .swait{padding:12px 22px;border-radius:20px;background:#000a;color:#ffe9a8;font-weight:700}
+body.tblidle #ctrl,body.tblidle #noBeat,body.tblidle #hand{visibility:hidden}#startOv .sbig{white-space:nowrap}body.tblidle #pile,body.tblidle #under,body.tblidle .seat .reveal,body.tblidle #msg{visibility:hidden}
+#hand .card.dland{animation:dland .32s ease-out both}@keyframes dland{0%{transform:translateY(-30px) rotateY(90deg);opacity:.3}100%{transform:none;opacity:1}}
+body.playing .seat:not(.turn){filter:brightness(.72) saturate(.85);transition:filter .3s}
+.seat.turn{position:relative}.seat.turn::before{content:'';position:absolute;left:50%;top:40%;width:190px;height:190px;transform:translate(-50%,-50%);background:radial-gradient(circle,#ffe9a840,#ffd84d18 40%,transparent 70%);pointer-events:none;z-index:-1}
+.seat.turn .av{transform:scale(1.14);box-shadow:0 0 0 3px #ffd84d,0 0 22px 6px #ffd84daa!important;animation:tpulse 1.2s ease-in-out infinite;transition:transform .25s}
+@keyframes tpulse{50%{box-shadow:0 0 0 4px #fff1b8,0 0 34px 10px #ffd84d!important}}
+#turnRing{position:fixed;z-index:15;pointer-events:none}#turnRing svg{width:100%;height:100%;transform:rotate(-90deg)}
+#turnRing .trbg{fill:none;stroke:#0006;stroke-width:5}#turnRing .trfg{fill:none;stroke:#ffd84d;stroke-width:5;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:0;filter:drop-shadow(0 0 4px #ffd84d);animation:trc 15s linear forwards}
+@keyframes trc{to{stroke-dashoffset:100;stroke:#ff5252}}
+#me.turn{position:relative}#me.turn #hand{box-shadow:0 -10px 30px -8px #ffd84d88,inset 0 2px 0 #ffd84d66;border-radius:18px;background:radial-gradient(ellipse at 50% 0,#ffd84d22,transparent 70%)}
+#me.turn::after{content:'LƯỢT BẠN';position:absolute;left:50%;top:-14px;transform:translateX(-50%);font-size:12px;font-weight:900;letter-spacing:2px;color:#3a2500;background:linear-gradient(180deg,#ffe9a8,#e9c45a);padding:3px 14px;border-radius:12px;box-shadow:0 0 16px #ffd84d;z-index:8;pointer-events:none;animation:tpulse2 1.2s ease-in-out infinite}
+@keyframes tpulse2{50%{box-shadow:0 0 28px #ffd84d}}
+@media (prefers-reduced-motion:reduce){.seat.turn .av,#me.turn::after{animation:none}#turnRing .trfg{animation:none}#hand .card.dland{animation:none}}
+.pencil{padding:2px 6px!important;margin:0 0 0 4px!important;min-width:0;vertical-align:middle;display:inline-flex;align-items:center;gap:3px;font-size:12px}.pname{font-size:16px;color:#ffe9a8}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -383,7 +404,7 @@ html,body{overflow-x:hidden}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='14abe9534e';
+const APP_VER='5a4389fa83';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -524,6 +545,16 @@ const WEEKLY_POOL=[
  Q('w_chop2p','Chặt heo ở bàn 2 người','chop2',1,1500),Q('w_egg5','Ném 5 quả trứng','egg',5,800),Q('w_spin3','Quay vòng may mắn 3 lần','spin',3,1000),Q('w_bet5k','Thắng 1 ván cược 5.000','winbet5k',1,6000),
  Q('w_chop5','Chặt heo 5 lần','chop',5,2500),Q('w_quad3','Đánh 3 tứ quý','quad',3,3000),Q('w_online5','Chơi 5 ván online','online',5,3000),Q('w_buy3','Mua 3 vật phẩm','buy',3,1500),
 ];
+// Tên người chơi: 2-16 ký tự, có dấu tiếng Việt, lọc từ tục cơ bản
+const BAD_WORDS=['dit','du ma','dm','dmm','dcm','vcl','vkl','lon','cac','buoi','deo','dji','di me','cave','fuck','shit','bitch','dick','pussy','cunt','nigger','sex','porn'];
+function foldVi(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();}
+function validName(raw){const n=String(raw||'').replace(/\s+/g,' ').trim();const L=[...n].length;
+ if(L<2)return{ok:false,err:'Tên phải có ít nhất 2 ký tự'};if(L>16)return{ok:false,err:'Tên tối đa 16 ký tự'};
+ if(!/^[\p{L}\p{N} ._\-]+$/u.test(n))return{ok:false,err:'Chỉ dùng chữ, số, khoảng trắng và . _ -'};
+ const f=foldVi(n),words=f.split(/[^a-z0-9]+/).filter(Boolean),joined=words.join('');
+ for(const b of BAD_WORDS){const bw=b.split(' ');if(bw.length>1){if(f.replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').includes(b)||joined.includes(bw.join('')))return{ok:false,err:'Tên chứa từ không phù hợp'};}
+  else if(words.includes(b)||(b.length>=4&&joined.includes(b)))return{ok:false,err:'Tên chứa từ không phù hợp'};}
+ return{ok:true,name:n};}
 function dayKey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function dayDiff(a,b){const p=k=>{const[y,m,d]=k.split('-').map(Number);return Date.UTC(y,m-1,d)/864e5;};return p(b)-p(a);}
 function newProfile(){return{xu:START_XU,bet:100,rescueDay:null,login:{last:null,streak:0},badges:{},
@@ -611,6 +642,7 @@ function mergeSaves(a,b){
  if(O.rescueDay&&(!P.rescueDay||O.rescueDay>P.rescueDay))P.rescueDay=O.rescueDay;
  if(O.quests&&O.quests.day&&(!P.quests||!P.quests.day||O.quests.day>P.quests.day))P.quests=JSON.parse(JSON.stringify(O.quests));
  else if(O.quests&&P.quests&&O.quests.day===P.quests.day)P.quests.list.forEach((q,i)=>{const o=O.quests.list.find(x=>x.id===q.id);if(o){q.prog=Math.max(q.prog,o.prog);q.claimed=q.claimed||o.claimed;}});
+ if(O.name&&(!P.name||(O.nameAt||0)>(P.nameAt||0))){P.name=O.name;P.nameAt=O.nameAt||0;}
  out.updatedAt=Math.max(a.updatedAt||0,b.updatedAt||0);return out;}
 // CLOUD_END
 // SHOP_START
@@ -1115,7 +1147,8 @@ function render(){
  let h=G.hands[0].slice(),gaps=new Set();if(sortMode)h=sortCards(h);else if(typeof smartGroups==='function'){const gs=smartGroups(h);h=[];gs.forEach(g=>{if(h.length)gaps.add(h.length);h.push(...sortCards(g));});}else h=sortCards(h);
  const hd=$('hand');hd.innerHTML='';const W=(typeof innerWidth!=='undefined'?innerWidth:1000),two=W<=700&&h.length>7,k=two?Math.ceil(h.length/2):h.length;
  h.forEach((c,i)=>{if(two&&i===k){const b=document.createElement('div');b.className='brk';hd.appendChild(b);}const e=cardEl(c,true);if(two&&i>=k)e.className+=' r2';if(gaps.has(i)&&!(two&&i===k))e.className+=' gap';hd.appendChild(e);});
- hd.className=two?'two':'';if(hd.style&&hd.style.setProperty){if(W<=700){const n=Math.max(k,1),av=W-28,cw=Math.min(Math.min(84,(typeof innerHeight!=='undefined'?innerHeight:900)*0.1),av/(1+0.58*(n-1)));const ov=n>1?Math.min(-cw*0.42,(av-n*cw)/(n-1)):0;
+ hd.className=two?'two':'';if(hd.style&&hd.style.setProperty){if(W<=700){let ng=0;{const rows=two?[[0,k],[k,h.length]]:[[0,h.length]];rows.forEach(([a,b])=>{let c=0;gaps.forEach(i=>{if(i>a&&i<b)c++;});ng=Math.max(ng,c);});}
+  const n=Math.max(k,1),av=W-28,cw=Math.min(Math.min(84,(typeof innerHeight!=='undefined'?innerHeight:900)*0.1),av/(1+0.58*(n-1)));let gp=ng?8:0;let ov=n>1?Math.min(-cw*0.42,(av-n*cw-ng*gp)/(n-1)):0;if(n>1&&ov<-cw*0.72){gp=ng?Math.max(2,(av-n*cw-(n-1)*(-cw*0.72))/ng):0;ov=Math.min(-cw*0.42,(av-n*cw-ng*gp)/(n-1));}hd.style.setProperty('--gp',gp.toFixed(1)+'px');
   hd.style.setProperty('--cw',cw.toFixed(1)+'px');hd.style.setProperty('--ch',(cw*1.43).toFixed(1)+'px');hd.style.setProperty('--ov',ov.toFixed(1)+'px');const cw2=Math.min(84,(typeof innerHeight!=='undefined'?innerHeight:900)*0.1,av/(1+0.58*6));hd.style.height=(cw2*1.43*1.58+20).toFixed(0)+'px';}else{['--cw','--ch','--ov','height'].forEach(v=>hd.style.removeProperty(v));}}
  $('myCnt').textContent=G.hands[0].length;renderMe();
  $('me').className=G.turn===0&&!G.over?'turn':'';
@@ -1316,7 +1349,7 @@ window.addEventListener('resize',()=>{if(G&&G.started&&!document.body.classList.
 // ---------- Chơi online với bạn bè (Supabase Realtime, kênh riêng tư 'tlmn:*') ----------
 const ONL={active:false,code:null,ch:null,tr:null,host:null,client:null,me:null,st:null,room:null,lastRev:-1,rewarded:null,lastEvKey:null,presence:[],chat:[]};
 let LOBBY=null,MYCODE=null;
-function meInfo(){const L=levelInfo(PR.xp);return{uid:USER.id,name:(USER.email||'').split('@')[0].slice(0,16)||'Người chơi',av:myAv(),bg:PR.avBg,frame:equipped(PR,'frame').id,lv:L.level,title:currentTitle(PR).name,tier:currentTitle(PR).tier};}
+function meInfo(){const L=levelInfo(PR.xp);return{uid:USER.id,name:PR.name||(USER.email||'').split('@')[0].slice(0,16)||'Người chơi',av:myAv(),bg:PR.avBg,frame:equipped(PR,'frame').id,lv:L.level,title:currentTitle(PR).name,tier:currentTitle(PR).tier};}
 function needLogin(){if(!CLOUD_ON){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Máy chủ online chưa được cấu hình.</p>`);return true;}
  if(navigator.onLine===false){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Bạn đang offline. Hãy kết nối mạng để chơi online.</p>`);return true;}
  if(!USER){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Cần <b>đăng nhập</b> để chơi online, kết bạn và trò chuyện.</p><button onclick="openAccount()">${I('user')} Đăng nhập / Đăng ký</button>`);return true;}return false;}
@@ -1670,9 +1703,10 @@ Object.assign(SND,{shuffle:()=>{for(let i=0;i<14;i++)noise(.035,.16,i*.035,2500+
  flip:()=>{noise(.06,.2,0,1500);noise(.06,.2,.08,2200);tone(600,.08,'triangle',.05,.05,900);}});
 function seatPt(p){const e=p===0?$('hand'):document.querySelector('#s'+p+' .av');const r=e&&e.getBoundingClientRect();return r&&r.width?{x:r.left+r.width/2,y:r.top+r.height/2}:{x:innerWidth/2,y:p===0?innerHeight-80:80};}
 function dealAnim(seats,done){const tb=($('table')||document.body).getBoundingClientRect(),cx=tb.left+tb.width/2,cy=tb.top+tb.height/2;
- const ov=document.createElement('div');ov.id='dealFX';document.body.appendChild(ov);const hand=$('hand');if(hand)hand.classList.add('dealhide');
+ const ov=document.createElement('div');ov.id='dealFX';document.body.appendChild(ov);const hand=$('hand');const hc=hand?[...hand.querySelectorAll('.card')]:[];hc.forEach(c=>c.style.visibility='hidden');
+ const reveal=i=>{const c=hc[i];if(c&&c.style.visibility==='hidden'){c.style.visibility='';if(!RM){c.classList.add('dland');setTimeout(()=>c.classList.remove('dland'),400);}}};
  let ended=false,timers=[];const end=()=>{if(ended)return;ended=true;timers.forEach(clearTimeout);ov.remove();_dealSkip=null;
-  if(hand){hand.classList.remove('dealhide');hand.classList.add('dealflip');setTimeout(()=>hand.classList.remove('dealflip'),500);}sfx('flip');done();};
+  hc.forEach((c,i)=>reveal(i));sfx('flip');done();};
  _dealSkip=end;ov.addEventListener('pointerdown',end);
  const mk=(x,y)=>{const c=document.createElement('div');c.className='back dcard';c.style.left=x+'px';c.style.top=y+'px';ov.appendChild(c);return c;};
  if(RM){mk(cx,cy);sfx('shuffle');timers.push(setTimeout(end,450));return;}
@@ -1681,7 +1715,7 @@ function dealAnim(seats,done){const tb=($('table')||document.body).getBoundingCl
  const per=Math.max(16,Math.round(1250/(13*seats.length)));let k=0;const P=Object.fromEntries(seats.map(p=>[p,seatPt(p)]));
  timers.push(setTimeout(()=>{deck.forEach(c=>c.remove());for(let r=0;r<13;r++)for(const p of seats){const i=k++;timers.push(setTimeout(()=>{const c=mk(cx,cy),t=P[p];
    c.animate([{transform:'translate(-50%,-50%) rotate(0)'},{transform:`translate(calc(-50% + ${t.x-cx}px),calc(-50% + ${t.y-cy}px)) rotate(${(i*47)%40-20}deg) scale(.8)`,opacity:.9}],{duration:230,easing:'ease-out',fill:'forwards'});
-   if(i%2===0)sfx('tick');setTimeout(()=>c.remove(),240);},i*per));}
+   if(i%2===0)sfx('tick');setTimeout(()=>{c.remove();if(p===0)reveal(r);},235);},i*per));}
   timers.push(setTimeout(end,13*seats.length*per+280));},560));}
 const _st10=step;step=function(){if(DEALING)return;return _st10();};
 const _hpl=humanPlay;humanPlay=function(){if(DEALING)return;return _hpl();};
@@ -1744,5 +1778,48 @@ const _ng14=newGame;newGame=function(n){_overAt=0;return _ng14(n);};
 const _sr14=showResult;showResult=function(r){if(G)G._resShown=true;return _sr14(r);};
 // endGame không được phép ném lỗi trước khi hẹn bảng kết quả
 const _eg14=endGame;endGame=function(i){try{return _eg14(i);}catch(e){console.error('endGame',e);const seats=G.seats||[0,1,2,3],f=G.finished;setTimeout(()=>showResult([...f,...seats.filter(p=>!f.includes(p))]),1500);}};
+
+// ---- Bàn chờ sau khi đóng kết quả
+function tableHost(){return $('table')||document.body;}
+function showStartOv(){if(!G||!G.over||document.body.classList.contains('athome'))return;let o=$('startOv');if(o)o.remove();
+ document.body.classList.add('tblidle');o=document.createElement('div');o.id='startOv';
+ if(G.online){const host=typeof ONL!=='undefined'&&ONL.host;o.innerHTML=host?`<button class="sbig" onclick="hideStartOv();hostStart()">▶ BẮT ĐẦU</button><div class="srow"><button class="alt" onclick="showRes()">Xem kết quả</button></div>`:`<div class="swait">⏳ Chờ chủ bàn bắt đầu…</div><div class="srow"><button class="alt" onclick="showRes()">Xem kết quả</button></div>`;}
+ else o.innerHTML=`<button class="sbig" onclick="hideStartOv();newGame()">▶ BẮT ĐẦU</button><div class="srow"><button class="alt" onclick="showRes()">Xem kết quả</button><button class="alt" onclick="openTables()">Đổi bàn</button></div>`;
+ tableHost().appendChild(o);}
+function hideStartOv(){const o=$('startOv');if(o)o.remove();document.body.classList.remove('tblidle');}
+function showRes(){if(!G)return;const seats=G.seats||[0,1,2,3],f=G.rank||G.finished,all=[...f,...seats.filter(p=>!f.includes(p))];showResult(all);}
+const _cm15=closeModal;closeModal=function(){_cm15();setTimeout(()=>{if(G&&G.over&&(G._resShown||G.online)&&!modalOpen()&&!$('badgeFX'))showStartOv();},30);};
+const _ng15=newGame;newGame=function(n){hideStartOv();return _ng15(n);};
+const _gh15=goHome;goHome=function(){hideStartOv();return _gh15.apply(this,arguments);};
+function modalOpen(){const m=$('modal');return !!m&&m.style.display!=='none'&&getComputedStyle(m).display!=='none';}
+setInterval(()=>{if($('startOv')&&G&&!G.over)hideStartOv();
+ else if(G&&G.over&&(G._resShown||G.online)&&!$('startOv')&&!modalOpen()&&!$('badgeFX')&&!document.body.classList.contains('athome'))showStartOv();},700);
+
+// ---- Làm nổi người đang tới lượt
+let _ringKey=null;
+function turnRing(){let r=$('turnRing');const on=G&&!G.over&&!DEALING&&!document.body.classList.contains('athome')&&!document.body.classList.contains('tblidle');
+ document.body.classList.toggle('playing',!!on);if(!on){if(r)r.remove();_ringKey=null;return;}
+ const p=G.turn,el=p===0?(document.querySelector('#meBar .av')&&document.querySelector('#meBar .av').offsetParent?document.querySelector('#meBar .av'):document.querySelector('#meInfo .lvb')):document.querySelector('#s'+p+' .av');
+ const key=p+':'+(G.hist?G.hist.length:0)+':'+G.hands[p].length;if(!el)return;const b=el.getBoundingClientRect();
+ if(!r){r=document.createElement('div');r.id='turnRing';r.innerHTML='<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" class="trbg"/><circle cx="50" cy="50" r="46" class="trfg" pathLength="100"/></svg>';document.body.appendChild(r);}
+ const sz=Math.max(b.width,b.height)+16;Object.assign(r.style,{left:(b.left+b.width/2-sz/2)+'px',top:(b.top+b.height/2-sz/2)+'px',width:sz+'px',height:sz+'px'});
+ if(key!==_ringKey){_ringKey=key;const fg=r.querySelector('.trfg');fg.style.animation='none';void fg.getBoundingClientRect();fg.style.animation='';r.classList.toggle('me',p===0);}}
+const _r16=render;render=function(){_r16();try{turnRing();}catch(e){}};
+setInterval(()=>{try{turnRing();}catch(e){}},500);
+if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('resize',()=>{try{turnRing();}catch(e){}});
+
+// ---- Đổi tên người chơi
+function myName(){return PR.name||'Bạn';}
+const _rb17=rollBots;rollBots=function(){_rb17();NAMES[0]=myName();};
+const PENCIL='<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path fill="currentColor" d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zm17.7-10.2a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+function openRename(then){window._renThen=then||null;modal(`<h3>✏️ Tên của bạn</h3><p class="small">2–16 ký tự, có thể dùng tiếng Việt có dấu. Tên hiện ở bàn chơi, online và bảng xếp hạng.</p>
+ <input class="inp" id="nmIn" maxlength="24" value="${esc(PR.name||'')}" placeholder="Nhập tên…" oninput="const r=validName(this.value);$('nmErr').textContent=this.value&&!r.ok?r.err:''"><p class="err" id="nmErr"></p>
+ <button onclick="saveName()">Lưu tên</button>${then?'<button class="alt" onclick="closeModal()">Để sau</button>':''}`);setTimeout(()=>{const e=$('nmIn');if(e&&e.focus)e.focus();},50);}
+function saveName(){const r=validName($('nmIn').value);if(!r.ok){$('nmErr').textContent=r.err;return;}PR.name=r.name;PR.nameAt=Date.now();if(typeof NAMES!=='undefined')NAMES[0]=PR.name;saveP();toast('Đã đổi tên: '+r.name);
+ if(G&&!G.online)render();try{if(USER&&SB)ensurePlayer();}catch(e){}if(typeof cloudAutoBackup==='function')cloudAutoBackup();const t=window._renThen;window._renThen=null;closeModal();if(typeof renderHome==='function'&&document.body.classList.contains('athome'))renderHome();if(t)t();}
+const _rh17=renderHome;renderHome=function(){_rh17();const n=document.querySelector('#home .pn');if(n&&n.insertAdjacentHTML){n.insertAdjacentHTML('afterbegin',`<b class="pname">${esc(myName())}</b> <button class="alt pencil" onclick="openRename()" title="Đổi tên">${PENCIL}</button><br>`);}};
+const _oa17=openAvatar;openAvatar=function(){_oa17();const h=document.querySelector('#modalIn h3');if(h&&h.insertAdjacentHTML)h.insertAdjacentHTML('afterend',`<div class="row"><span style="flex:1">Tên: <b>${esc(myName())}</b></span><button class="alt pencil" onclick="openRename()">${PENCIL} Đổi tên</button></div>`);};
+const _ol17=openLeaderboard;openLeaderboard=function(t){if(!PR.name&&typeof USER!=='undefined'&&USER&&!window._askedName){window._askedName=1;return openRename(()=>_ol17(t));}return _ol17(t);};
+const _oo17=openOnline;openOnline=function(){if(!PR.name&&typeof USER!=='undefined'&&USER&&!window._askedName2){window._askedName2=1;const a=arguments;return openRename(()=>_oo17.apply(this,a));}return _oo17.apply(this,arguments);};
 boot();
 </script></body></html>

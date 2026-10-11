@@ -68,6 +68,16 @@ const WEEKLY_POOL=[
  Q('w_chop2p','Chặt heo ở bàn 2 người','chop2',1,1500),Q('w_egg5','Ném 5 quả trứng','egg',5,800),Q('w_spin3','Quay vòng may mắn 3 lần','spin',3,1000),Q('w_bet5k','Thắng 1 ván cược 5.000','winbet5k',1,6000),
  Q('w_chop5','Chặt heo 5 lần','chop',5,2500),Q('w_quad3','Đánh 3 tứ quý','quad',3,3000),Q('w_online5','Chơi 5 ván online','online',5,3000),Q('w_buy3','Mua 3 vật phẩm','buy',3,1500),
 ];
+// Tên người chơi: 2-16 ký tự, có dấu tiếng Việt, lọc từ tục cơ bản
+const BAD_WORDS=['dit','du ma','dm','dmm','dcm','vcl','vkl','lon','cac','buoi','deo','dji','di me','cave','fuck','shit','bitch','dick','pussy','cunt','nigger','sex','porn'];
+function foldVi(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();}
+function validName(raw){const n=String(raw||'').replace(/\s+/g,' ').trim();const L=[...n].length;
+ if(L<2)return{ok:false,err:'Tên phải có ít nhất 2 ký tự'};if(L>16)return{ok:false,err:'Tên tối đa 16 ký tự'};
+ if(!/^[\p{L}\p{N} ._\-]+$/u.test(n))return{ok:false,err:'Chỉ dùng chữ, số, khoảng trắng và . _ -'};
+ const f=foldVi(n),words=f.split(/[^a-z0-9]+/).filter(Boolean),joined=words.join('');
+ for(const b of BAD_WORDS){const bw=b.split(' ');if(bw.length>1){if(f.replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').includes(b)||joined.includes(bw.join('')))return{ok:false,err:'Tên chứa từ không phù hợp'};}
+  else if(words.includes(b)||(b.length>=4&&joined.includes(b)))return{ok:false,err:'Tên chứa từ không phù hợp'};}
+ return{ok:true,name:n};}
 function dayKey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function dayDiff(a,b){const p=k=>{const[y,m,d]=k.split('-').map(Number);return Date.UTC(y,m-1,d)/864e5;};return p(b)-p(a);}
 function newProfile(){return{xu:START_XU,bet:100,rescueDay:null,login:{last:null,streak:0},badges:{},
@@ -141,4 +151,4 @@ function addXp(P,n){const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const af
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // PROGRESS_END
-if(typeof module!=='undefined')module.exports={WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
+if(typeof module!=='undefined')module.exports={validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};

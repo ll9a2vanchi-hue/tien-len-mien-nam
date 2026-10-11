@@ -102,9 +102,10 @@ Object.assign(SND,{shuffle:()=>{for(let i=0;i<14;i++)noise(.035,.16,i*.035,2500+
  flip:()=>{noise(.06,.2,0,1500);noise(.06,.2,.08,2200);tone(600,.08,'triangle',.05,.05,900);}});
 function seatPt(p){const e=p===0?$('hand'):document.querySelector('#s'+p+' .av');const r=e&&e.getBoundingClientRect();return r&&r.width?{x:r.left+r.width/2,y:r.top+r.height/2}:{x:innerWidth/2,y:p===0?innerHeight-80:80};}
 function dealAnim(seats,done){const tb=($('table')||document.body).getBoundingClientRect(),cx=tb.left+tb.width/2,cy=tb.top+tb.height/2;
- const ov=document.createElement('div');ov.id='dealFX';document.body.appendChild(ov);const hand=$('hand');if(hand)hand.classList.add('dealhide');
+ const ov=document.createElement('div');ov.id='dealFX';document.body.appendChild(ov);const hand=$('hand');const hc=hand?[...hand.querySelectorAll('.card')]:[];hc.forEach(c=>c.style.visibility='hidden');
+ const reveal=i=>{const c=hc[i];if(c&&c.style.visibility==='hidden'){c.style.visibility='';if(!RM){c.classList.add('dland');setTimeout(()=>c.classList.remove('dland'),400);}}};
  let ended=false,timers=[];const end=()=>{if(ended)return;ended=true;timers.forEach(clearTimeout);ov.remove();_dealSkip=null;
-  if(hand){hand.classList.remove('dealhide');hand.classList.add('dealflip');setTimeout(()=>hand.classList.remove('dealflip'),500);}sfx('flip');done();};
+  hc.forEach((c,i)=>reveal(i));sfx('flip');done();};
  _dealSkip=end;ov.addEventListener('pointerdown',end);
  const mk=(x,y)=>{const c=document.createElement('div');c.className='back dcard';c.style.left=x+'px';c.style.top=y+'px';ov.appendChild(c);return c;};
  if(RM){mk(cx,cy);sfx('shuffle');timers.push(setTimeout(end,450));return;}
@@ -113,7 +114,7 @@ function dealAnim(seats,done){const tb=($('table')||document.body).getBoundingCl
  const per=Math.max(16,Math.round(1250/(13*seats.length)));let k=0;const P=Object.fromEntries(seats.map(p=>[p,seatPt(p)]));
  timers.push(setTimeout(()=>{deck.forEach(c=>c.remove());for(let r=0;r<13;r++)for(const p of seats){const i=k++;timers.push(setTimeout(()=>{const c=mk(cx,cy),t=P[p];
    c.animate([{transform:'translate(-50%,-50%) rotate(0)'},{transform:`translate(calc(-50% + ${t.x-cx}px),calc(-50% + ${t.y-cy}px)) rotate(${(i*47)%40-20}deg) scale(.8)`,opacity:.9}],{duration:230,easing:'ease-out',fill:'forwards'});
-   if(i%2===0)sfx('tick');setTimeout(()=>c.remove(),240);},i*per));}
+   if(i%2===0)sfx('tick');setTimeout(()=>{c.remove();if(p===0)reveal(r);},235);},i*per));}
   timers.push(setTimeout(end,13*seats.length*per+280));},560));}
 const _st10=step;step=function(){if(DEALING)return;return _st10();};
 const _hpl=humanPlay;humanPlay=function(){if(DEALING)return;return _hpl();};
@@ -176,3 +177,46 @@ const _ng14=newGame;newGame=function(n){_overAt=0;return _ng14(n);};
 const _sr14=showResult;showResult=function(r){if(G)G._resShown=true;return _sr14(r);};
 // endGame không được phép ném lỗi trước khi hẹn bảng kết quả
 const _eg14=endGame;endGame=function(i){try{return _eg14(i);}catch(e){console.error('endGame',e);const seats=G.seats||[0,1,2,3],f=G.finished;setTimeout(()=>showResult([...f,...seats.filter(p=>!f.includes(p))]),1500);}};
+
+// ---- Bàn chờ sau khi đóng kết quả
+function tableHost(){return $('table')||document.body;}
+function showStartOv(){if(!G||!G.over||document.body.classList.contains('athome'))return;let o=$('startOv');if(o)o.remove();
+ document.body.classList.add('tblidle');o=document.createElement('div');o.id='startOv';
+ if(G.online){const host=typeof ONL!=='undefined'&&ONL.host;o.innerHTML=host?`<button class="sbig" onclick="hideStartOv();hostStart()">▶ BẮT ĐẦU</button><div class="srow"><button class="alt" onclick="showRes()">Xem kết quả</button></div>`:`<div class="swait">⏳ Chờ chủ bàn bắt đầu…</div><div class="srow"><button class="alt" onclick="showRes()">Xem kết quả</button></div>`;}
+ else o.innerHTML=`<button class="sbig" onclick="hideStartOv();newGame()">▶ BẮT ĐẦU</button><div class="srow"><button class="alt" onclick="showRes()">Xem kết quả</button><button class="alt" onclick="openTables()">Đổi bàn</button></div>`;
+ tableHost().appendChild(o);}
+function hideStartOv(){const o=$('startOv');if(o)o.remove();document.body.classList.remove('tblidle');}
+function showRes(){if(!G)return;const seats=G.seats||[0,1,2,3],f=G.rank||G.finished,all=[...f,...seats.filter(p=>!f.includes(p))];showResult(all);}
+const _cm15=closeModal;closeModal=function(){_cm15();setTimeout(()=>{if(G&&G.over&&(G._resShown||G.online)&&!modalOpen()&&!$('badgeFX'))showStartOv();},30);};
+const _ng15=newGame;newGame=function(n){hideStartOv();return _ng15(n);};
+const _gh15=goHome;goHome=function(){hideStartOv();return _gh15.apply(this,arguments);};
+function modalOpen(){const m=$('modal');return !!m&&m.style.display!=='none'&&getComputedStyle(m).display!=='none';}
+setInterval(()=>{if($('startOv')&&G&&!G.over)hideStartOv();
+ else if(G&&G.over&&(G._resShown||G.online)&&!$('startOv')&&!modalOpen()&&!$('badgeFX')&&!document.body.classList.contains('athome'))showStartOv();},700);
+
+// ---- Làm nổi người đang tới lượt
+let _ringKey=null;
+function turnRing(){let r=$('turnRing');const on=G&&!G.over&&!DEALING&&!document.body.classList.contains('athome')&&!document.body.classList.contains('tblidle');
+ document.body.classList.toggle('playing',!!on);if(!on){if(r)r.remove();_ringKey=null;return;}
+ const p=G.turn,el=p===0?(document.querySelector('#meBar .av')&&document.querySelector('#meBar .av').offsetParent?document.querySelector('#meBar .av'):document.querySelector('#meInfo .lvb')):document.querySelector('#s'+p+' .av');
+ const key=p+':'+(G.hist?G.hist.length:0)+':'+G.hands[p].length;if(!el)return;const b=el.getBoundingClientRect();
+ if(!r){r=document.createElement('div');r.id='turnRing';r.innerHTML='<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" class="trbg"/><circle cx="50" cy="50" r="46" class="trfg" pathLength="100"/></svg>';document.body.appendChild(r);}
+ const sz=Math.max(b.width,b.height)+16;Object.assign(r.style,{left:(b.left+b.width/2-sz/2)+'px',top:(b.top+b.height/2-sz/2)+'px',width:sz+'px',height:sz+'px'});
+ if(key!==_ringKey){_ringKey=key;const fg=r.querySelector('.trfg');fg.style.animation='none';void fg.getBoundingClientRect();fg.style.animation='';r.classList.toggle('me',p===0);}}
+const _r16=render;render=function(){_r16();try{turnRing();}catch(e){}};
+setInterval(()=>{try{turnRing();}catch(e){}},500);
+if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('resize',()=>{try{turnRing();}catch(e){}});
+
+// ---- Đổi tên người chơi
+function myName(){return PR.name||'Bạn';}
+const _rb17=rollBots;rollBots=function(){_rb17();NAMES[0]=myName();};
+const PENCIL='<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path fill="currentColor" d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zm17.7-10.2a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+function openRename(then){window._renThen=then||null;modal(`<h3>✏️ Tên của bạn</h3><p class="small">2–16 ký tự, có thể dùng tiếng Việt có dấu. Tên hiện ở bàn chơi, online và bảng xếp hạng.</p>
+ <input class="inp" id="nmIn" maxlength="24" value="${esc(PR.name||'')}" placeholder="Nhập tên…" oninput="const r=validName(this.value);$('nmErr').textContent=this.value&&!r.ok?r.err:''"><p class="err" id="nmErr"></p>
+ <button onclick="saveName()">Lưu tên</button>${then?'<button class="alt" onclick="closeModal()">Để sau</button>':''}`);setTimeout(()=>{const e=$('nmIn');if(e&&e.focus)e.focus();},50);}
+function saveName(){const r=validName($('nmIn').value);if(!r.ok){$('nmErr').textContent=r.err;return;}PR.name=r.name;PR.nameAt=Date.now();if(typeof NAMES!=='undefined')NAMES[0]=PR.name;saveP();toast('Đã đổi tên: '+r.name);
+ if(G&&!G.online)render();try{if(USER&&SB)ensurePlayer();}catch(e){}if(typeof cloudAutoBackup==='function')cloudAutoBackup();const t=window._renThen;window._renThen=null;closeModal();if(typeof renderHome==='function'&&document.body.classList.contains('athome'))renderHome();if(t)t();}
+const _rh17=renderHome;renderHome=function(){_rh17();const n=document.querySelector('#home .pn');if(n&&n.insertAdjacentHTML){n.insertAdjacentHTML('afterbegin',`<b class="pname">${esc(myName())}</b> <button class="alt pencil" onclick="openRename()" title="Đổi tên">${PENCIL}</button><br>`);}};
+const _oa17=openAvatar;openAvatar=function(){_oa17();const h=document.querySelector('#modalIn h3');if(h&&h.insertAdjacentHTML)h.insertAdjacentHTML('afterend',`<div class="row"><span style="flex:1">Tên: <b>${esc(myName())}</b></span><button class="alt pencil" onclick="openRename()">${PENCIL} Đổi tên</button></div>`);};
+const _ol17=openLeaderboard;openLeaderboard=function(t){if(!PR.name&&typeof USER!=='undefined'&&USER&&!window._askedName){window._askedName=1;return openRename(()=>_ol17(t));}return _ol17(t);};
+const _oo17=openOnline;openOnline=function(){if(!PR.name&&typeof USER!=='undefined'&&USER&&!window._askedName2){window._askedName2=1;const a=arguments;return openRename(()=>_oo17.apply(this,a));}return _oo17.apply(this,arguments);};

@@ -334,7 +334,8 @@ html,body{overflow-x:hidden}
 .lbrow.p0{--pc:#ffd84d}.lbrow.p1{--pc:#c0c8d0}.lbrow.p2{--pc:#cd7f32}.lbrow.pod .lbn{font-size:20px}
 .lbrow.mine{outline:1px dashed #4dd0e1}.lbme{border-top:1px solid #e9c45a55;margin-top:6px;padding-top:4px}
 #top #bNew{display:none!important}
-#hand .card.gap{margin-left:calc(var(--ov,0px) + 14px)}
+#hand .card.gap{margin-left:calc(var(--ov,0px) + var(--gp,14px))}
+#hand.two{flex-wrap:wrap}#hand:not(.two){flex-wrap:nowrap}
 #bPass.mustpass{border:2px solid #ffd84d!important;color:#ffe9a8!important;box-shadow:0 0 14px #ffd84daa;animation:mpulse 1.1s ease-in-out infinite}
 @keyframes mpulse{50%{box-shadow:0 0 26px #ffd84d,0 0 4px #fff8}}
 @media (prefers-reduced-motion:reduce){#bPass.mustpass{animation:none}}
@@ -343,6 +344,26 @@ html,body{overflow-x:hidden}
 .pwrap{position:relative}.pwrap .inp{padding-right:46px}.pwrap .eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);margin:0;padding:4px 8px;min-width:0;background:transparent!important;border:none!important;box-shadow:none!important;font-size:18px;color:#ccc;opacity:.75}.pwrap .eye.on{opacity:1}
 .pwmsg{font-size:12px;min-height:16px;margin:2px 0}.pwmsg.bad{color:#ff8a80}.pwmsg.ok{color:#81c784}
 .linkbtn{background:none!important;border:none!important;box-shadow:none!important;color:#e9c45a!important;text-decoration:underline;font-size:13px;padding:4px!important;margin:0 0 6px!important;display:block}
+#startOv{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+#startOv .sbig{font-size:22px;font-weight:900;letter-spacing:1px;padding:16px 46px;border-radius:40px;background:linear-gradient(180deg,#ffe9a8,#e9c45a 45%,#b8862b);color:#3a2500;border:2px solid #fff3c4;box-shadow:0 0 0 4px #0006,0 0 28px #e9c45a99,0 10px 24px #000a;animation:spulse 1.6s ease-in-out infinite}
+@keyframes spulse{50%{box-shadow:0 0 0 4px #0006,0 0 44px #ffd84d,0 10px 24px #000a}}
+@media (prefers-reduced-motion:reduce){#startOv .sbig{animation:none}}
+#startOv .srow{display:flex;gap:8px}#startOv .srow button{font-size:13px;padding:7px 14px}
+#startOv .swait{padding:12px 22px;border-radius:20px;background:#000a;color:#ffe9a8;font-weight:700}
+body.tblidle #ctrl,body.tblidle #noBeat,body.tblidle #hand{visibility:hidden}#startOv .sbig{white-space:nowrap}body.tblidle #pile,body.tblidle #under,body.tblidle .seat .reveal,body.tblidle #msg{visibility:hidden}
+#hand .card.dland{animation:dland .32s ease-out both}@keyframes dland{0%{transform:translateY(-30px) rotateY(90deg);opacity:.3}100%{transform:none;opacity:1}}
+body.playing .seat:not(.turn){filter:brightness(.72) saturate(.85);transition:filter .3s}
+.seat.turn{position:relative}.seat.turn::before{content:'';position:absolute;left:50%;top:40%;width:190px;height:190px;transform:translate(-50%,-50%);background:radial-gradient(circle,#ffe9a840,#ffd84d18 40%,transparent 70%);pointer-events:none;z-index:-1}
+.seat.turn .av{transform:scale(1.14);box-shadow:0 0 0 3px #ffd84d,0 0 22px 6px #ffd84daa!important;animation:tpulse 1.2s ease-in-out infinite;transition:transform .25s}
+@keyframes tpulse{50%{box-shadow:0 0 0 4px #fff1b8,0 0 34px 10px #ffd84d!important}}
+#turnRing{position:fixed;z-index:15;pointer-events:none}#turnRing svg{width:100%;height:100%;transform:rotate(-90deg)}
+#turnRing .trbg{fill:none;stroke:#0006;stroke-width:5}#turnRing .trfg{fill:none;stroke:#ffd84d;stroke-width:5;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:0;filter:drop-shadow(0 0 4px #ffd84d);animation:trc 15s linear forwards}
+@keyframes trc{to{stroke-dashoffset:100;stroke:#ff5252}}
+#me.turn{position:relative}#me.turn #hand{box-shadow:0 -10px 30px -8px #ffd84d88,inset 0 2px 0 #ffd84d66;border-radius:18px;background:radial-gradient(ellipse at 50% 0,#ffd84d22,transparent 70%)}
+#me.turn::after{content:'LƯỢT BẠN';position:absolute;left:50%;top:-14px;transform:translateX(-50%);font-size:12px;font-weight:900;letter-spacing:2px;color:#3a2500;background:linear-gradient(180deg,#ffe9a8,#e9c45a);padding:3px 14px;border-radius:12px;box-shadow:0 0 16px #ffd84d;z-index:8;pointer-events:none;animation:tpulse2 1.2s ease-in-out infinite}
+@keyframes tpulse2{50%{box-shadow:0 0 28px #ffd84d}}
+@media (prefers-reduced-motion:reduce){.seat.turn .av,#me.turn::after{animation:none}#turnRing .trfg{animation:none}#hand .card.dland{animation:none}}
+.pencil{padding:2px 6px!important;margin:0 0 0 4px!important;min-width:0;vertical-align:middle;display:inline-flex;align-items:center;gap:3px;font-size:12px}.pname{font-size:16px;color:#ffe9a8}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>

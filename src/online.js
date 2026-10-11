@@ -1,7 +1,7 @@
 // ---------- Chơi online với bạn bè (Supabase Realtime, kênh riêng tư 'tlmn:*') ----------
 const ONL={active:false,code:null,ch:null,tr:null,host:null,client:null,me:null,st:null,room:null,lastRev:-1,rewarded:null,lastEvKey:null,presence:[],chat:[]};
 let LOBBY=null,MYCODE=null;
-function meInfo(){const L=levelInfo(PR.xp);return{uid:USER.id,name:(USER.email||'').split('@')[0].slice(0,16)||'Người chơi',av:myAv(),bg:PR.avBg,frame:equipped(PR,'frame').id,lv:L.level,title:currentTitle(PR).name,tier:currentTitle(PR).tier};}
+function meInfo(){const L=levelInfo(PR.xp);return{uid:USER.id,name:PR.name||(USER.email||'').split('@')[0].slice(0,16)||'Người chơi',av:myAv(),bg:PR.avBg,frame:equipped(PR,'frame').id,lv:L.level,title:currentTitle(PR).name,tier:currentTitle(PR).tier};}
 function needLogin(){if(!CLOUD_ON){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Máy chủ online chưa được cấu hình.</p>`);return true;}
  if(navigator.onLine===false){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Bạn đang offline. Hãy kết nối mạng để chơi online.</p>`);return true;}
  if(!USER){modal(`<h3>${I('friends')} Chơi với bạn bè</h3><p>Cần <b>đăng nhập</b> để chơi online, kết bạn và trò chuyện.</p><button onclick="openAccount()">${I('user')} Đăng nhập / Đăng ký</button>`);return true;}return false;}
