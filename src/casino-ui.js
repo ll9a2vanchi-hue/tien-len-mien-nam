@@ -48,9 +48,8 @@ function cgCtl(){const st=CG.st;
 function cgDeck(){const d=[...Array(52).keys()];for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}return d;}
 // thay máy hết xu
 function cgRefill(){const seats=CG.seats;const msgs=[];seats.forEach((s,i)=>{if(s.me)return;if((CG.bxu[s.name]||0)<CG.bet*(s.dealer?3:1)){if(s.dealer){CG.bxu[s.name]=CG.bet*100;msgs.push('Nhà cái nạp thêm xu');return;}const b=cgNewBot(seats.map(x=>x.name));msgs.push(`${s.name} hết xu, rời bàn · ${b.name} vào bàn`);delete CG.bxu[s.name];seats[i]=b;}});if(msgs.length)toast(msgs.join(' — '));}
-function cgDeal(){const need=cgNeed();if(PR.xu<need)return toast('Không đủ xu');sfx('shuffle');const deck=cgDeck();CG.seats=CG.seats||cgSeats();if(CG.st)cgRefill();const seats=CG.seats;const nc=CG.g==='3cao'?3:2;const me=cgMe();
- CG.st={seats,me,deck,hands:seats.map(()=>deck.splice(0,nc)),phase:CG.g==='3cao'?'look':'wait',meUp:CG.g!=='3cao',reveal:false,res:{},open:{},msg:'',turn:-1,newCard:null,fresh:true,flip:[false,false,false],bet:CG.bet};
- for(let i=0;i<nc*seats.length;i++)setTimeout(()=>sfx('tick'),i*80);
+function cgDeal(){const need=cgNeed();if(PR.xu<need)return toast('Không đủ xu');const deck=cgDeck();CG.seats=CG.seats||cgSeats();if(CG.st)cgRefill();const seats=CG.seats;const nc=CG.g==='3cao'?3:2;const me=cgMe();
+ CG.st={seats,me,deck,hands:seats.map(()=>deck.splice(0,nc)),phase:CG.g==='3cao'?'look':'wait',meUp:CG.g!=='3cao',reveal:false,res:{},open:{},msg:'',turn:-1,newCard:null,fresh:false,flip:[false,false,false],bet:CG.bet};
  if(CG.g==='xidach')setTimeout(xdCheckNatural,700);else CG.st.msg='Nặn bài: vuốt từng lá của bạn';cgRender();}
 // ---- 3 cào
 function bcFlip(){const st=CG.st;st.meUp=true;sfx('flip');st.phase='wait';st.msg=st.me===0?'Lật bài các nhà…':'Nhà cái lật bài…';cgRender();setTimeout(()=>{st.reveal=true;sfx('flip');cgSettle();},1100);}
@@ -103,3 +102,45 @@ function sqWire(){document.querySelectorAll('.sq:not(.done)').forEach(el=>{if(el
  el.addEventListener('pointermove',e=>{if(y0==null||CG.st.flip[k]||RM)return;const d=Math.max(y0-e.clientY,(x0-e.clientX)*0.8,0);const h=el.getBoundingClientRect().height;const p=d/(h*0.9);if(d>4)moved=true;sqSet(el,p);if(p-last>0.12){last=p;sfx('tick');}if(p>=0.9){y0=null;sqDone(k);}});
  const up=()=>{if(y0==null)return;y0=null;if(!moved||RM){sqDone(k);return;}if(!CG.st.flip[k]){sqSet(el,0);last=0;}};el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);});}
 const _bf46=bcFlip;bcFlip=function(){const st=CG.st;if(!st||st.phase!=='look')return;st.flip=[true,true,true];_bf46();};
+
+// ======== v51: chia bài từ hộp bài (shoe), bay vòng cung, lật 3D, âm thanh sòng ========
+Object.assign(SND,{
+ cgRiffle:()=>{for(let i=0;i<26;i++){const t=i*0.024+Math.random()*0.008;noise(.022,.07+.05*Math.sin(i/26*Math.PI),t,2600+Math.random()*1800);}noise(.09,.12,.66,600);tone(140,.06,'sine',.06,.68);},
+ cgSlide:()=>{noise(.11,.07,0,3200);noise(.07,.05,.02,1400);},
+ cgThud:()=>{noise(.05,.16,0);tone(95,.07,'sine',.07,0,60);},
+ cgSnap:()=>{noise(.025,.14,0,3500);tone(1500,.03,'triangle',.04,0,900);},
+ cgChip:()=>{tone(2350,.07,'square',.035);tone(3150,.09,'square',.03,.04);tone(2700,.08,'triangle',.03,.09);},
+ cgJingle:()=>{[784,988,1175,1568].forEach((f,i)=>tone(f,.22,'triangle',.11,i*.09));SND.cgChip();setTimeout(()=>{try{SND.cgChip();}catch(e){}},260);},
+ cgLose:()=>{tone(330,.28,'sine',.1,0,247);tone(247,.4,'sine',.09,.22,185);},
+ cgFan:()=>{[[523,659,784],[659,784,988],[784,988,1175,1568]].forEach((c,i)=>c.forEach(f=>tone(f,i===2?.6:.18,'sawtooth',.045,i*.16)));noise(.4,.06,.3,4000);},
+ cgBust:()=>{noise(.25,.25,0);tone(180,.35,'square',.06,0,60);}
+});
+function cgShoeRect(){const e=document.querySelector('#cg .cgshoe');return e?e.getBoundingClientRect():null;}
+function cgEnsureShoe(){const t=document.querySelector('#cg .cgtbl');if(!t||t.querySelector('.cgshoe'))return;const d=document.createElement('div');d.className='cgshoe';d.innerHTML='<div class="card back cgc"></div><div class="card back cgc"></div><div class="card back cgc"></div><i></i>';t.appendChild(d);}
+function cgFly(target,delay,dur,opt){return new Promise(res=>{const sr=cgShoeRect();if(!sr||!target){res();return;}setTimeout(()=>{const tr=target.getBoundingClientRect();if(!tr.width){res();return;}
+ const f=document.createElement('div');f.className='card back cgc cgfly';f.style.cssText=`left:${sr.left+sr.width/2-tr.width/2}px;top:${sr.top+sr.height/2-tr.height/2}px;width:${tr.width}px;height:${tr.height}px`;document.body.appendChild(f);
+ const dx=tr.left-(sr.left+sr.width/2-tr.width/2),dy=tr.top-(sr.top+sr.height/2-tr.height/2);const rot=(Math.random()*10-5);const arc=-Math.min(90,40+Math.abs(dx)*.2);const spin=(dx<0?-1:1)*(360+Math.random()*90);
+ sfx('cgSlide');const an=f.animate([{transform:'translate(0,0) rotate(0) scale(.7)',boxShadow:'0 2px 4px #0006'},{transform:`translate(${dx*.5}px,${dy*.5+arc}px) rotate(${spin*.6}deg) scale(1.05)`,boxShadow:'0 18px 22px #0007',offset:.5},{transform:`translate(${dx}px,${dy}px) rotate(${spin+rot}deg) scale(1)`,boxShadow:'0 3px 6px #0008'}],{duration:dur,easing:'cubic-bezier(.3,.6,.4,1)',fill:'forwards'});
+ an.onfinish=()=>{f.remove();target.style.opacity='';target.style.setProperty('--lr',rot.toFixed(1)+'deg');target.classList.add('cgland');sfx('cgThud');if(opt&&opt.flip){setTimeout(()=>{target.classList.add('cgflip');sfx('cgSnap');},opt.flipDelay||0);}res();};},delay);});}
+function cgCardsOf(i){return [...document.querySelectorAll(`#cg .cgs[data-i="${i}"] .cgh > .cgc, #cg .cgs[data-i="${i}"] .cgh > .sq`)];}
+async function cgDealAnim(){const st=CG.st;if(!st)return;const o=$('cg');cgEnsureShoe();const n=st.seats.length,nc=st.hands[0].length;
+ const order=[];for(let k=0;k<nc;k++)for(let j=1;j<=n;j++){const i=j%n;const el=cgCardsOf(i)[k];if(el)order.push([i,el]);}
+ order.forEach(([,el])=>el.style.opacity='0');o.classList.add('cgdealing');CG.dealing=true;
+ if(RM){order.forEach(([,el],q)=>setTimeout(()=>{el.style.opacity='';if(q%3===0)sfx('tick');},q*25));await new Promise(r=>setTimeout(r,order.length*25+150));}
+ else{const sh=o.querySelector('.cgshoe');sh&&sh.classList.add('riffle');sfx('cgRiffle');await new Promise(r=>setTimeout(r,420));sh&&sh.classList.remove('riffle');
+  const step=Math.min(140,1250/order.length),dur=Math.max(300,Math.min(420,step*3));const ps=order.map(([i,el],q)=>cgFly(el,q*step,dur,{flip:i===st.me&&st.meUp,flipDelay:(order.length-q)*step*0.15}));await Promise.all(ps);}
+ if(CG.st!==st)return;o.classList.remove('cgdealing');CG.dealing=false;sfx('cgChip');}
+const _cgd51=cgDeal;cgDeal=function(){if(CG.dealing)return;const prev=CG.st;_cgd51.apply(this,arguments);if(CG.st&&CG.st!==prev){sfx('cgChip');cgDealAnim();}};
+const _xcn51=xdCheckNatural;xdCheckNatural=function(){if(CG.dealing)return setTimeout(xdCheckNatural,120);return _xcn51.apply(this,arguments);};
+// rút bài / lật bài: theo dõi sau mỗi lần vẽ
+const _cgr51=cgRender;cgRender=function(){const st=CG.st;const prevUp=st?(st._up||{}):{};_cgr51.apply(this,arguments);cgEnsureShoe();if(!st||CG.dealing)return;
+ const up={};st.seats.forEach((s,i)=>{const r=st.res&&st.res[i];up[i]=!!(i===st.me?st.meUp:(st.reveal||(r&&r.done)||(st.open&&st.open[i])));});
+ if(st.newCard){const key=JSON.stringify(st.newCard)+st.hands.map(h=>h.length).join();if(st._nk!==key){st._nk=key;const i=+Object.keys(st.newCard)[0],k=st.newCard[i];const el=cgCardsOf(i)[k];if(el){el.classList.remove('cgnew');if(RM){sfx('cgSlide');}else{el.style.opacity='0';cgFly(el,0,360,{flip:up[i]});}}}}
+ // lật mới (nhà cái lật bài có hồi hộp)
+ st.seats.forEach((s,i)=>{if(up[i]&&prevUp[i]===false&&!(st.phase==='look')){cgCardsOf(i).forEach((el,k)=>{el.style.setProperty('--fd',(i===0?k*260+200:k*90)+'ms');el.classList.add('cgflip');setTimeout(()=>sfx('cgSnap'),i===0?k*260+200:k*90);});}});
+ st._up=up;};
+// hiệu ứng đặc biệt khi tính tiền
+const _cgs51=cgSettle;cgSettle=function(){const st=CG.st;const was=st&&st.phase;_cgs51.apply(this,arguments);if(!st||was==='done')return;
+ let meSp=null;st.seats.forEach((s,i)=>{let k=null;if(CG.g==='xidach'){const kd=xdKind(st.hands[i],i===0?15:16).kind;k={xibang:'XÌ BÀNG!',xidach:'XÌ DÁCH!',ngulinh:'NGŨ LINH!',quac:'QUẮC!'}[kd]||null;}else if(bcScore(st.hands[i]).bacao)k='BA CÀO!';
+  if(!k)return;const seat=document.querySelector(`#cg .cgs[data-i="${i}"]`);if(seat){const f=document.createElement('div');f.className='cgfx '+(k==='QUẮC!'?'bust':'gold');f.textContent=k;f.style.setProperty('--sd',(i*120+300)+'ms');seat.appendChild(f);if(k==='QUẮC!')seat.classList.add('cgshake');}if(i===st.me)meSp=k;});
+ const me=st.res[st.me].v;setTimeout(()=>{if(meSp&&meSp!=='QUẮC!')sfx('cgFan');else if(meSp==='QUẮC!')sfx('cgBust');if(me>0)sfx('cgJingle');else if(me<0)sfx('cgLose');else sfx('cgChip');},420);};

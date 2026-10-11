@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.40';
+const APP_V='1.41';
 const CHANGELOG=[
+ ['1.41','11/10',['3 Cào & Xì dách: hộp bài xào kiểu riffle, chia từng lá theo vòng bay vòng cung có xoay và bóng đổ, lật bài 3D, rút bài trượt từ hộp, nhà cái lật hồi hộp từng lá','Hiệu ứng XÌ DÁCH / XÌ BÀNG / NGŨ LINH / BA CÀO / QUẮC; âm thanh mới: xào bài, lướt bài, chạm nỉ, lật bài, chip, nhạc thắng/thua, kèn xì dách']],
  ['1.40','11/10',['3 Cào & Xì dách: chọn bàn 2–6 người, Chơi con hoặc Làm cái (ăn/chung từng nhà, xét từng nhà ở Xì dách), xu của máy hiện dưới ghế, bảng tiền từng nhà','Danh sách online hiện chế độ + mức cược người đang chơi với máy','Xem bàn người đang chơi với máy (chỉ thấy bài đã lật); tuỳ chọn “Cho người khác xem bàn của tôi” trong Cài đặt']],
  ['1.39','11/10',['Chế độ người xem bàn online: nút Xem ở sảnh, danh sách người online, link ?room=MÃ&xem=1; chat có nhãn 👁; Ngồi vào khi hết ván','32 danh hiệu mới (cấp 2→100, Luộc Sư, Vua Đếm Lá, Thánh Ba Cào, Thần Xì Dách, Ngũ Linh Tướng, Sát Thủ Thúi Heo, Phong Lưu, Đại Sứ Thân Thiện, Top Server…) có hiệu ứng động','21 khung avatar mới (giá tới 500k): Băng, Lửa, Thiên Hà, Nguyệt Quế Vàng, Rồng Ngọc… một số mở bằng cấp/huy hiệu','Bảng danh hiệu chia nhóm, hiện điều kiện mở']],
  ['1.38','11/10',['3 Cào: nặn bài — vuốt từng lá để hé dần, nút Lật hết','Điểm hiển thị nổi bật (N nút / N điểm / Ba cào, Xì bàng, Xì dách, Ngũ linh, Quắc, Non)','Dấu THẮNG / THUA / HÒA đóng lên từng tay bài khi tính tiền']],
