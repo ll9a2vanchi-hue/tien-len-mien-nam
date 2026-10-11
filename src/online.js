@@ -55,9 +55,9 @@ async function enterRoom(code,isHost,bots){if(ONL.active)await leaveRoom(true);a
  if(isHost){ONL.host=new OnlineHost(tr,ONL.me,{fillBots:bots,dealMs:2300,bet:(BETS2||[]).includes(PR.bet)?PR.bet:100});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};}
  ch.on('presence',{event:'sync'},()=>{const s=ch.presenceState();ONL.presence=Object.keys(s);});
  ch.on('presence',{event:'leave'},({key})=>onPresenceLeave(key));
- ch.on('presence',{event:'join'},({key})=>{if(ONL.host&&key!==USER.id)setTimeout(()=>ONL.host.push(),300);});
+ ch.on('presence',{event:'join'},({key})=>{if(ONL.host&&key!==USER.id)setTimeout(()=>ONL.host&&ONL.host.push(),300);});
  closeModal();document.body.classList.add('athome');$('home').innerHTML=`<div class="hwrap"><h3>Đang vào phòng ${code}…</h3></div>`;
- ch.subscribe(async st=>{if(st==='SUBSCRIBED'){await ch.track({uid:USER.id,name:ONL.me.name});if(ONL.host){ONL.room=ONL.host.room();ONL.host.push();renderRoom();}else{ONL.client.hello();setTimeout(()=>{if(!ONL.room&&ONL.active){$('home').innerHTML=`<div class="hwrap"><h3>Không tìm thấy phòng ${code}</h3><p class="small">Chủ phòng có thể đã rời đi.</p><button onclick="leaveRoom(true)">Quay lại</button></div>`;}},6000);}}
+ ch.subscribe(async st=>{if(st==='SUBSCRIBED'){await ch.track({uid:USER.id,name:ONL.me.name,at:ONL.joinAt||Date.now()});if(ONL.host){ONL.room=ONL.host.room();ONL.host.push();renderRoom();}else{ONL.client.hello();setTimeout(()=>{if(!ONL.room&&ONL.active){$('home').innerHTML=`<div class="hwrap"><h3>Không tìm thấy phòng ${code}</h3><p class="small">Chủ phòng có thể đã rời đi.</p><button onclick="leaveRoom(true)">Quay lại</button></div>`;}},6000);}}
   else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'){toast('Không kết nối được phòng ('+st+')');}});
  history.replaceState&&history.replaceState(null,'',location.pathname+'?room='+code);}
 function onPresenceLeave(uid){if(!ONL.active||!uid||uid===USER.id)return;

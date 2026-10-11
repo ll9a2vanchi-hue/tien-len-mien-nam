@@ -28,3 +28,14 @@ setTimeout(()=>// chia bài online
  setTimeout(()=>{ok(!H.st.pile.length&&H.st.turn===t,'no move during deal');},250);
  setTimeout(()=>{const botTurn=seat.bot;ok(!botTurn||H.st.pile.length>0,'moves after deal');const p0=sent.filter(x=>x[0]==='reject').length;
   if(!seat.bot){H.onIntent({uid:seat.uid,a:{type:'play',cards:[st.firstCard]}});ok(H.st.pile.length>0,'human accepted after deal '+JSON.stringify(sent.filter(x=>x[0]==='reject').map(x=>x[1].err))+H.st.turn+t);}clearTimeout(H.timer);H.st.over=true;},700);},2500);
+// chống nhìn bài + bầu chủ bàn
+{const t=(c,m)=>{console.log(c?'ok '+m:'FAIL '+m);if(!c)process.exitCode=1;};
+ t(O.electHostAt([{uid:'b',at:200},{uid:'a',at:300},{uid:'c',at:200}])==='b','elect earliest then uid');
+ t(O.electHostAt([{uid:'z',at:5},{uid:'y'}])==='z','elect missing at last');
+ // mô phỏng vào cùng lúc: mọi máy cùng thấy 1 danh sách presence -> cùng 1 kết quả
+ const P=[{uid:'u3',at:1000},{uid:'u1',at:1000},{uid:'u2',at:1000}];const views=[P,P.slice().reverse(),[P[1],P[2],P[0]]].map(v=>O.electHostAt(v));t(views.every(v=>v==='u1'),'simultaneous joins agree');
+ const sent=[];const T={on(){},send:(k,m)=>sent.push([k,m])};const H=new O.OnlineHost(T,{uid:'h',name:'H'},{fillBots:true,hideHands:true});let hs=0;H.sendHands=()=>hs++;
+ H.addPlayer({uid:'j',name:'J'});H.start(()=>0.37);const st=sent.filter(x=>x[0]==='state').pop()[1].st;
+ if(!st.over){t(st.hands.every(h=>h.every(c=>c===-1)),'broadcast hides all hands');t(st.hands.map(h=>h.length).join()===H.st.hands.map(h=>h.length).join(),'counts preserved');t(hs>0,'per-player hands sent');t(H.st.hands[0][0]>=0,'host keeps real hands');
+  t(Array.isArray(H.st.ai)&&H.st.ai.length===4,'bot levels in state');}
+ H.st.over=true;H.push();t(sent.filter(x=>x[0]==='state').pop()[1].st.hands.some(h=>h.some(c=>c>=0)),'reveal at game end');clearTimeout(H.timer);}

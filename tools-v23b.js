@@ -15,7 +15,7 @@ await p.evaluate(()=>{window._auto=setInterval(()=>{const st=ONL.host.st;if(!st|
 let over=false;for(let i=0;i<120&&!over;i++){await p.waitForTimeout(500);over=await p.evaluate(()=>ONL.host.st.over);}
 await p.waitForTimeout(900);const midFin=await p.evaluate(()=>({fin:!!document.getElementById('finFX'),cap:(document.querySelector('.fincap')||{}).textContent,fans:document.querySelectorAll('.finfan').length,modal:modalOpen()}));
 await p.screenshot({path:'shots/v23-onl-final.png'});
-await p.waitForTimeout(2600);await p.screenshot({path:'shots/v23-onl-result.png'});
+await p.click('#finGo');await p.waitForTimeout(1500);await p.screenshot({path:'shots/v23-onl-result.png'});
 const res=await p.evaluate(()=>({modal:modalOpen(),rewbox:!!document.querySelector('#modalIn .rewbox'),xp:PR.xp,lv:levelInfo(PR.xp).lv,games:PR.stats.games,badges:(PR.badges||[]).length,qchanged:JSON.stringify((PR.quests||PR.q||{}))!==window._q0}));
 await p.waitForTimeout(3000);await p.evaluate(()=>closeModal());await p.waitForTimeout(2500);
 const after=await p.evaluate(()=>({badgeFX:!!document.getElementById('badgeFX'),lvup:!!document.querySelector('.lvup,#lvUp,.levelup')}));

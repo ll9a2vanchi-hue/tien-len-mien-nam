@@ -11,4 +11,14 @@ function chopStep(pend,prevInfo,prevCards,prevBy,info,by,bet){if(!prevInfo||prev
 // thanh toán: humanSeat có ví hữu hạn (xu), máy không giới hạn. Trả {payer,receiver,amount(đã giới hạn)}
 function chopSettle(pend,wallet){if(!pend||!pend.amount)return null;let amt=pend.amount;if(wallet&&wallet[pend.payer]!=null)amt=Math.min(amt,Math.max(0,wallet[pend.payer]));return{payer:pend.payer,receiver:pend.receiver,amount:amt,chain:pend.chain||1};}
 // CHOP_END
-if(typeof module!=='undefined')module.exports={isTwoCombo,isBombInfo,chopValue,chopStep,chopSettle};
+// THÚI HEO — cuối ván, người chưa về nhất còn giữ heo/hàng phải trả người về nhất
+// heo đen 0.5×, heo đỏ 1×; tứ quý (không phải 2) 1×; 3 đôi thông (không dùng 2) 1× mỗi bộ.
+function thuiValue(hand,bet){hand=(hand||[]).filter(c=>c>=0);const out={amount:0,cards:[],items:[]};
+ hand.filter(c=>(c>>2)===12).forEach(c=>{const v=((c&3)>=2?1:0.5)*bet;out.amount+=v;out.cards.push(c);out.items.push({k:(c&3)>=2?'heo đỏ':'heo đen',v});});
+ const by={};hand.forEach(c=>{const r=c>>2;if(r<12)(by[r]=by[r]||[]).push(c);});const used=new Set();
+ Object.keys(by).forEach(r=>{if(by[r].length===4){out.amount+=bet;by[r].forEach(c=>{out.cards.push(c);used.add(c);});out.items.push({k:'tứ quý',v:bet});}});
+ for(let r=0;r<=9;r++){const ok=[r,r+1,r+2].every(x=>by[x]&&by[x].filter(c=>!used.has(c)).length>=2);if(ok){[r,r+1,r+2].forEach(x=>by[x].filter(c=>!used.has(c)).slice(0,2).forEach(c=>{used.add(c);out.cards.push(c);}));out.amount+=bet;out.items.push({k:'3 đôi thông',v:bet});r+=2;}}
+ out.amount=Math.round(out.amount);return out;}
+// hands: mảng theo ghế; rank: thứ tự về; trả [{payer,receiver,amount,cards,items}]
+function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=!!(winPlay&&winPlay.map(Number).includes(0));return rank.slice(1).map(p=>{const v=thuiValue(hands[p],bet);if(b3){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}const chay=(hands[p]||[]).length===13;if(chay){v.amount+=2*bet;v.items.push({k:'cháy bài',v:2*bet});}return v.amount?{payer:p,receiver:w,amount:v.amount,cards:v.cards,items:v.items,b3,chay}:null;}).filter(Boolean);}
+if(typeof module!=='undefined')module.exports={thuiValue,thuiSettle,isTwoCombo,isBombInfo,chopValue,chopStep,chopSettle};

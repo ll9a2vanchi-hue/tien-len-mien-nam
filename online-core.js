@@ -33,8 +33,8 @@ function oAct(st,seat,a){if(!st||st.over)return{ok:false,err:'Ván đã kết th
  st.hands[seat]=st.hands[seat].filter(c=>!cards.includes(c));
  st.hist.push({txt:prev?`<b>${seatName(st,seat)}</b>: ${cardTxt(cards)} ${chop?'<b>CHẶT</b>':'ăn'} ${cardTxt(prevCards)} của ${seatName(st,prevBy)}`:`<b>${seatName(st,seat)}</b> đánh: ${cardTxt(cards)}`,cls:chop?'chop':''});
  st.cur=info;st.curBy=seat;st.prev=prevCards;st.pile=sortCards(cards);st.first=false;st.ev={kind:'play',seat,info,prev,chop,heo,cards};
- if(st.hands[seat].length===0){st.finished.push(seat);st.hist.push({txt:`🏁 ${seatName(st,seat)} về ${['nhất','nhì','ba','bét'][st.finished.length-1]}!`,cls:''});st.ev.fin=st.finished.length;}
- const act=oActive(st);if(st.hands[seat].length===0&&act.length<=1){oSettle(st);st.finished.push(...act);st.over=true;st.rank=st.finished.slice();return{ok:true};}
+ if(st.hands[seat].length===0){st.finPlay=st.finPlay||{};st.finPlay[seat]=cards.slice();st.finished.push(seat);st.hist.push({txt:`🏁 ${seatName(st,seat)} về ${['nhất','nhì','ba','bét'][st.finished.length-1]}!`,cls:''});st.ev.fin=st.finished.length;}
+ const act=oActive(st);if(st.hands[seat].length===0&&act.length<=1){oSettle(st);st.finished.push(...act);st.over=true;st.rank=st.finished.slice();if(typeof thuiSettle==='function')st.thui=thuiSettle(st.hands,st.rank,st.bet||100,(st.finPlay||{})[st.rank[0]]);return{ok:true};}
  oNext(st);return{ok:true};}
 function oBotMove(st,lv){const p=st.turn,others=oActive(st).filter(q=>q!==p).map(q=>st.hands[q].length);
  const played=[];(st.hist||[]).forEach(h=>{if(h&&h.cards)played.push(...h.cards);});
@@ -59,7 +59,7 @@ class OnlineHost{
  room(){return{size:this.opt.size||4,cfg:!!this._cfg,bet:this.opt.bet||100,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
  start(rng){if(this.st&&!this.st.over)return false;this.assign();const humans=this.seats.filter(Boolean).length;if(humans<2&&!this.opt.fillBots)return false;
   const seats=this.seats.slice();if(this.opt.fillBots&&!this._cfg){let k=0;for(let i=0;i<(this.opt.size||4);i++)if(!seats[i]){seats[i]={uid:null,name:OBOTS[(k++ +humans)%OBOTS.length],bot:true,av:'🤖',lv:5};}}
-  if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);this.st.bet=this.opt.bet||100;this.st.dealId=Date.now().toString(36)+Math.random().toString(36).slice(2,6);this.st.dealMs=this.opt.dealMs||0;this._dealUntil=Date.now()+(this.opt.dealMs||0);if(this.st.over)this.finish();this.push();this.tick();return true;}
+  if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);this.st.bet=this.opt.bet||100;this.st.dealId=Date.now().toString(36)+Math.random().toString(36).slice(2,6);this.st.dealMs=this.opt.dealMs||0;this._dealUntil=Date.now()+(this.opt.dealMs||0);this._lvSt=this.st;this._lv=[0,1,2,3].map(()=>typeof aiPickLevel==='function'?aiPickLevel((this.me&&this.me.lv)||10):1);this.st.ai=this._lv.slice();if(this.st.over)this.finish();this.push();this.tick();return true;}
  onIntent(m){if(!this.st||!m)return;if(!(m.a&&m.a.type==='wake')&&(this._dealUntil||0)>Date.now()&&!this.st.over){this.tr.send('reject',{uid:m.uid,err:'Đang chia bài…'});return;}const seat=this.st.seats.findIndex(s=>s&&s.uid===m.uid);if(seat<0)return;const st0=this.st;st0.to=st0.to||[0,0,0,0];st0.afk=st0.afk||[false,false,false,false];const wasAfk=st0.afk[seat];st0.to[seat]=0;st0.afk[seat]=false;if(m.a&&m.a.type==='wake'){this.push();if(wasAfk&&st0.turn===seat)this.tick();return;}const r=oAct(this.st,seat,m.a||{});
   if(!r.ok){this.tr.send('reject',{uid:m.uid,err:r.err});return;}if(this.st.over)this.finish();this.push();this.tick();}
  finish(){const w=this.st.rank&&this.st.seats[this.st.rank[0]];this.lastWinner=w?w.uid:null;clearTimeout(this.timer);}
@@ -69,7 +69,7 @@ class OnlineHost{
   if(human&&!afk){this.timer=setTimeout(timeout,this.opt.turnMs);return;}
   const auto=()=>{if(this.st!==st||st.over)return;if(this._lvSt!==st){this._lvSt=st;this._lv=[0,1,2,3].map(()=>typeof aiPickLevel==='function'?aiPickLevel((this.me&&this.me.lv)||10):1);}oAct(st,st.turn,oBotMove(st,this._lv[st.turn]));if(st.over)this.finish();this.push();this.tick();};
   this.timer=setTimeout(auto,this.opt.botDelay);}
- push(){this.rev++;this.tr.send('room',Object.assign(this.room(),{rev:this.rev}));if(this.st)this.tr.send('state',{rev:this.rev,st:this.st});if(this.onState)this.onState(this.st,this.room());}
+ push(){this.rev++;this.tr.send('room',Object.assign(this.room(),{rev:this.rev}));if(this.st){if(this.opt.hideHands){try{this.sendHands&&this.sendHands(this.st,this.rev);}catch(e){}this.tr.send('state',{rev:this.rev,st:publicView(this.st)});}else this.tr.send('state',{rev:this.rev,st:this.st});}if(this.onState)this.onState(this.st,this.room());}
  stop(){clearTimeout(this.timer);}
  resume(st,players,rev){this.st=st;this.rev=(rev||0)+1;this.players=players.slice();if(!this.players.find(x=>x.uid===this.me.uid))this.players.unshift(this.me);
   if(st&&!st.over){st.seats.forEach((x,i)=>{if(x&&x.uid&&!this.players.find(p=>p.uid===x.uid&&!p.gone))st.seats[i]=Object.assign({},x,{bot:true});});}this.push();this.tick();}
@@ -88,7 +88,11 @@ class OnlineClient{
 }
 // Khi host rời: chọn host mới = người thật còn lại có uid nhỏ nhất (mọi client tính giống nhau)
 function electHost(uids){return uids.filter(Boolean).slice().sort()[0]||null;}
+// bầu chủ bàn: vào sớm nhất (at nhỏ nhất), hòa thì uid nhỏ nhất. pres: [{uid,at}]
+function electHostAt(pres){const L=(pres||[]).filter(p=>p&&p.uid).slice().sort((a,b)=>((+a.at||9e15)-(+b.at||9e15))||(a.uid<b.uid?-1:a.uid>b.uid?1:0));return L.length?L[0].uid:null;}
+// chống nhìn bài: bản công khai chỉ có số lá (-1), trừ khi ván đã kết thúc
+function publicView(st){if(!st)return st;if(st.over)return st;return Object.assign({},st,{hands:st.hands.map(h=>h.map(()=>-1)),hid:1});}
 // Bộ chuyển Supabase Realtime channel -> transport (gọi on() trước subscribe())
 function rtTransport(ch){return{send:(e,p)=>ch.send({type:'broadcast',event:e,payload:p}),on:(e,cb)=>ch.on('broadcast',{event:e},m=>cb(m.payload))};}
 // ONLINE_END
-if(typeof module!=='undefined')module.exports={rtTransport,roomCode,validCode,oDeal,oAct,oNext,oActive,oBotMove,OnlineHost,OnlineClient,electHost,shuffleDeck};
+if(typeof module!=='undefined')module.exports={electHostAt,publicView,rtTransport,roomCode,validCode,oDeal,oAct,oNext,oActive,oBotMove,OnlineHost,OnlineClient,electHost,shuffleDeck};
