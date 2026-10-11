@@ -28,3 +28,7 @@ console.log('pass',ok,'fail',bad);
  const h13b=h13.slice(0,12).concat([51]);const y=C.thuiSettle([[],h13b],[0,1],100)[0];t(y.amount===300&&y.chay,'cháy + thúi heo đỏ cộng dồn');}
 ;{const C=require('./chop.js');const c=(r,s)=>r*4+s;const S=C.thuiSettle([[],[],[c(12,3)],[c(12,0)]],[0,1,2,3],100);
  const ok=S.length===2&&S.find(x=>x.payer===3).receiver===2&&S.find(x=>x.payer===2).receiver===1;console.log(ok?'ok thúi chuỗi 4→3, 3→2':'FAIL chain');if(!ok)process.exitCode=1;}
+;{const C=require('./chop.js');const c=(r,s)=>r*4+s;let f=0;const T=(b,m)=>{console.log(b?'ok':'FAIL',m);if(!b)f=1;};
+ T(C.demlaUnits([c(0,0),c(5,1),c(12,3)])===4,'đếm lá: heo tính 2');
+ const d=C.demlaSettle([[],[c(1,0),c(2,0)],[c(12,0),c(3,1),c(4,1),c(5,1)],[c(6,0)]],[0,3,1,2],1300);
+ T(d[3]===-100&&d[1]===-200&&d[2]===-500&&d[0]===800,'đếm lá: thua trả nhất theo lá');T(Object.values(d).reduce((a,b)=>a+b,0)===0,'đếm lá: tổng 0');if(f)process.exitCode=1;}

@@ -82,6 +82,9 @@ const BADGES=[
  BG('luoc_4','🌋','Luộc huyền thoại','Luộc sạch 200 máy',15000,3,s=>V(s,'luoc')>=200,{series:'luoc',k:'luoc',goal:200,legend:true}),
  BG('luoc_m','🥋','Luộc Cao thủ','Luộc sạch một máy Cao thủ',3000,3,s=>V(s,'luoc3')>=1,{series:'luoc',k:'luoc3',goal:1}),
  BG('sec_luoc3','🍜','Nồi lẩu thập cẩm','Luộc 3 máy trong cùng một bàn',5000,3,s=>V(s,'luocTable')>=3,{secret:true}),
+ BG('demla_1','🔢','Tay đếm lá','Về nhất 1 ván Đếm lá',200,1,s=>V(s,'demlaWin')>=1,{series:'games',k:'demlaWin',goal:1}),
+ BG('demla_2','🧮','Thần đếm lá','Về nhất 20 ván Đếm lá',1500,2,s=>V(s,'demlaWin')>=20,{series:'games',k:'demlaWin',goal:20}),
+ BG('demla_3','📟','Máy tính sống','Về nhất 100 ván Đếm lá',5000,3,s=>V(s,'demlaWin')>=100,{series:'games',k:'demlaWin',goal:100}),
  BG('sec_chain','⛓️','Chặt chồng','Chặt ngược lại người vừa chặt mình',2500,3,s=>V(s,'chain')>=1,{secret:true}),
  BG('sec_allin','🎲','Tất tay','Thắng ván khi số xu chỉ vừa đủ cược',2500,3,s=>V(s,'allin')>=1,{secret:true}),
  BG('sec_bigthui','🐖','Cả đàn heo','Bắt thúi 3 con heo trong một ván',3000,3,s=>V(s,'bigThui')>=1,{secret:true}),
@@ -91,7 +94,7 @@ const BADGE_TIER=[null,{name:'Đồng',col:'#cd7f32'},{name:'Bạc',col:'#c0c8d0
 const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu});
 const QUEST_POOL=[
  Q('play3','Chơi 3 ván','game',3,150),Q('play5','Chơi 5 ván','game',5,250),Q('win1','Về nhất 1 ván','win',1,200),Q('win2','Về nhất 2 ván','win',2,400),
- Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
+ Q('demla1','Về nhất 1 ván Đếm lá','demlawin',1,300),Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
  Q('two3','Đánh ra 3 con heo (2)','two',3,200),Q('chop1','Chặt 1 heo','chop',1,400),
  Q('pairs10','Đánh 10 đôi','pair',10,300),Q('straight5l','Đánh 1 sảnh từ 5 lá','straight5',1,250),Q('pairseq1','Đánh 1 đôi thông','pairseq',1,350),
  Q('quad1','Đánh 1 tứ quý','quad',1,500),Q('win2p','Thắng 1 ván bàn 2 người','win2',1,200),Q('win3p','Thắng 1 ván bàn 3 người','win3',1,250),Q('win4p','Thắng 1 ván bàn 4 người','win4',1,300),
@@ -150,7 +153,7 @@ function tableXp(n,place,instant){n=XP_PLACE_N[n]?n:4;return Math.round(((XP_PLA
 function tableXu(bet,n,place,instant){n=PLACE_XU[n]?n:4;return Math.round(bet*(instant?(place===0?n-1:-1):(PLACE_XU[n][place]==null?-1:PLACE_XU[n][place])));}
 // ctx: {bonus:% thưởng vì về trên máy khó, beatHard, beatMaster, usedTwo, last3s, comeback, online}
 function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.games++;questEvent(P,'game');if(ctx.online)questEvent(P,'online');
- let delta=tableXu(P.bet,n,place,instant);const bonus=Math.max(0,ctx.bonus||0);let bxu=0;if(delta>0&&bonus&&!ctx.noXuBonus){bxu=Math.round(delta*bonus);delta+=bxu;}
+ let delta=ctx.xuDelta!=null?ctx.xuDelta:tableXu(P.bet,n,place,instant);const bonus=Math.max(0,ctx.bonus||0);let bxu=0;if(delta>0&&bonus&&!ctx.noXuBonus){bxu=Math.round(delta*bonus);delta+=bxu;}
  if(place===0){s.wins++;s.streak++;s.bestStreak=Math.max(s.bestStreak,s.streak);questEvent(P,'win');s['win'+n]=(s['win'+n]||0)+1;questEvent(P,'win'+n);
   if(P.bet>=500)questEvent(P,'winbet500');if(P.bet>=5000){questEvent(P,'winbet5k');s.win5k=(s.win5k||0)+1;}
   if(ctx.usedTwo===false&&!instant)s.noTwoWin=(s.noTwoWin||0)+1;if(ctx.last3s)s.last3s=(s.last3s||0)+1;if(ctx.comeback)s.comeback=(s.comeback||0)+1;}else s.streak=0;
@@ -161,7 +164,7 @@ function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.g
  const x0=P.xu;P.xu=Math.max(0,P.xu+delta);const paid=P.xu-x0,x1=P.xu;const lv=addXp(P,xp0+bxp);const x2=P.xu;const badges=checkBadges(P);
  const ledger={place:paid-(delta>0?bxu:0),bonus:delta>0?bxu:0,level:x2-x1,badges:P.xu-x2};return{delta,bxu,bxp,bonus,badges,lv,ledger};}
 // sổ xu ván: parts {place,bonus,chop,thui,chay,b3,level,badges,exit,misc}
-const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['luoc','Luộc máy'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
+const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['luoc','Luộc máy'],['demla','Đếm lá'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
 function ledgerItems(parts){const items=LEDGER_LABELS.map(([k,l])=>({k,l,v:Math.round(parts[k]||0)})).filter(x=>x.v);return{items,total:items.reduce((a,x)=>a+x.v,0)};}
 
 // ---------- Cấp độ / XP / Danh hiệu ----------

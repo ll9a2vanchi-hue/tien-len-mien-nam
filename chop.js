@@ -26,4 +26,8 @@ function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];cons
   if(b3&&above===w){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}
   if(v.amount)out.push({payer:p,receiver:above,amount:v.amount,cards:v.cards,items:v.items,b3:b3&&above===w,chay});
   if(b3&&above!==w)out.push({payer:p,receiver:w,amount:bet,cards:[],items:[{k:'3 bích về nhất',v:bet}],b3:true,chay:false});});return out;}
-if(typeof module!=='undefined')module.exports={thuiValue,thuiSettle,isTwoCombo,isBombInfo,chopValue,chopStep,chopSettle};
+// ---- Tiến Lên đếm lá: mỗi người thua trả người nhất bet/13 × số lá còn lại (heo tính 2 lá)
+function demlaUnits(hand){return (hand||[]).reduce((a,c)=>a+((c>>2)===12?2:1),0);}
+function demlaSettle(hands,rank,bet){const d={};rank.forEach(p=>d[p]=0);if(!rank.length)return d;const w=rank[0];
+ rank.slice(1).forEach(p=>{const a=Math.round(bet/13*demlaUnits(hands[p]));d[p]-=a;d[w]+=a;});return d;}
+if(typeof module!=='undefined')module.exports={demlaUnits,demlaSettle,thuiValue,thuiSettle,isTwoCombo,isBombInfo,chopValue,chopStep,chopSettle};
