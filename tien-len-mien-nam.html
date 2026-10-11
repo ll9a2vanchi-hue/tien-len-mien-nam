@@ -484,7 +484,7 @@ body:has(#finHands) .seat .reveal{display:none}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='e831c6b337';
+const APP_VER='4a585d7f1f';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -2333,7 +2333,7 @@ function saveBS(){try{localStorage.setItem('tlmn_bots',JSON.stringify(BSESS));}c
 function newBotsNext(){_bNew=true;}
 botXuSeed=function(name,lv){const bet=Math.max(100,(typeof curBet==='function'?curBet():PR.bet)||100);const h=hashStr(name+Date.now());return Math.round(bet*(8+(h%28)+(lv||5)/4)/10)*10;};
 function snapBots(){const n=TBL||4;BSESS={n,bots:{}};[1,2,3].forEach(p=>{BSESS.bots[p]={name:NAMES[p],av:AVATARS[p],ai:BOTAI[p],lv:BOTLV[p],xu:BXU[NAMES[p]]!=null?BXU[NAMES[p]]:botXuSeed(NAMES[p],BOTLV[p])};BXU[NAMES[p]]=BSESS.bots[p].xu;});saveBS();}
-const _rb30=rollBots;rollBots=function(){const n=TBL||4;if(_bNew||!BSESS||BSESS.n!==n||!BSESS.bots){_rb30();_bNew=false;snapBots();return;}
+const _rb30=rollBots;rollBots=function(){const n=TBL||4;if(_bNew||!BSESS||BSESS.n!==n||!BSESS.bots){_rb30();_bNew=false;[1,2,3].forEach(q=>{delete BXU[NAMES[q]];});snapBots();return;}
  const keep={NAMES:NAMES.slice(),AV:AVATARS.slice(),AI:BOTAI.slice(),LV:BOTLV.slice()};_rb30();/* bộ mới để thay khi cần */const fresh={NAMES:NAMES.slice(),AV:AVATARS.slice(),AI:BOTAI.slice(),LV:BOTLV.slice()};
  const bet=curBet(),seats=SEATMAP[n]||SEATMAP[4];const msgs=[];
  [1,2,3].forEach(p=>{const b=BSESS.bots[p];if(b&&(b.xu>=bet||!seats.includes(p))){NAMES[p]=b.name;AVATARS[p]=b.av;BOTAI[p]=b.ai;BOTLV[p]=b.lv;BXU[b.name]=b.xu;}
@@ -2345,5 +2345,10 @@ const _eg30=endGame;endGame=function(i){const r=_eg30(i);setTimeout(syncBS,200);
 const _sc30=settleChop;settleChop=function(){_sc30();syncBS();};
 const _gh30=goHome;goHome=function(){newBotsNext();return _gh30.apply(this,arguments);};
 const _ot30=openTables;openTables=function(){newBotsNext();return _ot30.apply(this,arguments);};
+// ---- xu ban đầu của máy theo độ khó: Dễ 3-6×, Thường 6-12×, Khó 12-25×, Cao thủ 25-50× cược
+const BOT_XU_RANGE=[[3,6],[6,12],[12,25],[25,50]];
+function botAiOf(name){try{if(G&&G.online&&ONL.st&&ONL.st.ai){const g=ONL.st.seats.findIndex(s=>s&&s.name===name);if(g>=0)return ONL.st.ai[g];}const p=NAMES.indexOf(name);if(p>0)return BOTAI[p];}catch(e){}return 1;}
+botXuSeed=function(name,lv,ai){const bet=Math.max(100,(typeof curBet==='function'?curBet():PR.bet)||100);ai=ai==null?botAiOf(name):ai;const [a,b]=BOT_XU_RANGE[Math.max(0,Math.min(3,ai|0))]||BOT_XU_RANGE[1];
+ return Math.round(bet*(a+Math.random()*(b-a))/10)*10;};
 boot();
 </script></body></html>
