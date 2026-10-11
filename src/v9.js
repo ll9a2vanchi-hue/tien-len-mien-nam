@@ -198,7 +198,7 @@ setInterval(()=>{if($('startOv')&&G&&!G.over)hideStartOv();
 let _ringKey=null;
 function turnRing(){let r=$('turnRing');const on=G&&!G.over&&!DEALING&&!document.body.classList.contains('athome')&&!document.body.classList.contains('tblidle');
  document.body.classList.toggle('playing',!!on);if(!on){if(r)r.remove();_ringKey=null;return;}
- const p=G.turn,el=p===0?(document.querySelector('#meBar .av')&&document.querySelector('#meBar .av').offsetParent?document.querySelector('#meBar .av'):document.querySelector('#meInfo .lvb')):document.querySelector('#s'+p+' .av');
+ const p=G.turn,el=p===0?(document.querySelector('#meAvM')&&document.querySelector('#meAvM').offsetParent?document.querySelector('#meAvM'):document.querySelector('#meBar .av')&&document.querySelector('#meBar .av').offsetParent?document.querySelector('#meBar .av'):document.querySelector('#meInfo .lvb')):(0)?(document.querySelector('#meBar .av')&&document.querySelector('#meBar .av').offsetParent?document.querySelector('#meBar .av'):document.querySelector('#meInfo .lvb')):document.querySelector('#s'+p+' .av');
  const key=p+':'+(G.hist?G.hist.length:0)+':'+G.hands[p].length;if(!el)return;const b=el.getBoundingClientRect();
  if(!r){r=document.createElement('div');r.id='turnRing';r.innerHTML='<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" class="trbg"/><circle cx="50" cy="50" r="46" class="trfg" pathLength="100"/></svg>';document.body.appendChild(r);}
  const sz=Math.max(b.width,b.height)+16;Object.assign(r.style,{left:(b.left+b.width/2-sz/2)+'px',top:(b.top+b.height/2-sz/2)+'px',width:sz+'px',height:sz+'px'});
@@ -251,7 +251,7 @@ const _sr19=showResult;showResult=function(rank){_sr19(rank);const h=_endHold;co
  const step=t=>{const k=D?Math.min(1,(t-t0)/D):1,q=1-Math.pow(1-k,3);fx.textContent=(h.dx>=0?'+':'−')+fmt(Math.round(Math.abs(h.dx)*q));fp.textContent='+'+fmt(Math.round(h.dp*q));if(t-lastTick>90&&k<1){lastTick=t;sfx('tick');}
   if(k<1)requestAnimationFrame(step);else{sfx(h.dx>=0?'coin':'bad');setTimeout(()=>finishRewards(rectOf(box)),RM?200:350);}};requestAnimationFrame(step);};
 // ---- Tiền chặt heo (chuyển xu thật giữa người chặt và người bị chặt)
-function seatCenter(p){const e=p===0?(rectOf('#meBar .av')||rectOf('#meInfo .lvb')||rectOf('#hand')):rectOf('#s'+p+' .av');return e?{x:e.left+e.width/2,y:e.top+e.height/2,r:e}:{x:innerWidth/2,y:p===0?innerHeight-200:120};}
+function seatCenter(p){const e=p===0?(rectOf('#meAvM')||rectOf('#meBar .av')||rectOf('#meInfo .lvb')||rectOf('#hand')):rectOf('#s'+p+' .av');return e?{x:e.left+e.width/2,y:e.top+e.height/2,r:e}:{x:innerWidth/2,y:p===0?innerHeight-200:120};}
 function moneyFX(payer,receiver,amt,label){const a=seatCenter(payer),b=seatCenter(receiver);
  floatText(a.x,a.y-40,'−'+fmt(amt)+' xu','loss big');floatText(b.x,b.y-40,'+'+fmt(amt)+' xu','gain big');sfx('coin');setTimeout(()=>sfx('coin'),250);
  if(!RM)for(let i=0;i<8;i++){const c=document.createElement('div');c.className='flycoin';c.innerHTML=I('coin');c.style.left=a.x+'px';c.style.top=a.y+'px';document.body.appendChild(c);
@@ -304,3 +304,13 @@ const _os21=onlineState;onlineState=function(st,fh){_os21(st,fh);try{const me=my
  afkBanner(!!(st.afk&&st.afk[me]&&!st.over));}catch(e){}};
 // gộp chat vào nút biểu cảm khi online trên màn hình hẹp
 const _te21=toggleEmotes;toggleEmotes=function(){_te21();const b=$('emoBar');if(b&&b.className==='on'&&G&&G.online&&!b.querySelector('.emochat'))b.insertAdjacentHTML('afterbegin',`<button class="alt emochat" onclick="$('emoBar').className='';toggleChat()">💬 Trò chuyện</button>`);};
+// ---- Online: mức cược do chủ bàn quyết định, thanh trên chỉ hiển thị
+const _sb22=setBet;setBet=function(v){if(typeof ONL!=='undefined'&&ONL.active){syncBetSel();return toast(ONL.host?'Đổi mức cược trong phần điều khiển phòng (giữa các ván)':'Mức cược do chủ bàn quyết định');}return _sb22(v);};
+function syncBetSel(){const s=$('bet');if(!s||!s.options)return;const on=typeof ONL!=='undefined'&&ONL.active;s.disabled=!!on;s.classList.toggle('ro',!!on);s.title=on?'Mức cược của bàn (chủ bàn chỉnh)':'Mức cược';
+ const v=on?tableBet():PR.bet;if(![...s.options].some(o=>+o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=fmt(v);s.appendChild(o);}if(+s.value!==v)s.value=String(v);}
+setInterval(()=>{try{syncBetSel();}catch(e){}},800);
+// ---- Avatar của mình trên điện thoại (cạnh thanh cấp độ)
+const _rm23=renderMe;renderMe=function(){_rm23();const e=$('meInfo');if(!e||!e.insertAdjacentHTML)return;const L=levelInfo(PR.xp);const turn=G&&!G.over&&G.turn===0&&!document.body.classList.contains('athome');
+ e.insertAdjacentHTML('afterbegin',`<div id="meAvM" class="av ${frameCls()} ${turn?'myturn':''}" style="--avc:${PR.avBg};--lp:${Math.round(100*L.cur/L.need)}">${myAv()}</div>`);
+ const mt=e.querySelector('.mt');if(mt)mt.insertAdjacentHTML('afterbegin',`<b class="myname">${esc(myName())}</b> `);};
+const _r23=render;render=function(){_r23();const a=$('meAvM');if(a&&a.classList)a.classList.toggle('myturn',!!(G&&!G.over&&G.turn===0));};

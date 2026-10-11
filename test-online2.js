@@ -15,3 +15,8 @@ st.turn=0;st.passed=[0,0,1,1];O.oNext(st);t('settled at round end',st.settle&&st
  await new Promise(r=>setTimeout(r,200));t('afk after 3 timeouts',st.afk.some(Boolean)||st.over);const who=st.afk.findIndex(Boolean);
  if(who>=0){H2.onIntent({uid:st.seats[who].uid,a:{type:'wake'}});t('wake clears afk',!st.afk[who]&&st.to[who]===0);}
  clearTimeout(H2.timer);H2.st.over=true;console.log('pass',ok,'fail',bad);})();
+// cược bàn: room luôn có bet của chủ, state mang bet, người vào sau nhận được
+{const sent=[];const T3={on(){},send:(k,m)=>sent.push([k,m])};const H3=new O.OnlineHost(T3,{uid:'h',name:'H'},{bet:2000,fillBots:true});
+ H3.addPlayer({uid:'j',name:'J'});const rm=sent.filter(x=>x[0]==='room').pop();console.log(rm&&rm[1].bet===2000?'ok room bet':'FAIL room bet');
+ H3.start(Math.random);console.log(H3.st.bet===2000?'ok state bet':'FAIL state bet');const st=sent.filter(x=>x[0]==='state').pop();console.log(st&&st[1].st.bet===2000?'ok broadcast bet':'FAIL broadcast bet');
+ const H4=new O.OnlineHost(T3,{uid:'h',name:'H'},{});console.log(H4.room().bet===100?'ok default bet':'FAIL default bet');clearTimeout(H3.timer);H3.st.over=true;}

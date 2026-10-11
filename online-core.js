@@ -56,7 +56,7 @@ class OnlineHost{
  setSize(n){if(this.st&&!this.st.over)return false;n=Math.max(2,Math.min(4,n|0));const hum=this.players.filter(x=>!x.gone).length;if(n<hum)return false;this.opt.size=n;this._cfg=true;this.bots=(this.bots||[]).map((v,i)=>i<n&&v);this.assign();this.push();return true;}
  setBot(i,on){if(this.st&&!this.st.over)return false;if(i<0||i>=(this.opt.size||4))return false;this.bots=this.bots||[false,false,false,false];
   if(on){if(this.seats[i]&&!this.seats[i].bot)return false;this.bots[i]=true;}else this.bots[i]=false;this._cfg=true;this.assign();this.push();return true;}
- room(){return{size:this.opt.size||4,cfg:!!this._cfg,bet:this.opt.bet||null,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
+ room(){return{size:this.opt.size||4,cfg:!!this._cfg,bet:this.opt.bet||100,host:this.me.uid,seats:this.seats,fillBots:this.opt.fillBots,playing:!!(this.st&&!this.st.over)};}
  start(rng){if(this.st&&!this.st.over)return false;this.assign();const humans=this.seats.filter(Boolean).length;if(humans<2&&!this.opt.fillBots)return false;
   const seats=this.seats.slice();if(this.opt.fillBots&&!this._cfg){let k=0;for(let i=0;i<(this.opt.size||4);i++)if(!seats[i]){seats[i]={uid:null,name:OBOTS[(k++ +humans)%OBOTS.length],bot:true,av:'🤖',lv:5};}}
   if(seats.filter(Boolean).length<2)return false;this.st=oDeal(seats,this.lastWinner,rng);this.st.bet=this.opt.bet||100;if(this.st.over)this.finish();this.push();this.tick();return true;}

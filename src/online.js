@@ -52,7 +52,7 @@ async function enterRoom(code,isHost,bots){if(ONL.active)await leaveRoom(true);a
  ONL.client=new OnlineClient(tr,ONL.me);ONL.client.onState=s=>onlineState(s);ONL.client.onRoom=r=>{ONL.room=r;renderRoom();};ONL.client.onReject=e=>{sfx('bad');msg(e);};ONL.client.onFull=()=>{toast('Phòng đã đủ 4 người');leaveRoom(true);};
  tr.on('chat',m=>addChat(m));tr.on('emote',m=>{const ls=localSeatOf(m.uid);if(ls>=0)showEmote(ls,String(m.e).slice(0,24));});
  tr.on('bye',m=>onPresenceLeave(m.uid));tr.on('throw',m=>{if(!m||!ONL.st)return;const f=localSeatOf(m.from),me=ONL.st.seats.findIndex(s=>s&&s.uid===USER.id);let to=localSeatOf(m.to);if(to<0&&/^seat\d$/.test(m.to||''))to=(+m.to.slice(4)-me+4)%4;if(f>=0&&to>=0){throwFX(f,to,m.id);const t=THROWS.find(x=>x.id===m.id);if(t)toast(`${t.emo} ${esc(NAMES[f]||'')} ${throwVerb(t)} ${to===0?'bạn':esc(NAMES[to]||'')}`);}});
- if(isHost){ONL.host=new OnlineHost(tr,ONL.me,{fillBots:bots});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};}
+ if(isHost){ONL.host=new OnlineHost(tr,ONL.me,{fillBots:bots,bet:(BETS2||[]).includes(PR.bet)?PR.bet:100});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};}
  ch.on('presence',{event:'sync'},()=>{const s=ch.presenceState();ONL.presence=Object.keys(s);});
  ch.on('presence',{event:'leave'},({key})=>onPresenceLeave(key));
  ch.on('presence',{event:'join'},({key})=>{if(ONL.host&&key!==USER.id)setTimeout(()=>ONL.host.push(),300);});
@@ -63,7 +63,7 @@ async function enterRoom(code,isHost,bots){if(ONL.active)await leaveRoom(true);a
 function onPresenceLeave(uid){if(!ONL.active||!uid||uid===USER.id)return;
  if(ONL.host){ONL.host.removePlayer(uid);return;}
  if(ONL.room&&uid===ONL.room.host){const left=ONL.presence.filter(k=>k!==uid);const nh=electHost(left.length?left:[USER.id]);
-  if(nh===USER.id){toast('Chủ phòng rời đi — bạn trở thành chủ phòng');ONL.host=new OnlineHost(ONL.tr,ONL.me,{fillBots:ONL.room.fillBots});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};
+  if(nh===USER.id){toast('Chủ phòng rời đi — bạn trở thành chủ phòng');ONL.host=new OnlineHost(ONL.tr,ONL.me,{fillBots:ONL.room.fillBots,bet:tableBet(),size:ONL.room.size||4});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};
    const players=(ONL.room.seats||[]).filter(s=>s&&s.uid&&s.uid!==uid&&left.includes(s.uid));ONL.host.resume(ONL.client.st,players.length?players:[ONL.me],ONL.client.rev);}
   else toast('Chủ phòng rời đi — đang chuyển chủ phòng…');}}
 async function leaveRoom(silent){if(!ONL.active)return;if(!silent&&G&&!G.over&&!confirm('Rời phòng? Máy sẽ chơi thay bạn.'))return;

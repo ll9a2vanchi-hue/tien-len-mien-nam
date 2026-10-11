@@ -22,7 +22,8 @@ function fitPile(){const pw=$('pileWrap'),t=$('table');if(!pw||!pw.style||!pw.st
  const base=Math.min(r.width*0.2,r.height*0.2,110),w=Math.min(base,(r.width*0.62)/(1+0.58*(n-1)));pw.style.setProperty('--pw',w.toFixed(1)+'px');pw.style.setProperty('--ph',(w*1.42).toFixed(1)+'px');}
 // ---- Phạt rời bàn
 function confirmExit(what){const pen=exitPenalty(curBet());return confirm(`${what}\n\nRời bàn giữa ván sẽ bị phạt 50% mức cược: -${fmt(pen)} xu.${ONL.active?' Máy sẽ chơi thay bạn.':''}`);}
-function curBet(){return ONL.active&&ONL.room&&ONL.room.bet?ONL.room.bet:PR.bet;}
+function tableBet(){return (ONL.st&&ONL.st.bet)||(ONL.room&&ONL.room.bet)||PR.bet;}
+function curBet(){return ONL.active?tableBet():PR.bet;}
 function payExit(){const n=applyExitPenalty(PR,curBet());saveP();updHud();toast(`Phạt rời bàn: -${fmt(n)} xu`);sfx('bad');}
 goHome=function(){if(ONL.active)return leaveRoom();if(inGame()){if(!confirmExit('Rời bàn và về sảnh?'))return;payExit();}
  if(G){G.over=true;G.aborted=true;}closeModal();$('emoBar').className='';showHome();};
@@ -49,7 +50,7 @@ function spinNow(){if(spinning)return;const r=doSpin(PR,new Date(),Math.random,l
   toast(t);if(g.lv)levelUpFX(g.lv);updHud();saveP();openSpin();if(document.body.classList.contains('athome'))renderHome();},RM?300:4400);}
 const _dcq=doClaimQuest;doClaimQuest=function(i){const before=PR.quests.list[i]&&PR.quests.list[i].claimed;_dcq(i);if(!before&&PR.quests.list[i]&&PR.quests.list[i].claimed){ensureSpin(PR,new Date()).extra++;saveP();toast('+1 lượt quay may mắn 🎡');}};
 // ---- Ném đồ / tặng quà
-function avRect(ls){const sels=ls===0?['#meBar .av','#meInfo .lvb','#meInfo','#hand']:['#s'+ls+' .av','#s'+ls];
+function avRect(ls){const sels=ls===0?['#meAvM','#meBar .av','#meInfo .lvb','#meInfo','#hand']:['#s'+ls+' .av','#s'+ls];
  for(const q of sels){const e=document.querySelector(q);const r=e&&e.getBoundingClientRect?e.getBoundingClientRect():null;if(r&&r.width>0&&r.height>0)return{x:r.left+r.width/2,y:r.top+r.height/2};}
  return{x:(typeof innerWidth!=='undefined'?innerWidth:400)/2,y:(typeof innerHeight!=='undefined'?innerHeight:800)*(ls===0?.8:.3)};}
 function throwVerb(t){return /^(Ném|Tặng|Tạt|Mời|Hun)/.test(t.name)?t.name.toLowerCase():'ném '+t.name.toLowerCase();}
@@ -99,7 +100,7 @@ function setTableBet(b){if(!ONL.host)return;if(ONL.st&&!ONL.st.over)return toast
 const _rr=renderRoom;renderRoom=function(){_rr();if(!ONL.active||!ONL.room)return;const box=document.querySelector('#home .pcard');if(!box||!box.insertAdjacentHTML)return;
  const bet=ONL.room.bet||PR.bet;const ctl=ONL.host?`<div class="row"><span style="flex:1">Mức cược bàn</span><select onchange="setTableBet(+this.value)">${[100,200,500,1000,2000,5000,10000].map(b=>`<option ${b===bet?'selected':''} value="${b}">${fmt(b)}</option>`).join('')}</select></div>`:`<div class="row"><span style="flex:1">Mức cược bàn</span><b>${I('coin')} ${fmt(bet)}</b> <small class="small">(chủ bàn chỉnh)</small></div>`;
  box.insertAdjacentHTML('afterbegin',ctl);lobbyTrack();};
-const _ost=onlineState;onlineState=function(st,fh){const ob=PR.bet;if(ONL.room&&ONL.room.bet)PR.bet=ONL.room.bet;try{_ost(st,fh);}finally{PR.bet=ob;}if(ONL.host)lobbyTrack();};
+const _ost=onlineState;onlineState=function(st,fh){const ob=PR.bet;PR.bet=(st&&st.bet)||(ONL.room&&ONL.room.bet)||PR.bet;try{_ost(st,fh);}finally{PR.bet=ob;}if(ONL.host)lobbyTrack();};
 
 // ---- Cửa hàng mở rộng
 Object.assign(TABN,{deck:'Bộ bài',fx:'Hiệu ứng thắng',bubble:'Bong bóng chat',name:'Màu tên'});
