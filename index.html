@@ -518,7 +518,7 @@ body:has(#finHands) .seat .reveal{display:none}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='025c9d829e';
+const APP_VER='94fd7a39e4';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -1248,7 +1248,7 @@ const SVA_LIST=[
  ['sv_tienong','Tiên Ông',5,()=>personSVG('tienong',{bg:['#e0f7fa','#4dd0e1'],hs:'bun',hair:'#fafafa',eyes:'happy',mouth:'smile',shirt:'#fafafa',beard:'long',beardC:'#fafafa',hat:'halo'})],
  ['sv_chuaphuong','Phượng Hoàng Chí Tôn',5,()=>beastSVG('cphuong','phoenix',{bg:['#fff59d','#d50000'],c1:'#ffffff',c2:'#ffab00'})],
 ];
-const SVA_PRICE={2:600,3:1500,4:3000,5:6000},SVA_LV={5:30};
+const SVA_PRICE={2:1500,3:3000,4:6000,5:12000},SVA_LV={4:15,5:50};
 SVA_LIST.forEach(([id,name,tier,fn])=>{SVA[id]=fn;});
 function svaHTML(id){const f=SVA[id];if(!f)return '';const t=(SVA_LIST.find(x=>x[0]===id)||[])[2]||2;return `<svg class="sva t${t}" viewBox="0 0 100 100" aria-hidden="true">${f()}</svg>`;}
 // đăng ký vào cửa hàng: emo là mã đánh dấu ⟦id⟧, được thay bằng SVG khi hiển thị
@@ -2635,8 +2635,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.28';
+const APP_V='1.29';
 const CHANGELOG=[
+ ['1.29','11/10',['Tăng giá avatar cao cấp: Hiếm 1.500, Sử thi 3.000, Huyền thoại 6.000, Chí tôn 12.000 xu','Avatar Huyền thoại cần cấp 15, Chí tôn cần cấp 50 (đồ đã mua giữ nguyên)']],
  ['1.28','11/10',['Kết nối lại online tự động: mất mạng vẫn về đúng ghế, chủ phòng có 20 giây để quay lại','Nút “Tự đánh” (chỉ online): máy Cao thủ đánh thay','Danh sách người chơi online ở sảnh: kết bạn, mời, vào cùng bàn','Tin nhắn riêng giữa người chơi (kể cả khi đang chơi với máy), chặn/bỏ chặn','30+ avatar vẽ tay cao cấp: Thần Tài, Rồng Vàng, Phượng Hoàng, Đổ Thánh…','Hiện số phiên bản và mục Có gì mới']],
  ['1.27','11/10',['Sửa bong bóng chat/biểu cảm không hiện']],
  ['1.26','11/10',['Xu ban đầu của máy theo độ khó','Chọn bàn không bị tràn chữ ở mọi mức cược']],

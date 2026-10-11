@@ -88,7 +88,7 @@ const SVA_LIST=[
  ['sv_tienong','Tiên Ông',5,()=>personSVG('tienong',{bg:['#e0f7fa','#4dd0e1'],hs:'bun',hair:'#fafafa',eyes:'happy',mouth:'smile',shirt:'#fafafa',beard:'long',beardC:'#fafafa',hat:'halo'})],
  ['sv_chuaphuong','Phượng Hoàng Chí Tôn',5,()=>beastSVG('cphuong','phoenix',{bg:['#fff59d','#d50000'],c1:'#ffffff',c2:'#ffab00'})],
 ];
-const SVA_PRICE={2:600,3:1500,4:3000,5:6000},SVA_LV={5:30};
+const SVA_PRICE={2:1500,3:3000,4:6000,5:12000},SVA_LV={4:15,5:50};
 SVA_LIST.forEach(([id,name,tier,fn])=>{SVA[id]=fn;});
 function svaHTML(id){const f=SVA[id];if(!f)return '';const t=(SVA_LIST.find(x=>x[0]===id)||[])[2]||2;return `<svg class="sva t${t}" viewBox="0 0 100 100" aria-hidden="true">${f()}</svg>`;}
 // đăng ký vào cửa hàng: emo là mã đánh dấu ⟦id⟧, được thay bằng SVG khi hiển thị

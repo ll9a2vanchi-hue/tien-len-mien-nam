@@ -733,8 +733,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.28';
+const APP_V='1.29';
 const CHANGELOG=[
+ ['1.29','11/10',['Tăng giá avatar cao cấp: Hiếm 1.500, Sử thi 3.000, Huyền thoại 6.000, Chí tôn 12.000 xu','Avatar Huyền thoại cần cấp 15, Chí tôn cần cấp 50 (đồ đã mua giữ nguyên)']],
  ['1.28','11/10',['Kết nối lại online tự động: mất mạng vẫn về đúng ghế, chủ phòng có 20 giây để quay lại','Nút “Tự đánh” (chỉ online): máy Cao thủ đánh thay','Danh sách người chơi online ở sảnh: kết bạn, mời, vào cùng bàn','Tin nhắn riêng giữa người chơi (kể cả khi đang chơi với máy), chặn/bỏ chặn','30+ avatar vẽ tay cao cấp: Thần Tài, Rồng Vàng, Phượng Hoàng, Đổ Thánh…','Hiện số phiên bản và mục Có gì mới']],
  ['1.27','11/10',['Sửa bong bóng chat/biểu cảm không hiện']],
  ['1.26','11/10',['Xu ban đầu của máy theo độ khó','Chọn bàn không bị tràn chữ ở mọi mức cược']],
