@@ -366,6 +366,8 @@ body.playing .seat:not(.turn){filter:brightness(.72) saturate(.85);transition:fi
 @keyframes tpulse2{50%{box-shadow:0 0 28px #ffd84d}}
 @media (prefers-reduced-motion:reduce){.seat.turn .av,#me.turn::after{animation:none}#turnRing .trfg{animation:none}#hand .card.dland{animation:none}}
 .pencil{padding:2px 6px!important;margin:0 0 0 4px!important;min-width:0;vertical-align:middle;display:inline-flex;align-items:center;gap:3px;font-size:12px}.pname{font-size:16px;color:#ffe9a8}
+.gbtn{display:flex!important;align-items:center;justify-content:center;gap:10px;width:100%;margin:6px 0 4px!important;padding:11px 14px!important;background:linear-gradient(180deg,#fff,#eef0f3)!important;color:#1f1f1f!important;border:1px solid #dadce0!important;border-radius:24px!important;font-weight:700;font-size:15px;box-shadow:0 2px 8px #0006,inset 0 1px 0 #fff!important}
+.gbtn:active{transform:translateY(1px)}.orsep{display:flex;align-items:center;gap:8px;color:#aaa;font-size:11px;margin:8px 0}.orsep::before,.orsep::after{content:'';flex:1;height:1px;background:#ffffff22}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -406,7 +408,7 @@ body.playing .seat:not(.turn){filter:brightness(.72) saturate(.85);transition:fi
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='d6e3caf997';
+const APP_VER='9880b20245';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -1210,7 +1212,7 @@ function localSave(){return{profile:PR,scores:S,updatedAt:+(localStorage.getItem
 function applySave(d){if(!d||!d.profile)return;PR=d.profile;if(d.scores)S=d.scores;localStorage.setItem('tlmn_profile',JSON.stringify(PR));save();localStorage.setItem('tlmn_updated',String(d.updatedAt||Date.now()));updHud();if(G)render();}
 function loadSB(){return new Promise((res,rej)=>{if(!CLOUD_ON)return rej(new Error('Chưa cấu hình máy chủ'));if(SB)return res(SB);
  const go=()=>{try{SB=window.supabase.createClient(CFG.url,CFG.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-  SB.auth.onAuthStateChange((ev,ses)=>{const was=USER;USER=ses&&ses.user||null;updAcc();if(ev==='PASSWORD_RECOVERY'){setTimeout(openRecover,300);return;}if(USER&&!was)cloudPull(true);});res(SB);}catch(e){rej(e);}};
+  SB.auth.onAuthStateChange((ev,ses)=>{const was=USER;USER=ses&&ses.user||null;updAcc();if(ev==='PASSWORD_RECOVERY'){setTimeout(openRecover,300);return;}if(USER&&!was){cloudPull(true);localStorage.setItem('tlmn_hadlogin','1');if(!PR.name&&typeof openRename==='function')setTimeout(()=>{if(!PR.name){const g=USER.user_metadata&&(USER.user_metadata.full_name||USER.user_metadata.name);openRename();if(g&&$('nmIn')&&!$('nmIn').value)$('nmIn').value=String(g).slice(0,16);}},1800);}});res(SB);}catch(e){rej(e);}};
  if(window.supabase)return go();const sc=document.createElement('script');sc.src='vendor/supabase.js';sc.onload=go;sc.onerror=()=>rej(new Error('Không tải được thư viện'));document.head.appendChild(sc);});}
 function updAcc(){const d=$('d3');if(d)d.innerHTML=USER?'<span class="dot" style="background:#4caf50"></span>':'';}
 async function cloudPull(merge){if(!SB||!USER)return;
@@ -1255,11 +1257,16 @@ function renderAcc(m){
   <button onclick="cloudPush()">${I('cloud')} Sao lưu</button><button class="alt" onclick="if(confirm('Thay tiến độ trên máy bằng bản sao lưu?'))cloudRestore()">Khôi phục</button><button class="alt" onclick="openRecover(true)">Đổi mật khẩu</button><button class="alt" onclick="doLogout()">Đăng xuất</button>`+INSTALL_ROW());
  const up=accMode==='up',em=($('aEmail')&&$('aEmail').value)||'';
  modal(`<h3>${I('user')} ${up?'Đăng ký':'Đăng nhập'}</h3><div class="lbtabs" style="grid-template-columns:1fr 1fr"><button class="${up?'alt':''}" onclick="accMode='in';renderAcc()">Đăng nhập</button><button class="${up?'':'alt'}" onclick="accMode='up';renderAcc()">Đăng ký</button></div>
+  <button class="gbtn" onclick="doGoogle()"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>${up?'Đăng ký':'Đăng nhập'} bằng Google</span></button><div class="orsep"><span>hoặc dùng email</span></div>
   <p class="small">Đăng nhập để sao lưu xu, huy hiệu, nhiệm vụ lên đám mây, chơi online. Không bắt buộc — chơi khách vẫn đầy đủ.</p>
   <input class="inp" id="aEmail" type="email" placeholder="Email" autocomplete="email" value="${esc(em)}">
   ${PW('aPass',up?'Mật khẩu (≥ 6 ký tự)':'Mật khẩu',up?'new-password':'current-password')}${up?PW('aPass2','Nhập lại mật khẩu','new-password'):''}
   <p class="pwmsg" id="pwMsg"></p><p class="err" id="aErr">${m||''}</p>
   ${up?`<button onclick="doAuth('up')">Tạo tài khoản</button>`:`<button onclick="doAuth('in')">Đăng nhập</button><button class="linkbtn" onclick="doForgot()">Quên mật khẩu?</button><button class="alt" onclick="doAuth('link')">Gửi link đăng nhập qua email</button>`}`+INSTALL_ROW());}
+async function doGoogle(){const err=t=>{const e=$('aErr');if(e)e.textContent=t;};err('Đang chuyển tới Google…');
+ try{await loadSB();try{const r=await fetch(CFG.url+'/auth/v1/settings',{headers:{apikey:CFG.anonKey}});const j=await r.json();if(j&&j.external&&j.external.google===false)return err('Google chưa được bật cho máy chủ. Hãy dùng email, hoặc nhờ quản trị bật đăng nhập Google.');}catch(e){}
+  const r=await SB.auth.signInWithOAuth({provider:'google',options:{redirectTo:gameURL()}});if(r.error)throw r.error;}
+ catch(e){const m=(e&&e.message)||'';err(/provider is not enabled|Unsupported provider|validation_failed/i.test(m)?'Google chưa được bật cho máy chủ.':viErr(e));}}
 function gameURL(){return location.origin+location.pathname;}
 async function doForgot(){const email=$('aEmail').value.trim(),err=t=>{$('aErr').textContent=t;};if(!/^\S+@\S+\.\S+$/.test(email))return err('Nhập email của bạn ở trên rồi bấm Quên mật khẩu');
  err('Đang gửi…');try{const r=await SB.auth.resetPasswordForEmail(email,{redirectTo:gameURL()});if(r.error)throw r.error;err('Đã gửi email đặt lại mật khẩu. Mở thư và bấm vào liên kết để đặt mật khẩu mới.');}catch(e){err(viErr(e));}}
