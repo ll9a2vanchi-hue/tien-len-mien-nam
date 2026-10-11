@@ -10,8 +10,8 @@ async function ensurePlayer(){const m=meInfo();let {data}=await SB.from('tlmn_pl
  if(data){MYCODE=data.code;await SB.from('tlmn_players').update(row).eq('user_id',USER.id);return;}
  for(let i=0;i<5;i++){const code=roomCode();const r=await SB.from('tlmn_players').insert(Object.assign({code},row));if(!r.error){MYCODE=code;return;}}}
 function chan(topic){return SB.channel(topic,{config:{private:true,broadcast:{self:false},presence:{key:USER.id}}});}
-function mkTr(ch){const H={};ch.on('broadcast',{event:'*'},m=>{(H[m.event]||[]).forEach(cb=>{try{cb(m.payload);}catch(e){console.error(e);}});});
- return{send:(e,p)=>ch.send({type:'broadcast',event:e,payload:p}),on:(e,cb)=>(H[e]=H[e]||[]).push(cb)};}
+function mkTr(ch){const H={};const tr={_H:H,_ch:ch,send:(e,p)=>tr._ch.send({type:'broadcast',event:e,payload:p}),on:(e,cb)=>(H[e]=H[e]||[]).push(cb),
+  bind(c){tr._ch=c;c.on('broadcast',{event:'*'},m=>{(H[m.event]||[]).forEach(cb=>{try{cb(m.payload);}catch(e){console.error(e);}});});}};tr.bind(ch);return tr;}
 async function rtAuth(){try{const {data}=await SB.auth.getSession();if(data.session)SB.realtime.setAuth(data.session.access_token);}catch(e){}}
 // ----- Sảnh: bạn bè online + lời mời -----
 async function joinLobby(){if(LOBBY)return;await rtAuth();const ch=chan('tlmn:lobby');LOBBY={ch,online:{}};

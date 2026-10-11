@@ -1,5 +1,5 @@
 // Service worker: cache toàn bộ để chơi offline
-const CACHE='tlmn-v27-f747d5c6ec';
+const CACHE='tlmn-v28-025c9d829e';
 const ASSETS=['./','index.html','manifest.webmanifest','cloud-config.js','vendor/supabase.js','favicon.svg','icons/icon.svg','icons/icon-192.png','icons/icon-512.png','icons/maskable-512.png','icons/apple-touch-icon.png','icons/favicon-32.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('tlmn-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});

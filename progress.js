@@ -4,7 +4,7 @@ const LOGIN_REWARDS=[100,150,200,300,400,600,1000];
 const PLACE_MULT=[2,0.5,-0.5,-1];
 // Huy hiệu: chuỗi đồng/bạc/vàng (tier 1/2/3) + bí mật (secret). Giữ nguyên id cũ để chuyển tiến độ.
 const BG=(id,icon,name,desc,xu,tier,test,o)=>Object.assign({id,icon,name,desc,xu,tier,test},o||{});
-const V=(s,k)=>s[k]||0;
+const V=(s,k,d=0)=>s[k]!=null?s[k]:d;
 const BADGES=[
  BG('first_game','🎴','Nhập môn','Chơi ván đầu tiên',50,1,s=>s.games>=1,{series:'games'}),
  BG('games50','🎲','Chăm chỉ','Chơi 50 ván',500,2,s=>s.games>=50,{series:'games'}),
@@ -49,13 +49,49 @@ const BADGES=[
  BG('sec_3s','🃏','Cái kết khiêm tốn','Về nhất với lá cuối là 3♠',2000,3,s=>V(s,'last3s')>=1,{secret:true}),
  BG('sec_bigbet','🎲','Liều ăn nhiều','Về nhất ván cược 5.000 xu',2000,3,s=>V(s,'win5k')>=1,{secret:true}),
  BG('sec_comeback','🦅','Lội ngược dòng','Về nhất khi từng còn ≥10 lá lúc đối thủ chỉ còn 2',2500,3,s=>V(s,'comeback')>=1,{secret:true}),
+ // ---- v39: +44 huy hiệu
+ ...[['thuiGive','🐽','thui','Cho thúi heo',['Bắt thúi','Kẻ đi săn heo','Lò mổ di động'],'Bắt đối thủ thúi heo/hàng',[1,10,50]],
+  ['thuiGot','🥀','thui','Thúi heo',['Ôm heo','Thúi quen rồi','Vua thúi heo'],'Bị thúi heo/hàng',[1,10,40]],
+  ['chayCause','🔥','chay','Đốt bài',['Đốt bài','Hỏa diệm sơn','Thần lửa'],'Làm đối thủ cháy bài',[1,5,25]],
+  ['chayGot','🧯','chay','Cháy bài',['Bị cháy','Cháy thành than','Phượng hoàng tro tàn'],'Bị cháy bài (13 lá)',[1,5,20]],
+  ['b3win','♠️','b3','3 bích',['Bích nhỏ có võ','Ba bích thần chưởng','Thánh 3 bích'],'Về nhất bằng 3♠',[1,3,10]],
+  ['onlGames','🌐','online','Online',['Lên mạng','Dân chơi online','Cư dân sòng mạng'],'Chơi ván online',[1,25,150]],
+  ['onlWins','🏅','online','Thắng online',['Hạ người thật','Cao thủ mạng','Bá chủ online'],'Về nhất ván online',[1,15,80]],
+  ['giftSent','💐','social','Tặng quà',['Hào phóng','Mạnh thường quân','Đại gia tặng quà'],'Tặng quà cho người khác',[1,20,100]],
+  ['giftGot','🎀','social','Nhận quà',['Được yêu mến','Người được tặng','Ngôi sao sòng bài'],'Nhận quà từ người chơi',[1,10,50]],
+  ['dms','💬','social','Nhắn tin',['Bắt chuyện','Hoạt ngôn','Ông hoàng tán gẫu'],'Gửi tin nhắn riêng',[1,50,300]],
+  ['friends','🤝','social','Bạn bè',['Có bạn','Hội anh em','Giang hồ rộng'],'Số bạn bè',[1,5,20]],
+  ['avOwn','🖼️','collect','Sưu tập avatar',['Thêm gương mặt','Tủ avatar','Bảo tàng avatar'],'Sở hữu avatar',[5,15,35]],
+  ['spent','💸','shop','Tiêu xu',['Tiêu vặt','Vung tay','Đốt tiền như rác'],'Tiêu xu ở cửa hàng',[2000,30000,200000]],
+  ['spinStreak','🗓️','spin','Quay liên tục',['Quay đều','Tín đồ vòng quay','Không bỏ ngày nào'],'Quay vòng quay nhiều ngày liên tiếp',[3,7,30]],
+  ['qDone','📜','quest','Nhiệm vụ',['Làm nhiệm vụ','Siêng năng','Thợ cày nhiệm vụ'],'Hoàn thành nhiệm vụ ngày',[5,50,300]],
+  ['qWeek','📆','quest','Nhiệm vụ tuần',['Tuần chăm chỉ','Bền bỉ','Không ngừng nghỉ'],'Hoàn thành nhiệm vụ tuần',[1,10,50]],
+  ['play2','2️⃣','table','Bàn 2 người',['Tay đôi tập sự','Song đấu','Kiếm khách'],'Chơi ván bàn 2 người',[5,50,200]],
+  ['play3','3️⃣','table','Bàn 3 người',['Ba người một chiếu','Thế chân vạc','Tam anh'],'Chơi ván bàn 3 người',[5,50,200]],
+  ['play4','4️⃣','table','Bàn 4 người',['Đủ bốn','Chiếu đông','Tứ hải'],'Chơi ván bàn 4 người',[5,50,200]],
+  ['perfect','✨','skill','Ván hoàn hảo',['Không lùi bước','Một mạch','Thần tốc bất bại'],'Về nhất mà không bỏ lượt lần nào',[1,10,50]],
+  ['comebacks','🦅','skill','Lội ngược',['Không bỏ cuộc','Phục hận','Vua lội ngược dòng'],'Về nhất khi bị dẫn sâu',[2,10,30]],
+  ['night','🦉','misc','Cú đêm',['Thức khuya','Cú đêm','Ma sòng bài'],'Chơi ván từ 0h đến 4h sáng',[1,20,100]],
+  ].flatMap(([k,ic,ser,_n,names,desc,goals])=>goals.map((g,i)=>BG(k+'_'+(i+1),ic,names[i],desc+' '+g.toLocaleString('vi-VN')+(k==='spent'?' xu':k==='spinStreak'?' ngày':' lần'),[200,1000,4000][i],i+1,s=>V(s,k)>=g,{series:ser,k,goal:g}))),
+ BG('legend_av','🐉','Chủ nhân huyền thoại','Sở hữu một avatar Huyền thoại',3000,3,s=>V(s,'avLegend')>=1,{series:'collect',k:'avLegend',goal:1}),
+ BG('lb10','📈','Top 10','Lọt top 10 bảng xếp hạng',2000,2,s=>V(s,'lbBest',999)<=10,{series:'online'}),
+ BG('lb3','🏆','Bục vinh quang','Lọt top 3 bảng xếp hạng',6000,3,s=>V(s,'lbBest',999)<=3,{series:'online'}),
+ BG('luoc_1','🍲','Luộc máy','Luộc sạch 1 máy',300,1,s=>V(s,'luoc')>=1,{series:'luoc',k:'luoc',goal:1}),
+ BG('luoc_2','🥘','Bếp trưởng','Luộc sạch 10 máy',1500,2,s=>V(s,'luoc')>=10,{series:'luoc',k:'luoc',goal:10}),
+ BG('luoc_3','♨️','Lò luộc','Luộc sạch 50 máy',5000,3,s=>V(s,'luoc')>=50,{series:'luoc',k:'luoc',goal:50}),
+ BG('luoc_4','🌋','Luộc huyền thoại','Luộc sạch 200 máy',15000,3,s=>V(s,'luoc')>=200,{series:'luoc',k:'luoc',goal:200,legend:true}),
+ BG('luoc_m','🥋','Luộc Cao thủ','Luộc sạch một máy Cao thủ',3000,3,s=>V(s,'luoc3')>=1,{series:'luoc',k:'luoc3',goal:1}),
+ BG('sec_luoc3','🍜','Nồi lẩu thập cẩm','Luộc 3 máy trong cùng một bàn',5000,3,s=>V(s,'luocTable')>=3,{secret:true}),
+ BG('sec_chain','⛓️','Chặt chồng','Chặt ngược lại người vừa chặt mình',2500,3,s=>V(s,'chain')>=1,{secret:true}),
+ BG('sec_allin','🎲','Tất tay','Thắng ván khi số xu chỉ vừa đủ cược',2500,3,s=>V(s,'allin')>=1,{secret:true}),
+ BG('sec_bigthui','🐖','Cả đàn heo','Bắt thúi 3 con heo trong một ván',3000,3,s=>V(s,'bigThui')>=1,{secret:true}),
 ];
 const BADGE_TIER=[null,{name:'Đồng',col:'#cd7f32'},{name:'Bạc',col:'#c0c8d0'},{name:'Vàng',col:'#ffd84d'}];
 // Nhiệm vụ: 3 hằng ngày + 3 hằng tuần (thưởng lớn). Giữ id cũ.
 const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu});
 const QUEST_POOL=[
  Q('play3','Chơi 3 ván','game',3,150),Q('play5','Chơi 5 ván','game',5,250),Q('win1','Về nhất 1 ván','win',1,200),Q('win2','Về nhất 2 ván','win',2,400),
- Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
+ Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
  Q('two3','Đánh ra 3 con heo (2)','two',3,200),Q('chop1','Chặt 1 heo','chop',1,400),
  Q('pairs10','Đánh 10 đôi','pair',10,300),Q('straight5l','Đánh 1 sảnh từ 5 lá','straight5',1,250),Q('pairseq1','Đánh 1 đôi thông','pairseq',1,350),
  Q('quad1','Đánh 1 tứ quý','quad',1,500),Q('win2p','Thắng 1 ván bàn 2 người','win2',1,200),Q('win3p','Thắng 1 ván bàn 3 người','win3',1,250),Q('win4p','Thắng 1 ván bàn 4 người','win4',1,300),
@@ -65,7 +101,7 @@ const QUEST_POOL=[
 ];
 const WEEKLY_POOL=[
  Q('w_win15','Về nhất 15 ván','win',15,3000),Q('w_play40','Chơi 40 ván','game',40,2500),Q('w_master','Hạ 1 máy Cao thủ','beatMaster',1,2000),Q('w_master5','Về trên máy Cao thủ 5 lần','beatMaster',5,5000),
- Q('w_chop2p','Chặt heo ở bàn 2 người','chop2',1,1500),Q('w_egg5','Ném 5 quả trứng','egg',5,800),Q('w_spin3','Quay vòng may mắn 3 lần','spin',3,1000),Q('w_bet5k','Thắng 1 ván cược 5.000','winbet5k',1,6000),
+ Q('w_luoc5','Luộc sạch 5 máy','luoc',5,4000),Q('w_chop2p','Chặt heo ở bàn 2 người','chop2',1,1500),Q('w_egg5','Ném 5 quả trứng','egg',5,800),Q('w_spin3','Quay vòng may mắn 3 lần','spin',3,1000),Q('w_bet5k','Thắng 1 ván cược 5.000','winbet5k',1,6000),
  Q('w_chop5','Chặt heo 5 lần','chop',5,2500),Q('w_quad3','Đánh 3 tứ quý','quad',3,3000),Q('w_online5','Chơi 5 ván online','online',5,3000),Q('w_buy3','Mua 3 vật phẩm','buy',3,1500),
 ];
 // Tên người chơi: 2-16 ký tự, có dấu tiếng Việt, lọc từ tục cơ bản
@@ -125,7 +161,7 @@ function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.g
  const x0=P.xu;P.xu=Math.max(0,P.xu+delta);const paid=P.xu-x0,x1=P.xu;const lv=addXp(P,xp0+bxp);const x2=P.xu;const badges=checkBadges(P);
  const ledger={place:paid-(delta>0?bxu:0),bonus:delta>0?bxu:0,level:x2-x1,badges:P.xu-x2};return{delta,bxu,bxp,bonus,badges,lv,ledger};}
 // sổ xu ván: parts {place,bonus,chop,thui,chay,b3,level,badges,exit,misc}
-const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
+const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['luoc','Luộc máy'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
 function ledgerItems(parts){const items=LEDGER_LABELS.map(([k,l])=>({k,l,v:Math.round(parts[k]||0)})).filter(x=>x.v);return{items,total:items.reduce((a,x)=>a+x.v,0)};}
 
 // ---------- Cấp độ / XP / Danh hiệu ----------

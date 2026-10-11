@@ -45,7 +45,7 @@ class OnlineHost{
  constructor(tr,me,opt){this.tr=tr;this.me=me;this.opt=Object.assign({fillBots:true,botDelay:900,turnMs:15000,dealMs:0},opt||{});this.players=[me];this.seats=[null,null,null,null];this.st=null;this.lastWinner=null;this.timer=null;this.rev=0;
   tr.on('intent',m=>this.onIntent(m));tr.on('hello',m=>this.addPlayer(m));this.assign();}
  addPlayer(p){if(!p||!p.uid)return;const i=this.players.findIndex(x=>x.uid===p.uid);if(i>=0)this.players[i]=Object.assign(this.players[i],p,{gone:false});else{if(this.players.filter(x=>!x.gone).length>=(this.opt.size||4))return this.tr.send('full',{uid:p.uid});this.players.push(p);}
-  if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===p.uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:false});this.push();return;}}
+  if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===p.uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:false});if(this.st.afk)this.st.afk[s]=false;if(this.st.to)this.st.to[s]=0;if(this.resendHands)this.resendHands(p.uid);this.push();if(this.st.turn===s)this.tick();return;}}
   this.assign();this.push();}
  removePlayer(uid){const p=this.players.find(x=>x.uid===uid);if(!p)return;p.gone=true;
   if(this.st&&!this.st.over){const s=this.st.seats.findIndex(x=>x&&x.uid===uid);if(s>=0){this.st.seats[s]=Object.assign({},this.st.seats[s],{bot:true});this.st.hist.push({txt:`${this.st.seats[s].name} mất kết nối — máy chơi thay`,cls:'ps'});this.push();this.tick();}}
