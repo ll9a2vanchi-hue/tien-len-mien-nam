@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.41';
+const APP_V='1.42';
 const CHANGELOG=[
+ ['1.42','11/10',['Chế độ mới: Bầu cua tôm cá — đặt chip nhiều ô, lắc bát có âm thanh, mở bát, trả 1 ăn 1 mỗi mặt trùng; chơi con hoặc làm cái','Huy hiệu/nhiệm vụ/danh hiệu Bầu cua; ô chọn chế độ 3 cột']],
  ['1.41','11/10',['3 Cào & Xì dách: hộp bài xào kiểu riffle, chia từng lá theo vòng bay vòng cung có xoay và bóng đổ, lật bài 3D, rút bài trượt từ hộp, nhà cái lật hồi hộp từng lá','Hiệu ứng XÌ DÁCH / XÌ BÀNG / NGŨ LINH / BA CÀO / QUẮC; âm thanh mới: xào bài, lướt bài, chạm nỉ, lật bài, chip, nhạc thắng/thua, kèn xì dách']],
  ['1.40','11/10',['3 Cào & Xì dách: chọn bàn 2–6 người, Chơi con hoặc Làm cái (ăn/chung từng nhà, xét từng nhà ở Xì dách), xu của máy hiện dưới ghế, bảng tiền từng nhà','Danh sách online hiện chế độ + mức cược người đang chơi với máy','Xem bàn người đang chơi với máy (chỉ thấy bài đã lật); tuỳ chọn “Cho người khác xem bàn của tôi” trong Cài đặt']],
  ['1.39','11/10',['Chế độ người xem bàn online: nút Xem ở sảnh, danh sách người online, link ?room=MÃ&xem=1; chat có nhãn 👁; Ngồi vào khi hết ván','32 danh hiệu mới (cấp 2→100, Luộc Sư, Vua Đếm Lá, Thánh Ba Cào, Thần Xì Dách, Ngũ Linh Tướng, Sát Thủ Thúi Heo, Phong Lưu, Đại Sứ Thân Thiện, Top Server…) có hiệu ứng động','21 khung avatar mới (giá tới 500k): Băng, Lửa, Thiên Hà, Nguyệt Quế Vàng, Rồng Ngọc… một số mở bằng cấp/huy hiệu','Bảng danh hiệu chia nhóm, hiện điều kiện mở']],
@@ -906,7 +907,7 @@ const _ng44=newGame;newGame=function(){const r=_ng44.apply(this,arguments);try{i
 const _ts44=thuiSettle;thuiSettle=function(){if(G&&!G.online&&G.mode==='demla')return[];return _ts44.apply(this,arguments);};
 const _lp44=ledgerParts;ledgerParts=function(){const r=_lp44();if(G&&G.mode==='demla'&&r.parts.place!=null){r.parts.demla=r.parts.place;r.parts.place=0;}return r;};
 const _rh44=renderHome;renderHome=function(){_rh44.apply(this,arguments);try{const h=$('home');if(!h)return;let m=$('modePick');if(m)m.remove();const btn=[...h.querySelectorAll('button')].find(b=>/CHƠI VỚI MÁY/i.test(b.textContent));if(!btn)return;
- m=document.createElement('div');m.id='modePick';m.innerHTML=MODES.map(([k,n,ic])=>`<button class="${k===MODE?'on':'alt'}" onclick="setMode('${k}')"><span>${ic}</span>${n}</button>`).join('');btn.before(m);}catch(e){}};
+ m=document.createElement('div');m.id='modePick';if(MODES.length>=7)m.className='m3';m.innerHTML=MODES.map(([k,n,ic])=>`<button class="${k===MODE?'on':'alt'}" onclick="setMode('${k}')"><span>${ic}</span>${n}</button>`).join('');btn.before(m);}catch(e){}};
 const _ot44=openTables;openTables=function(){_ot44.apply(this,arguments);try{const m=$('modalIn');if(!m)return;const h=m.querySelector('h3');if(h&&MODE==='demla'){{const u=curBet()/5,f=x=>kxu(Math.round(u*x));h.insertAdjacentHTML('afterend',`<div class="small mnote dlt">🔢 <b>Đếm lá</b> — người thua trả người nhất theo lá còn lại:<div class="dlv"><span>3–10 <b>${f(1)}</b></span><span>J Q K <b>${f(1.5)}</b></span><span>A <b>${f(2)}</b></span><span>2♠♣ <b>${f(3)}</b></span><span>2♦♥ <b>${f(4)}</b></span><span>Cháy <b>x2</b></span></div></div>`);}
  m.querySelectorAll('.tsel small').forEach(e=>{if(/Xu:/.test(e.textContent))e.textContent='Xu: thua trả theo số lá';});}}catch(e){}};
 // Đếm lá: hết bài là kết thúc ván ngay, xếp hạng theo số lá còn lại

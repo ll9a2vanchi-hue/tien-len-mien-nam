@@ -1,0 +1,21 @@
+const G=require('./games2.js');let f=0;const ok=(c,m)=>{console.log((c?'ok  ':'FAIL ')+m);if(!c)f++;};
+const C=(v,s)=>{const r=v===2?12:v-3;return r*4+(s||0);};// v: 2..14
+ok(G.bcuaPay({nai:100,cua:50},['nai','nai','ga'])===150,'bầu cua trúng 2 nai, trượt cua');ok(G.bcuaPay({tom:100},['tom','tom','tom'])===300,'3 tôm x3');ok(G.bcuaPay({ga:100},['ca','cua','nai'])===-100,'trượt');
+ok(G.dmTiles().length===28,'28 quân');ok(G.dmFits([3,5],[5,1]).join()==='L','fits L');const pl=G.dmPlace([5,1],[3,5],'L');ok(pl.ends.join()==='3,1'&&pl.placed.join()==='3,5','place L');
+ok(G.dmPlace([5,1],[1,6],'R').ends.join()==='5,6','place R');ok(G.dmStarter([[[1,2],[4,4]],[[6,6]]]).i===1,'starter đôi 6');
+let v=G.dmSettle([[],[[6,6]],[[1,0]]],0,10);ok(v.join()==='130,-120,-10','domino trả theo nút');ok(G.dmBlockedWinner([[[6,6]],[[1,1]],[[0,3]]])===1||G.dmBlockedWinner([[[6,6]],[[1,1]],[[0,3]]])===2,'bí: ít nút thắng');
+const e=(a,m)=>G.eval5(a,m);
+ok(e([C(10),C(11),C(12),C(13),C(14)].map((c,i)=>c-(c&3)+0),'pk')[0]===8,'thùng phá sảnh');ok(e([C(9),C(9,1),C(9,2),C(9,3),C(2)],'pk')[0]===7,'tứ quý');
+ok(e([C(14),C(2,1),C(3,2),C(4),C(5)],'pk')[0]===4&&e([C(14),C(2,1),C(3,2),C(4),C(5)],'pk')[1]===5,'sảnh A-5');
+const fh=[C(8),C(8,1),C(8,2),C(9),C(9,1)],fl=[C(7,2),C(9,2),C(11,2),C(13,2),C(14,2)];
+ok(G.cmpSc(e(fh,'pk'),e(fl,'pk'))>0,'poker: cù lũ > thùng');ok(G.cmpSc(e(fh,'xt'),e(fl,'xt'))<0,'xì tố: thùng > cù lũ');
+ok(e([C(14),C(7,1),C(8,2),C(9),C(10)],'xt')[0]===4,'xì tố sảnh A-7-8-9-10');
+ok(G.cmpSc(e([C(14,3),C(13),C(11),C(9),C(7)],'xt'),e([C(14,0),C(13,1),C(11,1),C(9,1),C(7,1)],'xt'))>0,'xì tố hòa xét chất');
+ok(G.cmpSc(e([C(10),C(10,1),C(5),C(5,1),C(14)],'pk'),e([C(10),C(10,1),C(5),C(5,1),C(13)],'pk'))>0,'kicker thú');
+const b=G.best5([C(14),C(14,1),C(5),C(9,2),C(14,2),C(5,3),C(2)],'pk');ok(b.sc[0]===6,'best5 7 lá -> cù lũ');
+let pots=G.sidePots([100,300,300],[false,false,false]);ok(pots.length===2&&pots[0].amt===300&&pots[1].amt===400&&pots[1].elig.join()==='1,2','side pots');
+let w=G.awardPots(pots,[[9],[5],[3]]);ok(w.join()==='300,400,0','all-in thắng hũ chính, hũ phụ cho người còn lại');
+pots=G.sidePots([50,100,100],[false,true,false]);w=G.awardPots(pots,[[1],null,[2]]);ok(w.join()==='0,0,250','fold không được chia');
+w=G.awardPots(G.sidePots([100,100],[false,false]),[[3,5],[3,5]]);ok(w.join()==='100,100','chia đều');
+const eq=G.pkEquity([C(14),C(14,1)],[],1,300,'pk',G.DECK52);ok(eq>0.75,'AA equity '+eq.toFixed(2));
+ok(G.DECK32.length===32,'bộ 32 lá');process.exit(f?1:0);

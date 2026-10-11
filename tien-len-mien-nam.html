@@ -556,6 +556,21 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 @keyframes cgfx{0%{opacity:0;transform:translate(-50%,-50%) scale(2.6)}18%{opacity:1;transform:translate(-50%,-50%) scale(.95)}28%{transform:translate(-50%,-50%) scale(1.05)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-90%) scale(1)}}
 .cgshake .cgh{animation:cgshk .5s .3s}@keyframes cgshk{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 @media (prefers-reduced-motion:reduce){.cgfx{animation:none;opacity:1;transform:translate(-50%,-50%)}.cgh>.cgc.cgflip,.cgshoe *{animation:none!important}.cgshake .cgh{animation:none}}
+#mg{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:radial-gradient(ellipse at 50% 40%,var(--f1,#1f7a4a),var(--f2,#0d4a2b) 60%,var(--f3,#062a18));padding:env(safe-area-inset-top) 8px calc(8px + env(safe-area-inset-bottom));box-sizing:border-box;overflow:hidden}
+#mg .cgctl{flex:none}.mgseat{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;font-size:12px;position:relative}.mgseat .av{width:38px;height:38px;font-size:21px}.mgseat b{max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mgv{font-style:normal;font-weight:800;font-size:12px;color:#ffe48a}.mgv.pos{color:#7dffb0}.mgv.neg{color:#ff8a80}
+.bctbl{flex:1;display:flex;flex-direction:column;gap:8px;min-height:0;border:6px solid #5a3a1a;border-radius:24px;box-shadow:inset 0 0 40px #0008;padding:8px 6px;overflow:auto}
+.bcseats{display:flex;justify-content:space-around;gap:4px}
+.bcplate{position:relative;align-self:center;width:150px;height:96px;border-radius:50%;background:radial-gradient(#fff,#d9d0c0 60%,#8a7a60);box-shadow:0 6px 14px #000a;flex:none;margin-top:12px}
+.bcdice{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:6px}.bcd{width:34px;height:34px;border-radius:8px;background:linear-gradient(#fff,#eee);box-shadow:inset 0 -3px 0 #ccc,0 2px 4px #0006;display:flex;align-items:center;justify-content:center;font-size:22px;transform:rotate(calc((var(--i) - 1)*12deg))}
+.bcbowl{position:absolute;left:8px;right:8px;bottom:22px;height:90px;border-radius:70px 70px 14px 14px;background:radial-gradient(circle at 35% 25%,#f6e2b0,#c08a3a 45%,#6a3e10);box-shadow:0 8px 14px #000a,inset 0 -6px 10px #0005;transition:transform .7s cubic-bezier(.3,1.4,.5,1),opacity .7s}
+.bcplate.shaking{animation:bcsh .18s linear infinite}@keyframes bcsh{25%{transform:translate(-7px,-3px) rotate(-6deg)}50%{transform:translate(6px,2px) rotate(5deg)}75%{transform:translate(-4px,3px) rotate(-3deg)}}
+.bcplate.open .bcbowl{transform:translate(70px,-90px) rotate(28deg);opacity:0}
+.bcboard{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:auto}.bct{position:relative;margin:0;padding:8px 2px 6px;border-radius:14px;background:linear-gradient(160deg,#fff7e0,#e9d3a0);color:#4a2a08;display:flex;flex-direction:column;align-items:center;gap:0;border:2px solid #b8862f;min-width:0;box-shadow:0 3px 6px #0006}
+.bct .bce{font-size:34px;line-height:1.1}.bct b{font-size:13px}.bcm{position:absolute;top:3px;right:3px;font-style:normal;background:radial-gradient(#ffd84d,#c98a00);color:#3a2000;border-radius:12px;font-size:11px;font-weight:900;padding:1px 6px;box-shadow:0 0 0 2px #fff8,0 2px 3px #0008}.bcb{font-style:normal;font-size:10px;color:#7a5520}
+.bct.hit{box-shadow:0 0 0 3px #ffd84d,0 0 18px #ffd84d;animation:cgpop .5s}.bct.miss{opacity:.55}.bcx{position:absolute;top:2px;left:4px;font-style:normal;font-weight:900;color:#c62828;font-size:15px}
+#mg .cgrole{display:flex;gap:6px;justify-content:center;margin-bottom:6px}#mg .cgrole button{margin:0;padding:6px 12px;font-size:13px}
+@media (prefers-reduced-motion:reduce){.bcplate.shaking{animation:none}.bcbowl{transition:none}}
+#modePick.m3{grid-template-columns:repeat(3,1fr);gap:6px}#modePick.m3 button{flex-direction:column;gap:2px;padding:7px 4px;font-size:12px}#modePick.m3 button span{font-size:20px}#modePick button{padding:9px 6px;font-size:13px}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -596,7 +611,7 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='023080ca36';
+const APP_VER='b83dbf12e9';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -762,6 +777,9 @@ const BADGES=[
  BG('xd_2','🎰','Cao thủ xì dách','Thắng 30 ván Xì dách',1500,2,s=>V(s,'xdWin')>=30,{series:'games',k:'xdWin',goal:30}),
  BG('xd_3','💎','Vua xì dách','Thắng 150 ván Xì dách',5000,3,s=>V(s,'xdWin')>=150,{series:'games',k:'xdWin',goal:150}),
  BG('xd_nl','🖐️','Ngũ linh','Thắng bằng Ngũ linh',800,2,s=>V(s,'ngulinh')>=1,{series:'combo',k:'ngulinh',goal:1}),
+ BG('bcua_1','🦀','Tay bầu cua','Thắng 1 ván Bầu cua',200,1,s=>V(s,'bcuaWin')>=1,{series:'games',k:'bcuaWin',goal:1}),
+ BG('bcua_2','🎲','Cao thủ bầu cua','Thắng 50 ván Bầu cua',2000,2,s=>V(s,'bcuaWin')>=50,{series:'games',k:'bcuaWin',goal:50}),
+ BG('bcua_bao','🌪️','Bão!','Thắng khi 3 xúc xắc cùng mặt',1000,2,s=>V(s,'bcuaTriple')>=1,{series:'combo',k:'bcuaTriple',goal:1}),
  BG('sec_xibang','🅰️','Xì bàng!','Thắng bằng hai con Át',3000,3,s=>V(s,'xibang')>=1,{secret:true}),
  BG('sec_chain','⛓️','Chặt chồng','Chặt ngược lại người vừa chặt mình',2500,3,s=>V(s,'chain')>=1,{secret:true}),
  BG('sec_allin','🎲','Tất tay','Thắng ván khi số xu chỉ vừa đủ cược',2500,3,s=>V(s,'allin')>=1,{secret:true}),
@@ -772,7 +790,7 @@ const BADGE_TIER=[null,{name:'Đồng',col:'#cd7f32'},{name:'Bạc',col:'#c0c8d0
 const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu});
 const QUEST_POOL=[
  Q('play3','Chơi 3 ván','game',3,150),Q('play5','Chơi 5 ván','game',5,250),Q('win1','Về nhất 1 ván','win',1,200),Q('win2','Về nhất 2 ván','win',2,400),
- Q('demla1','Về nhất 1 ván Đếm lá','demlawin',1,300),Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
+ Q('demla1','Về nhất 1 ván Đếm lá','demlawin',1,300),Q('bcua1','Thắng 2 ván Bầu cua','bcuawin',2,250),Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
  Q('two3','Đánh ra 3 con heo (2)','two',3,200),Q('chop1','Chặt 1 heo','chop',1,400),
  Q('pairs10','Đánh 10 đôi','pair',10,300),Q('straight5l','Đánh 1 sảnh từ 5 lá','straight5',1,250),Q('pairseq1','Đánh 1 đôi thông','pairseq',1,350),
  Q('quad1','Đánh 1 tứ quý','quad',1,500),Q('win2p','Thắng 1 ván bàn 2 người','win2',1,200),Q('win3p','Thắng 1 ván bàn 3 người','win3',1,250),Q('win4p','Thắng 1 ván bàn 4 người','win4',1,300),
@@ -873,6 +891,7 @@ const TITLES=[
  {id:'phong_luu',name:'Phong Lưu Công Tử',stat:['giftSent',30],tier:5,cat:'Xã giao'},{id:'dai_su_tt',name:'Đại Sứ Thân Thiện',stat:['friends',10],tier:5,cat:'Xã giao'},
  {id:'top10',name:'Top 10 Server',badge:'lb10',tier:6,cat:'Xếp hạng'},{id:'top3',name:'Top Server Chí Tôn',badge:'lb3',tier:9,cat:'Xếp hạng'},
  {id:'diet_ct',name:'Diệt Cao Thủ',badge:'master25',tier:6,cat:'Thành tích'},{id:'ty_phu',name:'Tỷ Phú Sòng Bài',badge:'rich200k',tier:8,cat:'Thành tích'},
+ {id:'vua_baucua',name:'Vua Bầu Cua',badge:'bcua_2',tier:5,cat:'Chế độ chơi'},
  {id:'chien_than',name:'Chiến Thần Bất Bại',badge:'streak10',tier:8,cat:'Thành tích'},
 ];
 const TITLE_MIGRATE={tan_thu:'tan_binh',tap_su:'tay_mo',tay_choi:'kiem_khach',lao_lang:'hiep_si',cao_thu:'cao_thu_an',bac_thay:'dai_su',than_bai:'than_bai_vd',huyen_thoai:'chi_ton',do_te:'do_te_heo',vua_toi_trang:'thien_menh',dai_gia:'phu_ho',bat_bai:'bat_bai_ct'};
@@ -1310,6 +1329,56 @@ function cgCap(v,cap){const out=v.slice();if(cap==null)return out;let pay=0;for(
  const room=cap+win;if(pay>room&&pay>0){const k=Math.max(0,room)/pay;for(let i=1;i<out.length;i++)if(out[i]>0)out[i]=Math.floor(out[i]*k);}out[0]=-out.slice(1).reduce((a,x)=>a+(x||0),0);return out;}
 function cgSettleTable(g,hands,bet,cap){const v=[0];for(let i=1;i<hands.length;i++)v.push(cgPair(g,hands[i],hands[0],bet));v[0]=-v.slice(1).reduce((a,x)=>a+x,0);return cgCap(v,cap);}
 function cgDealerNeed(g,n,bet){return bet*(n-1)*(g==='3cao'?2:3);}
+// ===== Luật 4 chế độ mới: Bầu cua, Domino, Xì tố, Poker (lá c = hạng*4+chất; hạng 0='3'..11=A,12='2'; chất ♠♣♦♥)
+// ---- Bầu cua tôm cá
+const BC_SYM=['nai','bau','ga','ca','cua','tom'],BC_EMO={nai:'🦌',bau:'🍐',ga:'🐓',ca:'🐟',cua:'🦀',tom:'🦐'},BC_NAME={nai:'Nai',bau:'Bầu',ga:'Gà',ca:'Cá',cua:'Cua',tom:'Tôm'};
+function bcuaRoll(rng){rng=rng||Math.random;return [0,1,2].map(()=>BC_SYM[Math.floor(rng()*6)]);}
+// tiền thắng/thua của 1 người đặt (so với nhà cái): trúng k mặt -> +cược*k, trượt -> -cược
+function bcuaPay(bets,dice){let v=0;for(const s in bets){const a=bets[s]||0;if(!a)continue;const k=dice.filter(d=>d===s).length;v+=k?a*k:-a;}return v;}
+// ---- Domino đôi sáu
+function dmTiles(){const t=[];for(let a=0;a<=6;a++)for(let b=a;b<=6;b++)t.push([a,b]);return t;}
+function dmPips(h){return h.reduce((s,t)=>s+t[0]+t[1],0);}
+function dmFits(t,ends){if(!ends)return['L'];const o=[];if(t[0]===ends[0]||t[1]===ends[0])o.push('L');if(t[0]===ends[1]||t[1]===ends[1])o.push('R');return o;}
+// đặt quân vào dây; trả về {ends, placed:[a,b] theo hướng}
+function dmPlace(ends,t,side){if(!ends)return{ends:[t[0],t[1]],placed:[t[0],t[1]]};if(side==='L'){const p=t[1]===ends[0]?[t[0],t[1]]:[t[1],t[0]];return{ends:[p[0],ends[1]],placed:p};}
+ const p=t[0]===ends[1]?[t[0],t[1]]:[t[1],t[0]];return{ends:[ends[0],p[1]],placed:p};}
+// người đi trước: đôi lớn nhất, không có thì quân nặng nhất
+function dmStarter(hands){let best=null;hands.forEach((h,i)=>h.forEach(t=>{const sc=(t[0]===t[1]?100:0)+t[0]+t[1];if(!best||sc>best.sc)best={i,t,sc};}));return best;}
+// kết thúc: người hết bài thắng; bí (cả bàn không đi được) -> ít điểm nhất thắng. Mỗi người thua trả winner theo số nút còn lại * đơn vị
+function dmSettle(hands,winner,unit){const v=hands.map(()=>0);hands.forEach((h,i)=>{if(i===winner)return;const p=dmPips(h)*unit;v[i]-=p;v[winner]+=p;});return v;}
+function dmBlockedWinner(hands){let w=0;hands.forEach((h,i)=>{const a=dmPips(h),b=dmPips(hands[w]);if(a<b||(a===b&&h.length<hands[w].length))w=i;});return w;}
+function dmBotPick(hand,ends){let best=null;hand.forEach((t,k)=>dmFits(t,ends).forEach(s=>{const sc=(t[0]===t[1]?6:0)+t[0]+t[1];if(!best||sc>best.sc)best={k,side:s,sc};}));return best;}
+// ---- Bộ đánh giá bài 5 lá (poker / xì tố)
+function pkV(c){const r=c>>2;return r===12?2:r+3;}// 2..14
+const PK_NAMES=['Mậu thầu','Đôi','Thú','Sám cô','Sảnh','Thùng','Cù lũ','Tứ quý','Thùng phá sảnh'];
+const XT_NAMES=['Mậu thầu','Đôi','Thú','Sám cô','Sảnh','Cù lũ','Thùng','Tứ quý','Thùng phá sảnh'];
+// trả về mảng điểm so sánh từ trái qua; mode 'xt' = xì tố 32 lá (thùng > cù lũ, sảnh thấp A-7-8-9-10, hòa xét chất lá cao nhất)
+function eval5(cs,mode){const v=cs.map(pkV).sort((a,b)=>b-a);const su=cs.map(c=>c&3);const fl=su.every(s=>s===su[0]);
+ const cnt={};v.forEach(x=>cnt[x]=(cnt[x]||0)+1);const grp=Object.entries(cnt).map(([k,n])=>[n,+k]).sort((a,b)=>b[0]-a[0]||b[1]-a[1]);
+ const uniq=[...new Set(v)];let st=0;if(uniq.length===5){if(v[0]-v[4]===4)st=v[0];else if(mode==='xt'&&v.join()==='14,10,9,8,7')st=10;else if(mode!=='xt'&&v.join()==='14,5,4,3,2')st=5;}
+ let cat,tb;if(st&&fl){cat=8;tb=[st];}else if(grp[0][0]===4){cat=7;tb=[grp[0][1],grp[1][1]];}else if(grp[0][0]===3&&grp[1][0]===2){cat=mode==='xt'?5:6;tb=[grp[0][1],grp[1][1]];}
+ else if(fl){cat=mode==='xt'?6:5;tb=v;}else if(st){cat=4;tb=[st];}else if(grp[0][0]===3){cat=3;tb=grp.map(g=>g[1]);}else if(grp[0][0]===2&&grp[1][0]===2){cat=2;tb=grp.map(g=>g[1]);}else if(grp[0][0]===2){cat=1;tb=grp.map(g=>g[1]);}else{cat=0;tb=v;}
+ const sc=[cat,...tb];if(mode==='xt'){const top=Math.max(...cs.map(c=>pkV(c)*4+(c&3)));sc.push(top);}return sc;}
+function cmpSc(a,b){for(let i=0;i<Math.max(a.length,b.length);i++){const d=(a[i]||0)-(b[i]||0);if(d)return d;}return 0;}
+function best5(cs,mode){if(cs.length<=5)return{sc:eval5(cs,mode),cards:cs};let best=null;const n=cs.length;
+ for(let a=0;a<n;a++)for(let b=a+1;b<n;b++){const pick=cs.filter((_,i)=>i!==a&&i!==b);if(pick.length!==5)continue;const sc=eval5(pick,mode);if(!best||cmpSc(sc,best.sc)>0)best={sc,cards:pick};}return best;}
+function handName(sc,mode){return (mode==='xt'?XT_NAMES:PK_NAMES)[sc[0]];}
+// đánh giá phần bài chưa đủ 5 lá (xì tố đang chia): chỉ xét đôi/sám/tứ + lá cao
+function evalPartial(cs){if(cs.length>=5)return eval5(cs.slice(0,5),'xt');const v=cs.map(pkV).sort((a,b)=>b-a);const cnt={};v.forEach(x=>cnt[x]=(cnt[x]||0)+1);const g=Object.entries(cnt).map(([k,n])=>[n,+k]).sort((a,b)=>b[0]-a[0]||b[1]-a[1]);
+ const cat=g[0][0]===4?7:g[0][0]===3?3:g[0][0]===2&&g[1]&&g[1][0]===2?2:g[0][0]===2?1:0;return [cat,...g.map(x=>x[1])];}
+// ---- chia tiền nhiều hũ (side pot)
+function sidePots(contrib,folded){const lv=[...new Set(contrib.filter(x=>x>0))].sort((a,b)=>a-b);const pots=[];let prev=0;
+ for(const L of lv){let amt=0;const elig=[];contrib.forEach((c,i)=>{amt+=Math.max(0,Math.min(c,L)-prev);if(c>=L&&!folded[i])elig.push(i);});if(amt>0){if(elig.length)pots.push({amt,elig});else if(pots.length)pots[pots.length-1].amt+=amt;}prev=L;}return pots;}
+// scores[i] = mảng điểm (null nếu bỏ bài). Trả về tiền mỗi người nhận
+function awardPots(pots,scores){const win=scores.map(()=>0);pots.forEach(p=>{let best=null,ws=[];p.elig.forEach(i=>{if(!scores[i])return;const d=best?cmpSc(scores[i],best):1;if(d>0){best=scores[i];ws=[i];}else if(d===0)ws.push(i);});
+ if(!ws.length)ws=p.elig.slice(0,1);const share=Math.floor(p.amt/ws.length);ws.forEach(i=>win[i]+=share);win[ws[0]]+=p.amt-share*ws.length;});return win;}
+// xác suất thắng ước lượng (Monte Carlo) cho máy
+function pkEquity(hole,board,nOpp,iters,mode,deckAll){const used=new Set(hole.concat(board));const deck=deckAll.filter(c=>!used.has(c));let w=0;iters=iters||120;const need=(mode==='xt'?5-hole.length-board.length:5-board.length);
+ for(let it=0;it<iters;it++){const d=deck.slice();for(let i=d.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]];}let p=0;const bd=board.concat(mode==='xt'?[]:d.slice(p,p+=Math.max(0,need)));
+  const mine=mode==='xt'?best5(hole.concat(d.slice(p,p+=Math.max(0,need))),'xt').sc:best5(hole.concat(bd),'pk').sc;let lose=false,tie=0;
+  for(let o=0;o<nOpp;o++){const oh=d.slice(p,p+=(mode==='xt'?5:2));const os=mode==='xt'?eval5(oh,'xt'):best5(oh.concat(bd),'pk').sc;const c=cmpSc(os,mine);if(c>0){lose=true;break;}if(c===0)tie++;}
+  if(!lose)w+=tie?1/(tie+1):1;}return w/iters;}
+const DECK52=[...Array(52).keys()],DECK32=[...Array(52).keys()].filter(c=>{const r=c>>2;return r>=4&&r<=11;});
 // ======== Avatar SVG cao cấp (vẽ bằng SVG nội tuyến, chạy offline) ========
 const SVA={};
 function _g(id,a,b){return `<radialGradient id="${id}" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></radialGradient>`;}
@@ -2809,8 +2878,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.41';
+const APP_V='1.42';
 const CHANGELOG=[
+ ['1.42','11/10',['Chế độ mới: Bầu cua tôm cá — đặt chip nhiều ô, lắc bát có âm thanh, mở bát, trả 1 ăn 1 mỗi mặt trùng; chơi con hoặc làm cái','Huy hiệu/nhiệm vụ/danh hiệu Bầu cua; ô chọn chế độ 3 cột']],
  ['1.41','11/10',['3 Cào & Xì dách: hộp bài xào kiểu riffle, chia từng lá theo vòng bay vòng cung có xoay và bóng đổ, lật bài 3D, rút bài trượt từ hộp, nhà cái lật hồi hộp từng lá','Hiệu ứng XÌ DÁCH / XÌ BÀNG / NGŨ LINH / BA CÀO / QUẮC; âm thanh mới: xào bài, lướt bài, chạm nỉ, lật bài, chip, nhạc thắng/thua, kèn xì dách']],
  ['1.40','11/10',['3 Cào & Xì dách: chọn bàn 2–6 người, Chơi con hoặc Làm cái (ăn/chung từng nhà, xét từng nhà ở Xì dách), xu của máy hiện dưới ghế, bảng tiền từng nhà','Danh sách online hiện chế độ + mức cược người đang chơi với máy','Xem bàn người đang chơi với máy (chỉ thấy bài đã lật); tuỳ chọn “Cho người khác xem bàn của tôi” trong Cài đặt']],
  ['1.39','11/10',['Chế độ người xem bàn online: nút Xem ở sảnh, danh sách người online, link ?room=MÃ&xem=1; chat có nhãn 👁; Ngồi vào khi hết ván','32 danh hiệu mới (cấp 2→100, Luộc Sư, Vua Đếm Lá, Thánh Ba Cào, Thần Xì Dách, Ngũ Linh Tướng, Sát Thủ Thúi Heo, Phong Lưu, Đại Sứ Thân Thiện, Top Server…) có hiệu ứng động','21 khung avatar mới (giá tới 500k): Băng, Lửa, Thiên Hà, Nguyệt Quế Vàng, Rồng Ngọc… một số mở bằng cấp/huy hiệu','Bảng danh hiệu chia nhóm, hiện điều kiện mở']],
@@ -2979,7 +3049,7 @@ const _ng44=newGame;newGame=function(){const r=_ng44.apply(this,arguments);try{i
 const _ts44=thuiSettle;thuiSettle=function(){if(G&&!G.online&&G.mode==='demla')return[];return _ts44.apply(this,arguments);};
 const _lp44=ledgerParts;ledgerParts=function(){const r=_lp44();if(G&&G.mode==='demla'&&r.parts.place!=null){r.parts.demla=r.parts.place;r.parts.place=0;}return r;};
 const _rh44=renderHome;renderHome=function(){_rh44.apply(this,arguments);try{const h=$('home');if(!h)return;let m=$('modePick');if(m)m.remove();const btn=[...h.querySelectorAll('button')].find(b=>/CHƠI VỚI MÁY/i.test(b.textContent));if(!btn)return;
- m=document.createElement('div');m.id='modePick';m.innerHTML=MODES.map(([k,n,ic])=>`<button class="${k===MODE?'on':'alt'}" onclick="setMode('${k}')"><span>${ic}</span>${n}</button>`).join('');btn.before(m);}catch(e){}};
+ m=document.createElement('div');m.id='modePick';if(MODES.length>=7)m.className='m3';m.innerHTML=MODES.map(([k,n,ic])=>`<button class="${k===MODE?'on':'alt'}" onclick="setMode('${k}')"><span>${ic}</span>${n}</button>`).join('');btn.before(m);}catch(e){}};
 const _ot44=openTables;openTables=function(){_ot44.apply(this,arguments);try{const m=$('modalIn');if(!m)return;const h=m.querySelector('h3');if(h&&MODE==='demla'){{const u=curBet()/5,f=x=>kxu(Math.round(u*x));h.insertAdjacentHTML('afterend',`<div class="small mnote dlt">🔢 <b>Đếm lá</b> — người thua trả người nhất theo lá còn lại:<div class="dlv"><span>3–10 <b>${f(1)}</b></span><span>J Q K <b>${f(1.5)}</b></span><span>A <b>${f(2)}</b></span><span>2♠♣ <b>${f(3)}</b></span><span>2♦♥ <b>${f(4)}</b></span><span>Cháy <b>x2</b></span></div></div>`);}
  m.querySelectorAll('.tsel small').forEach(e=>{if(/Xu:/.test(e.textContent))e.textContent='Xu: thua trả theo số lá';});}}catch(e){}};
 // Đếm lá: hết bài là kết thúc ván ngay, xếp hạng theo số lá còn lại
@@ -3214,5 +3284,69 @@ const _cgs51=cgSettle;cgSettle=function(){const st=CG.st;const was=st&&st.phase;
  let meSp=null;st.seats.forEach((s,i)=>{let k=null;if(CG.g==='xidach'){const kd=xdKind(st.hands[i],i===0?15:16).kind;k={xibang:'XÌ BÀNG!',xidach:'XÌ DÁCH!',ngulinh:'NGŨ LINH!',quac:'QUẮC!'}[kd]||null;}else if(bcScore(st.hands[i]).bacao)k='BA CÀO!';
   if(!k)return;const seat=document.querySelector(`#cg .cgs[data-i="${i}"]`);if(seat){const f=document.createElement('div');f.className='cgfx '+(k==='QUẮC!'?'bust':'gold');f.textContent=k;f.style.setProperty('--sd',(i*120+300)+'ms');seat.appendChild(f);if(k==='QUẮC!')seat.classList.add('cgshake');}if(i===st.me)meSp=k;});
  const me=st.res[st.me].v;setTimeout(()=>{if(meSp&&meSp!=='QUẮC!')sfx('cgFan');else if(meSp==='QUẮC!')sfx('cgBust');if(me>0)sfx('cgJingle');else if(me<0)sfx('cgLose');else sfx('cgChip');},420);};
+// ===== v52+: chế độ mới (Bầu cua, Domino, Xì tố, Poker) — khung chung =====
+const MG={g:null,bxu:{},bet:200};
+const MG_TITLE={baucua:'🦀 Bầu cua',domino:'🁫 Domino',xito:'🂡 Xì tố',poker:'♠️ Poker'};
+function mgBot(used){const pool=[...CG_NAMES.keys()].filter(k=>!(used||[]).includes(CG_NAMES[k]));const k=pool[Math.floor(Math.random()*pool.length)]??0;const b={name:CG_NAMES[k],av:CG_AV[k]};if(MG.bxu[b.name]==null)MG.bxu[b.name]=Math.round(MG.bet*(20+Math.random()*40)/100)*100;return b;}
+function mgBots(n){const out=[];for(let i=0;i<n;i++)out.push(mgBot(out.map(b=>b.name)));return out;}
+function mgRefill(bots,need){const msg=[];bots.forEach((b,i)=>{if((MG.bxu[b.name]||0)<need){const nb=mgBot(bots.map(x=>x.name));msg.push(`${b.name} hết xu, rời bàn · ${nb.name} vào bàn`);delete MG.bxu[b.name];MG.bxu[nb.name]=Math.max(MG.bxu[nb.name],need*20);bots[i]=nb;}});if(msg.length)toast(msg.join(' — '));}
+function mgOpen(g){closeModal();MG.g=g;MG.st=null;let o=$('mg');if(!o){o=document.createElement('div');o.id='mg';document.body.appendChild(o);}o.className='mg-'+g;document.body.classList.add('cgon','mgon');sfx('cgChip');MG_MODE[g].open();}
+function mgClose(force){const st=MG.st;if(!force&&st&&st.busy){if(!confirm('Đang chơi dở, rời bàn sẽ mất tiền cược. Rời?'))return;if(MG_MODE[MG.g].quit)MG_MODE[MG.g].quit();}const o=$('mg');if(o)o.remove();document.body.classList.remove('cgon','mgon');MG.st=null;MG.g=null;showHome();}
+function mgTop(){return `<div class="cgtop"><button class="alt ic" onclick="mgClose()">${I('back')}</button><b>${MG_TITLE[MG.g]}</b><span class="cgxu">${I('coin')} <span id="cgXu">${fmt(PR.xu)}</span></span></div>`;}
+function mgSeat(b,extra){return `<div class="mgseat"><span class="av" style="--avc:#3a5">${b.av}</span><b>${esc(b.name)}</b><small class="cgbx">${I('coin')}${kxu(b.me?PR.xu:(MG.bxu[b.name]||0))}</small>${extra||''}</div>`;}
+function mgBets(list,cur,on,maxOk){return `<div class="cgbets">${list.map(b=>`<button class="${b===cur?'':'alt'}" ${maxOk&&!maxOk(b)?'disabled':''} onclick="${on}(${b})">${kxu(b)}</button>`).join('')}</div>`;}
+// kết thúc ván: cập nhật xu/XP/thống kê/nhiệm vụ
+const MG_STAT={baucua:'bcua',domino:'dom',xito:'xt',poker:'pk'};
+function mgEnd(net,o){o=o||{};const k=MG_STAT[MG.g];PR.xu=Math.max(0,PR.xu+net);bst(k+'Games');const won=net>0;if(won){bst(k+'Win');questEvent(PR,k+'win');}questEvent(PR,'cgplay');(o.stats||[]).forEach(s=>bst(s));
+ const xp=o.xp!=null?o.xp:(won?30:net===0?15:10);const up=addXp(PR,xp);sfx(won?'cgJingle':net<0?'cgLose':'cgChip');
+ try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(net>=0?'+':'')+fmt(net)+' xu',net>=0?'gain':'loss');}catch(e){}
+ try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);return xp;}
+function mgLedger(rows){return rows&&rows.length?`<div class="cgled">${rows.map(l=>`<div><span>${esc(l[0])}</span><b class="${l[1]>0?'pos':l[1]<0?'neg':''}">${l[1]>0?'+':''}${fmt(l[1])}</b></div>`).join('')}</div>`:'';}
+const MG_MODE={};
+// ---- tích hợp màn hình chính / xem bàn / trạng thái
+MODES.push(['baucua','Bầu cua','🦀']);
+const _ot52=openTables;openTables=function(){if(MG_MODE[MODE])return mgOpen(MODE);return _ot52.apply(this,arguments);};
+const _og52=offGame;offGame=function(){try{if(MG.g&&document.body.classList.contains('mgon')){const st=MG.st||{};return{g:MG.g,bet:st.bet||MG.bet,cai:st.role==='cai'};}}catch(e){}return _og52();};
+const _gl52=gmLabel;gmLabel=function(o){if(o&&MG_TITLE[o.g])return MG_TITLE[o.g].replace(/^\S+ /,'')+(o.cai?' (làm cái)':'')+(o.bet?' · '+kxu(o.bet):'');return _gl52(o);};
+const _snap52=ospSnap;ospSnap=function(){try{if(MG.g&&document.body.classList.contains('mgon')){const m=MG_MODE[MG.g];const o=offGame();const p=m.pub?m.pub():{seats:[],msg:''};return Object.assign({k:'cg',gm:o},p);}}catch(e){}return _snap52();};
+
+// ===================== BẦU CUA =====================
+const BC_CHIPS=[100,200,500,1000,2000,5000];
+MG_MODE.baucua={
+ open(){MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,500000);const st=MG.st={role:(localStorage.getItem('tlmn_bcrole')==='cai'?'cai':'con'),chip:BC_CHIPS.includes(MG.bet)?MG.bet:200,bets:{},bots:mgBots(3),phase:'bet',dice:bcuaRoll(),res:null,bet:0};bcBotBets();bcR();},
+ pub(){const st=MG.st;if(!st)return{seats:[],msg:''};const show=st.phase==='open'||st.phase==='done';return{msg:(show?'Kết quả: '+st.dice.map(d=>BC_EMO[d]).join(' '):st.phase==='shake'?'Đang lắc…':'Đặt cược')+(st.msg?' · '+st.msg:''),seats:[{name:PR.name||'Người chơi',av:myAv(),dealer:st.role==='cai',cards:null,cnt:0,lab:bcBetTxt(st.bets),v:st.res?st.res.me:null}].concat(st.bots.map((b,i)=>({name:b.name,av:b.av,cards:null,cnt:0,lab:bcBetTxt(b.bets||{}),v:st.res?st.res.b[i]:null})))};},
+ quit(){const st=MG.st;if(st&&st.role==='con'){const t=Object.values(st.bets).reduce((a,x)=>a+x,0);PR.xu=Math.max(0,PR.xu-t);saveP();}}
+};
+function bcBetTxt(b){return Object.entries(b).filter(([,v])=>v).map(([s,v])=>BC_EMO[s]+kxu(v)).join(' ');}
+function bcTot(b){return Object.values(b||{}).reduce((a,x)=>a+x,0);}
+function bcBotBets(){const st=MG.st;mgRefill(st.bots,500);st.bots.forEach(b=>{b.bets={};if(st.role==='con')return;const k=1+Math.floor(Math.random()*3);for(let i=0;i<k;i++){const s=BC_SYM[Math.floor(Math.random()*6)];const a=[100,200,500,1000][Math.floor(Math.random()*4)];if(bcTot(b.bets)+a<=(MG.bxu[b.name]||0)/2)b.bets[s]=(b.bets[s]||0)+a;}});}
+function bcR(){const o=$('mg');const st=MG.st;if(!o||!st)return;const show=st.phase==='open'||st.phase==='done';
+ const tile=s=>{const mine=st.bets[s]||0,bots=st.bots.reduce((a,b)=>a+((b.bets||{})[s]||0),0);const hit=show?st.dice.filter(d=>d===s).length:0;
+  return `<button class="bct ${hit?'hit':''} ${show&&!hit&&(mine||bots)?'miss':''}" onclick="bcPut('${s}')"><span class="bce">${BC_EMO[s]}</span><b>${BC_NAME[s]}</b>${mine?`<i class="bcm">${kxu(mine)}</i>`:''}${bots?`<i class="bcb">🤖 ${kxu(bots)}</i>`:''}${hit?`<em class="bcx">×${hit}</em>`:''}</button>`;};
+ const dealer=st.role==='cai'?{name:'Bạn (cái)',av:myAv(),me:1}:{name:'Nhà cái',av:'🎩'};
+ o.innerHTML=mgTop()+`<div class="bctbl"><div class="bcseats">${mgSeat(dealer,'<i class="cgdl">CÁI</i>')}${st.bots.map((b,i)=>mgSeat(b,st.res?`<i class="mgv ${st.res.b[i]>0?'pos':st.res.b[i]<0?'neg':''}">${st.res.b[i]>0?'+':''}${kxu(st.res.b[i])}</i>`:(bcTot(b.bets)?`<i class="mgv">${kxu(bcTot(b.bets))}</i>`:''))).join('')}</div>
+ <div class="bcplate ${st.phase==='shake'?'shaking':''} ${show?'open':''}"><div class="bcdice">${st.dice.map((d,i)=>`<span class="bcd" style="--i:${i}">${BC_EMO[d]}</span>`).join('')}</div><div class="bcbowl"></div></div>
+ <div class="cgmsg">${esc(st.msg||(st.phase==='bet'?(st.role==='con'?'Chọn chip rồi chạm vào ô để đặt (đặt được nhiều ô)':'Các nhà đã đặt. Bạn làm cái — bấm Lắc'):''))}</div>
+ <div class="bcboard">${BC_SYM.map(tile).join('')}</div></div><div class="cgctl">${bcCtl()}</div>`;try{svaScan(o);}catch(e){}}
+function bcCtl(){const st=MG.st;if(st.phase==='shake')return '<p class="small" style="text-align:center">Đang lắc…</p>';if(st.phase==='open')return `<button class="cgbig" onclick="bcOpen()">Mở bát 🥣</button>`;
+ const led=st.phase==='done'?mgLedger(st.ledger):'';const tot=bcTot(st.bets);const need=bcTot(st.bots.reduce((a,b)=>{for(const s in b.bets)a[s]=(a[s]||0)+b.bets[s];return a;},{}))*3;
+ return `${led}<div class="cgrole"><button class="${st.role==='con'?'':'alt'}" onclick="bcRole('con')">🙋 Chơi con</button><button class="${st.role==='cai'?'':'alt'}" onclick="bcRole('cai')">🎩 Làm cái</button></div>
+ ${st.role==='con'?`${mgBets(BC_CHIPS,st.chip,'bcChip',b=>b<=PR.xu)}<div class="cgrow"><button class="cgbig alt" ${tot?'':'disabled'} onclick="bcClear()">Xóa cược</button><button class="cgbig" ${tot?'':'disabled'} onclick="bcShake()">Lắc · ${kxu(tot)}</button></div>`
+ :`<p class="small cgnote">Làm cái: ăn/chung từng nhà. Cần ≥ ${fmt(need)} xu (gấp 3 tổng cược).</p><div class="cgrow"><button class="cgbig alt" onclick="bcNew()">Đổi lượt cược</button><button class="cgbig" ${PR.xu<need?'disabled':''} onclick="bcShake()">Lắc</button></div>`}`;}
+function bcChip(b){MG.st.chip=b;MG.bet=b;sfx('tap');bcR();}
+function bcRole(r){const st=MG.st;if(st.phase!=='bet'&&st.phase!=='done')return;localStorage.setItem('tlmn_bcrole',r);st.role=r;bcNew();}
+function bcNew(){const st=MG.st;st.phase='bet';st.bets={};st.res=null;st.msg='';st.ledger=null;bcBotBets();bcR();}
+function bcPut(s){const st=MG.st;if(st.phase==='done')bcNew();if(st.phase!=='bet'||st.role!=='con')return;const tot=bcTot(st.bets);if(tot+st.chip>PR.xu)return toast('Không đủ xu');st.bets[s]=(st.bets[s]||0)+st.chip;sfx('cgChip');bcR();}
+function bcClear(){MG.st.bets={};bcR();}
+function bcShake(){const st=MG.st;if(st.phase==='done'){st.res=null;st.ledger=null;st.msg='';if(st.role==='con'&&bcTot(st.bets)>PR.xu)st.bets={};if(st.role==='cai')bcBotBets();st.phase='bet';}if(st.role==='con'&&!bcTot(st.bets))return;
+ if(st.role==='con')st.bots.forEach(b=>{b.bets={};const k=1+Math.floor(Math.random()*2);for(let i=0;i<k;i++){const s=BC_SYM[Math.floor(Math.random()*6)];const a=[100,200,500][Math.floor(Math.random()*3)];if(bcTot(b.bets)+a<=(MG.bxu[b.name]||0)/2)b.bets[s]=(b.bets[s]||0)+a;}});
+ st.dice=bcuaRoll();st.phase='shake';st.busy=true;st.bet=st.role==='con'?bcTot(st.bets):0;bcR();bcRattle();setTimeout(()=>{if(MG.st!==st)return;st.phase='open';st.msg='Bát đã lắc xong — mở bát!';bcR();},RM?300:1400);}
+function bcRattle(){const n=RM?4:14;for(let i=0;i<n;i++){const t=i*0.085+Math.random()*0.02;noise(.04,.12,t,1800+Math.random()*1500);tone(900+Math.random()*700,.03,'triangle',.04,t);}noise(.12,.15,n*0.085,500);}
+function bcOpen(){const st=MG.st;if(st.phase!=='open')return;st.phase='done';st.busy=false;sfx('cgSnap');noise(.15,.08,0,2500);
+ const bv=st.bots.map(b=>bcuaPay(b.bets||{},st.dice));let me;
+ if(st.role==='con'){me=bcuaPay(st.bets,st.dice);bv.forEach((v,i)=>{MG.bxu[st.bots[i].name]=Math.max(0,(MG.bxu[st.bots[i].name]||0)+v);});st.ledger=[['Với nhà cái',me]];}
+ else{const v=cgCap([0].concat(bv),PR.xu);me=v[0];v.slice(1).forEach((x,i)=>{bv[i]=x;MG.bxu[st.bots[i].name]=Math.max(0,(MG.bxu[st.bots[i].name]||0)+x);});st.ledger=st.bots.map((b,i)=>[b.name,-bv[i]]);}
+ st.res={me,b:bv};const triple=st.dice[0]===st.dice[1]&&st.dice[1]===st.dice[2];st.msg=(me>0?`🎉 Bạn thắng +${fmt(me)} xu`:me<0?`Bạn thua ${fmt(me)} xu`:'Hòa')+(triple?' · Bão '+BC_NAME[st.dice[0]]+'!':'');
+ const xp=mgEnd(me,{stats:triple&&me>0?['bcuaTriple']:[]});st.msg+=` · +${xp} XP`;bcR();}
 boot();
 </script></body></html>
