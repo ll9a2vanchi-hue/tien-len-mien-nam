@@ -563,7 +563,7 @@ body.cgon #home,body.cgon #dmBtn{display:none!important}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='6ee341e1fa';
+const APP_VER='d12930f8fd';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -2951,7 +2951,7 @@ function cgRender(){const o=$('cg');if(!o)return;const st=CG.st;const seats=st?s
  o.classList.toggle('cgfresh',!!(st&&st.fresh));if(st)st.fresh=false;o.innerHTML=`<div class="cgtop"><button class="alt ic" onclick="closeCasino()">${I('back')}</button><b>${cgTitle()}</b><span class="cgxu">${I('coin')} <span id="cgXu">${fmt(PR.xu)}</span></span></div>
  <div class="cgtbl">${seats.map(seatHTML).join('')}<div class="cgmsg" id="cgMsg">${st?st.msg||'':(CG.g==='xidach'?'Xì bàng x3 · Xì dách x2 · Ngũ linh x2 · dưới 16 là non · quá 21 là quắc':'Ba cào (J Q K) x2 · điểm = số cuối của tổng')}</div></div>
  <div class="cgctl">${cgCtl()}</div>`;try{svaScan(o);}catch(e){}}
-function cgScoreLab(h,i){if(CG.g==='3cao'){const s=bcScore(h);return s.label;}const k=xdKind(h,i===0?15:16);return (XD_LABEL[k.kind]?XD_LABEL[k.kind]+' · ':'')+k.total;}
+function cgScoreLab(h,i){if(CG.g==='3cao'){const s=bcScore(h);return s.label;}const k=xdKind(h,i===0?15:16);if(CG.st&&CG.st.early&&k.kind==='non')return ''+k.total;return (XD_LABEL[k.kind]?XD_LABEL[k.kind]+' · ':'')+k.total;}
 function cgCtl(){const st=CG.st;
  if(!st||st.phase==='done')return `<div class="cgbets">${CG_BETS.map(b=>`<button class="${b===CG.bet?'':'alt'}" ${b>PR.xu?'disabled':''} onclick="CG.bet=${b};cgRender()">${kxu(b)}</button>`).join('')}</div><button class="cgbig" ${PR.xu<CG.bet?'disabled':''} onclick="cgDeal()">${st?'Ván mới':'Chia bài'} · ${fmt(CG.bet)} xu</button>`;
  if(CG.g==='3cao')return st.phase==='look'?`<button class="cgbig" onclick="bcFlip()">Lật bài 🃏</button>`:'';
@@ -2966,7 +2966,7 @@ function cgDeal(){if(PR.xu<CG.bet)return toast('Không đủ xu');sfx('shuffle')
 function bcFlip(){const st=CG.st;st.meUp=true;sfx('flip');st.phase='wait';st.msg='Nhà cái lật bài…';cgRender();setTimeout(()=>{st.reveal=true;sfx('flip');cgSettle();},1100);}
 // ---- Xì dách
 function xdCheckNatural(){const st=CG.st;if(!st)return;const kd=xdKind(st.hands[0],15),km=xdKind(st.hands[3],16);
- if(['xibang','xidach'].includes(kd.kind)||['xibang','xidach'].includes(km.kind)){st.reveal=true;st.msg=(['xibang','xidach'].includes(kd.kind)?'Nhà cái '+XD_LABEL[kd.kind]+'!':'Bạn '+XD_LABEL[km.kind]+'!');sfx('fanfare');return cgSettle();}
+ if(['xibang','xidach'].includes(kd.kind)||['xibang','xidach'].includes(km.kind)){st.reveal=true;st.early=true;st.msg=(['xibang','xidach'].includes(kd.kind)?'Nhà cái '+XD_LABEL[kd.kind]+'!':'Bạn '+XD_LABEL[km.kind]+'!');sfx('fanfare');return cgSettle();}
  st.msg='Lượt bạn: Rút hoặc Dằn (cần ≥16 điểm)';cgRender();}
 function xdHit(){const st=CG.st;if(st.phase!=='me')return;st.hands[3].push(st.deck.pop());st.newCard={3:st.hands[3].length-1};sfx('deal');const k=xdKind(st.hands[3],16);
  if(k.kind==='quac'){st.msg='Quắc rồi! ('+k.total+')';sfx('thud');return xdBots();}if(st.hands[3].length>=5){st.msg='Ngũ linh!';sfx('chime');return xdBots();}cgRender();}
@@ -2977,7 +2977,7 @@ function xdBots(){const st=CG.st;st.phase='bots';st.turn=-1;cgRender();let t=500
 // ---- tính tiền chung
 function cgSettle(){const st=CG.st;st.phase='done';st.turn=-1;st.reveal=true;st.meUp=true;const bet=CG.bet;st.res={};let me=0;
  if(CG.g==='3cao'){const d=bcScore(st.hands[0]);[1,2,3].forEach(i=>{const p=bcScore(st.hands[i]);const v=bcPay(p,d,bet);st.res[i]={v,lab:v>0?'Thắng':v<0?'Thua':'Hòa'};if(i===3){me=v;if(p.bacao){bst('bacao');}}});}
- else{const d=xdKind(st.hands[0],15);[1,2,3].forEach(i=>{const p=xdKind(st.hands[i],16);const v=xdSettle(p,d,bet);st.res[i]={v,lab:(XD_LABEL[p.kind]?XD_LABEL[p.kind]+' · ':'')+(v>0?'Thắng':v<0?'Thua':'Hòa')};if(i===3){me=v;if(v>0&&p.kind==='xibang')bst('xibang');if(v>0&&p.kind==='ngulinh')bst('ngulinh');}});}
+ else{const d=xdKind(st.hands[0],15);[1,2,3].forEach(i=>{const p=xdKind(st.hands[i],16);const v=xdSettle(p,d,bet);st.res[i]={v,lab:(XD_LABEL[p.kind]&&!(st.early&&p.kind==='non')?XD_LABEL[p.kind]+' · ':'')+(v>0?'Thắng':v<0?'Thua':'Hòa')};if(i===3){me=v;if(v>0&&p.kind==='xibang')bst('xibang');if(v>0&&p.kind==='ngulinh')bst('ngulinh');}});}
  const dsum=-Object.values(st.res).reduce((a,r)=>a+r.v,0);st.res[0]={v:dsum,lab:'Nhà cái'};
  const x0=PR.xu;PR.xu=Math.max(0,PR.xu+me);const won=me>0;bst(CG.g==='3cao'?'bcGames':'xdGames');if(won){bst(CG.g==='3cao'?'bcWin':'xdWin');questEvent(PR,CG.g==='3cao'?'bcwin':'xdwin');}questEvent(PR,'cgplay');
  const xp=won?30:me===0?15:10;const up=addXp(PR,xp);st.msg=(me>0?`🎉 Bạn thắng +${fmt(me)} xu`:me<0?`Bạn thua ${fmt(me)} xu`:'Hòa')+` · +${xp} XP`;
