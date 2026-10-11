@@ -368,6 +368,17 @@ body.playing .seat:not(.turn){filter:brightness(.72) saturate(.85);transition:fi
 .pencil{padding:2px 6px!important;margin:0 0 0 4px!important;min-width:0;vertical-align:middle;display:inline-flex;align-items:center;gap:3px;font-size:12px}.pname{font-size:16px;color:#ffe9a8}
 .gbtn{display:flex!important;align-items:center;justify-content:center;gap:10px;width:100%;margin:6px 0 4px!important;padding:11px 14px!important;background:linear-gradient(180deg,#fff,#eef0f3)!important;color:#1f1f1f!important;border:1px solid #dadce0!important;border-radius:24px!important;font-weight:700;font-size:15px;box-shadow:0 2px 8px #0006,inset 0 1px 0 #fff!important}
 .gbtn:active{transform:translateY(1px)}.orsep{display:flex;align-items:center;gap:8px;color:#aaa;font-size:11px;margin:8px 0}.orsep::before,.orsep::after{content:'';flex:1;height:1px;background:#ffffff22}
+.ftxt{position:fixed;z-index:400;transform:translate(-50%,0);font-weight:900;font-size:20px;pointer-events:none;text-shadow:0 2px 4px #000,0 0 10px currentColor;white-space:nowrap;animation:ftup 1.7s ease-out forwards}
+.ftxt.gain{color:#ffd84d}.ftxt.loss{color:#ff5252}.ftxt.xp{color:#7fd8ff}
+@keyframes ftup{0%{opacity:0;transform:translate(-50%,10px) scale(.7)}15%{opacity:1;transform:translate(-50%,0) scale(1.15)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-38px) scale(1)}}
+.ftxt.rm{animation:ftrm 2.2s linear forwards}@keyframes ftrm{0%,85%{opacity:1}100%{opacity:0}}
+.flycoin{position:fixed;z-index:401;width:22px;height:22px;pointer-events:none;filter:drop-shadow(0 0 6px #ffd84d)}.flycoin .i{width:22px;height:22px}
+#xu.pgain{animation:pg 1s ease-out}#xu.ploss{animation:pl 1s ease-out}@keyframes pg{30%{transform:scale(1.25);box-shadow:0 0 18px #ffd84d}}@keyframes pl{30%{transform:scale(1.15);box-shadow:0 0 14px #ff5252}}
+.xpb.pxp i{box-shadow:0 0 12px #7fd8ff;filter:brightness(1.5)}.xpb i{transition:width .9s ease-out}
+body.rewardfx #top{position:relative;z-index:25}
+.rewbox{display:flex;gap:10px;justify-content:center;margin:10px 0}.rewbox .rw{flex:1;text-align:center;padding:10px;border-radius:14px;background:#0006;font-size:20px;border:1px solid #ffffff22}
+.rewbox .gain{color:#ffd84d;border-color:#ffd84d66;box-shadow:0 0 14px #ffd84d33}.rewbox .loss{color:#ff6b6b;border-color:#ff525266}.rewbox .xp{color:#7fd8ff;border-color:#7fd8ff55}.rewbox .i{width:20px;height:20px;vertical-align:-3px}
+@media (prefers-reduced-motion:reduce){#xu.pgain,#xu.ploss{animation:none;box-shadow:0 0 14px #ffd84d}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>

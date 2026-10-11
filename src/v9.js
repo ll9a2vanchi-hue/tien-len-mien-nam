@@ -128,7 +128,7 @@ let _lastDealKey=null;const _os10=onlineState;onlineState=function(st,fh){_os10(
 // ---- Ăn mừng huy hiệu toàn màn hình
 const BQ=[];let _bShow=false;
 const _bt12=badgeToasts;badgeToasts=function(list){if(!list||!list.length)return;BQ.push(...list);flushBadges();};
-function badgeIdle(){return document.body.classList.contains('athome')||!G||G.over||(G.turn===0&&!G.cur&&!DEALING&&false);}
+function badgeIdle(){if(typeof _endHold!=='undefined'&&_endHold)return false;if(document.body.classList.contains('rewardfx'))return false;return document.body.classList.contains('athome')||!G||G.over||(G.turn===0&&!G.cur&&!DEALING&&false);}
 function flushBadges(){if(_bShow||!BQ.length)return;if(!badgeIdle()){return;}const b=BQ.shift();_bShow=true;
  const T=b.secret?{name:'Bí mật',col:'#b388ff'}:BADGE_TIER[b.tier||1];const o=document.createElement('div');o.id='badgeFX';o.className=RM?'rm':'';o.style.setProperty('--tc',T.col);
  const conf=RM?'':Array.from({length:40},(_,i)=>`<i style="left:${(i*37)%100}%;background:${['#ffd84d','#ff6b6b','#4dd0e1','#b388ff','#81c784',T.col][i%6]};animation-delay:${(i%10)*.12}s;animation-duration:${1.8+(i%5)*.3}s"></i>`).join('');
@@ -223,3 +223,30 @@ const _oo17=openOnline;openOnline=function(){if(!PR.name&&typeof USER!=='undefin
 // ẩn bàn chờ khi có bất kỳ modal nào
 const _md18=modal;modal=function(){document.body.classList.add('mopen2');return _md18.apply(this,arguments);};
 const _cm18=closeModal;closeModal=function(){document.body.classList.remove('mopen2');return _cm18.apply(this,arguments);};
+// ---- Hiệu ứng nhận thưởng xu / XP (luôn hiển thị, kể cả giảm chuyển động)
+let _px=null,_pxp=null,_endHold=null;
+function floatText(x,y,txt,cls){const d=document.createElement('div');d.className='ftxt '+(cls||'')+(RM?' rm':'');d.textContent=txt;d.style.left=x+'px';d.style.top=y+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),RM?2200:1700);}
+function rectOf(sel){const e=typeof sel==='string'?document.querySelector(sel):sel;if(!e)return null;const r=e.getBoundingClientRect();return r.width?r:null;}
+function xuAnchor(){return rectOf('#xu')||{left:innerWidth/2-30,top:8,width:60,height:24};}
+function xpAnchor(){return rectOf('#meInfo .xpb')||rectOf('#meInfo')||rectOf('#home .pn')||{left:innerWidth/2-40,top:innerHeight-260,width:80,height:10};}
+function pulse(sel,cls){const e=document.querySelector(sel);if(!e||!e.classList)return;e.classList.remove(cls);void e.offsetWidth;e.classList.add(cls);setTimeout(()=>e.classList.remove(cls),1200);}
+function showXuDelta(d){if(!d)return;const r=xuAnchor();floatText(r.left+r.width/2,r.top+r.height+4,(d>0?'+':'−')+fmt(Math.abs(d))+' xu',d>0?'gain':'loss');pulse('#xu',d>0?'pgain':'ploss');}
+function showXpDelta(d){if(!d||d<=0)return;const r=xpAnchor();floatText(r.left+r.width/2,r.top-6,'+'+fmt(d)+' XP','xp');pulse('#meInfo .xpb','pxp');}
+function coinFly(from,n){if(RM||!from)return;const to=xuAnchor(),k=Math.min(10,Math.max(4,Math.round(Math.log10(Math.abs(n)+1)*3)));
+ for(let i=0;i<k;i++){const c=document.createElement('div');c.className='flycoin';c.innerHTML=I('coin');const x0=from.left+from.width/2+(Math.random()*60-30),y0=from.top+from.height/2;c.style.left=x0+'px';c.style.top=y0+'px';document.body.appendChild(c);
+  const dx=to.left+to.width/2-x0,dy=to.top+to.height/2-y0;c.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(calc(-50% + ${dx*0.5}px),calc(-50% + ${dy*0.5-60}px)) scale(1.2)`,opacity:1,offset:.5},{transform:`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) scale(.6)`,opacity:.9}],{duration:650,delay:i*70,easing:'ease-in',fill:'forwards'});
+  setTimeout(()=>{c.remove();if(i%2===0)sfx('coin');},650+i*70);}}
+// tự phát hiện thay đổi xu/XP mỗi lần lưu (nhiệm vụ, huy hiệu, quay, điểm danh, ném đồ…)
+const _sp19=saveP;saveP=function(){_sp19();try{if(_px==null){_px=PR.xu;_pxp=PR.xp;return;}if(_endHold){return;}
+ const dx=PR.xu-_px,dp=PR.xp-_pxp;_px=PR.xu;_pxp=PR.xp;if(dx)showXuDelta(dx);if(dp>0)setTimeout(()=>showXpDelta(dp),dx?250:0);}catch(e){}};
+// cuối ván: giữ lại để hiện trong bảng kết quả
+const _he19=hookEnd;hookEnd=function(place,instant,n){const x0=_px==null?PR.xu:_px,p0=_pxp==null?PR.xp:_pxp;_endHold={x0,p0};_he19(place,instant,n);_endHold={x0,p0,dx:PR.xu-x0,dp:PR.xp-p0};
+ setTimeout(()=>{if(_endHold&&!_endHold.shown)finishRewards(null);},9000);};
+function finishRewards(fromRect){const h=_endHold;if(!h||h.done)return;h.done=true;_endHold=null;_px=PR.xu;_pxp=PR.xp;
+ document.body.classList.add('rewardfx');coinFly(fromRect,h.dx);setTimeout(()=>{showXuDelta(h.dx);updHud();},RM?0:700);setTimeout(()=>{renderMe();showXpDelta(h.dp);},RM?300:1000);setTimeout(()=>document.body.classList.remove('rewardfx'),2600);}
+const _sr19=showResult;showResult=function(rank){_sr19(rank);const h=_endHold;const m=$('modalIn');if(!h||h.shown||!m)return;h.shown=true;
+ const box=document.createElement('div');box.className='rewbox';box.innerHTML=`<div class="rw ${h.dx>=0?'gain':'loss'}">${I('coin')} <b id="rwXu">${h.dx>=0?'+':'−'}0</b> xu</div><div class="rw xp">⭐ <b id="rwXp">+0</b> XP</div>`;
+ const btn=m.querySelector('button');if(btn)btn.parentNode.insertBefore(box,btn);else m.appendChild(box);
+ const D=RM?0:1100,t0=performance.now();let lastTick=0;const fx=$('rwXu'),fp=$('rwXp');
+ const step=t=>{const k=D?Math.min(1,(t-t0)/D):1,q=1-Math.pow(1-k,3);fx.textContent=(h.dx>=0?'+':'−')+fmt(Math.round(Math.abs(h.dx)*q));fp.textContent='+'+fmt(Math.round(h.dp*q));if(t-lastTick>90&&k<1){lastTick=t;sfx('tick');}
+  if(k<1)requestAnimationFrame(step);else{sfx(h.dx>=0?'coin':'bad');setTimeout(()=>finishRewards(rectOf(box)),RM?200:350);}};requestAnimationFrame(step);};
