@@ -150,7 +150,7 @@ function tableXp(n,place,instant){n=XP_PLACE_N[n]?n:4;return Math.round(((XP_PLA
 function tableXu(bet,n,place,instant){n=PLACE_XU[n]?n:4;return Math.round(bet*(instant?(place===0?n-1:-1):(PLACE_XU[n][place]==null?-1:PLACE_XU[n][place])));}
 // ctx: {bonus:% thưởng vì về trên máy khó, beatHard, beatMaster, usedTwo, last3s, comeback, online}
 function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.games++;questEvent(P,'game');if(ctx.online)questEvent(P,'online');
- let delta=tableXu(P.bet,n,place,instant);const bonus=Math.max(0,ctx.bonus||0);let bxu=0;if(delta>0&&bonus){bxu=Math.round(delta*bonus);delta+=bxu;}
+ let delta=tableXu(P.bet,n,place,instant);const bonus=Math.max(0,ctx.bonus||0);let bxu=0;if(delta>0&&bonus&&!ctx.noXuBonus){bxu=Math.round(delta*bonus);delta+=bxu;}
  if(place===0){s.wins++;s.streak++;s.bestStreak=Math.max(s.bestStreak,s.streak);questEvent(P,'win');s['win'+n]=(s['win'+n]||0)+1;questEvent(P,'win'+n);
   if(P.bet>=500)questEvent(P,'winbet500');if(P.bet>=5000){questEvent(P,'winbet5k');s.win5k=(s.win5k||0)+1;}
   if(ctx.usedTwo===false&&!instant)s.noTwoWin=(s.noTwoWin||0)+1;if(ctx.last3s)s.last3s=(s.last3s||0)+1;if(ctx.comeback)s.comeback=(s.comeback||0)+1;}else s.streak=0;

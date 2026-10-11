@@ -26,13 +26,13 @@ const _hp9=hookPlay;hookPlay=function(info,prev){if(G&&G.online&&typeof ONL!=='u
 hookEnd=function(place,instant,n){let ctx={};
  if(G&&G.online){const gx=(ONL._gx&&ONL.st&&ONL._gx.id===(ONL.st.dealId||'x'))?ONL._gx:{};ctx={online:true,usedTwo:!!gx.usedTwo,last3s:!!gx.last3s&&place===0};}
  else if(G){const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];const below=all.slice(all.indexOf(0)+1).filter(p=>p);
-  ctx={bonus:masterTbl()?0:aiBeatBonus(all,0,BOTAI),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
+  ctx={bonus:aiBeatBonus(all,0,BOTAI),noXuBonus:masterTbl(),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
  const r=onGameEnd(PR,place,instant,n||4,ctx);if(G)G.lastRes=r;try{LEDG.res=r;}catch(e){}
  toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu${r.bxu?` (thưởng máy khó +${fmt(r.bxu)})`:''}`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);};
 const _sr=showResult;showResult=function(rank){_sr(rank);const m=$('modalIn');if(!m||!G)return;
  const rows=m.querySelectorAll('.row');rank.forEach((p,i)=>{if(p&&BOTAI[p]!=null&&rows[i])rows[i].insertAdjacentHTML('beforeend',`<span class="aitag inl" style="--ac:${AI_COL[BOTAI[p]]}">${AI_NAMES[BOTAI[p]]}</span>`);});
- const r=G.lastRes;if(r&&r.bonus>0&&rows.length)rows[rows.length-1].insertAdjacentHTML('afterend',`<div class="row" style="color:#ffd84d"><b style="flex:1">🏅 Thưởng về trên máy khó +${Math.round(r.bonus*100)}%</b><span>+${fmt(r.bxu)} xu · +${r.bxp} XP</span></div>`);};
+ const r=G.lastRes;if(r&&r.bonus>0&&rows.length)rows[rows.length-1].insertAdjacentHTML('afterend',`<div class="row" style="color:#ffd84d"><b style="flex:1">🏅 Thưởng về trên máy khó +${Math.round(r.bonus*100)}%${r.bxu?'':' (chỉ XP · bàn 10k)'}</b><span>${r.bxu?'+'+fmt(r.bxu)+' xu · ':''}+${r.bxp} XP</span></div>`);};
 // ---- Chọn bàn + mức cược
 const BETS2=[100,200,500,1000,2000,5000,10000];const MASTER_BET=10000;function masterTbl(){try{return !(typeof ONL!=='undefined'&&ONL.active)&&(PR.bet||0)>=MASTER_BET;}catch(e){return false;}}
 const _apl41=aiPickLevel;aiPickLevel=function(l,r){return masterTbl()?3:_apl41(l,r);};
@@ -42,7 +42,7 @@ openTables=function(){if(!BETS2.includes(PR.bet)||PR.bet>PR.xu)PR.bet=Math.min(s
  const opt=n=>{const x=TABLE_XP[n],pl=PLACE_XU[n].map(m=>{const v=Math.round(PR.bet*m);return (v>0?'+':v<0?'−':'')+kxu(Math.abs(v));}).join(' / ');
   return `<button class="alt ${pickN===n?'on':''}" onclick="pickN=${n};openTables()"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu: ${pl}</small></span><span class="mul">XP ×${x}</span></button>`;};
  modal(`<h3>${I('bot')} Chơi với máy</h3><p class="small">1. Chọn số người</p><div class="tsel">${opt(2)}${opt(3)}${opt(4)}</div>
- <p class="small" style="margin-top:12px">2. Chọn mức cược · Bạn có ${I('coin')} ${fmt(PR.xu)}</p><div class="betrow">${BETS2.map(b=>`<button ${b>PR.xu?'disabled':''} onclick="setTblBet(${b})" class="${b>=MASTER_BET?'mbet ':''}${b===PR.bet?'':'alt'}">${b>=MASTER_BET?'10k':fmt(b)}${b>=MASTER_BET?'<small>Cao thủ</small>':b===sug?'<small>gợi ý</small>':''}</button>`).join('')}</div>${PR.bet>=MASTER_BET?'<p class="small mnote">🥋 Bàn 10.000: toàn bộ máy là <b>Cao thủ</b>. Không có thưởng thêm khi thắng máy khó (vẫn nhận xu/XP theo thứ hạng).</p>':'<p class="small mnote">Mức 10k: bàn toàn Cao thủ.</p>'}
+ <p class="small" style="margin-top:12px">2. Chọn mức cược · Bạn có ${I('coin')} ${fmt(PR.xu)}</p><div class="betrow">${BETS2.map(b=>`<button ${b>PR.xu?'disabled':''} onclick="setTblBet(${b})" class="${b>=MASTER_BET?'mbet ':''}${b===PR.bet?'':'alt'}">${b>=MASTER_BET?'10k':fmt(b)}${b>=MASTER_BET?'<small>Cao thủ</small>':b===sug?'<small>gợi ý</small>':''}</button>`).join('')}</div>${PR.bet>=MASTER_BET?'<p class="small mnote">🥋 Bàn 10.000: toàn bộ máy là <b>Cao thủ</b>. Thắng máy Cao thủ vẫn được <b>thưởng thêm XP</b>, nhưng không thưởng thêm xu (xu theo thứ hạng như thường).</p>':'<p class="small mnote">Mức 10k: bàn toàn Cao thủ.</p>'}
  <p class="small">Độ khó máy: <b>${PR.bet>=MASTER_BET?"toàn Cao thủ":"ngẫu nhiên theo cấp của bạn"}</b></p>
  <button class="bigbtn" onclick="startTable(pickN)" ${PR.xu<PR.bet?'disabled':''}>${I('bot')} VÀO BÀN ${pickN} NGƯỜI · ${fmt(PR.bet)} xu</button>`);};
 // ---- Âm thanh nâng cấp + nhạc nền
@@ -718,7 +718,7 @@ function dmPopup(peer){const c=DMS[peer];if(!c)return;const last=c.list[c.list.l
 function dmQuick(peer,inp){if(sendDM(peer,inp.value)){inp.value='';toast('Đã gửi');const x=$('dmPop');if(x)x.remove();}}
 function dmUnread(){return Object.keys(DMU).reduce((a,k)=>a+(BLOCK.has(k)?0:DMU[k]||0),0);}
 function dmBadge(){let b=$('dmBtn');const logged=typeof USER!=='undefined'&&USER;const n=dmUnread();const home=document.body.classList.contains('athome');
- if(!logged||(!home&&!n)){if(b)b.remove();return;}if(!b){b=document.createElement('button');b.id='dmBtn';b.className='alt';b.onclick=()=>openDM();document.body.appendChild(b);}b.innerHTML=`💬${n?`<i>${n}</i>`:''}`;b.title='Tin nhắn';}
+ if(!logged||!home||(typeof CS!=='undefined'&&CS.open)){if(b)b.remove();return;}if(!b){b=document.createElement('button');b.id='dmBtn';b.className='alt';b.onclick=()=>openDM();document.body.appendChild(b);}b.innerHTML=`💬${n?`<i>${n}</i>`:''}`;b.title='Tin nhắn';}
 setInterval(dmBadge,1500);
 function openDM(peer){const x=$('dmPop');if(x)x.remove();if(!peer){const ks=Object.keys(DMS).filter(k=>!BLOCK.has(k)).sort((a,b)=>(DMS[b].at||0)-(DMS[a].at||0));const on=new Set(lobbyPres().map(p=>p.uid));
   modal(`<h3>💬 Tin nhắn</h3>${ks.map(k=>`<button class="alt plrow" onclick="openDM('${esc(k)}')"><span class="pli"><b>${esc(DMS[k].name)} ${on.has(k)?'<i class="frt">online</i>':''}</b><small>${esc((DMS[k].list.slice(-1)[0]||{}).t||'')}</small></span>${DMU[k]?`<span class="cntb">${DMU[k]}</span>`:''}</button>`).join('')||'<p class="small">Chưa có tin nhắn. Mở Sảnh online → Người chơi online → Nhắn tin.</p>'}
@@ -735,9 +735,10 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.31';
+const APP_V='1.32';
 const CHANGELOG=[
- ['1.31','11/10',['Mức cược 10.000 khi chơi với máy: cả bàn là Cao thủ, không thưởng thêm thắng máy khó']],
+ ['1.32','11/10',['Xin vào chơi: vào bàn của người đang chơi với máy, bàn chuyển thành phòng online','Ô “Người online” ở màn hình chính: bạn bè, người đang online, nhắn tin, mời, chặn','Bàn 10k: thắng Cao thủ được thưởng thêm XP (không thêm xu)','Khung chat mới dạng ngăn kéo: tab Bàn / Tin nhắn riêng, bong bóng có avatar + giờ, câu nhanh, emoji, không che bài']],
+ ['1.31','11/10',['Mức cược 10.000 khi chơi với máy: cả bàn là Cao thủ, thưởng thêm XP khi thắng (không thưởng thêm xu)']],
  ['1.30','11/10',['6 avatar Tối thượng 500.000 xu: Rồng Vàng Thăng Thiên, Phượng Hoàng Lửa Bất Tử, Thần Tài Kim Cương, Hổ Bạch Kim, Long Vương Đại Dương, Đổ Thánh Vô Song — hào quang, tia sáng xoay, lấp lánh, khung chuyển màu','Giá avatar mới: Hiếm 20k–50k, Sử thi 100k, Huyền thoại 500k (cần cấp 20/35); Tối thượng cần cấp 45','Đồ đã mua giữ nguyên']],
  ['1.29','11/10',['Tăng giá avatar cao cấp: Hiếm 1.500, Sử thi 3.000, Huyền thoại 6.000, Chí tôn 12.000 xu','Avatar Huyền thoại cần cấp 15, Chí tôn cần cấp 50 (đồ đã mua giữ nguyên)']],
  ['1.28','11/10',['Kết nối lại online tự động: mất mạng vẫn về đúng ghế, chủ phòng có 20 giây để quay lại','Nút “Tự đánh” (chỉ online): máy Cao thủ đánh thay','Danh sách người chơi online ở sảnh: kết bạn, mời, vào cùng bàn','Tin nhắn riêng giữa người chơi (kể cả khi đang chơi với máy), chặn/bỏ chặn','30+ avatar vẽ tay cao cấp: Thần Tài, Rồng Vàng, Phượng Hoàng, Đổ Thánh…','Hiện số phiên bản và mục Có gì mới']],
@@ -803,3 +804,76 @@ openBadges=function(c){if(c)bCat=c;const cat=BCAT.find(x=>x[0]===bCat)||BCAT[0];
   if(b.secret&&!u)return `<div class="badge lock secret"><div class="ic">❓</div><b>???</b><br><small>Huy hiệu bí mật</small></div>`;
   const pr=!u&&b.k&&b.goal?Math.min(1,(PR.stats[b.k]||0)/b.goal):null;
   return `<div class="badge ${u?'':'lock'}" style="--tc:${T.col}"><div class="ic">${u?b.icon:I('lock')}</div><span class="tier">${b.secret?'Bí mật':b.legend?'Huyền thoại':T.name}</span><b>${b.name}</b><br>${b.desc}<br>${I('coin')}${fmt(b.xu)}${pr!=null?`<div class="bprog"><i style="width:${Math.round(pr*100)}%"></i></div><small>${fmt(Math.min(PR.stats[b.k]||0,b.goal))}/${fmt(b.goal)}</small>`:''}</div>`;}).join('')+'</div>');};
+// ======== v42: Xin vào chơi (người đang chơi với máy) ========
+const JR={out:{},sent:[],pend:null,acc:null};
+function jrSend(uid){if(!LOBBY||!USER)return toast('Cần đăng nhập');const now=Date.now();JR.sent=JR.sent.filter(t=>now-t<60000);
+ if(JR.out[uid]&&now-JR.out[uid]<30000)return toast('Đã gửi rồi, chờ trả lời nhé');if(JR.sent.length>=4)return toast('Gửi quá nhiều yêu cầu, thử lại sau');JR.out[uid]=now;JR.sent.push(now);
+ const me=lobbyMe();LOBBY.ch.send({type:'broadcast',event:'jreq',payload:{to:uid,from:USER.id,name:me.name||myName(),lv:me.lv||levelInfo(PR.xp).level,av:me.av,bg:me.bg,frame:me.frame,xu:PR.xu,title:me.title,tier:me.tier}});
+ closeModal();toast('Đã gửi yêu cầu vào chơi…');setTimeout(()=>{if(JR.out[uid]===now){delete JR.out[uid];toast('Không có phản hồi');}},40000);}
+function jrReply(to,ok,extra){try{LOBBY.ch.send({type:'broadcast',event:'jres',payload:Object.assign({to,from:USER.id,name:myName(),ok},extra||{})});}catch(e){}}
+function onJreq(m){const p=m&&m.payload;if(!p||p.to!==USER.id||!p.from)return;if(BLOCK.has(p.from))return jrReply(p.from,false,{why:'blocked'});
+ const offline=!ONL.active;if(!offline||JR.pend||JR.acc)return jrReply(p.from,false,{why:'busy'});
+ JR.pend=p;sfx('turn');let c=$('jrCard');if(c)c.remove();c=document.createElement('div');c.id='jrCard';
+ c.innerHTML=`<div class="jrh">🎴 Xin vào chơi</div><div class="jrp"><span class="av fr-${esc(p.frame||'fr_gold')}" style="--avc:${esc(p.bg||'#456')}">${esc(p.av||'🙂')}</span><div><b>${esc(p.name)}</b><br><small><span class="lvb">${+p.lv||1}</span> <span class="tt t${+p.tier||1}">${esc(p.title||'')}</span></small><br><small>🪙 ${fmt(+p.xu||0)}</small></div></div>
+ <p class="small">muốn vào bàn của bạn. Bàn sẽ chuyển thành phòng online (bạn làm chủ) sau ván này.</p><div class="row"><button onclick="jrAnswer(true)">Đồng ý</button><button class="alt" onclick="jrAnswer(false)">Từ chối <span id="jrT">30</span>s</button></div>`;
+ document.body.appendChild(c);try{svaScan(c);}catch(e){}let t=30;JR.tm=setInterval(()=>{t--;const e=$('jrT');if(e)e.textContent=t;if(t<=0)jrAnswer(false);},1000);}
+function jrAnswer(ok){clearInterval(JR.tm);const p=JR.pend;JR.pend=null;const c=$('jrCard');if(c)c.remove();if(!p)return;
+ if(!ok){jrReply(p.from,false);return;}const playing=G&&!G.over&&!document.body.classList.contains('athome');JR.acc=p;jrReply(p.from,true,{wait:playing});
+ toast(playing?`Sẽ mở phòng cho ${p.name} sau ván này`:'Đang mở phòng…');if(!playing)jrConvert();}
+async function jrConvert(){const p=JR.acc;if(!p)return;JR.acc='busy';try{const n=TBL||4,bet=Math.min(PR.bet||100,5000);
+ const bots=[1,2,3].filter(q=>(SEATMAP[n]||[0,1,2,3]).includes(q)).map(q=>({name:NAMES[q],av:AVATARS[q]&&AVATARS[q][0]||'🤖',lv:BOTLV[q]||5}));
+ PR.bet=BETS2.includes(bet)?bet:5000;closeModal();await enterRoom(roomCode(),true,true);
+ if(ONL.host){ONL.host.opt.botInfo=bots.slice(0,n-2);ONL.host.opt.bet=PR.bet;try{ONL.host.setSize(n);for(let i=n-1,k=0;k<n-2&&i>0;i--,k++)ONL.host.setBot(i,true);}catch(e){}ONL.host.push();}
+ jrReply(p.from,true,{code:ONL.code});toast(`Đã mở phòng ${ONL.code} · chờ ${p.name} vào`);}catch(e){toast('Không mở được phòng');}JR.acc=null;}
+function onJres(m){const p=m&&m.payload;if(!p||p.to!==USER.id)return;delete JR.out[p.from];
+ if(!p.ok)return toast(p.why==='busy'?`${p.name} đang bận`:`${p.name} đã từ chối`);
+ if(p.code){toast(`${p.name} đồng ý! Đang vào phòng ${p.code}`);setTimeout(()=>joinRoom(p.code),1200);}else toast(`${p.name} đồng ý — vào bàn sau ván này`);}
+setInterval(()=>{try{if(LOBBY&&LOBBY.ch&&!LOBBY.ch._jr42){LOBBY.ch._jr42=1;LOBBY.ch.on('broadcast',{event:'jreq'},onJreq);LOBBY.ch.on('broadcast',{event:'jres'},onJres);}
+ if(JR.acc&&JR.acc!=='busy'&&(!G||G.over||document.body.classList.contains('athome'))&&!(typeof FIN!=='undefined'&&FIN.active))jrConvert();}catch(e){}},700);
+const _pt42=plTap;plTap=function(uid){_pt42(uid);try{const p=lobbyPres().find(x=>x.uid===uid);const m=$('modalIn');if(!p||!m||!p.bot||p.room||ONL.active)return;const b=document.createElement('button');b.textContent='🎴 Xin vào chơi';b.onclick=()=>jrSend(uid);const h=m.querySelector('p');h&&h.after(b);}catch(e){}};
+// ======== Người online (ô ở màn hình chính) ========
+let pplTab='on';
+async function openPeople(t){if(t)pplTab=t;if(!CLOUD_ON||!USER){try{await loadSB();const {data}=await SB.auth.getSession();USER=data.session&&data.session.user||null;}catch(e){}}if(needLogin())return;
+ try{await ensurePlayer();joinLobby();}catch(e){}
+ modal(`<h3>${I('friends')} Người online</h3><div class="lbtabs bcats"><button class="${pplTab==='on'?'on':'alt'}" onclick="openPeople('on')">Đang online <span class="cntb" id="plCnt">${lobbyPres().length}</span></button><button class="${pplTab==='fr'?'on':'alt'}" onclick="openPeople('fr')">Bạn bè</button><button class="alt" onclick="openChatSheet('dm')">💬 Tin nhắn${dmUnread()?` <span class="cntb">${dmUnread()}</span>`:''}</button></div>
+ ${pplTab==='on'?'<div id="plList" class="pllist">Đang tải…</div>':`<p class="small">Mã của bạn: <b style="letter-spacing:2px">${typeof MYCODE!=='undefined'&&MYCODE||'…'}</b></p><div class="dmr"><input class="inp" id="frCode" maxlength="6" placeholder="Nhập mã bạn bè"><button onclick="addFriend()">Kết bạn</button></div><div id="frList" class="small">Đang tải…</div>`}`);
+ setTimeout(()=>{try{pplTab==='on'?renderPlayers():renderFriends();}catch(e){}},300);}
+setInterval(()=>{try{if($('plList')&&!ONL.active&&document.querySelector('#modalIn h3')&&/Người online/.test(document.querySelector('#modalIn h3').textContent))renderPlayers();const c=$('pplHome');if(c){const n=lobbyPres().length;c.textContent=n;c.style.display=n?'':'none';}}catch(e){}},3000);
+const _rh42=renderHome;renderHome=function(){_rh42.apply(this,arguments);try{const t=document.querySelector('#home .tiles');if(t&&!$('pplTile')){t.insertAdjacentHTML('afterbegin',`<button class="alt tile" id="pplTile" onclick="openPeople()">${I('friends')}<span>Người online</span><span class="cntb pplc" id="pplHome" style="display:none">0</span></button>`);}}catch(e){}};
+// ======== v42: khung chat mới (bottom sheet: Bàn / Tin nhắn riêng) ========
+const CS={tab:'tbl',peer:null,unread:0,open:false};const QCHIPS=['Nhanh lên!','Hay quá!','GG','Ván nữa không?','Hên thôi 😅','Chờ chút nhé'];const QEMO=['😂','😎','😡','😭','👍','🔥','🐷','🙏','❤️','😱'];
+function tFmt(at){const d=new Date(at||Date.now());return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');}
+function avOfUid(uid){try{if(uid===USER.id){const a=AVATARS[0]||['🙂','#456'];return{av:a[0],bg:a[1]};}
+ const st=ONL.st;if(st){const s=st.seats.find(x=>x&&x.uid===uid);if(s)return{av:s.av||'🙂',bg:s.bg||'#456'};}const p=lobbyPres().find(x=>x.uid===uid);if(p)return{av:p.av||'🙂',bg:p.bg||'#456'};}catch(e){}return{av:'🙂',bg:'#456'};}
+function bub(m,mine,name){const a=avOfUid(mine?USER.id:m.uid);return `<div class="cb ${mine?'me':''}">${mine?'':`<span class="av cav" style="--avc:${esc(a.bg)}">${esc(a.av)}</span>`}<div class="cbx"><small class="cbn">${mine?'':esc(name||m.name||'?')+' · '}${tFmt(m.at)}</small><div class="cbt">${esc(m.t)}</div></div></div>`;}
+function csBody(){if(CS.tab==='tbl'){if(!ONL.active)return '<p class="small cemp">Chat bàn chỉ có khi chơi online.</p>';return (ONL.chat||[]).map(m=>bub(m,m.uid===USER.id,m.name)).join('')||'<p class="small cemp">Chưa có tin nhắn</p>';}
+ if(!CS.peer){const ks=Object.keys(DMS).filter(k=>!BLOCK.has(k)).sort((a,b)=>(DMS[b].at||0)-(DMS[a].at||0));return ks.map(k=>`<button class="alt plrow" onclick="CS.peer='${esc(k)}';DMU['${esc(k)}']=0;saveDM();csRender()"><span class="pli"><b>${esc(DMS[k].name)}</b><small>${esc((DMS[k].list.slice(-1)[0]||{}).t||'')}</small></span>${DMU[k]?`<span class="cntb">${DMU[k]}</span>`:''}</button>`).join('')||'<p class="small cemp">Chưa có tin nhắn riêng. Mở Người online → chọn người → Nhắn tin.</p>';}
+ const c=DMS[CS.peer]||{list:[],name:'?'};return c.list.map(m=>bub(Object.assign({uid:CS.peer},m),!!m.me,c.name)).join('')||'<p class="small cemp">Bắt đầu trò chuyện</p>';}
+function csRender(){const s=$('chatSheet');if(!s)return;if(CS.tab==='dm'&&CS.peer){const x=$('dmPop');if(x)x.remove();if(DMU[CS.peer]){DMU[CS.peer]=0;saveDM();}}const tu=CS.unread,du=dmUnread();const lim=CS.tab==='tbl'?120:200;const canSend=CS.tab==='tbl'?ONL.active:!!CS.peer;
+ s.innerHTML=`<div class="csh" ontouchstart="csTs(event)" ontouchmove="csTm(event)" ontouchend="csTe()"><i class="grab"></i><div class="cstabs"><button class="${CS.tab==='tbl'?'on':''}" onclick="CS.tab='tbl';CS.unread=0;csRender()">Bàn${tu?`<b>${tu}</b>`:''}</button><button class="${CS.tab==='dm'?'on':''}" onclick="CS.tab='dm';csRender()">Tin nhắn riêng${du?`<b>${du}</b>`:''}</button></div>
+ ${CS.tab==='dm'&&CS.peer?`<div class="cspeer"><a onclick="CS.peer=null;csRender()">‹</a> <b>${esc((DMS[CS.peer]||{}).name||'')}</b><a class="csblk" onclick="if(confirm('Chặn người này?')){BLOCK.add(CS.peer);CS.peer=null;saveDM();csRender()}">Chặn</a></div>`:''}<button class="csx" onclick="closeChatSheet()">✕</button></div>
+ <div class="csl" id="csLog">${csBody()}</div>
+ ${canSend?`<div class="cschips">${QCHIPS.map(q=>`<button onclick="csSend('${q}')">${q}</button>`).join('')}</div><div class="csemo">${QEMO.map(e=>`<button onclick="csIns('${e}')">${e}</button>`).join('')}</div>
+ <div class="csin"><input id="csIn" class="inp" maxlength="${lim}" placeholder="Nhắn tin…" oninput="$('csCnt').textContent=this.value.length+'/${lim}'" onkeydown="if(event.key==='Enter'){event.preventDefault();csSend()}"><small id="csCnt">0/${lim}</small><button onclick="csSend()">Gửi</button></div>`:''}`;
+ const l=$('csLog');if(l)l.scrollTop=1e6;try{svaScan(s);}catch(e){}csPos();}
+function csIns(e){const i=$('csIn');if(!i)return;i.value=(i.value+e).slice(0,+i.maxLength);i.dispatchEvent(new Event('input'));i.focus();}
+function csSend(q){const i=$('csIn');const t=(q||(i&&i.value)||'').trim();if(!t)return;
+ if(CS.tab==='tbl'){if(!ONL.active)return;const m={uid:USER.id,name:ONL.me.name,t:cleanMsg(t).slice(0,120),at:Date.now()};ONL.tr.send('chat',m);addChat(m);}else if(CS.peer){if(!sendDM(CS.peer,t))return;}
+ if(i&&!q)i.value='';csRender();setTimeout(()=>{const j=$('csIn');if(j&&!q)j.focus();},30);}
+function csPos(){const s=$('chatSheet');if(!s)return;const vv=window.visualViewport;const kb=vv?Math.max(0,innerHeight-vv.height-vv.offsetTop):0;
+ let bottom=kb;if(kb<60&&!document.body.classList.contains('athome')){const c=$('ctrl');if(c){const r=c.getBoundingClientRect();if(r.height)bottom=Math.max(0,innerHeight-r.top+4);}}
+ s.style.bottom=bottom+'px';s.style.maxHeight=Math.max(220,Math.min(innerHeight*0.55,(vv?vv.height:innerHeight)-bottom+kb-70))+'px';}
+if(window.visualViewport){visualViewport.addEventListener('resize',csPos);visualViewport.addEventListener('scroll',csPos);}addEventListener('resize',csPos);
+function openChatSheet(tab,peer){closeModal();if(tab)CS.tab=tab;if(peer!==undefined)CS.peer=peer;if(CS.tab==='tbl')CS.unread=0;if(CS.peer){DMU[CS.peer]=0;saveDM();}
+ let s=$('chatSheet');if(!s){s=document.createElement('div');s.id='chatSheet';document.body.appendChild(s);const bk=document.createElement('div');bk.id='csBack';bk.onclick=closeChatSheet;document.body.appendChild(bk);}
+ CS.open=true;document.body.classList.add('csopen');csRender();const p=$('dmPop');if(p)p.remove();}
+function closeChatSheet(){CS.open=false;document.body.classList.remove('csopen');const s=$('chatSheet');if(s)s.remove();const b=$('csBack');if(b)b.remove();}
+let _csY=null,_csD=0;function csTs(e){_csY=e.touches[0].clientY;_csD=0;}function csTm(e){if(_csY==null)return;_csD=e.touches[0].clientY-_csY;const s=$('chatSheet');if(s&&_csD>0)s.style.transform=`translateX(-50%) translateY(${_csD}px)`;}function csTe(){const s=$('chatSheet');if(_csD>70)closeChatSheet();else if(s)s.style.transform='';_csY=null;}
+// nối vào hệ thống cũ
+toggleChat=function(){CS.open?closeChatSheet():openChatSheet('tbl');};
+openDM=function(peer){openChatSheet('dm',peer||null);};
+const _ac42=addChat;addChat=function(m){_ac42(m);if(!(CS.open&&CS.tab==='tbl')&&m&&m.uid!==USER.id)CS.unread++;if(CS.open)csRender();chatBadge();};
+const _od42=onDM;onDM=function(m){_od42(m);if(CS.open&&CS.tab==='dm'){const p=m&&m.payload;if(p&&p.from===CS.peer){DMU[p.from]=0;saveDM();const x=$('dmPop');if(x)x.remove();}csRender();}chatBadge();};
+const _dp42=dmPopup;dmPopup=function(peer){if(CS.open&&CS.tab==='dm'&&CS.peer===peer)return;_dp42(peer);const d=$('dmPop');if(d){const t=d.querySelector('.dmt');if(t){t.style.cursor='pointer';t.onclick=()=>openChatSheet('dm',peer);}}};
+function chatBadge(){const n=(CS.unread||0)+dmUnread();['bChat','bEmoChat'].forEach(id=>{const b=$(id);if(b){b.dataset.n=n||'';b.classList.toggle('hasn',!!n);}});document.querySelectorAll('.emochat').forEach(b=>{b.dataset.n=n||'';b.classList.toggle('hasn',!!n);});}
+setInterval(chatBadge,2000);

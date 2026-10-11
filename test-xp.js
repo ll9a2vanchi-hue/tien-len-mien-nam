@@ -31,3 +31,8 @@ t('xu 4p unchanged',X.tableXu(100,4,0)===200&&X.tableXu(100,4,3)===-100);t('xu i
 {const q=X.newProfile();q.title='cao_thu';t('migrate old title id',X.currentTitle(q).id==='tan_binh'&&q.title==='cao_thu_an');q.title='do_te';X.migrateTitle(q);t('migrate badge title',q.title==='do_te_heo');}
 t('titles have tier',X.TITLES.every(x=>x.tier>=1));
 console.log(`pass ${pass} fail ${fail}`);
+;(()=>{const P=require('./progress.js');const mk=()=>{const p=P.newProfile?P.newProfile():null;return p;};
+ if(!P.onGameEnd||!P.newProfile){console.log('skip noXuBonus');return;}
+ const a=P.newProfile(),b=P.newProfile();a.bet=b.bet=10000;a.xu=b.xu=100000;
+ const ra=P.onGameEnd(a,0,false,4,{bonus:0.5}),rb=P.onGameEnd(b,0,false,4,{bonus:0.5,noXuBonus:true});
+ const ok=ra.bxu>0&&rb.bxu===0&&rb.bxp===ra.bxp&&rb.bxp>0&&rb.ledger.bonus===0;console.log(ok?'PASS noXuBonus':'FAIL noXuBonus',ra.bxu,rb.bxu,ra.bxp,rb.bxp);if(!ok)process.exitCode=1;})();

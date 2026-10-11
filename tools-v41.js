@@ -6,6 +6,6 @@ const ov=await p.evaluate(()=>[...document.querySelectorAll('#modalIn *')].some(
 await p.evaluate(()=>{closeModal();startTable(4);});await p.waitForTimeout(3500);
 const r=await p.evaluate(()=>({ai:BOTAI.slice(1),xu:[1,2,3].map(seatXu)}));
 for(let i=0;i<150;i++){const o=await p.evaluate(()=>{if(G.over)return 1;if(G.turn===0&&typeof autoMove==='function')autoMove();return 0;});if(o)break;await p.waitForTimeout(400);}
-await p.waitForTimeout(800);const bonus=await p.evaluate(()=>(G.lastRes||{}).bxu||0);
+await p.waitForTimeout(800);const bonus=await p.evaluate(()=>({bxu:(G.lastRes||{}).bxu||0,bxp:(G.lastRes||{}).bxp||0}));
 await p.evaluate(()=>{setTblBet(1000);closeModal();startTable(4);});await p.waitForTimeout(3000);const r2=await p.evaluate(()=>BOTAI.slice(1));
 console.log(JSON.stringify({dis,ov,r,bonus,r2}),errs);await b.close();})();
