@@ -485,6 +485,7 @@ svg.sva .usp{transform-box:fill-box;transform-origin:center;animation:utw 1.8s e
 .sitem.ultra::before{content:"";position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:conic-gradient(from var(--ua,0deg),#ff4081,#ffd740,#40c4ff,#ff4081);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:uborder 4s linear infinite;pointer-events:none}
 @property --ua{syntax:'<angle>';inherits:false;initial-value:0deg}@keyframes uborder{to{--ua:360deg}}.sitem.ultra .rar{font-weight:800;text-shadow:0 0 8px #ff4081}.sitem.ultra .av,.sitem.ultra .pv{transform:scale(1.25);margin:8px auto}
 @media (prefers-reduced-motion:reduce){svg.sva .urays,svg.sva .uaura,svg.sva .usp,svg.sva .ubob,svg.sva .ufrm,.sitem.ultra::before{animation:none!important}svg.sva .usp{opacity:.8}}
+.betrow button.mbet{grid-column:1/-1;border-color:#ff4081!important}.betrow button.mbet.alt small{color:#ff80ab}.betrow button.mbet:not(.alt) small{color:#880e4f;opacity:1}.mnote{margin:6px 0 0}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -525,7 +526,7 @@ svg.sva .usp{transform-box:fill-box;transform-origin:center;animation:utw 1.8s e
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='94883b9199';
+const APP_VER='13de7cba50';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -1954,7 +1955,7 @@ const _hp9=hookPlay;hookPlay=function(info,prev){if(G&&G.online&&typeof ONL!=='u
 hookEnd=function(place,instant,n){let ctx={};
  if(G&&G.online){const gx=(ONL._gx&&ONL.st&&ONL._gx.id===(ONL.st.dealId||'x'))?ONL._gx:{};ctx={online:true,usedTwo:!!gx.usedTwo,last3s:!!gx.last3s&&place===0};}
  else if(G){const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];const below=all.slice(all.indexOf(0)+1).filter(p=>p);
-  ctx={bonus:aiBeatBonus(all,0,BOTAI),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
+  ctx={bonus:masterTbl()?0:aiBeatBonus(all,0,BOTAI),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
  const r=onGameEnd(PR,place,instant,n||4,ctx);if(G)G.lastRes=r;try{LEDG.res=r;}catch(e){}
  toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu${r.bxu?` (thưởng máy khó +${fmt(r.bxu)})`:''}`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);};
@@ -1962,14 +1963,16 @@ const _sr=showResult;showResult=function(rank){_sr(rank);const m=$('modalIn');if
  const rows=m.querySelectorAll('.row');rank.forEach((p,i)=>{if(p&&BOTAI[p]!=null&&rows[i])rows[i].insertAdjacentHTML('beforeend',`<span class="aitag inl" style="--ac:${AI_COL[BOTAI[p]]}">${AI_NAMES[BOTAI[p]]}</span>`);});
  const r=G.lastRes;if(r&&r.bonus>0&&rows.length)rows[rows.length-1].insertAdjacentHTML('afterend',`<div class="row" style="color:#ffd84d"><b style="flex:1">🏅 Thưởng về trên máy khó +${Math.round(r.bonus*100)}%</b><span>+${fmt(r.bxu)} xu · +${r.bxp} XP</span></div>`);};
 // ---- Chọn bàn + mức cược
-const BETS2=[100,200,500,1000,2000,5000];let pickN=TBL||4;
-function suggestBet(){const ok=BETS2.filter(b=>b*8<=PR.xu);return ok.length?ok[ok.length-1]:BETS2[0];}
+const BETS2=[100,200,500,1000,2000,5000,10000];const MASTER_BET=10000;function masterTbl(){try{return !(typeof ONL!=='undefined'&&ONL.active)&&(PR.bet||0)>=MASTER_BET;}catch(e){return false;}}
+const _apl41=aiPickLevel;aiPickLevel=function(l,r){return masterTbl()?3:_apl41(l,r);};
+function setTblBet(b){const was=(PR.bet||0)>=MASTER_BET;PR.bet=b;if(was!==(b>=MASTER_BET)&&typeof newBotsNext==='function')newBotsNext();saveP();updHud();openTables();}let pickN=TBL||4;
+function suggestBet(){const ok=BETS2.filter(b=>b<MASTER_BET&&b*8<=PR.xu);return ok.length?ok[ok.length-1]:BETS2[0];}
 openTables=function(){if(!BETS2.includes(PR.bet)||PR.bet>PR.xu)PR.bet=Math.min(suggestBet(),PR.xu>=100?suggestBet():100);const sug=suggestBet();
  const opt=n=>{const x=TABLE_XP[n],pl=PLACE_XU[n].map(m=>{const v=Math.round(PR.bet*m);return (v>0?'+':v<0?'−':'')+kxu(Math.abs(v));}).join(' / ');
   return `<button class="alt ${pickN===n?'on':''}" onclick="pickN=${n};openTables()"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu: ${pl}</small></span><span class="mul">XP ×${x}</span></button>`;};
  modal(`<h3>${I('bot')} Chơi với máy</h3><p class="small">1. Chọn số người</p><div class="tsel">${opt(2)}${opt(3)}${opt(4)}</div>
- <p class="small" style="margin-top:12px">2. Chọn mức cược · Bạn có ${I('coin')} ${fmt(PR.xu)}</p><div class="betrow">${BETS2.map(b=>`<button class="${b===PR.bet?'':'alt'}" ${b>PR.xu?'disabled':''} onclick="PR.bet=${b};saveP();updHud();openTables()">${fmt(b)}${b===sug?'<small>gợi ý</small>':''}</button>`).join('')}</div>
- <p class="small">Độ khó máy: <b>ngẫu nhiên theo cấp của bạn</b></p>
+ <p class="small" style="margin-top:12px">2. Chọn mức cược · Bạn có ${I('coin')} ${fmt(PR.xu)}</p><div class="betrow">${BETS2.map(b=>`<button ${b>PR.xu?'disabled':''} onclick="setTblBet(${b})" class="${b>=MASTER_BET?'mbet ':''}${b===PR.bet?'':'alt'}">${b>=MASTER_BET?'10k':fmt(b)}${b>=MASTER_BET?'<small>Cao thủ</small>':b===sug?'<small>gợi ý</small>':''}</button>`).join('')}</div>${PR.bet>=MASTER_BET?'<p class="small mnote">🥋 Bàn 10.000: toàn bộ máy là <b>Cao thủ</b>. Không có thưởng thêm khi thắng máy khó (vẫn nhận xu/XP theo thứ hạng).</p>':'<p class="small mnote">Mức 10k: bàn toàn Cao thủ.</p>'}
+ <p class="small">Độ khó máy: <b>${PR.bet>=MASTER_BET?"toàn Cao thủ":"ngẫu nhiên theo cấp của bạn"}</b></p>
  <button class="bigbtn" onclick="startTable(pickN)" ${PR.xu<PR.bet?'disabled':''}>${I('bot')} VÀO BÀN ${pickN} NGƯỜI · ${fmt(PR.bet)} xu</button>`);};
 // ---- Âm thanh nâng cấp + nhạc nền
 let MUSIC=localStorage.getItem('tlmn_music')==='1',MVOL=+(localStorage.getItem('tlmn_mvol')||0.35);
@@ -2378,7 +2381,7 @@ function onHandMsg(m){if(!m||m.to!==USER.id)return;(async()=>{try{let body;if(m.
   const o=JSON.parse(body);if(!o||!Array.isArray(o.h))return;ONL.myHand={d:o.d,h:o.h.map(Number)};if(ONL.pendSt){const s=mergeHidden(ONL.pendSt);if(s){ONL.pendSt=null;onlineState(s);}}}catch(e){console.warn('hand',e);}})();}
 // ---- bầu chủ bàn theo thời điểm vào (presence), dùng cho bàn công khai
 function presList(){try{const s=ONL.ch.presenceState();return Object.values(s).map(a=>a&&a[0]).filter(Boolean).map(x=>({uid:x.uid,at:x.at}));}catch(e){return[];}}
-function becomeHost(bet){if(ONL.host)return;ONL.host=new OnlineHost(ONL.tr,ONL.me,{fillBots:true,dealMs:2300,bet:bet||((BETS2||[]).includes(PR.bet)?PR.bet:100)});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};installHostHands(ONL.host);ONL.room=ONL.host.room();ONL.host.push();renderRoom();}
+function becomeHost(bet){if(ONL.host)return;ONL.host=new OnlineHost(ONL.tr,ONL.me,{fillBots:true,dealMs:2300,bet:bet||((BETS2||[]).includes(PR.bet)&&PR.bet<MASTER_BET?PR.bet:100)});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};installHostHands(ONL.host);ONL.room=ONL.host.room();ONL.host.push();renderRoom();}
 // ---- giao thức phụ trên kênh phòng
 function hookTr25(){if(!ONL.active||!ONL.tr||ONL._h25===ONL.tr)return;ONL._h25=ONL.tr;const tr=ONL.tr;
  tr.on('hand',onHandMsg);
@@ -2661,8 +2664,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.30';
+const APP_V='1.31';
 const CHANGELOG=[
+ ['1.31','11/10',['Mức cược 10.000 khi chơi với máy: cả bàn là Cao thủ, không thưởng thêm thắng máy khó']],
  ['1.30','11/10',['6 avatar Tối thượng 500.000 xu: Rồng Vàng Thăng Thiên, Phượng Hoàng Lửa Bất Tử, Thần Tài Kim Cương, Hổ Bạch Kim, Long Vương Đại Dương, Đổ Thánh Vô Song — hào quang, tia sáng xoay, lấp lánh, khung chuyển màu','Giá avatar mới: Hiếm 20k–50k, Sử thi 100k, Huyền thoại 500k (cần cấp 20/35); Tối thượng cần cấp 45','Đồ đã mua giữ nguyên']],
  ['1.29','11/10',['Tăng giá avatar cao cấp: Hiếm 1.500, Sử thi 3.000, Huyền thoại 6.000, Chí tôn 12.000 xu','Avatar Huyền thoại cần cấp 15, Chí tôn cần cấp 50 (đồ đã mua giữ nguyên)']],
  ['1.28','11/10',['Kết nối lại online tự động: mất mạng vẫn về đúng ghế, chủ phòng có 20 giây để quay lại','Nút “Tự đánh” (chỉ online): máy Cao thủ đánh thay','Danh sách người chơi online ở sảnh: kết bạn, mời, vào cùng bàn','Tin nhắn riêng giữa người chơi (kể cả khi đang chơi với máy), chặn/bỏ chặn','30+ avatar vẽ tay cao cấp: Thần Tài, Rồng Vàng, Phượng Hoàng, Đổ Thánh…','Hiện số phiên bản và mục Có gì mới']],
