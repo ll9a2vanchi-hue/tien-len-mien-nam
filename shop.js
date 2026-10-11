@@ -57,7 +57,7 @@ SHOP.push(
  {id:'nc_rainbow',type:'name',name:'Tên Cầu Vồng',price:3000,r:4,css:'background:linear-gradient(90deg,#ff5252,#ffd740,#69f0ae,#40c4ff,#e040fb);-webkit-background-clip:text;background-clip:text;color:transparent',tag:'hot'}
 );
 SHOP.forEach(x=>{if(!x.r)x.r=x.price===0?1:x.price>=2500?4:x.price>=1200?3:x.price>=500?2:1;});
-const RARITY=[null,{name:'Thường',col:'#b0bec5'},{name:'Hiếm',col:'#42a5f5'},{name:'Sử thi',col:'#ab47bc'},{name:'Huyền thoại',col:'#ffb300'}];
+const RARITY=[null,{name:'Thường',col:'#b0bec5'},{name:'Hiếm',col:'#42a5f5'},{name:'Sử thi',col:'#ab47bc'},{name:'Huyền thoại',col:'#ffb300'},{name:'Tối thượng',col:'#ff4081'}];
 // Ưu đãi mỗi ngày: 1 món giảm 30% (xác định theo ngày)
 function dailyDeal(day){const pool=SHOP.filter(x=>x.price>=300);let h=0;for(const c of String(day))h=(h*31+c.charCodeAt(0))>>>0;const it=pool[h%pool.length];return{id:it.id,price:Math.round(it.price*0.7/10)*10,off:30};}
 function priceOf(id,day){const it=shopItem(id);if(!it)return null;const d=day!=null?dailyDeal(day):null;return d&&d.id===id?d.price:it.price;}

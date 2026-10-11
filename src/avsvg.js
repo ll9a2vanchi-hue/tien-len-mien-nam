@@ -88,12 +88,31 @@ const SVA_LIST=[
  ['sv_tienong','Tiên Ông',5,()=>personSVG('tienong',{bg:['#e0f7fa','#4dd0e1'],hs:'bun',hair:'#fafafa',eyes:'happy',mouth:'smile',shirt:'#fafafa',beard:'long',beardC:'#fafafa',hat:'halo'})],
  ['sv_chuaphuong','Phượng Hoàng Chí Tôn',5,()=>beastSVG('cphuong','phoenix',{bg:['#fff59d','#d50000'],c1:'#ffffff',c2:'#ffab00'})],
 ];
-const SVA_PRICE={2:1500,3:3000,4:6000,5:12000},SVA_LV={4:15,5:50};
+// ---- Tối thượng (500k): hào quang, tia sáng xoay, lấp lánh, khung gradient chuyển động, nhịp thở
+function ultraSVG(id,inner,o){const P='u'+id;const rays=Array.from({length:12},(_,i)=>`<path d="M50 50 L${50+60*Math.cos((i*30-4)*Math.PI/180)} ${50+60*Math.sin((i*30-4)*Math.PI/180)} L${50+60*Math.cos((i*30+4)*Math.PI/180)} ${50+60*Math.sin((i*30+4)*Math.PI/180)}Z"/>`).join('');
+ const sp=[[18,22,0],[82,20,.6],[86,70,1.2],[14,74,1.8],[50,9,.9],[30,88,1.5],[72,90,.3]].map(([x,y,d])=>`<path class="usp" style="animation-delay:${d}s" d="M${x} ${y-4}L${x+1.2} ${y-1.2}L${x+4} ${y}L${x+1.2} ${y+1.2}L${x} ${y+4}L${x-1.2} ${y+1.2}L${x-4} ${y}L${x-1.2} ${y-1.2}Z" fill="#fff"/>`).join('');
+ return `<defs><radialGradient id="${P}a"><stop offset="0" stop-color="${o.aura}" stop-opacity=".95"/><stop offset=".6" stop-color="${o.aura}" stop-opacity=".35"/><stop offset="1" stop-color="${o.aura}" stop-opacity="0"/></radialGradient>
+ <linearGradient id="${P}f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${o.f[0]}"/><stop offset=".35" stop-color="#fff"/><stop offset=".5" stop-color="${o.f[1]}"/><stop offset=".75" stop-color="#fff8"/><stop offset="1" stop-color="${o.f[0]}"/></linearGradient>
+ <clipPath id="${P}c"><circle cx="50" cy="50" r="41"/></clipPath></defs>
+ <circle cx="50" cy="50" r="50" fill="${o.bg}"/><g class="urays" fill="${o.ray}" opacity=".55">${rays}</g><circle class="uaura" cx="50" cy="50" r="46" fill="url(#${P}a)"/>
+ <g clip-path="url(#${P}c)"><g class="ubob" transform="translate(50 52) scale(.86) translate(-50 -50)">${inner}</g></g>
+ <circle class="ufrm" cx="50" cy="50" r="44" fill="none" stroke="url(#${P}f)" stroke-width="5"/><circle cx="50" cy="50" r="41.2" fill="none" stroke="#0008" stroke-width="1"/>
+ <path d="M38 8 L44 2 L50 7 L56 2 L62 8 L58 12 H42Z" fill="url(#${P}f)" stroke="#0006" stroke-width=".6"/>${sp}`;}
+SVA_LIST.push(
+ ['sv_u_rong','Rồng Vàng Thăng Thiên',6,()=>ultraSVG('rong',beastSVG('urong','dragon',{bg:['#fff59d','#ff8f00'],c1:'#ffe082',c2:'#ff6f00',c3:'#d50000'}),{bg:'#3e1600',aura:'#ffd54f',ray:'#ffe082',f:['#ffb300','#fff176']})],
+ ['sv_u_phuong','Phượng Hoàng Lửa Bất Tử',6,()=>ultraSVG('phuong',beastSVG('uphg','phoenix',{bg:['#ff8a65','#880e4f'],c1:'#fff176',c2:'#ff3d00'}),{bg:'#3b0010',aura:'#ff6e40',ray:'#ffab40',f:['#ff1744','#ffd740']})],
+ ['sv_u_thantai','Thần Tài Kim Cương',6,()=>ultraSVG('thantai',personSVG('uthantai',{bg:['#e0f7fa','#00838f'],hs:'bun',hair:'#212121',eyes:'happy',mouth:'smile',shirt:'#c62828',collar:'#ffd54f',hat:'crown',beard:'long',beardC:'#212121',blush:1,extra:'<path d="M42 82 L50 72 L58 82 L50 92Z" fill="#b2ebf2" stroke="#fff" stroke-width="1.5"/>'}),{bg:'#002b36',aura:'#80deea',ray:'#e0f7fa',f:['#4dd0e1','#ffffff']})],
+ ['sv_u_ho','Hổ Bạch Kim',6,()=>ultraSVG('ho',beastSVG('uho','tiger',{bg:['#eceff1','#455a64'],c1:'#ffffff',c2:'#b0bec5'}),{bg:'#1c262b',aura:'#e1f5fe',ray:'#cfd8dc',f:['#90a4ae','#ffffff']})],
+ ['sv_u_longvuong','Long Vương Đại Dương',6,()=>ultraSVG('lv',beastSVG('ulv','dragon',{bg:['#80d8ff','#01579b'],c1:'#40c4ff',c2:'#0d47a1',c3:'#ffd740'}),{bg:'#001a33',aura:'#40c4ff',ray:'#b3e5fc',f:['#2979ff','#ffd740']})],
+ ['sv_u_dothanh','Đổ Thánh Vô Song',6,()=>ultraSVG('dt',personSVG('udt',{bg:['#424242','#000'],hs:'side',hair:'#111',eyes:'cool',mouth:'smirk',shirt:'#fafafa',collar:'#d50000',hat:'fedora',extra:'<g transform="translate(64 62) rotate(14)"><rect width="16" height="22" rx="2" fill="#fff" stroke="#ffd740" stroke-width="1.5"/><text x="8" y="15" font-size="11" text-anchor="middle" fill="#d50000">A</text></g>'}),{bg:'#120400',aura:'#ffd740',ray:'#ff5252',f:['#d50000','#ffd740']})]);
+// giá: Hiếm 20k–50k, Sử thi 100k, Huyền thoại & Tối thượng 500k
+const SVA_PRICE={2:20000,3:100000,4:500000,5:500000,6:500000},SVA_LV={4:20,5:35,6:45};
+const SVA_HIEM=[20000,25000,30000,35000,40000,45000,50000];
 SVA_LIST.forEach(([id,name,tier,fn])=>{SVA[id]=fn;});
 function svaHTML(id){const f=SVA[id];if(!f)return '';const t=(SVA_LIST.find(x=>x[0]===id)||[])[2]||2;return `<svg class="sva t${t}" viewBox="0 0 100 100" aria-hidden="true">${f()}</svg>`;}
 // đăng ký vào cửa hàng: emo là mã đánh dấu ⟦id⟧, được thay bằng SVG khi hiển thị
-(function(){if(typeof SHOP==='undefined')return;SVA_LIST.forEach(([id,name,tier])=>{if(SHOP.find(x=>x.id===id))return;const r=Math.min(4,tier);
- SHOP.push(Object.assign({id,type:'avatar',name,emo:'⟦'+id+'⟧',price:SVA_PRICE[tier],r,svg:1},SVA_LV[tier]?{lv:SVA_LV[tier]}:{},tier>=4?{tag:'new'}:{}));});})();
+(function(){if(typeof SHOP==='undefined')return;SVA_LIST.forEach(([id,name,tier])=>{if(SHOP.find(x=>x.id===id))return;const r=tier>=6?5:Math.min(4,tier);let hi=0;
+ SHOP.push(Object.assign({id,type:'avatar',name,emo:'⟦'+id+'⟧',price:tier===2?SVA_HIEM[(SVA_LIST.filter(x=>x[2]===2).findIndex(x=>x[0]===id))%SVA_HIEM.length]:SVA_PRICE[tier],r,svg:1},SVA_LV[tier]?{lv:SVA_LV[tier]}:{},tier>=4?{tag:'new'}:{}));});})();
 // thay mã ⟦id⟧ bằng SVG ở mọi nơi trên trang
 const SVA_RE=/⟦(sv_[a-z0-9_]+)⟧/;
 function svaScan(root){try{const w=document.createTreeWalker(root||document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>SVA_RE.test(n.nodeValue)?1:3});const L=[];let n;while(n=w.nextNode())L.push(n);

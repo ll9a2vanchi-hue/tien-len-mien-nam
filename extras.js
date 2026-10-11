@@ -17,7 +17,7 @@ function pickPrize(rng){const tot=SPIN_PRIZES.reduce((a,p)=>a+p.w,0);let r=(rng|
 function doSpin(P,now,rng,level){const s=ensureSpin(P,now);if(s.used<1)s.used=1;else if(s.extra>0)s.extra--;else return null;s.total=(s.total||0)+1;
  const idx=pickPrize(rng),pz=SPIN_PRIZES[idx],got={};
  if(pz.xu){P.xu+=pz.xu;got.xu=pz.xu;}if(pz.xp){got.xp=pz.xp;got.lv=typeof addXp==='function'?addXp(P,pz.xp):null;}if(pz.spin){s.extra+=pz.spin;got.spin=pz.spin;}
- if(pz.item||pz.emote){const pool=SHOP.filter(x=>x.price>0&&!owns(P,x.id)&&(pz.emote?x.type==='emote':(x.type!=='emote'&&(x.r||1)<=2)));
+ if(pz.item||pz.emote){const pool=SHOP.filter(x=>x.price>0&&!owns(P,x.id)&&(pz.emote?x.type==='emote':(x.type!=='emote'&&(x.r||1)<=2&&x.price<=5000)));
   if(pool.length){const it=pool[Math.floor((rng||Math.random)()*pool.length)];ensureInv(P);P.inv[it.id]=Date.now();got.item=it.id;}else{P.xu+=300;got.xu=300;}}
  return{idx,prize:pz,got};}
 // ---- Ném đồ / tặng quà ----

@@ -478,6 +478,13 @@ body:has(#finHands) .seat .reveal{display:none}
 #verf{text-align:center;font-size:12px;color:#c9b98a;margin:14px 0 4px;opacity:.85}#verf a{color:#ffd84d;text-decoration:underline;cursor:pointer;position:relative}.rdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e53935;margin-left:4px;vertical-align:top;box-shadow:0 0 6px #e53935}
 .clog{max-height:56vh;overflow:auto;text-align:left}.clog ul{margin:4px 0 8px 18px;padding:0}.clog li{margin:2px 0;font-size:13px}.clog summary{cursor:pointer;padding:4px 0}
 .bcats{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}.bcats button{margin:0;padding:5px 9px;font-size:12px}.bprog{height:5px;background:#0006;border-radius:3px;margin-top:4px;overflow:hidden}.bprog i{display:block;height:100%;background:linear-gradient(90deg,#f4c542,#ffe48a)}
+svg.sva .urays{transform-box:view-box;transform-origin:50px 50px;animation:urot 14s linear infinite}svg.sva .uaura{transform-box:view-box;transform-origin:50px 50px;animation:upul 2.4s ease-in-out infinite}
+svg.sva .usp{transform-box:fill-box;transform-origin:center;animation:utw 1.8s ease-in-out infinite}svg.sva .ubob{animation:ubob 3s ease-in-out infinite}svg.sva .ufrm{animation:ufr 3s linear infinite;stroke-dasharray:60 8}
+@keyframes urot{to{transform:rotate(360deg)}}@keyframes upul{50%{opacity:.55;transform:scale(1.06)}}@keyframes utw{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.1)}}@keyframes ubob{50%{transform:translateY(-2px)}}@keyframes ufr{to{stroke-dashoffset:-136}}
+.sitem.ultra{grid-column:1/-1;background:radial-gradient(circle at 50% 30%,#ff408133,#0000 60%),linear-gradient(160deg,#2a0f1e,#120a14);border:2px solid transparent!important;background-clip:padding-box;position:relative;overflow:visible}
+.sitem.ultra::before{content:"";position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:conic-gradient(from var(--ua,0deg),#ff4081,#ffd740,#40c4ff,#ff4081);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:uborder 4s linear infinite;pointer-events:none}
+@property --ua{syntax:'<angle>';inherits:false;initial-value:0deg}@keyframes uborder{to{--ua:360deg}}.sitem.ultra .rar{font-weight:800;text-shadow:0 0 8px #ff4081}.sitem.ultra .av,.sitem.ultra .pv{transform:scale(1.25);margin:8px auto}
+@media (prefers-reduced-motion:reduce){svg.sva .urays,svg.sva .uaura,svg.sva .usp,svg.sva .ubob,svg.sva .ufrm,.sitem.ultra::before{animation:none!important}svg.sva .usp{opacity:.8}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -518,7 +525,7 @@ body:has(#finHands) .seat .reveal{display:none}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='94fd7a39e4';
+const APP_VER='94883b9199';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -858,7 +865,7 @@ SHOP.push(
  {id:'nc_rainbow',type:'name',name:'Tên Cầu Vồng',price:3000,r:4,css:'background:linear-gradient(90deg,#ff5252,#ffd740,#69f0ae,#40c4ff,#e040fb);-webkit-background-clip:text;background-clip:text;color:transparent',tag:'hot'}
 );
 SHOP.forEach(x=>{if(!x.r)x.r=x.price===0?1:x.price>=2500?4:x.price>=1200?3:x.price>=500?2:1;});
-const RARITY=[null,{name:'Thường',col:'#b0bec5'},{name:'Hiếm',col:'#42a5f5'},{name:'Sử thi',col:'#ab47bc'},{name:'Huyền thoại',col:'#ffb300'}];
+const RARITY=[null,{name:'Thường',col:'#b0bec5'},{name:'Hiếm',col:'#42a5f5'},{name:'Sử thi',col:'#ab47bc'},{name:'Huyền thoại',col:'#ffb300'},{name:'Tối thượng',col:'#ff4081'}];
 // Ưu đãi mỗi ngày: 1 món giảm 30% (xác định theo ngày)
 function dailyDeal(day){const pool=SHOP.filter(x=>x.price>=300);let h=0;for(const c of String(day))h=(h*31+c.charCodeAt(0))>>>0;const it=pool[h%pool.length];return{id:it.id,price:Math.round(it.price*0.7/10)*10,off:30};}
 function priceOf(id,day){const it=shopItem(id);if(!it)return null;const d=day!=null?dailyDeal(day):null;return d&&d.id===id?d.price:it.price;}
@@ -990,7 +997,7 @@ function pickPrize(rng){const tot=SPIN_PRIZES.reduce((a,p)=>a+p.w,0);let r=(rng|
 function doSpin(P,now,rng,level){const s=ensureSpin(P,now);if(s.used<1)s.used=1;else if(s.extra>0)s.extra--;else return null;s.total=(s.total||0)+1;
  const idx=pickPrize(rng),pz=SPIN_PRIZES[idx],got={};
  if(pz.xu){P.xu+=pz.xu;got.xu=pz.xu;}if(pz.xp){got.xp=pz.xp;got.lv=typeof addXp==='function'?addXp(P,pz.xp):null;}if(pz.spin){s.extra+=pz.spin;got.spin=pz.spin;}
- if(pz.item||pz.emote){const pool=SHOP.filter(x=>x.price>0&&!owns(P,x.id)&&(pz.emote?x.type==='emote':(x.type!=='emote'&&(x.r||1)<=2)));
+ if(pz.item||pz.emote){const pool=SHOP.filter(x=>x.price>0&&!owns(P,x.id)&&(pz.emote?x.type==='emote':(x.type!=='emote'&&(x.r||1)<=2&&x.price<=5000)));
   if(pool.length){const it=pool[Math.floor((rng||Math.random)()*pool.length)];ensureInv(P);P.inv[it.id]=Date.now();got.item=it.id;}else{P.xu+=300;got.xu=300;}}
  return{idx,prize:pz,got};}
 // ---- Ném đồ / tặng quà ----
@@ -1248,12 +1255,31 @@ const SVA_LIST=[
  ['sv_tienong','Tiên Ông',5,()=>personSVG('tienong',{bg:['#e0f7fa','#4dd0e1'],hs:'bun',hair:'#fafafa',eyes:'happy',mouth:'smile',shirt:'#fafafa',beard:'long',beardC:'#fafafa',hat:'halo'})],
  ['sv_chuaphuong','Phượng Hoàng Chí Tôn',5,()=>beastSVG('cphuong','phoenix',{bg:['#fff59d','#d50000'],c1:'#ffffff',c2:'#ffab00'})],
 ];
-const SVA_PRICE={2:1500,3:3000,4:6000,5:12000},SVA_LV={4:15,5:50};
+// ---- Tối thượng (500k): hào quang, tia sáng xoay, lấp lánh, khung gradient chuyển động, nhịp thở
+function ultraSVG(id,inner,o){const P='u'+id;const rays=Array.from({length:12},(_,i)=>`<path d="M50 50 L${50+60*Math.cos((i*30-4)*Math.PI/180)} ${50+60*Math.sin((i*30-4)*Math.PI/180)} L${50+60*Math.cos((i*30+4)*Math.PI/180)} ${50+60*Math.sin((i*30+4)*Math.PI/180)}Z"/>`).join('');
+ const sp=[[18,22,0],[82,20,.6],[86,70,1.2],[14,74,1.8],[50,9,.9],[30,88,1.5],[72,90,.3]].map(([x,y,d])=>`<path class="usp" style="animation-delay:${d}s" d="M${x} ${y-4}L${x+1.2} ${y-1.2}L${x+4} ${y}L${x+1.2} ${y+1.2}L${x} ${y+4}L${x-1.2} ${y+1.2}L${x-4} ${y}L${x-1.2} ${y-1.2}Z" fill="#fff"/>`).join('');
+ return `<defs><radialGradient id="${P}a"><stop offset="0" stop-color="${o.aura}" stop-opacity=".95"/><stop offset=".6" stop-color="${o.aura}" stop-opacity=".35"/><stop offset="1" stop-color="${o.aura}" stop-opacity="0"/></radialGradient>
+ <linearGradient id="${P}f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${o.f[0]}"/><stop offset=".35" stop-color="#fff"/><stop offset=".5" stop-color="${o.f[1]}"/><stop offset=".75" stop-color="#fff8"/><stop offset="1" stop-color="${o.f[0]}"/></linearGradient>
+ <clipPath id="${P}c"><circle cx="50" cy="50" r="41"/></clipPath></defs>
+ <circle cx="50" cy="50" r="50" fill="${o.bg}"/><g class="urays" fill="${o.ray}" opacity=".55">${rays}</g><circle class="uaura" cx="50" cy="50" r="46" fill="url(#${P}a)"/>
+ <g clip-path="url(#${P}c)"><g class="ubob" transform="translate(50 52) scale(.86) translate(-50 -50)">${inner}</g></g>
+ <circle class="ufrm" cx="50" cy="50" r="44" fill="none" stroke="url(#${P}f)" stroke-width="5"/><circle cx="50" cy="50" r="41.2" fill="none" stroke="#0008" stroke-width="1"/>
+ <path d="M38 8 L44 2 L50 7 L56 2 L62 8 L58 12 H42Z" fill="url(#${P}f)" stroke="#0006" stroke-width=".6"/>${sp}`;}
+SVA_LIST.push(
+ ['sv_u_rong','Rồng Vàng Thăng Thiên',6,()=>ultraSVG('rong',beastSVG('urong','dragon',{bg:['#fff59d','#ff8f00'],c1:'#ffe082',c2:'#ff6f00',c3:'#d50000'}),{bg:'#3e1600',aura:'#ffd54f',ray:'#ffe082',f:['#ffb300','#fff176']})],
+ ['sv_u_phuong','Phượng Hoàng Lửa Bất Tử',6,()=>ultraSVG('phuong',beastSVG('uphg','phoenix',{bg:['#ff8a65','#880e4f'],c1:'#fff176',c2:'#ff3d00'}),{bg:'#3b0010',aura:'#ff6e40',ray:'#ffab40',f:['#ff1744','#ffd740']})],
+ ['sv_u_thantai','Thần Tài Kim Cương',6,()=>ultraSVG('thantai',personSVG('uthantai',{bg:['#e0f7fa','#00838f'],hs:'bun',hair:'#212121',eyes:'happy',mouth:'smile',shirt:'#c62828',collar:'#ffd54f',hat:'crown',beard:'long',beardC:'#212121',blush:1,extra:'<path d="M42 82 L50 72 L58 82 L50 92Z" fill="#b2ebf2" stroke="#fff" stroke-width="1.5"/>'}),{bg:'#002b36',aura:'#80deea',ray:'#e0f7fa',f:['#4dd0e1','#ffffff']})],
+ ['sv_u_ho','Hổ Bạch Kim',6,()=>ultraSVG('ho',beastSVG('uho','tiger',{bg:['#eceff1','#455a64'],c1:'#ffffff',c2:'#b0bec5'}),{bg:'#1c262b',aura:'#e1f5fe',ray:'#cfd8dc',f:['#90a4ae','#ffffff']})],
+ ['sv_u_longvuong','Long Vương Đại Dương',6,()=>ultraSVG('lv',beastSVG('ulv','dragon',{bg:['#80d8ff','#01579b'],c1:'#40c4ff',c2:'#0d47a1',c3:'#ffd740'}),{bg:'#001a33',aura:'#40c4ff',ray:'#b3e5fc',f:['#2979ff','#ffd740']})],
+ ['sv_u_dothanh','Đổ Thánh Vô Song',6,()=>ultraSVG('dt',personSVG('udt',{bg:['#424242','#000'],hs:'side',hair:'#111',eyes:'cool',mouth:'smirk',shirt:'#fafafa',collar:'#d50000',hat:'fedora',extra:'<g transform="translate(64 62) rotate(14)"><rect width="16" height="22" rx="2" fill="#fff" stroke="#ffd740" stroke-width="1.5"/><text x="8" y="15" font-size="11" text-anchor="middle" fill="#d50000">A</text></g>'}),{bg:'#120400',aura:'#ffd740',ray:'#ff5252',f:['#d50000','#ffd740']})]);
+// giá: Hiếm 20k–50k, Sử thi 100k, Huyền thoại & Tối thượng 500k
+const SVA_PRICE={2:20000,3:100000,4:500000,5:500000,6:500000},SVA_LV={4:20,5:35,6:45};
+const SVA_HIEM=[20000,25000,30000,35000,40000,45000,50000];
 SVA_LIST.forEach(([id,name,tier,fn])=>{SVA[id]=fn;});
 function svaHTML(id){const f=SVA[id];if(!f)return '';const t=(SVA_LIST.find(x=>x[0]===id)||[])[2]||2;return `<svg class="sva t${t}" viewBox="0 0 100 100" aria-hidden="true">${f()}</svg>`;}
 // đăng ký vào cửa hàng: emo là mã đánh dấu ⟦id⟧, được thay bằng SVG khi hiển thị
-(function(){if(typeof SHOP==='undefined')return;SVA_LIST.forEach(([id,name,tier])=>{if(SHOP.find(x=>x.id===id))return;const r=Math.min(4,tier);
- SHOP.push(Object.assign({id,type:'avatar',name,emo:'⟦'+id+'⟧',price:SVA_PRICE[tier],r,svg:1},SVA_LV[tier]?{lv:SVA_LV[tier]}:{},tier>=4?{tag:'new'}:{}));});})();
+(function(){if(typeof SHOP==='undefined')return;SVA_LIST.forEach(([id,name,tier])=>{if(SHOP.find(x=>x.id===id))return;const r=tier>=6?5:Math.min(4,tier);let hi=0;
+ SHOP.push(Object.assign({id,type:'avatar',name,emo:'⟦'+id+'⟧',price:tier===2?SVA_HIEM[(SVA_LIST.filter(x=>x[2]===2).findIndex(x=>x[0]===id))%SVA_HIEM.length]:SVA_PRICE[tier],r,svg:1},SVA_LV[tier]?{lv:SVA_LV[tier]}:{},tier>=4?{tag:'new'}:{}));});})();
 // thay mã ⟦id⟧ bằng SVG ở mọi nơi trên trang
 const SVA_RE=/⟦(sv_[a-z0-9_]+)⟧/;
 function svaScan(root){try{const w=document.createTreeWalker(root||document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>SVA_RE.test(n.nodeValue)?1:3});const L=[];let n;while(n=w.nextNode())L.push(n);
@@ -1889,7 +1915,7 @@ openShop=function(tab){if(tab)shopTab=tab;const lv=levelInfo(PR.xp).level,day=dk
  const card=it=>{const own=owns(PR,it.id),eq=it.type!=='emote'&&PR.equip[it.type]===it.id,pr=priceOf(it.id,day),R=RARITY[it.r];
   const act=eq?`<button disabled>Đang dùng</button>`:own?(it.type==='emote'?`<button disabled>Đã có</button>`:`<button class="alt" onclick="doEquip('${it.id}')">Sử dụng</button>`):
    (it.lv&&lv<it.lv?`<span class="lk">${I('lock')} Cấp ${it.lv}</span>`:`<button onclick="doBuy('${it.id}')" ${PR.xu<pr?'disabled':''}>${I('coin')} ${fmt(pr)}</button>`);
-  return `<div class="sitem ${eq?'eq':''}" style="border-color:${R.col}88;box-shadow:inset 0 -3px 0 ${R.col}66${eq?',0 0 0 2px #ffd84d inset':''}">${it.tag?`<span class="tg ${it.tag}">${it.tag==='new'?'MỚI':'HOT'}</span>`:''}${itemPreview(it)}<b>${it.name}</b><span class="rar" style="color:${R.col}">${R.name}</span>${pr<it.price&&!own?`<span class="old">${fmt(it.price)}</span>`:''}${act}</div>`;};
+  return `<div class="sitem ${eq?'eq':''} ${it.r>=5?'ultra':''}" style="border-color:${R.col}88;box-shadow:inset 0 -3px 0 ${R.col}66${eq?',0 0 0 2px #ffd84d inset':''}">${it.tag?`<span class="tg ${it.tag}">${it.tag==='new'?'MỚI':'HOT'}</span>`:''}${itemPreview(it)}<b>${it.name}</b><span class="rar" style="color:${R.col}">${R.name}</span>${pr<it.price&&!own?`<span class="old">${fmt(it.price)}</span>`:''}${act}</div>`;};
  modal(`<h3>${I('shop')} Cửa hàng</h3><div class="row" style="justify-content:space-between"><span>Số dư</span><b>${I('coin')} ${fmt(PR.xu)} xu</b></div>
  <div class="deal"><span style="font-size:26px">🔥</span><div style="flex:1"><b>Ưu đãi hôm nay -${deal.off}%</b><br><small>${di.name} · ${TABN[di.type]} · ${RARITY[di.r].name}</small></div><button class="alt" onclick="openShop('${di.type}')">Xem</button></div>
  <div class="tabs">${Object.keys(TABN).map(k=>`<button class="alt ${k===shopTab?'on':''}" onclick="openShop('${k}')">${TABN[k]}</button>`).join('')}</div>
@@ -2635,8 +2661,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.29';
+const APP_V='1.30';
 const CHANGELOG=[
+ ['1.30','11/10',['6 avatar Tối thượng 500.000 xu: Rồng Vàng Thăng Thiên, Phượng Hoàng Lửa Bất Tử, Thần Tài Kim Cương, Hổ Bạch Kim, Long Vương Đại Dương, Đổ Thánh Vô Song — hào quang, tia sáng xoay, lấp lánh, khung chuyển màu','Giá avatar mới: Hiếm 20k–50k, Sử thi 100k, Huyền thoại 500k (cần cấp 20/35); Tối thượng cần cấp 45','Đồ đã mua giữ nguyên']],
  ['1.29','11/10',['Tăng giá avatar cao cấp: Hiếm 1.500, Sử thi 3.000, Huyền thoại 6.000, Chí tôn 12.000 xu','Avatar Huyền thoại cần cấp 15, Chí tôn cần cấp 50 (đồ đã mua giữ nguyên)']],
  ['1.28','11/10',['Kết nối lại online tự động: mất mạng vẫn về đúng ghế, chủ phòng có 20 giây để quay lại','Nút “Tự đánh” (chỉ online): máy Cao thủ đánh thay','Danh sách người chơi online ở sảnh: kết bạn, mời, vào cùng bàn','Tin nhắn riêng giữa người chơi (kể cả khi đang chơi với máy), chặn/bỏ chặn','30+ avatar vẽ tay cao cấp: Thần Tài, Rồng Vàng, Phượng Hoàng, Đổ Thánh…','Hiện số phiên bản và mục Có gì mới']],
  ['1.27','11/10',['Sửa bong bóng chat/biểu cảm không hiện']],
