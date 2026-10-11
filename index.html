@@ -563,7 +563,7 @@ body.cgon #home,body.cgon #dmBtn{display:none!important}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='5510a0eb0e';
+const APP_VER='6ee341e1fa';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -725,6 +725,11 @@ const BADGES=[
  BG('bc_2','🎴','Cao thủ 3 cào','Thắng 30 ván 3 Cào',1500,2,s=>V(s,'bcWin')>=30,{series:'games',k:'bcWin',goal:30}),
  BG('bc_3','👑','Vua 3 cào','Thắng 150 ván 3 Cào',5000,3,s=>V(s,'bcWin')>=150,{series:'games',k:'bcWin',goal:150}),
  BG('bc_bacao','🤴','Ba cào!','Có Ba cào (3 lá J/Q/K)',800,2,s=>V(s,'bacao')>=1,{series:'combo',k:'bacao',goal:1}),
+ BG('xd_1','🂱','Tay xì dách','Thắng 1 ván Xì dách',200,1,s=>V(s,'xdWin')>=1,{series:'games',k:'xdWin',goal:1}),
+ BG('xd_2','🎰','Cao thủ xì dách','Thắng 30 ván Xì dách',1500,2,s=>V(s,'xdWin')>=30,{series:'games',k:'xdWin',goal:30}),
+ BG('xd_3','💎','Vua xì dách','Thắng 150 ván Xì dách',5000,3,s=>V(s,'xdWin')>=150,{series:'games',k:'xdWin',goal:150}),
+ BG('xd_nl','🖐️','Ngũ linh','Thắng bằng Ngũ linh',800,2,s=>V(s,'ngulinh')>=1,{series:'combo',k:'ngulinh',goal:1}),
+ BG('sec_xibang','🅰️','Xì bàng!','Thắng bằng hai con Át',3000,3,s=>V(s,'xibang')>=1,{secret:true}),
  BG('sec_chain','⛓️','Chặt chồng','Chặt ngược lại người vừa chặt mình',2500,3,s=>V(s,'chain')>=1,{secret:true}),
  BG('sec_allin','🎲','Tất tay','Thắng ván khi số xu chỉ vừa đủ cược',2500,3,s=>V(s,'allin')>=1,{secret:true}),
  BG('sec_bigthui','🐖','Cả đàn heo','Bắt thúi 3 con heo trong một ván',3000,3,s=>V(s,'bigThui')>=1,{secret:true}),
@@ -2749,8 +2754,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.35';
+const APP_V='1.36';
 const CHANGELOG=[
+ ['1.36','11/10',['Chế độ mới: Xì dách — đấu nhà cái: Xì bàng x3, Xì dách x2, Ngũ linh x2, non dưới 16, quắc quá 21; nhà cái rút tới 15','Nhiệm vụ + huy hiệu Xì dách']],
  ['1.35','11/10',['Đếm lá: tính theo giá lá (3–10 = 1, J/Q/K = 1,5, A = 2, 2 đen = 3, 2 đỏ = 4 phần cược/5), cháy 13 lá x2','Chế độ mới: 3 Cào — đấu nhà cái, tổng điểm lấy số cuối, Ba cào (3 lá J/Q/K) thắng x2','Bàn 4 người cân đối: avatar của bạn ở giữa cạnh dưới bàn']],
  ['1.34','11/10',['Chế độ mới: Tiến Lên đếm lá — người thua trả người nhất cược/13 mỗi lá còn lại (heo tính 2 lá), không thúi heo','Chọn chế độ chơi ở màn hình chính','Nhiệm vụ + huy hiệu Đếm lá']],
  ['1.33','11/10',['Thúi heo/hàng và cháy bài: trả cho người về ngay trên mình (bét trả ba, ba trả nhì, nhì trả nhất); 3 bích về nhất vẫn trả người nhất','Sửa hưởng sái: giữ bài cuối của người vừa về, bắt bài hiển thị đúng, chữ “X hưởng sái”, nhãn Nhất/Nhì trên ghế']],
@@ -2943,7 +2949,7 @@ function cgRender(){const o=$('cg');if(!o)return;const st=CG.st;const seats=st?s
   return `<div class="cgs cgs${i} ${st&&st.turn===i?'turn':''}"><div class="cgp"><span class="av" style="--avc:#3a5">${s.av}</span><b>${esc(s.name)}</b>${r?`<span class="cgr ${r.v>0?'w':r.v<0?'l':''}">${r.lab}${r.v?` ${r.v>0?'+':''}${kxu(r.v)}`:''}</span>`:''}</div>
   <div class="cgh">${h.map((c,k)=>cgCard(c,up,k+i*3,(st.newCard&&st.newCard[i]===k)?'cgnew':'')).join('')}</div>${st&&up&&h.length?`<div class="cgsc">${cgScoreLab(h,i)}</div>`:''}</div>`;};
  o.classList.toggle('cgfresh',!!(st&&st.fresh));if(st)st.fresh=false;o.innerHTML=`<div class="cgtop"><button class="alt ic" onclick="closeCasino()">${I('back')}</button><b>${cgTitle()}</b><span class="cgxu">${I('coin')} <span id="cgXu">${fmt(PR.xu)}</span></span></div>
- <div class="cgtbl">${seats.map(seatHTML).join('')}<div class="cgmsg" id="cgMsg">${st?st.msg||'':'Chọn mức cược rồi bấm Chia bài'}</div></div>
+ <div class="cgtbl">${seats.map(seatHTML).join('')}<div class="cgmsg" id="cgMsg">${st?st.msg||'':(CG.g==='xidach'?'Xì bàng x3 · Xì dách x2 · Ngũ linh x2 · dưới 16 là non · quá 21 là quắc':'Ba cào (J Q K) x2 · điểm = số cuối của tổng')}</div></div>
  <div class="cgctl">${cgCtl()}</div>`;try{svaScan(o);}catch(e){}}
 function cgScoreLab(h,i){if(CG.g==='3cao'){const s=bcScore(h);return s.label;}const k=xdKind(h,i===0?15:16);return (XD_LABEL[k.kind]?XD_LABEL[k.kind]+' · ':'')+k.total;}
 function cgCtl(){const st=CG.st;
@@ -2978,7 +2984,7 @@ function cgSettle(){const st=CG.st;st.phase='done';st.turn=-1;st.reveal=true;st.
  sfx(me>0?'win':me<0?'thud':'tap');if(me>0)sfx('coin');cgRender();try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(me>=0?'+':'')+fmt(me)+' xu',me>=0?'gain':'loss');}catch(e){}
  try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);}
 // ---- vào từ màn hình chính
-MODES.push(['3cao','3 Cào','🃏']);
+MODES.push(['3cao','3 Cào','🃏'],['xidach','Xì dách','🂱']);
 const _ot45=openTables;openTables=function(){if(MODE==='3cao'||MODE==='xidach')return openCasino(MODE);return _ot45.apply(this,arguments);};
 boot();
 </script></body></html>

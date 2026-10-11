@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.35';
+const APP_V='1.36';
 const CHANGELOG=[
+ ['1.36','11/10',['Chế độ mới: Xì dách — đấu nhà cái: Xì bàng x3, Xì dách x2, Ngũ linh x2, non dưới 16, quắc quá 21; nhà cái rút tới 15','Nhiệm vụ + huy hiệu Xì dách']],
  ['1.35','11/10',['Đếm lá: tính theo giá lá (3–10 = 1, J/Q/K = 1,5, A = 2, 2 đen = 3, 2 đỏ = 4 phần cược/5), cháy 13 lá x2','Chế độ mới: 3 Cào — đấu nhà cái, tổng điểm lấy số cuối, Ba cào (3 lá J/Q/K) thắng x2','Bàn 4 người cân đối: avatar của bạn ở giữa cạnh dưới bàn']],
  ['1.34','11/10',['Chế độ mới: Tiến Lên đếm lá — người thua trả người nhất cược/13 mỗi lá còn lại (heo tính 2 lá), không thúi heo','Chọn chế độ chơi ở màn hình chính','Nhiệm vụ + huy hiệu Đếm lá']],
  ['1.33','11/10',['Thúi heo/hàng và cháy bài: trả cho người về ngay trên mình (bét trả ba, ba trả nhì, nhì trả nhất); 3 bích về nhất vẫn trả người nhất','Sửa hưởng sái: giữ bài cuối của người vừa về, bắt bài hiển thị đúng, chữ “X hưởng sái”, nhãn Nhất/Nhì trên ghế']],

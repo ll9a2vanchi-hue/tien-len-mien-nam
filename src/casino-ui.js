@@ -11,7 +11,7 @@ function cgRender(){const o=$('cg');if(!o)return;const st=CG.st;const seats=st?s
   return `<div class="cgs cgs${i} ${st&&st.turn===i?'turn':''}"><div class="cgp"><span class="av" style="--avc:#3a5">${s.av}</span><b>${esc(s.name)}</b>${r?`<span class="cgr ${r.v>0?'w':r.v<0?'l':''}">${r.lab}${r.v?` ${r.v>0?'+':''}${kxu(r.v)}`:''}</span>`:''}</div>
   <div class="cgh">${h.map((c,k)=>cgCard(c,up,k+i*3,(st.newCard&&st.newCard[i]===k)?'cgnew':'')).join('')}</div>${st&&up&&h.length?`<div class="cgsc">${cgScoreLab(h,i)}</div>`:''}</div>`;};
  o.classList.toggle('cgfresh',!!(st&&st.fresh));if(st)st.fresh=false;o.innerHTML=`<div class="cgtop"><button class="alt ic" onclick="closeCasino()">${I('back')}</button><b>${cgTitle()}</b><span class="cgxu">${I('coin')} <span id="cgXu">${fmt(PR.xu)}</span></span></div>
- <div class="cgtbl">${seats.map(seatHTML).join('')}<div class="cgmsg" id="cgMsg">${st?st.msg||'':'Chọn mức cược rồi bấm Chia bài'}</div></div>
+ <div class="cgtbl">${seats.map(seatHTML).join('')}<div class="cgmsg" id="cgMsg">${st?st.msg||'':(CG.g==='xidach'?'Xì bàng x3 · Xì dách x2 · Ngũ linh x2 · dưới 16 là non · quá 21 là quắc':'Ba cào (J Q K) x2 · điểm = số cuối của tổng')}</div></div>
  <div class="cgctl">${cgCtl()}</div>`;try{svaScan(o);}catch(e){}}
 function cgScoreLab(h,i){if(CG.g==='3cao'){const s=bcScore(h);return s.label;}const k=xdKind(h,i===0?15:16);return (XD_LABEL[k.kind]?XD_LABEL[k.kind]+' · ':'')+k.total;}
 function cgCtl(){const st=CG.st;
@@ -46,5 +46,5 @@ function cgSettle(){const st=CG.st;st.phase='done';st.turn=-1;st.reveal=true;st.
  sfx(me>0?'win':me<0?'thud':'tap');if(me>0)sfx('coin');cgRender();try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(me>=0?'+':'')+fmt(me)+' xu',me>=0?'gain':'loss');}catch(e){}
  try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);}
 // ---- vào từ màn hình chính
-MODES.push(['3cao','3 Cào','🃏']);
+MODES.push(['3cao','3 Cào','🃏'],['xidach','Xì dách','🂱']);
 const _ot45=openTables;openTables=function(){if(MODE==='3cao'||MODE==='xidach')return openCasino(MODE);return _ot45.apply(this,arguments);};
