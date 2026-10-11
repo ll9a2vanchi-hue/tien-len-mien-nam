@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.48.2';
+const APP_V='1.48.3';
 const CHANGELOG=[
+ ['1.48.3','11/10',['Xì tố “Tố tất” và Poker “Tất tay”: hiệu ứng hoành tráng — chớp màn hình, chữ lớn rực lửa rung, chip đổ ào vào hũ, rung bàn, trống dồn + tiếng chip + tiếng nổ trầm; ghế tất tay có nhãn ALL-IN và hào quang đến lúc lật bài']],
  ['1.48.2','11/10',['Xì tố: lá bài to hơn nữa, góc số + chất to đậm, chất lớn giữa lá, màu tương phản (♠♣ đen, ♥ đỏ, ♦ cam đỏ), vẽ bằng SVG']],
  ['1.48.1','11/10',['Sửa: khung avatar của bạn hiển thị đúng ở Bầu cua và Domino']],
  ['1.48','11/10',['Huy hiệu riêng cho từng chế độ: Đếm lá, 3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker — mỗi chế độ 70 huy hiệu như Miền Nam (số ván, thắng, chuỗi, thắng lớn, làm cái, vét túi máy, cược cao, bài hiếm, bí mật…), có hạng Đồng/Bạc/Vàng/Huyền thoại','Màn Huy hiệu chia tab theo chế độ + lọc Đã mở/Chưa mở/Bí mật','Mọi chế độ hiển thị cấp, danh hiệu và khung avatar của bạn và máy; báo +XP sau mỗi ván','Sửa huy hiệu bí mật “Chặt chồng” không mở được']],
