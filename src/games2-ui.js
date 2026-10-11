@@ -288,7 +288,7 @@ const XT_SUIT={0:'M30 6C22 18 8 26 8 38c0 8 9 12 16 6-1 6-4 10-8 12h28c-4-2-7-6-
 const XT_COL=['#111','#111','#e04a00','#d0102a'];
 function xtSuit(si,x,y,sz){return `<path d="${XT_SUIT[si]}" fill="${XT_COL[si]}" transform="translate(${x},${y}) scale(${sz/60})"/>`;}
 function xtCard(c,up,k,cls){if(!up)return cgCard(c,false,k,cls);const r=RANKS[rk(c)],si=st(c),col=XT_COL[si];const fs=r==='10'?17:21;
- return `<div class="card cgc xtc ${si>=2?'red':''} ${cls||''}" data-c="${c}" style="--d:${k||0}"><svg viewBox="0 0 60 84" preserveAspectRatio="none"><rect x="0.5" y="0.5" width="59" height="83" rx="5" fill="#fff" stroke="#bbb"/>
+ return `<div class="card cgc xtc ${si>=2?'red':''} ${cls||''}" data-c="${c}" style="--d:${k||0}"><svg viewBox="0 0 60 84" preserveAspectRatio="none"><rect x="0.5" y="0.5" width="59" height="83" rx="5" fill="none" stroke="#0003"/>
  <text x="${r==='10'?3:5}" y="20" font-size="${fs}" font-weight="900" font-family="Arial,Helvetica,sans-serif" fill="${col}" letter-spacing="${r==='10'?-1.5:0}">${r}</text>${xtSuit(si,4,23,15)}${xtSuit(si,17,30,36)}
  <g transform="rotate(180 30 42)"><text x="${r==='10'?3:5}" y="20" font-size="${fs*0.8}" font-weight="900" font-family="Arial,Helvetica,sans-serif" fill="${col}">${r}</text></g></svg></div>`;}
 // ===================== v1.48: cấp/danh hiệu/khung trên ghế mọi chế độ
