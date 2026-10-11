@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.34';
+const APP_V='1.35';
 const CHANGELOG=[
+ ['1.35','11/10',['Đếm lá: tính theo giá lá (3–10 = 1, J/Q/K = 1,5, A = 2, 2 đen = 3, 2 đỏ = 4 phần cược/5), cháy 13 lá x2','Chế độ mới: 3 Cào — đấu nhà cái, tổng điểm lấy số cuối, Ba cào (3 lá J/Q/K) thắng x2','Bàn 4 người cân đối: avatar của bạn ở giữa cạnh dưới bàn']],
  ['1.34','11/10',['Chế độ mới: Tiến Lên đếm lá — người thua trả người nhất cược/13 mỗi lá còn lại (heo tính 2 lá), không thúi heo','Chọn chế độ chơi ở màn hình chính','Nhiệm vụ + huy hiệu Đếm lá']],
  ['1.33','11/10',['Thúi heo/hàng và cháy bài: trả cho người về ngay trên mình (bét trả ba, ba trả nhì, nhì trả nhất); 3 bích về nhất vẫn trả người nhất','Sửa hưởng sái: giữ bài cuối của người vừa về, bắt bài hiển thị đúng, chữ “X hưởng sái”, nhãn Nhất/Nhì trên ghế']],
  ['1.32','11/10',['Xin vào chơi: vào bàn của người đang chơi với máy, bàn chuyển thành phòng online','Ô “Người online” ở màn hình chính: bạn bè, người đang online, nhắn tin, mời, chặn','Bàn 10k: thắng Cao thủ được thưởng thêm XP (không thêm xu)','Khung chat mới dạng ngăn kéo: tab Bàn / Tin nhắn riêng, bong bóng có avatar + giờ, câu nhanh, emoji, không che bài']],
@@ -793,7 +794,7 @@ setInterval(()=>{try{if(!G||!G.over||_gk39===G)return;if(!document.querySelector
 // Luộc: sau khi ván kết thúc offline, máy không đủ cược nữa và mình đã ăn xu của nó
 const _eg39=endGame;endGame=function(i){const r=_eg39.apply(this,arguments);setTimeout(()=>{try{if(!G||G.online||G._luoc)return;G._luoc=1;const bet=curBet();let tot=0,names=[];
  (SEATMAP[TBL||4]||[0,1,2,3]).forEach(p=>{if(!p)return;const now=seatXu(p),was=LEDG.s0[p];if(now<bet&&was!=null&&was>now&&PR.xu>(LEDG.xu0||0)){const lv=Math.max(0,Math.min(3,+BOTAI[p]||0));const xp=LUOC_XP[lv],xu=Math.round(bet*0.5*(lv+1));
-  const up=addXp(PR,xp);PR.xu+=xu+(up&&up.xu||0);tot+=xu;names.push(NAMES[p]);bst('luoc');if(lv===3)bst('luoc3');LUOC.tbl++;PR.stats.luocTable=Math.max(PR.stats.luocTable||0,LUOC.tbl);questEvent(PR,'luoc');
+  const up=addXp(PR,xp);PR.xu+=xu;tot+=xu;names.push(NAMES[p]);bst('luoc');if(lv===3)bst('luoc3');LUOC.tbl++;PR.stats.luocTable=Math.max(PR.stats.luocTable||0,LUOC.tbl);questEvent(PR,'luoc');
   setTimeout(()=>{try{sfx('chop');winFX('🍲 LUỘC SẠCH '+NAMES[p].trim().toUpperCase()+'! +'+xp+' XP');toast(`Luộc ${NAMES[p].trim()}: +${fmt(xu)} xu, +${xp} XP`);}catch(e){}},400+names.length*1200);}});
  if(tot){LUOC.xu=tot;LUOC.g=G;saveP();evBadge();}}catch(e){}},350);return r;};
 const _nb39=newBotsNext;newBotsNext=function(){LUOC.tbl=0;return _nb39();};
@@ -890,7 +891,7 @@ const _r43=render;render=function(){const r=_r43.apply(this,arguments);try{const
  [0,1,2,3].forEach(p=>{if((G.finished||[]).includes(p))return;const el=p===0?$('meAvM')||document.querySelector('#meInfo'):$('s'+p);const t=el&&el.querySelector('.fintag');if(t)t.remove();});}}catch(e){}return r;};
 
 // ======== v44: chế độ chơi (Miền Nam / Đếm lá) ========
-let MODE=localStorage.getItem('tlmn_mode')||'mn';const MODES=[['mn','Tiến Lên Miền Nam','🂡'],['demla','Tiến Lên đếm lá','🔢']];
+let MODE=localStorage.getItem('tlmn_mode')||'mn';const MODES=[['mn','Miền Nam','🂡'],['demla','Đếm lá','🔢']];
 function setMode(m){MODE=m;try{localStorage.setItem('tlmn_mode',m);}catch(e){}renderHome();}
 function modeOf(){return (typeof ONL!=='undefined'&&ONL.active)?'mn':MODE;}
 function modeCtx(place,instant){if(!G||G.online||G.mode!=='demla')return{};const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];
@@ -900,8 +901,19 @@ const _ts44=thuiSettle;thuiSettle=function(){if(G&&!G.online&&G.mode==='demla')r
 const _lp44=ledgerParts;ledgerParts=function(){const r=_lp44();if(G&&G.mode==='demla'&&r.parts.place!=null){r.parts.demla=r.parts.place;r.parts.place=0;}return r;};
 const _rh44=renderHome;renderHome=function(){_rh44.apply(this,arguments);try{const h=$('home');if(!h)return;let m=$('modePick');if(m)m.remove();const btn=[...h.querySelectorAll('button')].find(b=>/CHƠI VỚI MÁY/i.test(b.textContent));if(!btn)return;
  m=document.createElement('div');m.id='modePick';m.innerHTML=MODES.map(([k,n,ic])=>`<button class="${k===MODE?'on':'alt'}" onclick="setMode('${k}')"><span>${ic}</span>${n}</button>`).join('');btn.before(m);}catch(e){}};
-const _ot44=openTables;openTables=function(){_ot44.apply(this,arguments);try{const m=$('modalIn');if(!m)return;const h=m.querySelector('h3');if(h&&MODE==='demla'){h.insertAdjacentHTML('afterend',`<p class="small mnote">🔢 <b>Đếm lá</b>: người thua trả người nhất <b>${fmt(Math.round(curBet()/13))} xu/lá</b> còn lại (heo = 2 lá). Không tính tiền theo hạng, không thúi heo.</p>`);
+const _ot44=openTables;openTables=function(){_ot44.apply(this,arguments);try{const m=$('modalIn');if(!m)return;const h=m.querySelector('h3');if(h&&MODE==='demla'){{const u=curBet()/5,f=x=>kxu(Math.round(u*x));h.insertAdjacentHTML('afterend',`<div class="small mnote dlt">🔢 <b>Đếm lá</b> — người thua trả người nhất theo lá còn lại:<div class="dlv"><span>3–10 <b>${f(1)}</b></span><span>J Q K <b>${f(1.5)}</b></span><span>A <b>${f(2)}</b></span><span>2♠♣ <b>${f(3)}</b></span><span>2♦♥ <b>${f(4)}</b></span><span>Cháy <b>x2</b></span></div></div>`);}
  m.querySelectorAll('.tsel small').forEach(e=>{if(/Xu:/.test(e.textContent))e.textContent='Xu: thua trả theo số lá';});}}catch(e){}};
 // Đếm lá: hết bài là kết thúc ván ngay, xếp hạng theo số lá còn lại
 const _dp44=doPlay;doPlay=function(p,c,s){const r=_dp44.apply(this,arguments);try{if(G&&!G.online&&G.mode==='demla'&&!G.over&&G.hands[p]&&G.hands[p].length===0){const seats=G.seats||[0,1,2,3];
  const rest=seats.filter(q=>!G.finished.includes(q)).sort((a,b)=>demlaUnits(G.hands[a])-demlaUnits(G.hands[b]));G.finished=[...G.finished,...rest];G.over=true;endGame(false);}}catch(e){console.error('demla',e);}return r;};
+
+// Đếm lá: chi tiết từng người thua trong bảng kết quả
+setInterval(()=>{try{if(!G||G.mode!=='demla'||!G.over||!G.dl||$('dlBrk'))return;const m=$('modalIn');if(!m||!/Sổ xu/.test(m.textContent))return;const box=[...m.querySelectorAll('div')].find(d=>/^Sổ xu/.test(d.textContent.trim()));if(!box)return;
+ const u=curBet()/5,w=(G.rank||G.finished)[0];const rows=(G.rank||G.finished).slice(1).map(p=>{const h=G.hands[p]||[];return `<div class="row"><span style="flex:1">${p===0?'Bạn':esc(NAMES[p])} · ${h.length} lá${h.length===13?' (cháy x2)':''} · ${demlaUnits(h)} phần</span><b class="loss">−${fmt(Math.round(u*demlaUnits(h)))}</b></div>`;}).join('');
+ box.insertAdjacentHTML('afterend',`<div id="dlBrk" class="rewbox small"><b>🔢 Đếm lá → ${w===0?'Bạn':esc(NAMES[w])}</b>${rows}</div>`);}catch(e){}},600);
+// ======== v45: avatar của mình ở giữa cạnh dưới bàn (cân đối với ghế trên) ========
+function placeMeAv(){try{const t=$('table');if(!t)return;const a=document.querySelector('#meInfo #meAvM');if(innerWidth>700){const o=t.querySelector('.meseat');if(o&&a)o.remove();else if(o){o.classList.remove('meseat');const mi=$('meInfo');mi&&mi.prepend(o);}return;}if(!a)return;
+ const old=t.querySelector('.meseat');if(old)old.remove();a.classList.add('meseat');t.appendChild(a);
+ const lab=a.querySelector('.msn');if(!lab)a.insertAdjacentHTML('beforeend',`<span class="msn">Bạn</span>`);}catch(e){}}
+const _r45=render;render=function(){const r=_r45.apply(this,arguments);placeMeAv();return r;};
+const _rm45=renderMe;renderMe=function(){const r=_rm45.apply(this,arguments);placeMeAv();return r;};
