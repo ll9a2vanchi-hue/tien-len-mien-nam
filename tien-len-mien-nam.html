@@ -620,6 +620,13 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 .pk .mgseat .cgbx{display:none}.pkstk{display:flex;align-items:center;gap:2px;color:#ffe48a!important;font-weight:700}.pkstk svg{width:10px;height:10px}
 .tile.allow{position:relative}.tile.allow .altl{display:block;font-size:10px;line-height:1.1;opacity:.85;white-space:nowrap}.tile.allow.ok{box-shadow:0 0 0 2px #7dffb0,0 0 14px #7dffb088;animation:xetp 1.4s infinite}.tile.allow.lock{opacity:.6}.tile.allow.done .altl{color:#ffe48a}
 .alwbig{text-align:center;font-size:30px;font-weight:900;color:#ffe48a;display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0}.alwbig svg{width:30px;height:30px}
+#modePick.m3{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}#modePick.m3 button{font-size:11.5px;padding:8px 2px}
+#home .tiles{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}#home .tiles .tile{min-width:0;width:100%;box-sizing:border-box;padding:9px 2px;font-size:10.5px;gap:4px;justify-content:flex-start}
+#home .tiles .tile>span:not(.cntb):not(.dot):not(.alic){white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.2}
+#home .tiles .tile.allow{grid-column:1/-1;order:99;flex-direction:row;justify-content:center;gap:10px;padding:8px 12px;font-size:13px}
+#home .tiles .tile.allow .altl{font-size:12px;font-weight:700}.alic{font-size:24px;line-height:1}
+#home .tiles .tile:not(.allow)>:first-child{height:26px!important;max-height:26px;font-size:22px!important;line-height:26px;display:flex;align-items:center;justify-content:center;overflow:visible;flex:none}#home .tiles .tile:not(.allow)>:first-child>*{max-height:26px;max-width:30px}
+@media(max-width:399px){#home .tiles .tile{font-size:10px;letter-spacing:-.2px;padding:9px 1px}}@media(min-width:420px){#home .tiles .tile{font-size:11.5px}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -660,7 +667,7 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='01beb54d38';
+const APP_VER='53cdb87047';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -2946,8 +2953,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.46';
+const APP_V='1.47';
 const CHANGELOG=[
+ ['1.47','11/10',['Giao diện màn hình chính gọn hơn: chọn chế độ 4×2, các ô công cụ đều nhau, Gói trợ cấp thành dải ngang riêng với biểu tượng 💰']],
  ['1.46','11/10',['Gói trợ cấp: khi hết sạch xu (đúng 0), nhận 1.000 xu × cấp, 1 lần mỗi ngày — ô mới ở màn hình chính, có đếm ngược, đồng bộ đám mây chống nhận 2 lần','Xì tố: bài to rõ hơn (bài của bạn và bài ngửa của máy)','Poker: bỏ số xu bị hiện trùng ở ghế máy']],
  ['1.45','11/10',['Chế độ mới: Poker Texas Hold’em — 2-6 người, mù nhỏ/mù lớn, flop/turn/river, xem/theo/tố/tố hũ/tất tay, hũ phụ, máy chơi theo sức bài + ngẫu nhiên','Domino: dây nối dạng rắn quay đầu ở mép, đôi đặt dọc, tự co giãn, hai đầu mở phát sáng; chọn quân rồi bấm Đánh, chọn đầu trái/phải, nút Bốc/Bỏ lượt, quân không hợp mờ đi','Xì tố: tố x1–x10 tiền xâu, Úp/Theo/Xem, Tố tất (xác nhận), máy cũng tố tất; chia bài từng vòng có bay bài + lật','Bầu cua: chip bay vòng cung từ người đặt tới ô cược, máy đặt lần lượt','Huy hiệu/nhiệm vụ/danh hiệu Poker']],
  ['1.44','11/10',['Chế độ mới: Xì tố 32 lá (7→A) — 2-5 người, lá tẩy úp, 4 vòng cược Xem/Theo/Tố/Bỏ, tất tay có hũ phụ, máy cược theo sức bài','Bầu cua: mỗi người một màu, chip có avatar trên từng ô, chip thắng bay về chủ, chip thua về nhà cái','Huy hiệu/nhiệm vụ/danh hiệu Xì tố']],
@@ -3621,11 +3629,11 @@ addEventListener('resize',()=>{if(MG.g==='domino')dmSnake();});
 // ===================== Gói trợ cấp (chỉ khi hết xu, 1 lần/ngày, 1000 × cấp) =====================
 function allowLeft(){const d=new Date();const n=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);const s=Math.max(0,Math.floor((n-d)/1000));return String(Math.floor(s/3600)).padStart(2,'0')+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 function allowState(){if(PR.allowDay===dayKey())return 'done';if((PR.xu|0)!==0)return 'lock';return 'ok';}
-function allowTileHTML(){const s=allowState();return `${I('gift')}<span>Gói trợ cấp</span><small class="altl">${s==='ok'?'+'+kxu(allowanceAmt(PR))+' xu':s==='done'?'Làm mới sau '+allowLeft():'Chỉ nhận khi hết xu'}</small>`;}
+function allowTileHTML(){const s=allowState();return `<span class="alic">💰</span><span>Gói trợ cấp</span><small class="altl">${s==='ok'?'+'+kxu(allowanceAmt(PR))+' xu':s==='done'?'Làm mới sau '+allowLeft():'Chỉ nhận khi hết xu'}</small>`;}
 const _rh60=renderHome;renderHome=function(){_rh60.apply(this,arguments);try{const t=document.querySelector('#home .tiles');if(!t)return;let b=$('allowTile');if(!b){b=document.createElement('button');b.id='allowTile';b.onclick=()=>openAllowance();t.appendChild(b);}b.className='alt tile allow '+allowState();b.innerHTML=allowTileHTML();}catch(e){}};
 setInterval(()=>{const b=$('allowTile');if(b&&document.body.classList.contains('athome')){b.className='alt tile allow '+allowState();b.innerHTML=allowTileHTML();}},1000);
 function openAllowance(){const s=allowState();const amt=allowanceAmt(PR);
- modal(`<h3>${I('gift')} Gói trợ cấp</h3><div class="alwbig">${I('coin')} ${fmt(amt)} xu</div><p class="small" style="text-align:center">1.000 xu × cấp ${levelInfo(PR.xp).level}. Chỉ nhận được khi số dư <b>đúng 0 xu</b>, tối đa 1 lần mỗi ngày.</p>
+ modal(`<h3>💰 Gói trợ cấp</h3><div class="alwbig">${I('coin')} ${fmt(amt)} xu</div><p class="small" style="text-align:center">1.000 xu × cấp ${levelInfo(PR.xp).level}. Chỉ nhận được khi số dư <b>đúng 0 xu</b>, tối đa 1 lần mỗi ngày.</p>
  ${s==='ok'?`<button class="cgbig" id="alwGo" onclick="doAllowance()">Nhận ${fmt(amt)} xu</button>`:s==='done'?`<p style="text-align:center">Hôm nay bạn đã nhận rồi.<br>Làm mới sau <b id="alwCd">${allowLeft()}</b></p>`:`<p style="text-align:center">🔒 Chỉ nhận khi hết xu (hiện có ${fmt(PR.xu)} xu)</p>`}`);
  if(s==='done'){const iv=setInterval(()=>{const e=$('alwCd');if(!e)return clearInterval(iv);e.textContent=allowLeft();},1000);}}
 let _alwBusy=false;
@@ -3635,7 +3643,7 @@ async function doAllowance(){if(_alwBusy)return;_alwBusy=true;const btn=$('alwGo
   const got=claimAllowance(PR);if(!got){saveP();closeModal();toast(PR.allowDay===dayKey()?'Hôm nay bạn đã nhận trợ cấp rồi':'Chỉ nhận khi hết xu');return;}
   saveP();try{if(typeof cloudPush==='function'&&USER)await cloudPush(true);}catch(e){}
   const from=btn?btn.getBoundingClientRect():null;closeModal();sfx('cgJingle');try{coinFly(from||{left:innerWidth/2-40,top:innerHeight/2,width:80,height:40},got);}catch(e){}
-  try{const r=xuAnchor();floatText(r.left,r.top+r.height+10,'+'+fmt(got)+' xu','gain');}catch(e){}try{animCoin&&animCoin(got);}catch(e){}toast(`${I('gift')} Nhận gói trợ cấp +${fmt(got)} xu`);try{renderHome();}catch(e){}
+  try{const r=xuAnchor();floatText(r.left,r.top+r.height+10,'+'+fmt(got)+' xu','gain');}catch(e){}try{animCoin&&animCoin(got);}catch(e){}toast(`💰 Nhận gói trợ cấp +${fmt(got)} xu`);try{renderHome();}catch(e){}
  }finally{_alwBusy=false;}}
 // nhắc khi vừa hết xu sau ván
 let _alwAsked='';

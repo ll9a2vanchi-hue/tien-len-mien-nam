@@ -620,6 +620,13 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 .pk .mgseat .cgbx{display:none}.pkstk{display:flex;align-items:center;gap:2px;color:#ffe48a!important;font-weight:700}.pkstk svg{width:10px;height:10px}
 .tile.allow{position:relative}.tile.allow .altl{display:block;font-size:10px;line-height:1.1;opacity:.85;white-space:nowrap}.tile.allow.ok{box-shadow:0 0 0 2px #7dffb0,0 0 14px #7dffb088;animation:xetp 1.4s infinite}.tile.allow.lock{opacity:.6}.tile.allow.done .altl{color:#ffe48a}
 .alwbig{text-align:center;font-size:30px;font-weight:900;color:#ffe48a;display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0}.alwbig svg{width:30px;height:30px}
+#modePick.m3{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}#modePick.m3 button{font-size:11.5px;padding:8px 2px}
+#home .tiles{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}#home .tiles .tile{min-width:0;width:100%;box-sizing:border-box;padding:9px 2px;font-size:10.5px;gap:4px;justify-content:flex-start}
+#home .tiles .tile>span:not(.cntb):not(.dot):not(.alic){white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.2}
+#home .tiles .tile.allow{grid-column:1/-1;order:99;flex-direction:row;justify-content:center;gap:10px;padding:8px 12px;font-size:13px}
+#home .tiles .tile.allow .altl{font-size:12px;font-weight:700}.alic{font-size:24px;line-height:1}
+#home .tiles .tile:not(.allow)>:first-child{height:26px!important;max-height:26px;font-size:22px!important;line-height:26px;display:flex;align-items:center;justify-content:center;overflow:visible;flex:none}#home .tiles .tile:not(.allow)>:first-child>*{max-height:26px;max-width:30px}
+@media(max-width:399px){#home .tiles .tile{font-size:10px;letter-spacing:-.2px;padding:9px 1px}}@media(min-width:420px){#home .tiles .tile{font-size:11.5px}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>

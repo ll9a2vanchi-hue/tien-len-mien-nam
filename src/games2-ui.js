@@ -263,11 +263,11 @@ addEventListener('resize',()=>{if(MG.g==='domino')dmSnake();});
 // ===================== Gói trợ cấp (chỉ khi hết xu, 1 lần/ngày, 1000 × cấp) =====================
 function allowLeft(){const d=new Date();const n=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);const s=Math.max(0,Math.floor((n-d)/1000));return String(Math.floor(s/3600)).padStart(2,'0')+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 function allowState(){if(PR.allowDay===dayKey())return 'done';if((PR.xu|0)!==0)return 'lock';return 'ok';}
-function allowTileHTML(){const s=allowState();return `${I('gift')}<span>Gói trợ cấp</span><small class="altl">${s==='ok'?'+'+kxu(allowanceAmt(PR))+' xu':s==='done'?'Làm mới sau '+allowLeft():'Chỉ nhận khi hết xu'}</small>`;}
+function allowTileHTML(){const s=allowState();return `<span class="alic">💰</span><span>Gói trợ cấp</span><small class="altl">${s==='ok'?'+'+kxu(allowanceAmt(PR))+' xu':s==='done'?'Làm mới sau '+allowLeft():'Chỉ nhận khi hết xu'}</small>`;}
 const _rh60=renderHome;renderHome=function(){_rh60.apply(this,arguments);try{const t=document.querySelector('#home .tiles');if(!t)return;let b=$('allowTile');if(!b){b=document.createElement('button');b.id='allowTile';b.onclick=()=>openAllowance();t.appendChild(b);}b.className='alt tile allow '+allowState();b.innerHTML=allowTileHTML();}catch(e){}};
 setInterval(()=>{const b=$('allowTile');if(b&&document.body.classList.contains('athome')){b.className='alt tile allow '+allowState();b.innerHTML=allowTileHTML();}},1000);
 function openAllowance(){const s=allowState();const amt=allowanceAmt(PR);
- modal(`<h3>${I('gift')} Gói trợ cấp</h3><div class="alwbig">${I('coin')} ${fmt(amt)} xu</div><p class="small" style="text-align:center">1.000 xu × cấp ${levelInfo(PR.xp).level}. Chỉ nhận được khi số dư <b>đúng 0 xu</b>, tối đa 1 lần mỗi ngày.</p>
+ modal(`<h3>💰 Gói trợ cấp</h3><div class="alwbig">${I('coin')} ${fmt(amt)} xu</div><p class="small" style="text-align:center">1.000 xu × cấp ${levelInfo(PR.xp).level}. Chỉ nhận được khi số dư <b>đúng 0 xu</b>, tối đa 1 lần mỗi ngày.</p>
  ${s==='ok'?`<button class="cgbig" id="alwGo" onclick="doAllowance()">Nhận ${fmt(amt)} xu</button>`:s==='done'?`<p style="text-align:center">Hôm nay bạn đã nhận rồi.<br>Làm mới sau <b id="alwCd">${allowLeft()}</b></p>`:`<p style="text-align:center">🔒 Chỉ nhận khi hết xu (hiện có ${fmt(PR.xu)} xu)</p>`}`);
  if(s==='done'){const iv=setInterval(()=>{const e=$('alwCd');if(!e)return clearInterval(iv);e.textContent=allowLeft();},1000);}}
 let _alwBusy=false;
@@ -277,7 +277,7 @@ async function doAllowance(){if(_alwBusy)return;_alwBusy=true;const btn=$('alwGo
   const got=claimAllowance(PR);if(!got){saveP();closeModal();toast(PR.allowDay===dayKey()?'Hôm nay bạn đã nhận trợ cấp rồi':'Chỉ nhận khi hết xu');return;}
   saveP();try{if(typeof cloudPush==='function'&&USER)await cloudPush(true);}catch(e){}
   const from=btn?btn.getBoundingClientRect():null;closeModal();sfx('cgJingle');try{coinFly(from||{left:innerWidth/2-40,top:innerHeight/2,width:80,height:40},got);}catch(e){}
-  try{const r=xuAnchor();floatText(r.left,r.top+r.height+10,'+'+fmt(got)+' xu','gain');}catch(e){}try{animCoin&&animCoin(got);}catch(e){}toast(`${I('gift')} Nhận gói trợ cấp +${fmt(got)} xu`);try{renderHome();}catch(e){}
+  try{const r=xuAnchor();floatText(r.left,r.top+r.height+10,'+'+fmt(got)+' xu','gain');}catch(e){}try{animCoin&&animCoin(got);}catch(e){}toast(`💰 Nhận gói trợ cấp +${fmt(got)} xu`);try{renderHome();}catch(e){}
  }finally{_alwBusy=false;}}
 // nhắc khi vừa hết xu sau ván
 let _alwAsked='';
