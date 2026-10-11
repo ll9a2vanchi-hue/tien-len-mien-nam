@@ -92,7 +92,7 @@ function nextTurn(){
  let p=G.turn;for(let k=0;k<4;k++){p=(p+1)%4;if(G.hands[p].length===0&&p!==G.curBy)continue;
   if(p===G.curBy){ // mọi người bỏ lượt: vòng mới
    G.cur=null;G.passed=[0,0,0,0];if(G.hands[p].length===0){let q=p;do{q=(q+1)%4}while(G.hands[q].length===0);G.turn=q;}else G.turn=p;
-   G.curBy=null;pushUnder(G.pile);G.prev=G.pile;G.pile=[];G.hist=[{txt:`— Vòng mới: ${NAMES[G.turn]} cầm cái —`,cls:'ps'}];return;}
+   const sai=G.hands[p].length===0;G.curBy=null;pushUnder(G.pile);G.prev=G.pile;G.pile=[];G.hist=[{txt:sai?`— ${NAMES[G.turn]} hưởng sái —`:`— Vòng mới: ${NAMES[G.turn]} cầm cái —`,cls:'ps',sai}];return;}
   if(G.passed[p]||G.hands[p].length===0)continue;G.turn=p;return;}
 }
 function doPlay(p,cards,srcRects){

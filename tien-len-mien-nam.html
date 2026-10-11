@@ -502,6 +502,8 @@ svg.sva .usp{transform-box:fill-box;transform-origin:center;animation:utw 1.8s e
 #jrCard{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translateX(-50%);width:min(360px,92vw);z-index:72;background:linear-gradient(160deg,#3a2a10fa,#140e06fa);border:2px solid #f4c542;border-radius:18px;padding:12px;box-shadow:0 0 30px #f4c54266,0 10px 30px #000c;animation:jrIn .35s}
 #jrCard .jrh{font-weight:800;color:#ffd84d;font-size:17px;margin-bottom:6px}#jrCard .jrp{display:flex;gap:10px;align-items:center}#jrCard .jrp .av{width:52px;height:52px;font-size:28px}#jrCard .row{display:flex;gap:8px}#jrCard .row button{flex:1;margin:0}
 @keyframes jrIn{from{transform:translateX(-50%) scale(.8);opacity:0}}#pplTile{position:relative}.pplc{position:absolute;top:6px;right:8px}.cntb{background:#e53935;color:#fff;border-radius:10px;padding:0 6px;font-size:11px;font-weight:800;margin-left:4px}
+#pile.lastfin{filter:drop-shadow(0 0 10px #ffd84d)}#pile.lastfin::after{content:attr(data-lab);position:absolute;left:50%;bottom:-22px;transform:translateX(-50%);white-space:nowrap;font-size:11px;font-weight:700;color:#ffe48a;background:#000a;border:1px solid #f4c54288;border-radius:10px;padding:1px 8px;pointer-events:none}
+#pile{position:relative}.fintag{position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:3;font-size:10px;font-weight:800;color:#2a1a00;background:linear-gradient(#ffe48a,#f4c542);border-radius:8px;padding:0 6px;white-space:nowrap;pointer-events:none}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -542,7 +544,7 @@ svg.sva .usp{transform-box:fill-box;transform-origin:center;animation:utw 1.8s e
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='abe4b64ebb';
+const APP_VER='2cf8140d7a';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -920,7 +922,7 @@ function oActive(st){return [0,1,2,3].filter(p=>st.seats[p]&&st.hands[p].length>
 function oSettle(st){if(!st.pend||typeof chopSettle!=='function'){st.pend=null;return;}const r=chopSettle(st.pend,null);st.pend=null;if(r&&r.amount)st.settle=Object.assign(r,{id:((st.settle&&st.settle.id)||0)+1});}
 function oNext(st){let p=st.turn;for(let k=0;k<4;k++){p=(p+1)%4;if(!st.seats[p])continue;if(st.hands[p].length===0&&p!==st.curBy)continue;
   if(p===st.curBy){oSettle(st);st.cur=null;st.passed=[0,0,0,0];if(st.hands[p].length===0){let q=p;do{q=(q+1)%4}while(!st.seats[q]||st.hands[q].length===0);st.turn=q;}else st.turn=p;
-   st.curBy=null;st.prev=st.pile;st.pile=[];st.hist=[{txt:`— Vòng mới: ${seatName(st,st.turn)} cầm cái —`,cls:'ps'}];return;}
+   const sai=st.hands[p].length===0;st.curBy=null;st.prev=st.pile;st.pile=[];st.hist=[{txt:sai?`— ${seatName(st,st.turn)} hưởng sái —`:`— Vòng mới: ${seatName(st,st.turn)} cầm cái —`,cls:'ps',sai,saiSeat:sai?st.turn:null}];return;}
   if(st.passed[p]||st.hands[p].length===0)continue;st.turn=p;return;}}
 // Áp dụng hành động của ghế `seat`. Trả {ok,err}
 function oAct(st,seat,a){if(!st||st.over)return{ok:false,err:'Ván đã kết thúc'};if(seat!==st.turn)return{ok:false,err:'Chưa tới lượt'};
@@ -1181,7 +1183,12 @@ function thuiValue(hand,bet){hand=(hand||[]).filter(c=>c>=0);const out={amount:0
  for(let r=0;r<=9;r++){const ok=[r,r+1,r+2].every(x=>by[x]&&by[x].filter(c=>!used.has(c)).length>=2);if(ok){[r,r+1,r+2].forEach(x=>by[x].filter(c=>!used.has(c)).slice(0,2).forEach(c=>{used.add(c);out.cards.push(c);}));out.amount+=bet;out.items.push({k:'3 đôi thông',v:bet});r+=2;}}
  out.amount=Math.round(out.amount);return out;}
 // hands: mảng theo ghế; rank: thứ tự về; trả [{payer,receiver,amount,cards,items}]
-function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=!!(winPlay&&winPlay.map(Number).includes(0));return rank.slice(1).map(p=>{const v=thuiValue(hands[p],bet);if(b3){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}const chay=(hands[p]||[]).length===13;if(chay){v.amount+=2*bet;v.items.push({k:'cháy bài',v:2*bet});}return v.amount?{payer:p,receiver:w,amount:v.amount,cards:v.cards,items:v.items,b3,chay}:null;}).filter(Boolean);}
+// thúi/cháy: trả cho người về ngay trên mình; 3 bích về nhất: trả cho người nhất
+function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=!!(winPlay&&winPlay.map(Number).includes(0));const out=[];
+ rank.slice(1).forEach((p,j)=>{const above=rank[j];const v=thuiValue(hands[p],bet);const chay=(hands[p]||[]).length===13;if(chay){v.amount+=2*bet;v.items.push({k:'cháy bài',v:2*bet});}
+  if(b3&&above===w){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}
+  if(v.amount)out.push({payer:p,receiver:above,amount:v.amount,cards:v.cards,items:v.items,b3:b3&&above===w,chay});
+  if(b3&&above!==w)out.push({payer:p,receiver:w,amount:bet,cards:[],items:[{k:'3 bích về nhất',v:bet}],b3:true,chay:false});});return out;}
 // ======== Avatar SVG cao cấp (vẽ bằng SVG nội tuyến, chạy offline) ========
 const SVA={};
 function _g(id,a,b){return `<radialGradient id="${id}" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></radialGradient>`;}
@@ -1428,7 +1435,7 @@ function nextTurn(){
  let p=G.turn;for(let k=0;k<4;k++){p=(p+1)%4;if(G.hands[p].length===0&&p!==G.curBy)continue;
   if(p===G.curBy){ // mọi người bỏ lượt: vòng mới
    G.cur=null;G.passed=[0,0,0,0];if(G.hands[p].length===0){let q=p;do{q=(q+1)%4}while(G.hands[q].length===0);G.turn=q;}else G.turn=p;
-   G.curBy=null;pushUnder(G.pile);G.prev=G.pile;G.pile=[];G.hist=[{txt:`— Vòng mới: ${NAMES[G.turn]} cầm cái —`,cls:'ps'}];return;}
+   const sai=G.hands[p].length===0;G.curBy=null;pushUnder(G.pile);G.prev=G.pile;G.pile=[];G.hist=[{txt:sai?`— ${NAMES[G.turn]} hưởng sái —`:`— Vòng mới: ${NAMES[G.turn]} cầm cái —`,cls:'ps',sai}];return;}
   if(G.passed[p]||G.hands[p].length===0)continue;G.turn=p;return;}
 }
 function doPlay(p,cards,srcRects){
@@ -2287,7 +2294,7 @@ function finGate(key){if(FIN.g!==key)return true;if(FIN.active)return false;if(F
 const _srF=showResult;showResult=function(r){if(G&&!G.online&&!finGate(G))return;return _srF(r);};
 const _sorF=showOnlineResult;showOnlineResult=function(st){if(!finGate(ONL._finKey))return;const r=_sorF(st);try{rewBox();}catch(e){}return r;};
 const _egF=endGame;endGame=function(i){const r=_egF(i);try{if(G&&!G.online&&!i){const g=G;startFinal(g,G.rank?G.rank[0]:G.finished[0],()=>{if(G===g&&!modalOpen())showResult(g.rank);});}}catch(e){}return r;};
-const _dpF=doPlay;doPlay=function(p,c,s){const r=_dpF(p,c,s);try{if(G&&!G.online&&!G.over&&G.hands[p]&&G.hands[p].length===0){const k=G.finished.length;finCaption((p===0?'Bạn':NAMES[p])+' về '+['nhất','nhì','ba'][k-1]+'!',1900,k===1);_holdUntil=Date.now()+1400;}}catch(e){}return r;};
+const _dpF=doPlay;doPlay=function(p,c,s){try{if(G&&!G.online&&G.hands[p]&&G.hands[p].length===(c||[]).length)_holdUntil=Date.now()+1600;}catch(e){}const r=_dpF(p,c,s);try{if(G&&!G.online&&!G.over&&G.hands[p]&&G.hands[p].length===0){const k=G.finished.length;finCaption((p===0?'Bạn':NAMES[p])+' về '+['nhất','nhì','ba'][k-1]+'!',1900,k===1);_holdUntil=Date.now()+1400;}}catch(e){}return r;};
 const _stF=step;step=function(){const w=_holdUntil-Date.now();if(w>0&&G&&!G.online){setTimeout(()=>step(),w);return;}return _stF();};
 let _finHist=-1;const _osF=onlineState;onlineState=function(st,fh){_osF(st,fh);try{if(!st||!st.seats)return;const me=st.seats.findIndex(s=>s&&s.uid===USER.id);if(me<0)return;const L=g=>(g-me+4)%4;
  if(st.over&&st.rank&&!st.instant){const key=JSON.stringify(st.rank)+st.hist.length;if(ONL._finKey!==key){ONL._finKey=key;startFinal(key,L(st.rank[0]),()=>showOnlineResult(st));}}
@@ -2680,8 +2687,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.32';
+const APP_V='1.33';
 const CHANGELOG=[
+ ['1.33','11/10',['Thúi heo/hàng và cháy bài: trả cho người về ngay trên mình (bét trả ba, ba trả nhì, nhì trả nhất); 3 bích về nhất vẫn trả người nhất','Sửa hưởng sái: giữ bài cuối của người vừa về, bắt bài hiển thị đúng, chữ “X hưởng sái”, nhãn Nhất/Nhì trên ghế']],
  ['1.32','11/10',['Xin vào chơi: vào bàn của người đang chơi với máy, bàn chuyển thành phòng online','Ô “Người online” ở màn hình chính: bạn bè, người đang online, nhắn tin, mời, chặn','Bàn 10k: thắng Cao thủ được thưởng thêm XP (không thêm xu)','Khung chat mới dạng ngăn kéo: tab Bàn / Tin nhắn riêng, bong bóng có avatar + giờ, câu nhanh, emoji, không che bài']],
  ['1.31','11/10',['Mức cược 10.000 khi chơi với máy: cả bàn là Cao thủ, thưởng thêm XP khi thắng (không thưởng thêm xu)']],
  ['1.30','11/10',['6 avatar Tối thượng 500.000 xu: Rồng Vàng Thăng Thiên, Phượng Hoàng Lửa Bất Tử, Thần Tài Kim Cương, Hổ Bạch Kim, Long Vương Đại Dương, Đổ Thánh Vô Song — hào quang, tia sáng xoay, lấp lánh, khung chuyển màu','Giá avatar mới: Hiếm 20k–50k, Sử thi 100k, Huyền thoại 500k (cần cấp 20/35); Tối thượng cần cấp 45','Đồ đã mua giữ nguyên']],
@@ -2822,5 +2830,13 @@ const _od42=onDM;onDM=function(m){_od42(m);if(CS.open&&CS.tab==='dm'){const p=m&
 const _dp42=dmPopup;dmPopup=function(peer){if(CS.open&&CS.tab==='dm'&&CS.peer===peer)return;_dp42(peer);const d=$('dmPop');if(d){const t=d.querySelector('.dmt');if(t){t.style.cursor='pointer';t.onclick=()=>openChatSheet('dm',peer);}}};
 function chatBadge(){const n=(CS.unread||0)+dmUnread();['bChat','bEmoChat'].forEach(id=>{const b=$(id);if(b){b.dataset.n=n||'';b.classList.toggle('hasn',!!n);}});document.querySelectorAll('.emochat').forEach(b=>{b.dataset.n=n||'';b.classList.toggle('hasn',!!n);});}
 setInterval(chatBadge,2000);
+// ======== v43: hưởng sái + làm rõ bài cuối của người đã về ========
+const _nt43=nextTurn;nextTurn=function(){const r=_nt43.apply(this,arguments);try{if(G&&!G.online&&!G.over&&G.hist&&G.hist[0]&&G.hist[0].sai&&G.hist[0]._shown!==1){G.hist[0]._shown=1;finCaption(`${G.turn===0?'Bạn':NAMES[G.turn]} hưởng sái`,1700,false);sfx('flip');}}catch(e){}return r;};
+let _sai43=null;const _os43=onlineState;onlineState=function(st,fh){_os43(st,fh);try{if(st&&!st.over&&st.hist&&st.hist[0]&&st.hist[0].sai){const k=(st.dealId||'')+':'+st.rev+':'+st.turn+':'+st.hist.length;const id=(st.dealId||'')+'|'+(st.prev||[]).join(',');if(_sai43!==id){_sai43=id;const me=st.seats.findIndex(s=>s&&s.uid===USER.id);const nm=st.turn===me?'Bạn':((st.seats[st.turn]||{}).name||'');finCaption(nm+' hưởng sái',1700,false);}}}catch(e){}};
+const _r43=render;render=function(){const r=_r43.apply(this,arguments);try{const pl=$('pile');if(pl&&G){const by=G.curBy;const fin=by!=null&&G.hands[by]&&G.hands[by].length===0&&!G.over;pl.classList.toggle('lastfin',!!fin);
+ if(fin){const nm=by===0?'Bạn':NAMES[by];pl.dataset.lab='Bài cuối của '+nm+' · '+(['nhất','nhì','ba'][(G.finished||[]).indexOf(by)]?'về '+['nhất','nhì','ba'][(G.finished||[]).indexOf(by)]:'');}else delete pl.dataset.lab;
+ // nhãn thứ hạng trên ghế người đã về
+ (G.finished||[]).forEach((p,i)=>{const el=p===0?$('meAvM')||document.querySelector('#meInfo'):$('s'+p);if(!el)return;let t=el.querySelector('.fintag');if(!t){t=document.createElement('span');t.className='fintag';el.appendChild(t);}t.textContent=['Nhất','Nhì','Ba','Bét'][i];});
+ [0,1,2,3].forEach(p=>{if((G.finished||[]).includes(p))return;const el=p===0?$('meAvM')||document.querySelector('#meInfo'):$('s'+p);const t=el&&el.querySelector('.fintag');if(t)t.remove();});}}catch(e){}return r;};
 boot();
 </script></body></html>

@@ -342,7 +342,7 @@ function finGate(key){if(FIN.g!==key)return true;if(FIN.active)return false;if(F
 const _srF=showResult;showResult=function(r){if(G&&!G.online&&!finGate(G))return;return _srF(r);};
 const _sorF=showOnlineResult;showOnlineResult=function(st){if(!finGate(ONL._finKey))return;const r=_sorF(st);try{rewBox();}catch(e){}return r;};
 const _egF=endGame;endGame=function(i){const r=_egF(i);try{if(G&&!G.online&&!i){const g=G;startFinal(g,G.rank?G.rank[0]:G.finished[0],()=>{if(G===g&&!modalOpen())showResult(g.rank);});}}catch(e){}return r;};
-const _dpF=doPlay;doPlay=function(p,c,s){const r=_dpF(p,c,s);try{if(G&&!G.online&&!G.over&&G.hands[p]&&G.hands[p].length===0){const k=G.finished.length;finCaption((p===0?'Bạn':NAMES[p])+' về '+['nhất','nhì','ba'][k-1]+'!',1900,k===1);_holdUntil=Date.now()+1400;}}catch(e){}return r;};
+const _dpF=doPlay;doPlay=function(p,c,s){try{if(G&&!G.online&&G.hands[p]&&G.hands[p].length===(c||[]).length)_holdUntil=Date.now()+1600;}catch(e){}const r=_dpF(p,c,s);try{if(G&&!G.online&&!G.over&&G.hands[p]&&G.hands[p].length===0){const k=G.finished.length;finCaption((p===0?'Bạn':NAMES[p])+' về '+['nhất','nhì','ba'][k-1]+'!',1900,k===1);_holdUntil=Date.now()+1400;}}catch(e){}return r;};
 const _stF=step;step=function(){const w=_holdUntil-Date.now();if(w>0&&G&&!G.online){setTimeout(()=>step(),w);return;}return _stF();};
 let _finHist=-1;const _osF=onlineState;onlineState=function(st,fh){_osF(st,fh);try{if(!st||!st.seats)return;const me=st.seats.findIndex(s=>s&&s.uid===USER.id);if(me<0)return;const L=g=>(g-me+4)%4;
  if(st.over&&st.rank&&!st.instant){const key=JSON.stringify(st.rank)+st.hist.length;if(ONL._finKey!==key){ONL._finKey=key;startFinal(key,L(st.rank[0]),()=>showOnlineResult(st));}}
@@ -735,8 +735,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.32';
+const APP_V='1.33';
 const CHANGELOG=[
+ ['1.33','11/10',['Thúi heo/hàng và cháy bài: trả cho người về ngay trên mình (bét trả ba, ba trả nhì, nhì trả nhất); 3 bích về nhất vẫn trả người nhất','Sửa hưởng sái: giữ bài cuối của người vừa về, bắt bài hiển thị đúng, chữ “X hưởng sái”, nhãn Nhất/Nhì trên ghế']],
  ['1.32','11/10',['Xin vào chơi: vào bàn của người đang chơi với máy, bàn chuyển thành phòng online','Ô “Người online” ở màn hình chính: bạn bè, người đang online, nhắn tin, mời, chặn','Bàn 10k: thắng Cao thủ được thưởng thêm XP (không thêm xu)','Khung chat mới dạng ngăn kéo: tab Bàn / Tin nhắn riêng, bong bóng có avatar + giờ, câu nhanh, emoji, không che bài']],
  ['1.31','11/10',['Mức cược 10.000 khi chơi với máy: cả bàn là Cao thủ, thưởng thêm XP khi thắng (không thưởng thêm xu)']],
  ['1.30','11/10',['6 avatar Tối thượng 500.000 xu: Rồng Vàng Thăng Thiên, Phượng Hoàng Lửa Bất Tử, Thần Tài Kim Cương, Hổ Bạch Kim, Long Vương Đại Dương, Đổ Thánh Vô Song — hào quang, tia sáng xoay, lấp lánh, khung chuyển màu','Giá avatar mới: Hiếm 20k–50k, Sử thi 100k, Huyền thoại 500k (cần cấp 20/35); Tối thượng cần cấp 45','Đồ đã mua giữ nguyên']],
@@ -877,3 +878,11 @@ const _od42=onDM;onDM=function(m){_od42(m);if(CS.open&&CS.tab==='dm'){const p=m&
 const _dp42=dmPopup;dmPopup=function(peer){if(CS.open&&CS.tab==='dm'&&CS.peer===peer)return;_dp42(peer);const d=$('dmPop');if(d){const t=d.querySelector('.dmt');if(t){t.style.cursor='pointer';t.onclick=()=>openChatSheet('dm',peer);}}};
 function chatBadge(){const n=(CS.unread||0)+dmUnread();['bChat','bEmoChat'].forEach(id=>{const b=$(id);if(b){b.dataset.n=n||'';b.classList.toggle('hasn',!!n);}});document.querySelectorAll('.emochat').forEach(b=>{b.dataset.n=n||'';b.classList.toggle('hasn',!!n);});}
 setInterval(chatBadge,2000);
+// ======== v43: hưởng sái + làm rõ bài cuối của người đã về ========
+const _nt43=nextTurn;nextTurn=function(){const r=_nt43.apply(this,arguments);try{if(G&&!G.online&&!G.over&&G.hist&&G.hist[0]&&G.hist[0].sai&&G.hist[0]._shown!==1){G.hist[0]._shown=1;finCaption(`${G.turn===0?'Bạn':NAMES[G.turn]} hưởng sái`,1700,false);sfx('flip');}}catch(e){}return r;};
+let _sai43=null;const _os43=onlineState;onlineState=function(st,fh){_os43(st,fh);try{if(st&&!st.over&&st.hist&&st.hist[0]&&st.hist[0].sai){const k=(st.dealId||'')+':'+st.rev+':'+st.turn+':'+st.hist.length;const id=(st.dealId||'')+'|'+(st.prev||[]).join(',');if(_sai43!==id){_sai43=id;const me=st.seats.findIndex(s=>s&&s.uid===USER.id);const nm=st.turn===me?'Bạn':((st.seats[st.turn]||{}).name||'');finCaption(nm+' hưởng sái',1700,false);}}}catch(e){}};
+const _r43=render;render=function(){const r=_r43.apply(this,arguments);try{const pl=$('pile');if(pl&&G){const by=G.curBy;const fin=by!=null&&G.hands[by]&&G.hands[by].length===0&&!G.over;pl.classList.toggle('lastfin',!!fin);
+ if(fin){const nm=by===0?'Bạn':NAMES[by];pl.dataset.lab='Bài cuối của '+nm+' · '+(['nhất','nhì','ba'][(G.finished||[]).indexOf(by)]?'về '+['nhất','nhì','ba'][(G.finished||[]).indexOf(by)]:'');}else delete pl.dataset.lab;
+ // nhãn thứ hạng trên ghế người đã về
+ (G.finished||[]).forEach((p,i)=>{const el=p===0?$('meAvM')||document.querySelector('#meInfo'):$('s'+p);if(!el)return;let t=el.querySelector('.fintag');if(!t){t=document.createElement('span');t.className='fintag';el.appendChild(t);}t.textContent=['Nhất','Nhì','Ba','Bét'][i];});
+ [0,1,2,3].forEach(p=>{if((G.finished||[]).includes(p))return;const el=p===0?$('meAvM')||document.querySelector('#meInfo'):$('s'+p);const t=el&&el.querySelector('.fintag');if(t)t.remove();});}}catch(e){}return r;};

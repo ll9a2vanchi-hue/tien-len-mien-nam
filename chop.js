@@ -20,5 +20,10 @@ function thuiValue(hand,bet){hand=(hand||[]).filter(c=>c>=0);const out={amount:0
  for(let r=0;r<=9;r++){const ok=[r,r+1,r+2].every(x=>by[x]&&by[x].filter(c=>!used.has(c)).length>=2);if(ok){[r,r+1,r+2].forEach(x=>by[x].filter(c=>!used.has(c)).slice(0,2).forEach(c=>{used.add(c);out.cards.push(c);}));out.amount+=bet;out.items.push({k:'3 đôi thông',v:bet});r+=2;}}
  out.amount=Math.round(out.amount);return out;}
 // hands: mảng theo ghế; rank: thứ tự về; trả [{payer,receiver,amount,cards,items}]
-function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=!!(winPlay&&winPlay.map(Number).includes(0));return rank.slice(1).map(p=>{const v=thuiValue(hands[p],bet);if(b3){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}const chay=(hands[p]||[]).length===13;if(chay){v.amount+=2*bet;v.items.push({k:'cháy bài',v:2*bet});}return v.amount?{payer:p,receiver:w,amount:v.amount,cards:v.cards,items:v.items,b3,chay}:null;}).filter(Boolean);}
+// thúi/cháy: trả cho người về ngay trên mình; 3 bích về nhất: trả cho người nhất
+function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=!!(winPlay&&winPlay.map(Number).includes(0));const out=[];
+ rank.slice(1).forEach((p,j)=>{const above=rank[j];const v=thuiValue(hands[p],bet);const chay=(hands[p]||[]).length===13;if(chay){v.amount+=2*bet;v.items.push({k:'cháy bài',v:2*bet});}
+  if(b3&&above===w){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}
+  if(v.amount)out.push({payer:p,receiver:above,amount:v.amount,cards:v.cards,items:v.items,b3:b3&&above===w,chay});
+  if(b3&&above!==w)out.push({payer:p,receiver:w,amount:bet,cards:[],items:[{k:'3 bích về nhất',v:bet}],b3:true,chay:false});});return out;}
 if(typeof module!=='undefined')module.exports={thuiValue,thuiSettle,isTwoCombo,isBombInfo,chopValue,chopStep,chopSettle};

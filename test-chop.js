@@ -19,10 +19,12 @@ console.log('pass',ok,'fail',bad);
  t(C.thuiValue([c(3,0),c(3,1),c(4,0),c(4,2),c(5,1),c(5,3)],200).amount===200,'thúi 3 đôi thông 1x');
  t(C.thuiValue([c(3,0),c(4,0),c(9,1)],100).amount===0,'không thúi');
  t(C.thuiValue([-1,-1],100).amount===0,'bài ẩn bỏ qua');
- const S=C.thuiSettle([[],[c(12,3)],[c(12,0),c(12,1)],[c(6,0)]],[0,2,1,3],100);t(S.length===2&&S.every(x=>x.receiver===0)&&S.find(x=>x.payer===1).amount===100&&S.find(x=>x.payer===2).amount===100,'settle trả người nhất');
- const B=C.thuiSettle([[],[c(6,0)],[c(12,3)],[]],[0,1,2,3],100,[0,4]);t(B.length===3&&B.find(x=>x.payer===1).amount===100&&B.find(x=>x.payer===2).amount===200&&B.every(x=>x.b3),'3 bích về nhất: mỗi người +1x');
+ const S=C.thuiSettle([[],[c(12,3)],[c(12,0),c(12,1)],[c(6,0)]],[0,2,1,3],100);t(S.length===2&&S.find(x=>x.payer===2).receiver===0&&S.find(x=>x.payer===1).receiver===2&&S.find(x=>x.payer===1).amount===100&&S.find(x=>x.payer===2).amount===100,'thúi trả người về ngay trên');
+ const B=C.thuiSettle([[],[c(6,0)],[c(12,3)],[]],[0,1,2,3],100,[0,4]);{const tot=q=>B.filter(x=>x.payer===q&&x.receiver===0).reduce((a,x)=>a+x.amount,0);t(tot(1)===100&&tot(2)===100&&tot(3)===100&&B.find(x=>x.payer===2&&x.receiver===1).amount===100,'3 bích: mỗi người +1x cho nhất; thúi trả người trên');}
  t(C.thuiSettle([[],[c(6,0)]],[0,1],100,[5]).length===0,'không 3 bích');}
 {const C=require('./chop.js');const t=(c,m)=>{console.log(c?'ok '+m:'FAIL '+m);if(!c)process.exitCode=1;};
  const h13=[1,2,5,9,13,17,21,25,29,33,37,41,45];/* có 2 đỏ? 45=rank11 -> không heo */const S=C.thuiSettle([[],h13,[6]],[0,2,1],100);const x=S.find(z=>z.payer===1);
  t(x&&x.chay&&x.amount===200,'cháy bài 2x cược');t(!S.find(z=>z.payer===2),'không cháy khi đã đánh');
  const h13b=h13.slice(0,12).concat([51]);const y=C.thuiSettle([[],h13b],[0,1],100)[0];t(y.amount===300&&y.chay,'cháy + thúi heo đỏ cộng dồn');}
+;{const C=require('./chop.js');const c=(r,s)=>r*4+s;const S=C.thuiSettle([[],[],[c(12,3)],[c(12,0)]],[0,1,2,3],100);
+ const ok=S.length===2&&S.find(x=>x.payer===3).receiver===2&&S.find(x=>x.payer===2).receiver===1;console.log(ok?'ok thúi chuỗi 4→3, 3→2':'FAIL chain');if(!ok)process.exitCode=1;}

@@ -20,7 +20,7 @@ function oActive(st){return [0,1,2,3].filter(p=>st.seats[p]&&st.hands[p].length>
 function oSettle(st){if(!st.pend||typeof chopSettle!=='function'){st.pend=null;return;}const r=chopSettle(st.pend,null);st.pend=null;if(r&&r.amount)st.settle=Object.assign(r,{id:((st.settle&&st.settle.id)||0)+1});}
 function oNext(st){let p=st.turn;for(let k=0;k<4;k++){p=(p+1)%4;if(!st.seats[p])continue;if(st.hands[p].length===0&&p!==st.curBy)continue;
   if(p===st.curBy){oSettle(st);st.cur=null;st.passed=[0,0,0,0];if(st.hands[p].length===0){let q=p;do{q=(q+1)%4}while(!st.seats[q]||st.hands[q].length===0);st.turn=q;}else st.turn=p;
-   st.curBy=null;st.prev=st.pile;st.pile=[];st.hist=[{txt:`— Vòng mới: ${seatName(st,st.turn)} cầm cái —`,cls:'ps'}];return;}
+   const sai=st.hands[p].length===0;st.curBy=null;st.prev=st.pile;st.pile=[];st.hist=[{txt:sai?`— ${seatName(st,st.turn)} hưởng sái —`:`— Vòng mới: ${seatName(st,st.turn)} cầm cái —`,cls:'ps',sai,saiSeat:sai?st.turn:null}];return;}
   if(st.passed[p]||st.hands[p].length===0)continue;st.turn=p;return;}}
 // Áp dụng hành động của ghế `seat`. Trả {ok,err}
 function oAct(st,seat,a){if(!st||st.over)return{ok:false,err:'Ván đã kết thúc'};if(seat!==st.turn)return{ok:false,err:'Chưa tới lượt'};
