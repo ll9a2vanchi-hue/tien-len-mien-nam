@@ -1,0 +1,13 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];let ok=0,bad=0;const t=(n,c)=>{c?ok++:(bad++,console.log('FAIL',n));};
+const p=await (await b.newContext({viewport:{width:461,height:1024},hasTouch:true})).newPage();p.on('pageerror',e=>errs.push(e.message));
+await p.goto('http://localhost:8765/index.html');await p.waitForTimeout(800);await p.evaluate(()=>{closeModal();openAccount();});await p.waitForTimeout(2500);
+await p.screenshot({path:'shots/v14-login.png'});t('forgot link',await p.locator('text=Quên mật khẩu?').count()===1);
+await p.evaluate(()=>{accMode='up';renderAcc();});await p.fill('#aEmail','x@y.vn');await p.fill('#aPass','abcdef');await p.fill('#aPass2','abcdeg');await p.waitForTimeout(150);
+t('mismatch msg',(await p.textContent('#pwMsg')).includes('không khớp'));await p.locator('.eye').first().tap();t('eye shows',await p.getAttribute('#aPass','type')==='text');
+await p.screenshot({path:'shots/v14-signup.png'});await p.evaluate(()=>doAuth('up'));t('blocks mismatch',(await p.textContent('#aErr')).includes('không khớp'));
+await p.fill('#aPass2','abcdef');await p.waitForTimeout(100);t('match msg',(await p.textContent('#pwMsg')).includes('khớp'));
+await p.evaluate(()=>{accMode='in';renderAcc();});await p.fill('#aEmail','bad');await p.evaluate(()=>doForgot());t('invalid email msg',(await p.textContent('#aErr')).includes('email'));
+t('vi rate limit',await p.evaluate(()=>viErr({message:'email rate limit exceeded',status:429}).includes('quá nhiều')));
+await p.evaluate(()=>openRecover());await p.fill('#aPass','123');await p.waitForTimeout(100);t('min len live',(await p.textContent('#pwMsg')).includes('6'));await p.screenshot({path:'shots/v14-recover.png'});
+console.log('pass',ok,'fail',bad,'errors',errs);await b.close();})();
