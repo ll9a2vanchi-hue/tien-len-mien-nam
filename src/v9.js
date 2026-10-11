@@ -220,3 +220,6 @@ const _rh17=renderHome;renderHome=function(){_rh17();const n=document.querySelec
 const _oa17=openAvatar;openAvatar=function(){_oa17();const h=document.querySelector('#modalIn h3');if(h&&h.insertAdjacentHTML)h.insertAdjacentHTML('afterend',`<div class="row"><span style="flex:1">Tên: <b>${esc(myName())}</b></span><button class="alt pencil" onclick="openRename()">${PENCIL} Đổi tên</button></div>`);};
 const _ol17=openLeaderboard;openLeaderboard=function(t){if(!PR.name&&typeof USER!=='undefined'&&USER&&!window._askedName){window._askedName=1;return openRename(()=>_ol17(t));}return _ol17(t);};
 const _oo17=openOnline;openOnline=function(){if(!PR.name&&typeof USER!=='undefined'&&USER&&!window._askedName2){window._askedName2=1;const a=arguments;return openRename(()=>_oo17.apply(this,a));}return _oo17.apply(this,arguments);};
+// ẩn bàn chờ khi có bất kỳ modal nào
+const _md18=modal;modal=function(){document.body.classList.add('mopen2');return _md18.apply(this,arguments);};
+const _cm18=closeModal;closeModal=function(){document.body.classList.remove('mopen2');return _cm18.apply(this,arguments);};

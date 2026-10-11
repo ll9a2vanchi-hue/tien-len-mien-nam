@@ -344,7 +344,9 @@ html,body{overflow-x:hidden}
 .pwrap{position:relative}.pwrap .inp{padding-right:46px}.pwrap .eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);margin:0;padding:4px 8px;min-width:0;background:transparent!important;border:none!important;box-shadow:none!important;font-size:18px;color:#ccc;opacity:.75}.pwrap .eye.on{opacity:1}
 .pwmsg{font-size:12px;min-height:16px;margin:2px 0}.pwmsg.bad{color:#ff8a80}.pwmsg.ok{color:#81c784}
 .linkbtn{background:none!important;border:none!important;box-shadow:none!important;color:#e9c45a!important;text-decoration:underline;font-size:13px;padding:4px!important;margin:0 0 6px!important;display:block}
-#startOv{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+body.mopen2 #startOv,body.athome #startOv{display:none!important}
+.tsel small{white-space:nowrap;font-size:11px;letter-spacing:-.2px}.tsel .ti{min-width:0}
+#startOv{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 #startOv .sbig{font-size:22px;font-weight:900;letter-spacing:1px;padding:16px 46px;border-radius:40px;background:linear-gradient(180deg,#ffe9a8,#e9c45a 45%,#b8862b);color:#3a2500;border:2px solid #fff3c4;box-shadow:0 0 0 4px #0006,0 0 28px #e9c45a99,0 10px 24px #000a;animation:spulse 1.6s ease-in-out infinite}
 @keyframes spulse{50%{box-shadow:0 0 0 4px #0006,0 0 44px #ffd84d,0 10px 24px #000a}}
 @media (prefers-reduced-motion:reduce){#startOv .sbig{animation:none}}
