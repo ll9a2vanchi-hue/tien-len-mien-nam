@@ -96,6 +96,9 @@ const BADGES=[
  BG('bcua_1','🦀','Tay bầu cua','Thắng 1 ván Bầu cua',200,1,s=>V(s,'bcuaWin')>=1,{series:'games',k:'bcuaWin',goal:1}),
  BG('bcua_2','🎲','Cao thủ bầu cua','Thắng 50 ván Bầu cua',2000,2,s=>V(s,'bcuaWin')>=50,{series:'games',k:'bcuaWin',goal:50}),
  BG('bcua_bao','🌪️','Bão!','Thắng khi 3 xúc xắc cùng mặt',1000,2,s=>V(s,'bcuaTriple')>=1,{series:'combo',k:'bcuaTriple',goal:1}),
+ BG('dom_1','🁫','Tay domino','Thắng 1 ván Domino',200,1,s=>V(s,'domWin')>=1,{series:'games',k:'domWin',goal:1}),
+ BG('dom_2','🀄','Cao thủ domino','Thắng 50 ván Domino',2000,2,s=>V(s,'domWin')>=50,{series:'games',k:'domWin',goal:50}),
+ BG('dom_bi','🧱','Chặn đứng','Thắng khi bàn bí',800,2,s=>V(s,'domBlockWin')>=1,{series:'combo',k:'domBlockWin',goal:1}),
  BG('sec_xibang','🅰️','Xì bàng!','Thắng bằng hai con Át',3000,3,s=>V(s,'xibang')>=1,{secret:true}),
  BG('sec_chain','⛓️','Chặt chồng','Chặt ngược lại người vừa chặt mình',2500,3,s=>V(s,'chain')>=1,{secret:true}),
  BG('sec_allin','🎲','Tất tay','Thắng ván khi số xu chỉ vừa đủ cược',2500,3,s=>V(s,'allin')>=1,{secret:true}),
@@ -106,7 +109,7 @@ const BADGE_TIER=[null,{name:'Đồng',col:'#cd7f32'},{name:'Bạc',col:'#c0c8d0
 const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu});
 const QUEST_POOL=[
  Q('play3','Chơi 3 ván','game',3,150),Q('play5','Chơi 5 ván','game',5,250),Q('win1','Về nhất 1 ván','win',1,200),Q('win2','Về nhất 2 ván','win',2,400),
- Q('demla1','Về nhất 1 ván Đếm lá','demlawin',1,300),Q('bcua1','Thắng 2 ván Bầu cua','bcuawin',2,250),Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
+ Q('demla1','Về nhất 1 ván Đếm lá','demlawin',1,300),Q('dom1','Thắng 1 ván Domino','domwin',1,300),Q('bcua1','Thắng 2 ván Bầu cua','bcuawin',2,250),Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
  Q('two3','Đánh ra 3 con heo (2)','two',3,200),Q('chop1','Chặt 1 heo','chop',1,400),
  Q('pairs10','Đánh 10 đôi','pair',10,300),Q('straight5l','Đánh 1 sảnh từ 5 lá','straight5',1,250),Q('pairseq1','Đánh 1 đôi thông','pairseq',1,350),
  Q('quad1','Đánh 1 tứ quý','quad',1,500),Q('win2p','Thắng 1 ván bàn 2 người','win2',1,200),Q('win3p','Thắng 1 ván bàn 3 người','win3',1,250),Q('win4p','Thắng 1 ván bàn 4 người','win4',1,300),
@@ -208,6 +211,7 @@ const TITLES=[
  {id:'top10',name:'Top 10 Server',badge:'lb10',tier:6,cat:'Xếp hạng'},{id:'top3',name:'Top Server Chí Tôn',badge:'lb3',tier:9,cat:'Xếp hạng'},
  {id:'diet_ct',name:'Diệt Cao Thủ',badge:'master25',tier:6,cat:'Thành tích'},{id:'ty_phu',name:'Tỷ Phú Sòng Bài',badge:'rich200k',tier:8,cat:'Thành tích'},
  {id:'vua_baucua',name:'Vua Bầu Cua',badge:'bcua_2',tier:5,cat:'Chế độ chơi'},
+ {id:'than_domino',name:'Thần Domino',badge:'dom_2',tier:5,cat:'Chế độ chơi'},
  {id:'chien_than',name:'Chiến Thần Bất Bại',badge:'streak10',tier:8,cat:'Thành tích'},
 ];
 const TITLE_MIGRATE={tan_thu:'tan_binh',tap_su:'tay_mo',tay_choi:'kiem_khach',lao_lang:'hiep_si',cao_thu:'cao_thu_an',bac_thay:'dai_su',than_bai:'than_bai_vd',huyen_thoai:'chi_ton',do_te:'do_te_heo',vua_toi_trang:'thien_menh',dai_gia:'phu_ho',bat_bai:'bat_bai_ct'};

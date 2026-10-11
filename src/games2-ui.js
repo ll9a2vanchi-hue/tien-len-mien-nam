@@ -62,3 +62,49 @@ function bcOpen(){const st=MG.st;if(st.phase!=='open')return;st.phase='done';st.
  else{const v=cgCap([0].concat(bv),PR.xu);me=v[0];v.slice(1).forEach((x,i)=>{bv[i]=x;MG.bxu[st.bots[i].name]=Math.max(0,(MG.bxu[st.bots[i].name]||0)+x);});st.ledger=st.bots.map((b,i)=>[b.name,-bv[i]]);}
  st.res={me,b:bv};const triple=st.dice[0]===st.dice[1]&&st.dice[1]===st.dice[2];st.msg=(me>0?`🎉 Bạn thắng +${fmt(me)} xu`:me<0?`Bạn thua ${fmt(me)} xu`:'Hòa')+(triple?' · Bão '+BC_NAME[st.dice[0]]+'!':'');
  const xp=mgEnd(me,{stats:triple&&me>0?['bcuaTriple']:[]});st.msg+=` · +${xp} XP`;bcR();}
+
+// ===================== DOMINO =====================
+MODES.push(['domino','Domino','🁫']);
+const DM_PIPS={0:[],1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+function dmHalf(n){return `<span class="dmh">${[...Array(9).keys()].map(k=>`<i class="${DM_PIPS[n].includes(k)?'on':''}"></i>`).join('')}</span>`;}
+function dmTileH(a,b,vert,cls,on){return `<div class="dmt ${vert?'v':''} ${cls||''}" ${on?`onclick="${on}"`:''}>${dmHalf(a)}${dmHalf(b)}</div>`;}
+const DM_BETS=[100,200,500,1000,2000,5000];
+MG_MODE.domino={
+ open(){MG.st=null;MG.dmN=+(localStorage.getItem('tlmn_dmn')||3);if(!DM_BETS.includes(MG.bet))MG.bet=200;MG.dmBots=mgBots(MG.dmN-1);dmR();},
+ pub(){const st=MG.st;if(!st)return{seats:[],msg:'Đang chọn bàn'};return{msg:(st.msg||'')+(st.ends?` · Đầu dây ${st.ends[0]} | ${st.ends[1]}`:'')+` · Nọc ${st.bone.length}`,seats:st.seats.map((s,i)=>({name:i===0?(PR.name||'Người chơi'):s.name,av:i===0?myAv():s.av,cards:null,cnt:st.hands[i].length,lab:st.phase==='done'?dmPips(st.hands[i])+' nút':'',v:st.res?st.res[i]:null}))};},
+ quit(){const st=MG.st;if(st&&st.busy){PR.xu=Math.max(0,PR.xu-st.bet*2);saveP();}}
+};
+function dmSet(k,v){if(MG.st&&MG.st.busy)return;if(k==='n'){MG.dmN=v;localStorage.setItem('tlmn_dmn',v);MG.dmBots=mgBots(v-1);}else MG.bet=v;MG.st=MG.st&&MG.st.phase==='done'?MG.st:null;dmR();}
+function dmUnit(){return Math.max(1,Math.round(MG.bet/10));}
+function dmDeal(){if(PR.xu<MG.bet)return toast('Không đủ xu');mgRefill(MG.dmBots,MG.bet*3);const n=MG.dmN;const t=dmTiles();for(let i=t.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[t[i],t[j]]=[t[j],t[i]];}
+ const seats=[{name:'Bạn',av:myAv(),me:1}].concat(MG.dmBots.slice(0,n-1));const hands=seats.map(()=>t.splice(0,7));const s0=dmStarter(hands);
+ MG.st={seats,hands,bone:t,chain:[],ends:null,turn:s0.i,first:s0.t,pass:0,phase:'play',busy:true,bet:MG.bet,msg:`${s0.i===0?'Bạn':seats[s0.i].name} đi trước với [${s0.t[0]}|${s0.t[1]}]`,res:null,sel:null};
+ sfx('cgRiffle');dmR();setTimeout(dmStep,900);}
+function dmStep(){const st=MG.st;if(!st||st.phase!=='play'||MG.g!=='domino')return;const i=st.turn;const h=st.hands[i];
+ const can=()=>h.some(t=>st.first?(t[0]===st.first[0]&&t[1]===st.first[1]):dmFits(t,st.ends).length);
+ if(!can()){if(st.bone.length){h.push(st.bone.pop());sfx('cgSlide');st.msg=`${i===0?'Bạn':st.seats[i].name} bốc nọc`;dmR();return setTimeout(dmStep,i===0?350:420);}
+  st.pass++;st.msg=`${i===0?'Bạn':st.seats[i].name} không đi được — qua lượt`;sfx('pass');if(st.pass>=st.seats.length)return dmEnd(dmBlockedWinner(st.hands),true);st.turn=(i+1)%st.seats.length;dmR();return setTimeout(dmStep,700);}
+ if(i===0){st.msg='Lượt bạn: chạm quân sáng để đánh';dmR();return;}
+ if(st._bt===i)return;st._bt=i;setTimeout(()=>{st._bt=null;if(MG.st!==st||st.turn!==i||st.phase!=='play')return;let pick;if(st.first){pick={k:h.findIndex(t=>t[0]===st.first[0]&&t[1]===st.first[1]),side:'L'};}else pick=dmBotPick(h,st.ends);if(!pick||pick.k<0)return dmStep();dmPlay(i,pick.k,pick.side);},650+Math.random()*350);}
+function dmPlay(i,k,side){const st=MG.st;const t=st.hands[i][k];const r=dmPlace(st.ends,t,side);st.hands[i].splice(k,1);st.ends=r.ends;const piece={a:r.placed[0],b:r.placed[1],dbl:t[0]===t[1],fresh:1};
+ st.chain.forEach(c=>c.fresh=0);if(side==='L')st.chain.unshift(piece);else st.chain.push(piece);st.first=null;st.pass=0;st.sel=null;sfx('cgThud');setTimeout(()=>sfx('cgSnap'),60);
+ st.msg=`${i===0?'Bạn':st.seats[i].name} đánh [${t[0]}|${t[1]}]`;if(!st.hands[i].length)return dmEnd(i,false);st.turn=(i+1)%st.seats.length;dmR();setTimeout(dmStep,500);}
+function dmTap(k){const st=MG.st;if(!st||st.phase!=='play'||st.turn!==0)return;const t=st.hands[0][k];
+ if(st.first){if(t[0]===st.first[0]&&t[1]===st.first[1])return dmPlay(0,k,'L');return toast('Phải đánh quân ['+st.first.join('|')+'] trước');}
+ const f=dmFits(t,st.ends);if(!f.length){sfx('bad');return;}if(f.length===2&&st.ends[0]!==st.ends[1]){st.sel=k;dmR();return;}dmPlay(0,k,f[0]);}
+function dmEnd(w,blocked){const st=MG.st;st.phase='done';st.busy=false;const u=dmUnit();const raw=dmSettle(st.hands,w,u);
+ // trần: người thua chỉ trả tối đa số xu đang có
+ const pay=raw.map((v,i)=>{if(v>=0)return v;const have=i===0?PR.xu:(MG.bxu[st.seats[i].name]||0);return -Math.min(-v,have);});const got=-pay.reduce((a,v,i)=>a+(i===w?0:v),0);pay[w]=got;
+ st.res=pay;pay.forEach((v,i)=>{if(i>0)MG.bxu[st.seats[i].name]=Math.max(0,(MG.bxu[st.seats[i].name]||0)+v);});
+ st.ledger=w===0?st.seats.slice(1).map((s,i)=>[s.name+' ('+dmPips(st.hands[i+1])+' nút)',-pay[i+1]]):[[st.seats[w].name+' thắng · bạn còn '+dmPips(st.hands[0])+' nút',pay[0]]];
+ st.msg=(blocked?'Bí bài! ':'')+(w===0?`🎉 Bạn thắng +${fmt(pay[0])} xu`:`${st.seats[w].name} thắng · bạn ${fmt(pay[0])} xu`);
+ const xp=mgEnd(pay[0],{stats:w===0&&blocked?['domBlockWin']:[]});st.msg+=` · +${xp} XP`;dmR();}
+function dmR(){const o=$('mg');if(!o)return;const st=MG.st;const n=st?st.seats.length:MG.dmN;const opp=st?st.seats.slice(1):MG.dmBots.slice(0,n-1);
+ const oppH=opp.map((b,j)=>{const i=j+1;const h=st?st.hands[i]:[];const up=st&&st.phase==='done';return `<div class="dmo ${st&&st.turn===i&&st.phase==='play'?'turn':''}">${mgSeat(b,st&&st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:'')}<div class="dmoh">${up?h.map(t=>dmTileH(t[0],t[1],true,'sm')).join(''):h.map(()=>'<div class="dmt v sm back"></div>').join('')}</div>${up?`<small>${dmPips(h)} nút</small>`:`<small>${h.length} quân</small>`}</div>`;}).join('');
+ const chain=st?st.chain.map(c=>dmTileH(c.a,c.b,c.dbl,c.fresh?'fresh':'')).join(''):'';
+ const my=st?st.hands[0].map((t,k)=>{const ok=st.phase==='play'&&st.turn===0&&(st.first?(t[0]===st.first[0]&&t[1]===st.first[1]):dmFits(t,st.ends).length>0);return dmTileH(t[0],t[1],true,(ok?'ok':'')+(st.sel===k?' sel':''),`dmTap(${k})`);}).join(''):'';
+ o.innerHTML=mgTop()+`<div class="dmtbl"><div class="dmopp n${n}">${oppH}</div><div class="dmchain">${chain||'<span class="small">Dây domino</span>'}</div>${st?`<div class="dmbone">Nọc: ${st.bone.length}</div>`:''}<div class="cgmsg">${esc(st?st.msg:'Domino đôi sáu · bốc nọc khi không đi được · thắng: người thua trả '+fmt(dmUnit())+' xu mỗi nút còn lại')}</div>
+ <div class="dmme ${st&&st.turn===0&&st.phase==='play'?'turn':''}">${my}</div></div><div class="cgctl">${dmCtl()}</div>`;try{svaScan(o);}catch(e){}}
+function dmCtl(){const st=MG.st;if(st&&st.sel!=null)return `<div class="cgrow"><button class="cgbig" onclick="dmPlay(0,${st.sel},'L')">◀ Đầu trái (${st.ends[0]})</button><button class="cgbig" onclick="dmPlay(0,${st.sel},'R')">Đầu phải (${st.ends[1]}) ▶</button></div>`;
+ if(st&&st.phase==='play')return '';
+ return `${st?mgLedger(st.ledger):''}<div class="cgset"><div class="cgn">${[2,3,4].map(k=>`<button class="${k===MG.dmN?'':'alt'}" onclick="dmSet('n',${k})">${k}</button>`).join('')}<span class="small">người</span></div></div>${mgBets(DM_BETS,MG.bet,"dmSet.bind(null,'bet')",b=>b<=PR.xu)}<button class="cgbig" ${PR.xu<MG.bet?'disabled':''} onclick="dmDeal()">${st?'Ván mới':'Chia bài'} · ${fmt(dmUnit())} xu/nút</button>`;}
