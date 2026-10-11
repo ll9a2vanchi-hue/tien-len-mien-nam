@@ -396,6 +396,22 @@ body.rewardfx #top{position:relative;z-index:25}
  .myname{color:#ffe9a8;font-size:12px;max-width:110px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}}
 @media (max-width:400px){.myname{max-width:70px}}
 @media (max-width:700px) and (prefers-reduced-motion:reduce){#meAvM.myturn{animation:none}}
+.fincap{position:absolute;left:50%;top:-6px;transform:translate(-50%,-100%);z-index:9;white-space:nowrap;padding:5px 14px;border-radius:20px;background:linear-gradient(180deg,#3a2a08ee,#1a1204ee);border:1px solid #f4c542;color:#ffe9a8;font-weight:800;font-size:14px;box-shadow:0 0 18px #f4c54288;pointer-events:none;animation:fcin .35s ease-out}
+.fincap.big{font-size:18px;padding:7px 18px}
+@keyframes fcin{from{opacity:0;transform:translate(-50%,-60%) scale(.8)}}
+#pile.finglow .card{box-shadow:0 0 0 2px #ffd84d,0 0 22px 6px #ffd84daa!important}
+#finFX{position:fixed;inset:0;z-index:15;background:#0003}
+#finHands{position:fixed;inset:0;z-index:16;pointer-events:none}
+.finfan{position:absolute;display:flex;--cw:34px;--ch:48px}.finfan .card{--cw:34px;--ch:48px;width:34px;height:48px;margin-left:-12px;flex:none;animation:fcin .3s}.finfan .card:first-child{margin-left:0}
+@media (prefers-reduced-motion:reduce){.fincap,.finfan .card{animation:none}}
+.seat .sxu{display:inline-flex;align-items:center;gap:3px;margin-top:1px;padding:0 7px;border-radius:10px;background:#000a;border:1px solid #f4c54255;color:#ffe08a;font-size:10.5px;font-weight:700;line-height:16px;white-space:nowrap}
+.seat .sxu .cn{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff6b0,#e9a90f 60%,#8a5a00);display:inline-block}
+.seat .sxu.pgain{animation:sxg .9s}.seat .sxu.ploss{animation:sxl .9s}
+@keyframes sxg{30%{background:#1d6b2c;transform:scale(1.15)}}@keyframes sxl{30%{background:#7a1c1c;transform:scale(1.15)}}
+.mxu{margin:0 4px;color:#ffe08a;font-size:11px;font-weight:700;white-space:nowrap}
+.lseats .av{position:relative}.lseats .lxu{position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);font-style:normal;font-size:8.5px;font-weight:800;color:#ffe08a;background:#000c;border-radius:6px;padding:0 3px;line-height:11px;white-space:nowrap}
+.sxuR{color:#ffe08a;font-weight:700;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.seat .sxu.pgain,.seat .sxu.ploss{animation:none}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>

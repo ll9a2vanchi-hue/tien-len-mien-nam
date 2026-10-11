@@ -7,7 +7,7 @@ for(const W of [360,375,390,412,430,461]){const p=await (await b.newContext({vie
    const hr=$('hand').getBoundingClientRect();[...document.querySelectorAll('#hand .card')].forEach(e=>{const r=e.getBoundingClientRect();if(r.right>innerWidth+1||r.left<-1)over++;});}return {worst,over};});
  t('rows<=2 @'+W+' got '+r.worst,r.worst<=2);t('no overflow @'+W+' '+r.over,r.over===0);
  if(W===461){await p.evaluate(()=>{G.hands[0]=G.hands[0].slice(0,13);});
-  await p.evaluate(()=>{G.hands[1]=[];G.hands[2]=[];G.hands[3]=[];G.finished=[1,2,3];G.over=true;endGame(false);render();});await p.waitForTimeout(2600);
+  await p.evaluate(()=>{G.hands[1]=[];G.hands[2]=[];G.hands[3]=[];G.finished=[1,2,3];G.over=true;endGame(false);render();});await p.waitForTimeout(3300);
   t('result shown',await p.evaluate(()=>$('modalIn').textContent.includes('Kết quả')));await p.evaluate(()=>{closeModal();document.getElementById('badgeFX')?.remove();_bShow=false;BQ.length=0;});await p.waitForTimeout(1000);
   t('start overlay',await p.evaluate(()=>!!$('startOv')&&getComputedStyle($('bPlay')).visibility==='hidden'));await p.screenshot({path:'shots/v15-start.png'});
   await p.evaluate(()=>{for(let i=0;i<40;i++){const d=[...Array(52).keys()].sort(()=>Math.random()-.5).slice(0,13);G.hands[0]=sortCards(d);}});

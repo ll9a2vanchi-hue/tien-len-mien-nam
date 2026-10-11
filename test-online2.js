@@ -20,3 +20,11 @@ st.turn=0;st.passed=[0,0,1,1];O.oNext(st);t('settled at round end',st.settle&&st
  H3.addPlayer({uid:'j',name:'J'});const rm=sent.filter(x=>x[0]==='room').pop();console.log(rm&&rm[1].bet===2000?'ok room bet':'FAIL room bet');
  H3.start(Math.random);console.log(H3.st.bet===2000?'ok state bet':'FAIL state bet');const st=sent.filter(x=>x[0]==='state').pop();console.log(st&&st[1].st.bet===2000?'ok broadcast bet':'FAIL broadcast bet');
  const H4=new O.OnlineHost(T3,{uid:'h',name:'H'},{});console.log(H4.room().bet===100?'ok default bet':'FAIL default bet');clearTimeout(H3.timer);H3.st.over=true;}
+setTimeout(()=>// chia bài online
+{const sent=[];const T={on(){},send:(k,m)=>sent.push([k,m])};const H=new O.OnlineHost(T,{uid:'h',name:'H'},{fillBots:true,dealMs:400,botDelay:10});
+ H.addPlayer({uid:'j',name:'J'});H.start(Math.random);const st=H.st;if(st.over){console.log('ok deal skipped (tới trắng)');return;}const ok=(c,m)=>{console.log(c?'ok '+m:'FAIL '+m);if(!c)process.exitCode=1;};
+ ok(st.dealId&&st.dealMs===400,'deal id');const t=st.turn,seat=st.seats[t];
+ H.onIntent({uid:'h',a:{type:'pass'}});ok(sent.some(x=>x[0]==='reject'&&/chia/.test(x[1].err)),'reject during deal');
+ setTimeout(()=>{ok(!H.st.pile.length&&H.st.turn===t,'no move during deal');},250);
+ setTimeout(()=>{const botTurn=seat.bot;ok(!botTurn||H.st.pile.length>0,'moves after deal');const p0=sent.filter(x=>x[0]==='reject').length;
+  if(!seat.bot){H.onIntent({uid:seat.uid,a:{type:'play',cards:[st.firstCard]}});ok(H.st.pile.length>0,'human accepted after deal '+JSON.stringify(sent.filter(x=>x[0]==='reject').map(x=>x[1].err))+H.st.turn+t);}clearTimeout(H.timer);H.st.over=true;},700);},2500);

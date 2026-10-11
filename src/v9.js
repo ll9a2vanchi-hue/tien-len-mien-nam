@@ -20,10 +20,11 @@ const _r9=render;render=function(){_r9();if(!G)return;[1,2,3].forEach(p=>{const 
   a.insertAdjacentHTML('beforeend',`<span class="aitag" style="--ac:${AI_COL[l]}" title="Độ khó: ${AI_NAMES[l]}">${'★'.repeat(l+1)}</span>`);});
  if(G&&!G.over&&G.hands[0].length>=10&&[1,2,3].some(p=>G.hands[p].length&&G.hands[p].length<=2&&(!G.seats||G.seats.includes(p))))G.cb=true;};
 // thưởng/ngữ cảnh cuối ván
-const _hp9=hookPlay;hookPlay=function(info,prev){if(G&&!G.online){if((info.top>>2)===12&&info.type!=='straight')G.usedTwo=true;
+const _hp9=hookPlay;hookPlay=function(info,prev){if(G&&G.online&&typeof ONL!=='undefined'&&ONL.st){const id=ONL.st.dealId||'x';if(!ONL._gx||ONL._gx.id!==id)ONL._gx={id};if((info.top>>2)===12&&info.type!=='straight')ONL._gx.usedTwo=true;if(G.hands[0].length===0&&info.type==='single'&&info.top===0)ONL._gx.last3s=true;}
+  if(G&&!G.online){if((info.top>>2)===12&&info.type!=='straight')G.usedTwo=true;
   if(G.hands[0].length===info.len&&info.type==='single'&&info.top===0)G.last3s=true;}PR._tbl=G&&G.n||4;_hp9(info,prev);};
 hookEnd=function(place,instant,n){let ctx={};
- if(G&&G.online)ctx={online:true};
+ if(G&&G.online){const gx=(ONL._gx&&ONL.st&&ONL._gx.id===(ONL.st.dealId||'x'))?ONL._gx:{};ctx={online:true,usedTwo:!!gx.usedTwo,last3s:!!gx.last3s&&place===0};}
  else if(G){const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];const below=all.slice(all.indexOf(0)+1).filter(p=>p);
   ctx={bonus:aiBeatBonus(all,0,BOTAI),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
  const r=onGameEnd(PR,place,instant,n||4,ctx);if(G)G.lastRes=r;
@@ -97,15 +98,16 @@ openBadges=function(){const n=Object.keys(PR.badges).filter(k=>BADGES.find(b=>b.
   return `<div class="badge ${u?'':'lock'}" style="--tc:${T.col}"><div class="ic">${u?b.icon:I('lock')}</div><span class="tier">${b.secret?'Bí mật':T.name}</span><b>${b.name}</b><br>${b.desc}<br>${I('coin')}${fmt(b.xu)}</div>`;}).join('')+'</div>'+
  `<p style="font-size:13px">Ván: ${PR.stats.games} · Thắng: ${PR.stats.wins} · Chuỗi tốt nhất: ${PR.stats.bestStreak} · Chặt heo: ${PR.stats.chops} · Hạ Cao thủ: ${PR.stats.beatMaster||0}</p>`);};
 // ---- Hoạt cảnh chia bài
-let DEALING=false,_dealSkip=null;
+let DEALING=false,_dealSkip=null,_dealRev=99;
+function hideUndealt(){const h=$('hand');if(!h)return;[...h.querySelectorAll('.card')].forEach((c,i)=>{if(i>=_dealRev)c.style.visibility='hidden';});}
 Object.assign(SND,{shuffle:()=>{for(let i=0;i<14;i++)noise(.035,.16,i*.035,2500+Math.random()*2500);},tick:()=>{noise(.025,.12,0,3500);tone(1800,.02,'triangle',.025);},
  flip:()=>{noise(.06,.2,0,1500);noise(.06,.2,.08,2200);tone(600,.08,'triangle',.05,.05,900);}});
 function seatPt(p){const e=p===0?$('hand'):document.querySelector('#s'+p+' .av');const r=e&&e.getBoundingClientRect();return r&&r.width?{x:r.left+r.width/2,y:r.top+r.height/2}:{x:innerWidth/2,y:p===0?innerHeight-80:80};}
 function dealAnim(seats,done){const tb=($('table')||document.body).getBoundingClientRect(),cx=tb.left+tb.width/2,cy=tb.top+tb.height/2;
- const ov=document.createElement('div');ov.id='dealFX';document.body.appendChild(ov);const hand=$('hand');const hc=hand?[...hand.querySelectorAll('.card')]:[];hc.forEach(c=>c.style.visibility='hidden');
- const reveal=i=>{const c=hc[i];if(c&&c.style.visibility==='hidden'){c.style.visibility='';if(!RM){c.classList.add('dland');setTimeout(()=>c.classList.remove('dland'),400);}}};
+ const ov=document.createElement('div');ov.id='dealFX';document.body.appendChild(ov);_dealRev=0;hideUndealt();const hcs=()=>{const h=$('hand');return h?[...h.querySelectorAll('.card')]:[];};
+ const reveal=i=>{_dealRev=Math.max(_dealRev,i+1);const c=hcs()[i];if(c&&c.style.visibility==='hidden'){c.style.visibility='';if(!RM){c.classList.add('dland');setTimeout(()=>c.classList.remove('dland'),400);}}};
  let ended=false,timers=[];const end=()=>{if(ended)return;ended=true;timers.forEach(clearTimeout);ov.remove();_dealSkip=null;
-  hc.forEach((c,i)=>reveal(i));sfx('flip');done();};
+  _dealRev=99;hcs().forEach((c,i)=>reveal(i));sfx('flip');done();};
  _dealSkip=end;ov.addEventListener('pointerdown',end);
  const mk=(x,y)=>{const c=document.createElement('div');c.className='back dcard';c.style.left=x+'px';c.style.top=y+'px';ov.appendChild(c);return c;};
  if(RM){mk(cx,cy);sfx('shuffle');timers.push(setTimeout(end,450));return;}
@@ -123,8 +125,12 @@ const _ng10=newGame;newGame=function(n){DEALING=true;try{_ng10(n);}catch(e){DEAL
  if(!G||G.online||G.over||!G.started){DEALING=false;return;}const seats=G.seats||[0,1,2,3];
  dealAnim(seats,()=>{DEALING=false;render();if(G&&!G.over){if(G.turn===0)sfx('turn');step();}});};
 // online: hoạt cảnh khi nhận ván mới (chỉ hình ảnh)
-let _lastDealKey=null;const _os10=onlineState;onlineState=function(st,fh){_os10(st,fh);try{if(st&&st.hands&&!st.over&&(!st.hist||!st.hist.length)){const k=JSON.stringify(st.hands.map(h=>h&&h.length))+(st.firstCard)+(st.deal||'')+(st.turn);
-  if(k!==_lastDealKey){_lastDealKey=k;if(!$('dealFX'))dealAnim(G&&G.seats||[0,1,2,3],()=>render());}}else if(st&&st.hist&&st.hist.length)_lastDealKey=null;}catch(e){}};
+let _lastDealKey=null;const _os10=onlineState;onlineState=function(st,fh){const fresh=st&&st.dealId&&st.dealId!==_lastDealKey&&!st.over&&(!st.pile||!st.pile.length)&&(st.hist||[]).length<=1&&!(st.finished||[]).length;
+ if(st&&st.dealId&&st.dealId!==_lastDealKey&&!fresh)_lastDealKey=st.dealId;/* vào muộn / kết nối lại: bỏ qua */
+ if(fresh){_lastDealKey=st.dealId;DEALING=true;_dealRev=0;}
+ _os10(st,fh);if(DEALING&&G&&G.online)hideUndealt();
+ try{if(fresh){if(_dealSkip)_dealSkip();DEALING=true;_dealRev=0;dealAnim(G&&G.seats||[0,1,2,3],()=>{DEALING=false;_tKey=null;render();if(G&&!G.over&&G.turn===0)sfx('turn');});}}catch(e){DEALING=false;}};
+const _r10=render;render=function(){_r10();if(DEALING)hideUndealt();};
 // ---- Ăn mừng huy hiệu toàn màn hình
 const BQ=[];let _bShow=false;
 const _bt12=badgeToasts;badgeToasts=function(list){if(!list||!list.length)return;BQ.push(...list);flushBadges();};
@@ -244,12 +250,13 @@ const _he19=hookEnd;hookEnd=function(place,instant,n){const x0=_px==null?PR.xu:_
  setTimeout(()=>{if(_endHold&&!_endHold.shown)finishRewards(null);},9000);};
 function finishRewards(fromRect){const h=_endHold;if(!h||h.done)return;h.done=true;_endHold=null;_px=PR.xu;_pxp=PR.xp;
  document.body.classList.add('rewardfx');coinFly(fromRect,h.dx);setTimeout(()=>{showXuDelta(h.dx);updHud();},RM?0:700);setTimeout(()=>{renderMe();showXpDelta(h.dp);},RM?300:1000);setTimeout(()=>document.body.classList.remove('rewardfx'),2600);}
-const _sr19=showResult;showResult=function(rank){_sr19(rank);const h=_endHold;const m=$('modalIn');if(!h||h.shown||!m)return;h.shown=true;
+function rewBox(){const h=_endHold;const m=$('modalIn');if(!h||h.shown||!m)return;h.shown=true;
  const box=document.createElement('div');box.className='rewbox';box.innerHTML=`<div class="rw ${h.dx>=0?'gain':'loss'}">${I('coin')} <b id="rwXu">${h.dx>=0?'+':'−'}0</b> xu</div><div class="rw xp">⭐ <b id="rwXp">+0</b> XP</div>`;
  const btn=m.querySelector('button');if(btn)btn.parentNode.insertBefore(box,btn);else m.appendChild(box);
  const D=RM?0:1100,t0=performance.now();let lastTick=0;const fx=$('rwXu'),fp=$('rwXp');
  const step=t=>{const k=D?Math.min(1,(t-t0)/D):1,q=1-Math.pow(1-k,3);fx.textContent=(h.dx>=0?'+':'−')+fmt(Math.round(Math.abs(h.dx)*q));fp.textContent='+'+fmt(Math.round(h.dp*q));if(t-lastTick>90&&k<1){lastTick=t;sfx('tick');}
-  if(k<1)requestAnimationFrame(step);else{sfx(h.dx>=0?'coin':'bad');setTimeout(()=>finishRewards(rectOf(box)),RM?200:350);}};requestAnimationFrame(step);};
+  if(k<1)requestAnimationFrame(step);else{sfx(h.dx>=0?'coin':'bad');setTimeout(()=>finishRewards(rectOf(box)),RM?200:350);}};requestAnimationFrame(step);}
+const _sr19=showResult;showResult=function(rank){_sr19(rank);rewBox();};
 // ---- Tiền chặt heo (chuyển xu thật giữa người chặt và người bị chặt)
 function seatCenter(p){const e=p===0?(rectOf('#meAvM')||rectOf('#meBar .av')||rectOf('#meInfo .lvb')||rectOf('#hand')):rectOf('#s'+p+' .av');return e?{x:e.left+e.width/2,y:e.top+e.height/2,r:e}:{x:innerWidth/2,y:p===0?innerHeight-200:120};}
 function moneyFX(payer,receiver,amt,label){const a=seatCenter(payer),b=seatCenter(receiver);
@@ -296,7 +303,7 @@ function autoMove(reason){if(!G||G.over||G.turn!==0||G.online)return;window._aut
  if(AFK){let m=aiMove(1,G.hands[0],G.cur,G.first?G.firstCard:null,{others:[13]});if(m){sel=new Set(m);humanPlay();}else if(G.cur)humanPass();else{sel=new Set([G.first?G.firstCard:Math.min(...G.hands[0])]);humanPlay();}return;}
  if(G.cur){humanPass();toast('Hết giờ, tự bỏ lượt');}else{const c=G.first?G.firstCard:Math.min(...G.hands[0]);sel=new Set([c]);humanPlay();toast('Hết giờ, tự đánh lá nhỏ nhất');}
  _toCount++;if(_toCount>=3){AFK=true;afkBanner(true);}}finally{window._autoAct=false;}}
-setInterval(()=>{try{const k=myTurnKey();if(k!==_tKey){_tKey=k;_tT0=Date.now();return;}if(!k)return;
+setInterval(()=>{try{if(DEALING){_tKey=null;return;}const k=myTurnKey();if(k!==_tKey){_tKey=k;_tT0=Date.now();return;}if(!k)return;
  if(AFK){if(Date.now()-_tT0>1000)autoMove();return;}if(Date.now()-_tT0>TURN_MS)autoMove();}catch(e){}},300);
 // online: thông báo hết giờ / treo máy
 const _os21=onlineState;onlineState=function(st,fh){_os21(st,fh);try{const me=myOnlineSeat();if(me<0)return;
@@ -314,3 +321,59 @@ const _rm23=renderMe;renderMe=function(){_rm23();const e=$('meInfo');if(!e||!e.i
  e.insertAdjacentHTML('afterbegin',`<div id="meAvM" class="av ${frameCls()} ${turn?'myturn':''}" style="--avc:${PR.avBg};--lp:${Math.round(100*L.cur/L.need)}">${myAv()}</div>`);
  const mt=e.querySelector('.mt');if(mt)mt.insertAdjacentHTML('afterbegin',`<b class="myname">${esc(myName())}</b> `);};
 const _r23=render;render=function(){_r23();const a=$('meAvM');if(a&&a.classList)a.classList.toggle('myturn',!!(G&&!G.over&&G.turn===0));};
+// ---- Kết ván chậm lại: giữ nước bài cuối, ngửa bài còn lại, rồi mới hiện kết quả
+const FIN={g:null,active:false,called:false,t:0,fn:null,tm:null};let _holdUntil=0;
+function finCaption(txt,ms,big){const o=document.createElement('div');o.className='fincap'+(big?' big':'');o.textContent=txt;const c=$('center')||document.body;c.appendChild(o);setTimeout(()=>o.remove(),ms);return o;}
+function revealHands(){const box=document.createElement('div');box.id='finHands';document.body.appendChild(box);
+ (G.seats||[0,1,2,3]).forEach(p=>{if(p===0)return;const h=(G.hands[p]||[]).slice().sort((a,b)=>a-b);if(!h.length)return;const a=document.querySelector('#s'+p+' .av');const r=a&&a.getBoundingClientRect();if(!r||!r.width)return;
+  const f=document.createElement('div');f.className='finfan';h.forEach(c=>f.appendChild(cardEl(c)));box.appendChild(f);
+  const fw=Math.min(innerWidth-8,22*h.length+34);let x=r.left+r.width/2-fw/2;x=Math.max(4,Math.min(innerWidth-fw-4,x));f.style.left=x+'px';f.style.width=fw+'px';
+  f.style.top=Math.min(innerHeight-70,r.bottom+(p===2?22:6))+'px';});}
+function startFinal(key,winner,fn){clearTimeout(FIN.tm);Object.assign(FIN,{g:key,active:true,called:false,t:Date.now(),fn});
+ const pile=$('pile');if(pile&&pile.classList)pile.classList.add('finglow');
+ const ov=document.createElement('div');ov.id='finFX';ov.addEventListener('pointerdown',endFinal);document.body.appendChild(ov);
+ finCaption(winner===0?'🏆 Bạn về nhất!':`🏆 ${NAMES[winner]} về nhất!`,3000,true);try{revealHands();}catch(e){}sfx('flip');
+ FIN.tm=setTimeout(endFinal,2700);}
+function endFinal(){if(!FIN.active)return;FIN.active=false;clearTimeout(FIN.tm);['finFX','finHands'].forEach(i=>{const e=$(i);if(e)e.remove();});document.querySelectorAll('.fincap').forEach(e=>e.remove());
+ const pile=$('pile');if(pile&&pile.classList)pile.classList.remove('finglow');if(!FIN.called&&FIN.fn){const f=FIN.fn;FIN.fn=null;f();}}
+function finGate(key){if(FIN.g!==key)return true;if(FIN.active)return false;if(FIN.called&&Date.now()-FIN.t<8000)return false;FIN.called=true;return true;}
+const _srF=showResult;showResult=function(r){if(G&&!G.online&&!finGate(G))return;return _srF(r);};
+const _sorF=showOnlineResult;showOnlineResult=function(st){if(!finGate(ONL._finKey))return;const r=_sorF(st);try{rewBox();}catch(e){}return r;};
+const _egF=endGame;endGame=function(i){const r=_egF(i);try{if(G&&!G.online&&!i){const g=G;startFinal(g,G.rank?G.rank[0]:G.finished[0],()=>{if(G===g&&!modalOpen())showResult(g.rank);});}}catch(e){}return r;};
+const _dpF=doPlay;doPlay=function(p,c,s){const r=_dpF(p,c,s);try{if(G&&!G.online&&!G.over&&G.hands[p]&&G.hands[p].length===0){const k=G.finished.length;finCaption((p===0?'Bạn':NAMES[p])+' về '+['nhất','nhì','ba'][k-1]+'!',1900,k===1);_holdUntil=Date.now()+1400;}}catch(e){}return r;};
+const _stF=step;step=function(){const w=_holdUntil-Date.now();if(w>0&&G&&!G.online){setTimeout(()=>step(),w);return;}return _stF();};
+let _finHist=-1;const _osF=onlineState;onlineState=function(st,fh){_osF(st,fh);try{if(!st||!st.seats)return;const me=st.seats.findIndex(s=>s&&s.uid===USER.id);if(me<0)return;const L=g=>(g-me+4)%4;
+ if(st.over&&st.rank&&!st.instant){const key=JSON.stringify(st.rank)+st.hist.length;if(ONL._finKey!==key){ONL._finKey=key;startFinal(key,L(st.rank[0]),()=>showOnlineResult(st));}}
+ else if(!st.over&&st.ev&&st.ev.fin&&st.hist.length!==_finHist){_finHist=st.hist.length;const s=st.ev.seat!=null?st.ev.seat:null;const nm=s!=null?(L(s)===0?'Bạn':NAMES[L(s)]):'';finCaption((nm?nm+' ':'')+'về '+['nhất','nhì','ba'][st.ev.fin-1]+'!',1900,st.ev.fin===1);}}catch(e){}};
+// ---- Xu của từng người dưới avatar (offline + online)
+function kxu(v){v=+v||0;return v>=1e6?(v/1e6).toFixed(v>=1e7?0:1).replace('.0','')+'M':v>=1e4?Math.round(v/1e3)+'k':v>=1e3?(v/1e3).toFixed(1).replace('.0','')+'k':String(v);}
+function hashStr(t){let h=2166136261;for(const c of String(t))h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0;}
+function botXuSeed(name,lv){const h=hashStr(name);return Math.round((800+(lv||5)*260+(h%4000))/10)*10;}
+const BXU={};/* offline: tên máy -> xu */
+function xuOf(s){if(!s)return 0;if(typeof ONL!=='undefined'&&ONL.xu&&s.uid&&ONL.xu[s.uid]!=null)return ONL.xu[s.uid];if(s.uid===(typeof USER!=='undefined'&&USER&&USER.id))return PR.xu;if(s.xu!=null&&!s.bot)return s.xu;
+ const k='o:'+(ONL&&ONL.code||'')+':'+s.name;if(BXU[k]==null)BXU[k]=s.xu!=null?s.xu:botXuSeed(s.name,s.lv);return BXU[k];}
+function seatXu(p){if(p===0)return PR.xu;if(G&&G.online&&ONL.st){const me=ONL.st.seats.findIndex(x=>x&&x.uid===USER.id);return xuOf(ONL.st.seats[(p+me)%4]);}
+ const nm=NAMES[p];if(BXU[nm]==null)BXU[nm]=botXuSeed(nm,BOTLV&&BOTLV[p]);return BXU[nm];}
+function addBotXu(p,d){if(p===0||!d)return;if(G&&G.online&&ONL.st){const me=ONL.st.seats.findIndex(x=>x&&x.uid===USER.id);const s=ONL.st.seats[(p+me)%4];if(!s||(!s.bot&&s.uid))return;const k='o:'+(ONL.code||'')+':'+s.name;BXU[k]=Math.max(0,xuOf(s)+d);return;}
+ const nm=NAMES[p];BXU[nm]=Math.max(0,seatXu(p)+d);}
+const _shownXu={};
+function paintSeatXu(){if(!G)return;(G.seats||[0,1,2,3]).forEach(p=>{if(p===0)return;const e=$('s'+p);if(!e||!e.querySelector)return;let x=e.querySelector('.sxu');
+  if(!x){x=document.createElement('div');x.className='sxu';const nm=e.querySelector('.nm');if(nm&&nm.after)nm.after(x);else e.appendChild(x);}
+  const v=seatXu(p),key=NAMES[p];x.innerHTML=`<span class="cn"></span>${kxu(v)}`;const old=_shownXu[key];_shownXu[key]=v;
+  if(old!=null&&old!==v){const a=e.querySelector('.av');const r=a&&a.getBoundingClientRect();if(r&&r.width)floatText(r.left+r.width/2,r.top-4,(v>old?'+':'−')+fmt(Math.abs(v-old))+' xu',v>old?'gain':'loss');x.classList.remove('pgain','ploss');void x.offsetWidth;x.classList.add(v>old?'pgain':'ploss');}});}
+const _r24=render;render=function(){_r24();try{paintSeatXu();}catch(e){}};
+const _rm24=renderMe;renderMe=function(){_rm24();try{const e=$('meInfo');const mt=e&&e.querySelector&&e.querySelector('.myname');if(mt&&!e.querySelector('.mxu'))mt.insertAdjacentHTML('afterend',`<span class="mxu">🪙${kxu(PR.xu)}</span> `);}catch(e){}};
+// offline: chặt heo + kết quả cập nhật xu máy
+const _scX=settleChop;settleChop=function(){const pend=G&&G.pend;let r=null;if(pend&&typeof chopSettle==='function'){try{r=chopSettle(JSON.parse(JSON.stringify(pend)),{0:PR.xu});}catch(e){}}
+ _scX();if(r&&r.amount){addBotXu(r.payer,-r.amount);addBotXu(r.receiver,r.amount);render();}};
+const _egX=endGame;endGame=function(i){const r=_egX(i);try{if(G&&!G.online&&G.rank){const n=G.n||G.rank.length,bet=curBet();G.rank.forEach((p,pl)=>{if(p!==0)addBotXu(p,tableXu(bet,n,pl,!!i));});render();}}catch(e){}return r;};
+// online: phát xu của mình, nhận xu người khác
+const _erX=enterRoom;enterRoom=async function(){const r=await _erX.apply(this,arguments);try{ONL.xu=ONL.xu||{};if(ONL.tr&&!ONL._xuHook){ONL._xuHook=ONL.tr;ONL.tr.on('xu',m=>{if(m&&m.uid&&isFinite(m.xu)){ONL.xu[m.uid]=Math.max(0,Math.round(m.xu));render();renderRoom();}});}ONL._xuSent=null;}catch(e){}return r;};
+const _miX=meInfo;meInfo=function(){return Object.assign(_miX(),{xu:PR.xu});};
+setInterval(()=>{try{if(!ONL.active||!ONL.tr)return;if(ONL._xuHook!==ONL.tr){ONL._xuHook=ONL.tr;ONL.xu=ONL.xu||{};ONL.tr.on('xu',m=>{if(m&&m.uid&&isFinite(m.xu)){ONL.xu[m.uid]=Math.max(0,Math.round(m.xu));render();renderRoom();}});}
+ const now=Date.now();if(PR.xu!==ONL._xuSent||now-(ONL._xuAt||0)>15000){ONL._xuSent=PR.xu;ONL._xuAt=now;ONL.tr.send('xu',{uid:USER.id,xu:PR.xu});}}catch(e){}},800);
+// online: máy - cập nhật theo tiền chặt (st.settle) và kết quả ván, giống nhau mọi máy khách
+const _osX=onlineState;onlineState=function(st,fh){_osX(st,fh);try{if(!st||!st.seats)return;const me=st.seats.findIndex(s=>s&&s.uid===USER.id);if(me<0)return;const L=g=>(g-me+4)%4;
+ if(st.settle&&st.settle.id!=null&&ONL._bxS!==st.settle.id+':'+st.dealId){ONL._bxS=st.settle.id+':'+st.dealId;const z=st.settle;if(z.amount){addBotXu(L(z.payer),-z.amount);addBotXu(L(z.receiver),z.amount);}}
+ if(st.over&&st.rank){const k=JSON.stringify(st.rank)+st.dealId;if(ONL._bxE!==k){ONL._bxE=k;const n=st.seats.filter(Boolean).length;st.rank.forEach((g,pl)=>addBotXu(L(g),tableXu(st.bet||100,n,pl,!!st.instant)));}}
+ paintSeatXu();}catch(e){}};

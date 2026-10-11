@@ -73,7 +73,7 @@ Object.assign(SND,{throw:()=>tone(500,.25,'sine',.06,0,1200),splat:()=>{tone(180
 const _render=render;render=function(){_render();fitPile();[1,2,3].forEach(p=>{const a=document.querySelector('#s'+p+' .av');if(a)a.onclick=()=>openThrow(p);});};
 // ---- Sảnh bàn công khai (presence trên tlmn:lobby)
 let lobbyTier=0;
-function lobbyMe(){const m=meInfo();return{uid:USER.id,name:m.name,av:m.av,bg:m.bg,lv:m.lv,table:ONL.active&&ONL.pub?ONL.code:null,at:ONL.pubAt||0,bet:ONL.host&&ONL.pub?(ONL.host.opt.bet||null):null,playing:!!(ONL.host&&ONL.st&&!ONL.st.over)};}
+function lobbyMe(){const m=meInfo();return{uid:USER.id,name:m.name,av:m.av,bg:m.bg,lv:m.lv,xu:PR.xu,table:ONL.active&&ONL.pub?ONL.code:null,at:ONL.pubAt||0,bet:ONL.host&&ONL.pub?(ONL.host.opt.bet||null):null,playing:!!(ONL.host&&ONL.st&&!ONL.st.over)};}
 let _ltT=0,_ltLast='';function lobbyTrack(){clearTimeout(_ltT);_ltT=setTimeout(()=>{if(!LOBBY||!LOBBY.ready||typeof USER==='undefined'||!USER)return;const m=lobbyMe(),k=JSON.stringify(m);if(k===_ltLast)return;_ltLast=k;LOBBY.ch.track(m).catch(()=>{_ltLast='';});},500);}
 function lobbyPres(){if(!LOBBY)return[];const s=LOBBY.ch.presenceState();return Object.keys(s).map(k=>s[k][s[k].length-1]).filter(Boolean);}
 joinLobby=async function(){if(LOBBY)return;await rtAuth();const ch=chan('tlmn:lobby');LOBBY={ch,online:{},ready:false};
@@ -82,7 +82,7 @@ joinLobby=async function(){if(LOBBY)return;await rtAuth();const ch=chan('tlmn:lo
  ch.subscribe(async s=>{if(s==='SUBSCRIBED'){LOBBY.ready=true;_ltLast=JSON.stringify(lobbyMe());await ch.track(lobbyMe());}});};
 function renderLobby(){const el=$('lobbyList');if(!el)return;const T=lobbyTables(lobbyPres()).filter(t=>t.tier===LOBBY_TIERS[lobbyTier]);
  el.innerHTML=T.map(t=>`<button class="alt ltab ${t.count?'busy':''}" onclick="sitTable('${t.code}')"><div class="lh"><b>Bàn ${t.id}</b><span>${I('coin')} ${fmt(t.bet)}</span></div>
-  <div class="lseats">${[0,1,2,3].map(i=>{const p=t.players[i];return p?`<span class="av" style="--avc:${esc(p.bg||'#456')}" title="${esc(p.name)}">${esc(p.av||'🙂')}</span>`:'<span class="av empty">+</span>';}).join('')}</div>
+  <div class="lseats">${[0,1,2,3].map(i=>{const p=t.players[i];return p?`<span class="av" style="--avc:${esc(p.bg||'#456')}" title="${esc(p.name)} · ${fmt(p.xu||0)} xu">${esc(p.av||'🙂')}<i class="lxu">${kxu(p.xu||0)}</i></span>`:'<span class="av empty">+</span>';}).join('')}</div>
   <div class="lf"><span>${t.count}/4</span><span class="st ${t.status==='đang chơi'?'pl':t.count?'wt':''}">${t.status}</span></div></button>`).join('');}
 async function sitTable(code){const T=lobbyTables(lobbyPres()),t=T.find(x=>x.code===code);const c=canSit(t,PR,USER.id);if(!c.ok){sfx('bad');return toast(c.reason);}
  ONL.pubAt=Date.now();await enterRoom(code,t.count===0,true);ONL.pub=true;ONL.pubAt=ONL.pubAt;if(ONL.host)ONL.host.opt.bet=t.bet;lobbyTrack();}
