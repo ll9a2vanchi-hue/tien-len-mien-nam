@@ -5,7 +5,7 @@ async function mk(uid,vp){const ctx=await b.newContext({viewport:vp,hasTouch:tru
  await p.evaluate(async([uid])=>{closeModal();await loadSB();await new Promise(r=>setTimeout(r,1000));USER={id:uid,email:uid+'@t.invalid'};PR.name=uid[0]=='a'?'An':'Bình';CHAT_SET='n';
   chan=(topic)=>SB.channel(topic.replace('tlmn:','tlmn-uitest-'),{config:{broadcast:{self:false},presence:{key:USER.id}}});
   ensurePlayer=async()=>{MYCODE='TEST01';};rtAuth=async()=>{};window._says=0;},[uid]);return p;}
-const A=await mk('aaaa-1',{width:461,height:1024}),B=await mk('bbbb-2',{width:360,height:800});
+const A=await mk('aaaa-1',{width:461,height:1024}),B=await mk('bbbb-2',{width:461,height:1024});
 const code='PZ'+Math.random().toString(36).slice(2,6).toUpperCase().replace(/[^A-HJ-NP-Z2-9]/g,'Q');
 await A.evaluate(()=>{const f=SHOP.find(x=>x.type==='felt'&&x.price>0);PR.inv[f.id]=1;PR.equip.felt=f.id;applyCosmetics();window._felt=f.id;});
 // 1) vào cùng lúc
@@ -21,6 +21,11 @@ R.peek=await C.evaluate(()=>{const raw=ONL.client.st;const me=raw.seats.findInde
 const hostView=await H.evaluate(()=>{const st=ONL.host.st;const c=st.seats.findIndex(s=>s&&!s.bot&&s.uid!==USER.id);return st.hands[c].join(',');});
 const cView=await C.evaluate(()=>G.hands[0].slice().sort((a,b)=>a-b).join(','));R.peek.matchesHost=hostView.split(',').map(Number).sort((a,b)=>a-b).join(',')===cView;
 R.cos=await C.evaluate(()=>document.body.dataset.felt);R.hostFelt=await H.evaluate(()=>document.body.dataset.felt);
+await H.evaluate(()=>{toggleChat();$('chatIn').value='Xin chào cả bàn!';sendChat();});await H.waitForTimeout(700);
+R.chatHost=await H.evaluate(()=>[...document.querySelectorAll('#bubLayer .bubble')].map(b=>b.textContent));R.chatClient=await C.evaluate(()=>[...document.querySelectorAll('#bubLayer .bubble')].map(b=>{const r=b.getBoundingClientRect();return b.textContent+'@'+Math.round(r.top)}));
+R.log=await C.evaluate(()=>($('chatBox')||{}).textContent||ONL.chat.map(m=>m.t).join('|'));
+await C.evaluate(()=>{toggleEmotes&&toggleEmotes();sendEmote('😂');});await C.waitForTimeout(600);R.emoC=await C.evaluate(()=>[...document.querySelectorAll('#bubLayer .bubble')].map(b=>b.textContent));R.emoH=await H.evaluate(()=>[...document.querySelectorAll('#bubLayer .bubble')].map(b=>b.textContent));
+await H.screenshot({path:'shots/v32-chat-host.png'});await C.screenshot({path:'shots/v32-chat-client.png'});
 // 3) quà
 const x0=await C.evaluate(()=>PR.xu);await H.evaluate(()=>{const st=ONL.st,me=st.seats.findIndex(s=>s&&s.uid===USER.id);const c=st.seats.findIndex(s=>s&&!s.bot&&s.uid!==USER.id);PR.xu+=100;sendThrow((c-me+4)%4,'flower');});
 await C.waitForTimeout(1500);R.gift={before:x0,after:await C.evaluate(()=>PR.xu)};

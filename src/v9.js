@@ -621,3 +621,14 @@ const BOT_XU_RANGE=[[3,6],[6,12],[12,25],[25,50]];
 function botAiOf(name){try{if(G&&G.online&&ONL.st&&ONL.st.ai){const g=ONL.st.seats.findIndex(s=>s&&s.name===name);if(g>=0)return ONL.st.ai[g];}const p=NAMES.indexOf(name);if(p>0)return BOTAI[p];}catch(e){}return 1;}
 botXuSeed=function(name,lv,ai){const bet=Math.max(100,(typeof curBet==='function'?curBet():PR.bet)||100);ai=ai==null?botAiOf(name):ai;const [a,b]=BOT_XU_RANGE[Math.max(0,Math.min(3,ai|0))]||BOT_XU_RANGE[1];
  return Math.round(bet*(a+Math.random()*(b-a))/10)*10;};
+// ======== v32: bong bóng chat/biểu cảm nổi trên lớp riêng (không bị render/overflow xoá) ========
+const _bubOf={};
+function avBox(p){const sels=p===0?['#meAvM','#meBar .av','#meInfo']:['#s'+p+' .av','#s'+p];for(const q of sels){const e=document.querySelector(q);const r=e&&e.getBoundingClientRect&&e.getBoundingClientRect();if(r&&r.width>0&&r.height>0&&e.offsetParent!==null)return r;}return null;}
+showEmote=function(p,e,bub){try{let L=$('bubLayer');if(!L){L=document.createElement('div');L.id='bubLayer';document.body.appendChild(L);}
+ const txt=String(e||'');if(!txt)return;const big=[...txt].length<=2;const r=avBox(p)||{left:innerWidth/2-20,top:p===0?innerHeight*.75:innerHeight*.25,width:40,height:40,bottom:(p===0?innerHeight*.75:innerHeight*.25)+40};
+ let id=bub;if(p===0&&!id)id=equipped(PR,'bubble').id;if(!id&&G&&G.online&&ONL.st){const me=ONL.st.seats.findIndex(s=>s&&s.uid===USER.id);const s=ONL.st.seats[(p+me)%4];id=s&&s.bub;}
+ if(_bubOf[p]&&_bubOf[p].remove)_bubOf[p].remove();const d=document.createElement('div');d.className='bubble fl '+(big?'big':'say')+(id?' '+id:'');d.textContent=txt;
+ const below=r.top<70;if(below)d.classList.add('below');d.style.left=(r.left+r.width/2)+'px';d.style.top=(below?r.bottom+6:r.top-6)+'px';L.appendChild(d);_bubOf[p]=d;
+ const w=d.getBoundingClientRect().width;const cx=Math.max(w/2+4,Math.min(innerWidth-w/2-4,r.left+r.width/2));d.style.left=cx+'px';d.style.setProperty('--ax',((r.left+r.width/2)-cx)+'px');
+ setTimeout(()=>{if(d.remove)d.remove();if(_bubOf[p]===d)delete _bubOf[p];},4000);sfx('tap');}catch(err){console.warn('bubble',err);}};
+const _mi32=meInfo;meInfo=function(){const m=_mi32();try{m.bub=equipped(PR,'bubble').id;}catch(e){}return m;};
