@@ -27,7 +27,7 @@ hookEnd=function(place,instant,n){let ctx={};
  if(G&&G.online){const gx=(ONL._gx&&ONL.st&&ONL._gx.id===(ONL.st.dealId||'x'))?ONL._gx:{};ctx={online:true,usedTwo:!!gx.usedTwo,last3s:!!gx.last3s&&place===0};}
  else if(G){const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];const below=all.slice(all.indexOf(0)+1).filter(p=>p);
   ctx={bonus:aiBeatBonus(all,0,BOTAI),noXuBonus:masterTbl(),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
- ctx.mode=G&&G.mode==='demla'?'demla':'tlmn';try{Object.assign(ctx,modeCtx(place,instant));}catch(e){}
+ ctx.mode=G&&G.mode==='demla'?'demla':'tlmn';PR._mode=ctx.mode;try{Object.assign(ctx,modeCtx(place,instant));}catch(e){}
  const r=onGameEnd(PR,place,instant,n||4,ctx);if(G)G.lastRes=r;try{LEDG.res=r;}catch(e){}
  toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu${r.bxu?` (thưởng máy khó +${fmt(r.bxu)})`:''}`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);};
@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.51';
+const APP_V='1.52';
 const CHANGELOG=[
+ ['1.52','12/10',['Hạng sao theo từng chế độ: 7 hạng × 5 sao (Đồng → Bạc → Vàng → Kim cương → Xanh → Đỏ → Đen) theo XP kiếm ở chế độ đó; sao hiện dưới avatar khi chơi; mỗi sao cộng % thu nhập thụ động (tối đa +86%/chế độ, +688% cả 8 chế độ); màn Hạng sao + hiệu ứng lên sao + huy hiệu','Thú cưng trong Tài sản: Mèo, Chó, Vẹt, Cáo, Rồng (có hoạt ảnh); 1 con đi theo cạnh avatar, cộng % EXP','Bấm bạn bè/người online để xem hồ sơ: tài sản, thú cưng, hạng sao, tổng % thu nhập & EXP; có thể ẩn trong Cài đặt']],
  ['1.51','12/10',['XP tỉ lệ thời gian ván (~41 XP/phút): Miền Nam 4 người 100/60/35/20, 3 người 46/28/16, 2 người 32/19; Đếm lá 83/50/29/17 (3 người 38/23/13, 2 người 27/16); 3 Cào 8/4/3, Xì dách 13/7/4, Bầu cua 24/12/8, Domino 35/17/12, Xì tố 32/16/10, Poker 30/15/10','Bảng XP từng chế độ trong cửa sổ Cấp độ; nhãn XP ở màn chọn bàn']],
  ['1.50','12/10',['Tài sản thành mục riêng ở màn hình chính: Kinh doanh, Phương tiện (Xe đạp → Du thuyền, tăng % thu nhập, nâng cấp 5 cấp) và Mua sắm (12 món Quần áo, Trang sức, Phụ kiện, Vật phong thủy, tăng % EXP ở mọi chế độ, đủ bộ +40%)','Bấm thanh Thu nhập thụ động để xem công thức, số xu mỗi giây/giờ/ngày và thưởng từng tài sản','Tài sản giá trị nhất hiện cạnh avatar; huy hiệu Bộ sưu tập xe, Tín đồ thời thượng']],
  ['1.49','12/10',['Thu nhập thụ động: nhận xu liên tục theo cấp (cấp ÷ 2 ÷ 100 xu mỗi giây, cấp 20 = 360 xu/giờ), tích luỹ cả khi tắt app, tối đa 24 giờ; bộ đếm chạy trực tiếp ở màn hình chính, bấm Nhận để lấy; đồng bộ đám mây chống nhận 2 lần','Cửa hàng › Tài sản: Quán nước, Tiệm tạp hóa, Xưởng may, Nhà máy, Tập đoàn — tăng % thu nhập thụ động, nâng cấp tới cấp 5; huy hiệu Ông chủ nhà máy, Chủ tịch tập đoàn, Đế chế kinh doanh, Tài phiệt tối thượng']],
@@ -814,7 +815,7 @@ setInterval(()=>{try{if(!G||!G.over||_gk39===G)return;if(!document.querySelector
 // Luộc: sau khi ván kết thúc offline, máy không đủ cược nữa và mình đã ăn xu của nó
 const _eg39=endGame;endGame=function(i){const r=_eg39.apply(this,arguments);setTimeout(()=>{try{if(!G||G.online||G._luoc)return;G._luoc=1;const bet=curBet();let tot=0,names=[];
  (SEATMAP[TBL||4]||[0,1,2,3]).forEach(p=>{if(!p)return;const now=seatXu(p),was=LEDG.s0[p];if(now<bet&&was!=null&&was>now&&PR.xu>(LEDG.xu0||0)){const lv=Math.max(0,Math.min(3,+BOTAI[p]||0));const xp=LUOC_XP[lv],xu=Math.round(bet*0.5*(lv+1));
-  const up=addXp(PR,xp);PR.xu+=xu;tot+=xu;names.push(NAMES[p]);bst('luoc');if(lv===3)bst('luoc3');LUOC.tbl++;PR.stats.luocTable=Math.max(PR.stats.luocTable||0,LUOC.tbl);questEvent(PR,'luoc');
+  const up=addXp(PR,xp,PR._mode);PR.xu+=xu;tot+=xu;names.push(NAMES[p]);bst('luoc');if(lv===3)bst('luoc3');LUOC.tbl++;PR.stats.luocTable=Math.max(PR.stats.luocTable||0,LUOC.tbl);questEvent(PR,'luoc');
   setTimeout(()=>{try{sfx('chop');winFX('🍲 LUỘC SẠCH '+NAMES[p].trim().toUpperCase()+'! +'+xp+' XP');toast(`Luộc ${NAMES[p].trim()}: +${fmt(xu)} xu, +${xp} XP`);}catch(e){}},400+names.length*1200);}});
  if(tot){LUOC.xu=tot;LUOC.g=G;saveP();evBadge();}}catch(e){}},350);return r;};
 const _nb39=newBotsNext;newBotsNext=function(){LUOC.tbl=0;return _nb39();};

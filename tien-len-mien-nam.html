@@ -685,6 +685,19 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 .pbrk{background:#0004;border-radius:12px;padding:6px 10px;margin:6px 0;font-size:12.5px}.pbrk>div{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px dashed #ffffff14}.pbrk>div:last-child{border:0}.pbrk .pdi svg{width:16px;height:16px;vertical-align:-3px;margin-right:4px}
 @media(max-width:399px){.astile .pasm small{display:none}}
 .xptbl{margin:8px 0}.xptbl summary{cursor:pointer;font-weight:700;color:#ffd84d}.xptbl table{width:100%;border-collapse:collapse;font-size:13px}.xptbl td{padding:3px 4px;border-bottom:1px solid #ffffff14}.xptbl td+td{text-align:right;font-weight:700}
+.petic{display:inline-flex;width:100%;height:100%}.petic svg{width:100%;height:100%}.petic.sm{width:20px;height:20px;vertical-align:middle}
+.pet_rong svg{animation:rgfly 1.6s ease-in-out infinite;filter:drop-shadow(0 0 4px #ff9800)}.pet_rong .rwing{transform-origin:30px 26px;animation:rgwing .5s ease-in-out infinite alternate}.pet_rong .rfire{animation:rgfire .4s steps(2) infinite}
+@keyframes rgfly{50%{transform:translateY(-3px) rotate(-4deg)}}@keyframes rgwing{to{transform:scaleY(.6)}}@keyframes rgfire{50%{opacity:.3}}
+.petb{position:absolute;left:-8px;bottom:-6px;width:26px;height:26px;border-radius:50%;background:#1d1a14;border:1.5px solid #ffd84d88;padding:2px;display:flex;z-index:2}
+.srk{display:inline-flex;align-items:center;gap:1px;font-size:11px;color:var(--sc,#999);white-space:nowrap}.srk b{font-size:10px;margin-right:3px;font-weight:800}.srk i{font-style:normal;color:#ffffff30}.srk i.on{color:var(--sc);text-shadow:0 0 4px var(--sc)}.srk.none{color:#888;font-size:10px}.srk.sm{font-size:10px}.srk.t6 i.on{color:#111;-webkit-text-stroke:.8px #e0e0e0;text-shadow:0 0 4px #b388ff}.srk.t6 b{color:#ddd}
+.seatst{display:flex;align-items:center;justify-content:center;gap:3px;margin-top:1px}
+.stlist{display:flex;flex-direction:column;gap:8px;max-height:58vh;overflow:auto}.strow{background:#ffffff0a;border-radius:10px;padding:7px 9px}.stn{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}.strow .xpb{margin:5px 0 3px}.strow small{font-size:11px;opacity:.85}
+.starfx{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(#000a,#000e);animation:sfin .3s}.sfx-in{text-align:center;color:#fff;padding:20px;max-width:340px}.sfx-in b{display:block;font-size:22px;color:var(--sc);text-shadow:0 0 12px var(--sc);margin:8px 0}.sfx-in small{opacity:.85}
+.sfx-stars i{font-style:normal;font-size:40px;color:#ffffff25;margin:0 2px;display:inline-block}.sfx-stars i.on{color:var(--sc);text-shadow:0 0 14px var(--sc)}.sfx-stars i.new{animation:snew 1s cubic-bezier(.2,1.6,.4,1)}.starfx.big .sfx-stars i.on{animation:snew 1s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes snew{0%{transform:scale(0) rotate(-180deg)}100%{transform:none}}@keyframes sfin{from{opacity:0}}
+.ppbtn{width:100%;margin:4px 0 8px}.pphd{display:flex;gap:12px;align-items:center;margin-bottom:8px}.pphd .av{position:relative;width:54px;height:54px;font-size:30px}
+.ppg{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}.ppit{display:flex;flex-direction:column;align-items:center;background:#ffffff0a;border-radius:8px;padding:5px 2px;text-align:center}.ppit.on{outline:1.5px solid #7fe0a8}.ppit i{width:34px;height:34px;display:flex}.ppit i svg{width:100%;height:100%}.ppit small{font-size:10px;line-height:1.2}
+.ppstars{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px}.ppst{display:flex;justify-content:space-between;align-items:center;font-size:12px;gap:4px}.ppst span:first-child{white-space:nowrap}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -725,7 +738,7 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='ef04c163f4';
+const APP_VER='b9b5be04ef';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -934,6 +947,34 @@ for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];
   goals.forEach((g,i)=>{const tier=Math.min(3,i+1),nm=(spi?spi[0]:k==='bust'?I.bust[0]:k==='roleG'?I.role[0]:k==='roleW'?I.role[0]+' thắng lớn':L.split(' (')[0])+' · '+MB_TN[0][i];
    BADGES.push(BG(m+'_'+k+'_'+(i+1),icon,I.n+': '+nm,L+' '+g.toLocaleString('vi-VN')+' '+u+' ('+I.n+')',[150,800,3000,10000][i],tier,s=>V(s,mk(m,k==='streak'?'bestStreak':k))>=g,{series:'m_'+k,mode:m,k:mk(m,k==='streak'?'bestStreak':k),goal:g,legend:i===3}));});}
  MB_SEC.forEach(([k,d,ic],j)=>{const sd=k==='s4'?I.sec[0]:k==='s5'?I.sec[1]:[null,d,ic];BADGES.push(BG(m+'_sec_'+k,sd[2],I.n+': '+(sd[0]||d.split(' ')[0]+' '+(d.split(' ')[1]||'')),sd[1],[3000,3000,4000,5000,5000][j],3,s=>V(s,mk(m,k))>=1,{secret:true,mode:m,k:mk(m,k),goal:1}));});}
+
+// v1.52: thú cưng (1 con đang theo, cộng % EXP) + hạng sao theo chế độ
+const PETS=[{id:'pet_meo',name:'Mèo',price:20000,pct:2},{id:'pet_cho',name:'Chó',price:50000,pct:4},{id:'pet_vet',name:'Vẹt',price:150000,pct:7},{id:'pet_cao',name:'Cáo',price:400000,pct:12},{id:'pet_rong',name:'Rồng',price:1000000,pct:20}];
+function petDef(id){return PETS.find(x=>x.id===id)||null;}
+function petOwned(P,id){return !!(P.pets&&P.pets[id]);}
+function petActive(P){const d=petDef(P.pet);return d&&petOwned(P,d.id)?d:null;}
+function petBonus(P){const d=petActive(P);return d?d.pct:0;}
+function buyPet(P,id){const d=petDef(id);if(!d)return{ok:false,reason:'Không có thú cưng này'};if(petOwned(P,id))return{ok:false,reason:'Đã sở hữu'};if((P.xu||0)<d.price)return{ok:false,reason:'Không đủ xu'};P.xu-=d.price;P.pets=Object.assign({},P.pets,{[id]:1});P.pet=id;return{ok:true,cost:d.price};}
+function equipPet(P,id){if(id&&!petOwned(P,id))return false;P.pet=id||null;return true;}
+const STAR_MODES=[['tlmn','Miền Nam'],['demla','Đếm lá'],['3cao','3 Cào'],['xidach','Xì dách'],['baucua','Bầu cua'],['domino','Domino'],['xito','Xì tố'],['poker','Poker']];
+const STAR_TIERS=[['Đồng',0.4,'#cd7f32'],['Bạc',0.8,'#cfd8dc'],['Vàng',1.2,'#ffd54f'],['Kim cương',2,'#80deea'],['Xanh',2.8,'#42a5f5'],['Đỏ',4,'#ef5350'],['Đen',6,'#9e9e9e']];
+const STAR_TOTAL_XP=300*60*41; // ~300 giờ ở ~41 XP/phút
+const STAR_STEPS=(()=>{const w=[];for(let i=1;i<=35;i++)w.push(Math.pow(i,1.5));const s=w.reduce((a,b)=>a+b,0);const c=w.map(x=>Math.max(10,Math.round(x*STAR_TOTAL_XP/s/10)*10));return c;})();
+const STAR_CUM=STAR_STEPS.reduce((a,c)=>(a.push(a[a.length-1]+c),a),[0]);
+function starInfo(xp){xp=xp||0;let step=0;while(step<35&&xp>=STAR_CUM[step+1])step++;const tier=step?Math.floor((step-1)/5):-1,stars=step?((step-1)%5)+1:0;
+ return{step,tier,stars,name:step?STAR_TIERS[tier][0]:'Chưa xếp hạng',color:step?STAR_TIERS[tier][2]:'#777',cur:step>=35?STAR_STEPS[34]:xp-STAR_CUM[step],need:step>=35?STAR_STEPS[34]:STAR_STEPS[step],max:step>=35};}
+function starStepBonus(step){let b=0;for(let k=1;k<=step;k++)b+=STAR_TIERS[Math.floor((k-1)/5)][1];return Math.round(b*10)/10;}
+function modeXpOf(P,m){return (P.mxp&&P.mxp[m])||0;}
+function starBonus(P){return Math.round(STAR_MODES.reduce((a,[m])=>a+starStepBonus(starInfo(modeXpOf(P,m)).step),0)*10)/10;}
+function addModeXp(P,m,n){if(!m||!(n>0)||!STAR_MODES.some(x=>x[0]===m))return null;P.mxp=Object.assign({},P.mxp);const b=starInfo(P.mxp[m]||0).step;P.mxp[m]=(P.mxp[m]||0)+n;const a=starInfo(P.mxp[m]).step;if(a>b){P._starUp={mode:m,from:b,step:a};return P._starUp;}return null;}
+BADGES.push(BG('pet_first','🐾','Bạn đồng hành','Nuôi thú cưng đầu tiên',2000,1,(s,p)=>PETS.some(x=>petOwned(p,x.id)),{series:'asset'}),
+ BG('pet_rong','🐉','Chủ nhân của Rồng','Sở hữu Rồng',50000,3,(s,p)=>petOwned(p,'pet_rong'),{series:'asset'}),
+ BG('pet_all','🏡','Vườn thú','Sở hữu đủ 5 thú cưng',30000,3,(s,p)=>PETS.every(x=>petOwned(p,x.id)),{series:'asset'}),
+ BG('star_first','⭐','Ngôi sao đầu tiên','Đạt 1 sao ở bất kỳ chế độ',1000,1,(s,p)=>STAR_MODES.some(([m])=>starInfo(modeXpOf(p,m)).step>=1),{series:'star'}),
+ BG('star_gold','🌟','Hạng Vàng','Đạt hạng Vàng ở một chế độ',10000,2,(s,p)=>STAR_MODES.some(([m])=>starInfo(modeXpOf(p,m)).step>=11),{series:'star'}),
+ BG('star_dia','💎','Hạng Kim cương','Đạt hạng Kim cương ở một chế độ',30000,3,(s,p)=>STAR_MODES.some(([m])=>starInfo(modeXpOf(p,m)).step>=16),{series:'star'}),
+ BG('star_all8','🎖️','Toàn năng','Có sao ở cả 8 chế độ',20000,2,(s,p)=>STAR_MODES.every(([m])=>starInfo(modeXpOf(p,m)).step>=1),{series:'star'}),
+ BG('star_black','🖤','Huyền thoại Đen','Đạt Đen 5 sao ở một chế độ',500000,3,(s,p)=>STAR_MODES.some(([m])=>starInfo(modeXpOf(p,m)).step>=35),{series:'star',legend:true}));
 // huy hiệu tài sản (nhóm Chung)
 BADGES.push(BG('asset_first','🏪','Khởi nghiệp','Sở hữu tài sản đầu tiên',2000,1,(s,p)=>ASSETS.some(a=>a.cat==='biz'&&assetLv(p,a.id)>0),{series:'asset'}),
  BG('asset_nhamay','🏭','Ông chủ nhà máy','Sở hữu Nhà máy',20000,2,(s,p)=>assetLv(p,'nhamay')>0,{series:'asset'}),
@@ -1012,13 +1053,14 @@ const ASSET_MAX=5;const ASSET_CATS={biz:'Kinh doanh',veh:'Phương tiện',shop:
 function assetDef(id){return ASSETS.find(x=>x.id===id);}
 function assetLv(P,id){const a=assetDef(id);const v=P.assets&&P.assets[id];return v>0?Math.min(a?a.max:ASSET_MAX,v|0):0;}
 function assetBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?0:x.pct*assetLv(P,x.id)),0);}
-function expBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?x.pct*assetLv(P,x.id):0),0);}
+function shopExpBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?x.pct*assetLv(P,x.id):0),0);}
+function expBonus(P){return shopExpBonus(P)+(typeof petBonus==='function'?petBonus(P):0);}
 function assetCost(id,toLv){const a=assetDef(id);if(!a||toLv<1||toLv>a.max)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
 function bestAsset(P){let b=null;for(const a of ASSETS)if(assetLv(P,a.id)&&(!b||a.price>b.price))b=a;return b;}
 function passiveBank(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return;ps.frac=passivePending(P,now);ps.last=now;}
 function buyAsset(P,id,now){const a=assetDef(id);if(!a)return{ok:false,reason:'Không có tài sản này'};const lv=assetLv(P,id);if(lv>=a.max)return{ok:false,reason:a.max===1?'Đã sở hữu':'Đã nâng cấp tối đa'};
  const cost=assetCost(id,lv+1);if((P.xu||0)<cost)return{ok:false,reason:'Không đủ xu'};passiveBank(P,now);P.xu-=cost;P.assets=Object.assign({},P.assets||{});P.assets[id]=lv+1;P.stats=P.stats||{};P.stats.assetSpent=(P.stats.assetSpent||0)+cost;return{ok:true,cost,lv:lv+1};}
-function passiveRate(P){return levelInfo(P.xp||0).level/2/100*(1+assetBonus(P)/100);}
+function passiveRate(P){return levelInfo(P.xp||0).level/2/100*(1+(assetBonus(P)+starBonus(P))/100);}
 function passiveInit(P,now){now=now==null?Date.now():+now;if(!P.passive||typeof P.passive.last!=='number'||!isFinite(P.passive.last))P.passive={last:now,frac:0};return P.passive;}
 function passivePending(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);const d=now-ps.last;if(!(d>0))return ps.frac||0;return Math.min(d,PASSIVE_CAP_MS)/1000*passiveRate(P)+(ps.frac||0);}
 function passiveClaim(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return 0;const tot=passivePending(P,now);const got=Math.floor(tot);ps.frac=tot-got;ps.last=now;P.xu+=got;return got;}
@@ -1035,7 +1077,7 @@ function onPlay(P,info,prev){const s=P.stats;
  if(info.type==='quad')s.quads++;if(info.type==='pairseq'&&info.len>=4)s.pairseq4++;
  if((info.top>>2)===12&&(info.type==='single'||info.type==='pair'||info.type==='triple'))questEvent(P,'two',info.len);
  let bonus=0;if(prev&&(prev.top>>2)===12&&info.type!==prev.type){s.chops++;questEvent(P,'chop');if(P._tbl===2)questEvent(P,'chop2');}
- const lv=prev&&(prev.top>>2)===12&&info.type!==prev.type?addXp(P,XP_CHOP):null;
+ const lv=prev&&(prev.top>>2)===12&&info.type!==prev.type?addXp(P,XP_CHOP,P._mode):null;
  return{bonus,badges:checkBadges(P),lv};}
 // place: 0..3, instant: human won tới trắng
 // Bàn n người: hệ số XP và xu theo số người
@@ -1058,7 +1100,7 @@ function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.g
  if(ctx.beatHard){s.beatHard=(s.beatHard||0)+ctx.beatHard;questEvent(P,'beatHard',ctx.beatHard);}if(ctx.beatMaster){s.beatMaster=(s.beatMaster||0)+ctx.beatMaster;questEvent(P,'beatMaster',ctx.beatMaster);}
  if(place<=1)questEvent(P,'top2');if(instant&&place===0)s.instant++;if(delta>0)s.earned=(s.earned||0)+delta;
  const xp0=tableXp(n,place,instant,ctx.mode),bxp=Math.round(xp0*bonus);
- const x0=P.xu;P.xu=Math.max(0,P.xu+delta);const paid=P.xu-x0,x1=P.xu;const lv=addXp(P,xp0+bxp);const x2=P.xu;const badges=checkBadges(P);
+ const x0=P.xu;P.xu=Math.max(0,P.xu+delta);const paid=P.xu-x0,x1=P.xu;const lv=addXp(P,xp0+bxp,ctx.mode);const x2=P.xu;const badges=checkBadges(P);
  const ledger={place:paid-(delta>0?bxu:0),bonus:delta>0?bxu:0,level:x2-x1,badges:P.xu-x2};return{delta,bxu,bxp,bonus,badges,lv,ledger};}
 // sổ xu ván: parts {place,bonus,chop,thui,chay,b3,level,badges,exit,misc}
 const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['luoc','Luộc máy'],['demla','Đếm lá'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
@@ -1106,7 +1148,7 @@ function titleUnlocked(P,t){if(t.min)return levelInfo(P.xp).level>=t.min;if(t.st
 function unlockedTitles(P){return TITLES.filter(t=>titleUnlocked(P,t));}
 function currentTitle(P){migrateTitle(P);const t=P.title&&TITLES.find(x=>x.id===P.title);return t&&titleUnlocked(P,t)?t:titleForLevel(levelInfo(P.xp).level);}
 function setTitle(P,id){const t=TITLES.find(x=>x.id===id);if(!t||!titleUnlocked(P,t))return false;P.title=id;return true;}
-function addXp(P,n){if(n>0){const b=expBonus(P);if(b)n=Math.round(n*(1+b/100));}P._lastXp=n;const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const after=levelInfo(P.xp).level;const ups=[];let xu=0;
+function addXp(P,n,mode){if(n>0){const b=expBonus(P);if(b)n=Math.round(n*(1+b/100));}P._lastXp=n;P._starUp=null;if(mode)addModeXp(P,mode,n);const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const after=levelInfo(P.xp).level;const ups=[];let xu=0;
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // CLOUD_START
@@ -1123,6 +1165,8 @@ function mergeSaves(a,b){
  if(O.login&&O.login.last&&(!P.login||!P.login.last||O.login.last>P.login.last))P.login=Object.assign({},O.login);
  if(O.assets){P.assets=Object.assign({},P.assets||{});for(const k in O.assets)P.assets[k]=Math.max(P.assets[k]||0,O.assets[k]||0);}
  if(O.passive&&typeof O.passive.last==='number'&&(!P.passive||!(P.passive.last>=O.passive.last)))P.passive=Object.assign({},O.passive);
+ if(O.mxp){P.mxp=Object.assign({},P.mxp||{});for(const k in O.mxp)P.mxp[k]=Math.max(P.mxp[k]||0,O.mxp[k]||0);}
+ if(O.pets)P.pets=Object.assign({},O.pets,P.pets||{});if(!P.pet&&O.pet)P.pet=O.pet;if(O.privAssets!=null&&P.privAssets==null)P.privAssets=O.privAssets;
  if(O.allowDay&&(!P.allowDay||O.allowDay>P.allowDay))P.allowDay=O.allowDay;
  if(O.rescueDay&&(!P.rescueDay||O.rescueDay>P.rescueDay))P.rescueDay=O.rescueDay;
  if(O.quests&&O.quests.day&&(!P.quests||!P.quests.day||O.quests.day>P.quests.day))P.quests=JSON.parse(JSON.stringify(O.quests));
@@ -2376,7 +2420,7 @@ hookEnd=function(place,instant,n){let ctx={};
  if(G&&G.online){const gx=(ONL._gx&&ONL.st&&ONL._gx.id===(ONL.st.dealId||'x'))?ONL._gx:{};ctx={online:true,usedTwo:!!gx.usedTwo,last3s:!!gx.last3s&&place===0};}
  else if(G){const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];const below=all.slice(all.indexOf(0)+1).filter(p=>p);
   ctx={bonus:aiBeatBonus(all,0,BOTAI),noXuBonus:masterTbl(),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
- ctx.mode=G&&G.mode==='demla'?'demla':'tlmn';try{Object.assign(ctx,modeCtx(place,instant));}catch(e){}
+ ctx.mode=G&&G.mode==='demla'?'demla':'tlmn';PR._mode=ctx.mode;try{Object.assign(ctx,modeCtx(place,instant));}catch(e){}
  const r=onGameEnd(PR,place,instant,n||4,ctx);if(G)G.lastRes=r;try{LEDG.res=r;}catch(e){}
  toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu${r.bxu?` (thưởng máy khó +${fmt(r.bxu)})`:''}`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);};
@@ -3085,8 +3129,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.51';
+const APP_V='1.52';
 const CHANGELOG=[
+ ['1.52','12/10',['Hạng sao theo từng chế độ: 7 hạng × 5 sao (Đồng → Bạc → Vàng → Kim cương → Xanh → Đỏ → Đen) theo XP kiếm ở chế độ đó; sao hiện dưới avatar khi chơi; mỗi sao cộng % thu nhập thụ động (tối đa +86%/chế độ, +688% cả 8 chế độ); màn Hạng sao + hiệu ứng lên sao + huy hiệu','Thú cưng trong Tài sản: Mèo, Chó, Vẹt, Cáo, Rồng (có hoạt ảnh); 1 con đi theo cạnh avatar, cộng % EXP','Bấm bạn bè/người online để xem hồ sơ: tài sản, thú cưng, hạng sao, tổng % thu nhập & EXP; có thể ẩn trong Cài đặt']],
  ['1.51','12/10',['XP tỉ lệ thời gian ván (~41 XP/phút): Miền Nam 4 người 100/60/35/20, 3 người 46/28/16, 2 người 32/19; Đếm lá 83/50/29/17 (3 người 38/23/13, 2 người 27/16); 3 Cào 8/4/3, Xì dách 13/7/4, Bầu cua 24/12/8, Domino 35/17/12, Xì tố 32/16/10, Poker 30/15/10','Bảng XP từng chế độ trong cửa sổ Cấp độ; nhãn XP ở màn chọn bàn']],
  ['1.50','12/10',['Tài sản thành mục riêng ở màn hình chính: Kinh doanh, Phương tiện (Xe đạp → Du thuyền, tăng % thu nhập, nâng cấp 5 cấp) và Mua sắm (12 món Quần áo, Trang sức, Phụ kiện, Vật phong thủy, tăng % EXP ở mọi chế độ, đủ bộ +40%)','Bấm thanh Thu nhập thụ động để xem công thức, số xu mỗi giây/giờ/ngày và thưởng từng tài sản','Tài sản giá trị nhất hiện cạnh avatar; huy hiệu Bộ sưu tập xe, Tín đồ thời thượng']],
  ['1.49','12/10',['Thu nhập thụ động: nhận xu liên tục theo cấp (cấp ÷ 2 ÷ 100 xu mỗi giây, cấp 20 = 360 xu/giờ), tích luỹ cả khi tắt app, tối đa 24 giờ; bộ đếm chạy trực tiếp ở màn hình chính, bấm Nhận để lấy; đồng bộ đám mây chống nhận 2 lần','Cửa hàng › Tài sản: Quán nước, Tiệm tạp hóa, Xưởng may, Nhà máy, Tập đoàn — tăng % thu nhập thụ động, nâng cấp tới cấp 5; huy hiệu Ông chủ nhà máy, Chủ tịch tập đoàn, Đế chế kinh doanh, Tài phiệt tối thượng']],
@@ -3163,7 +3208,7 @@ setInterval(()=>{try{if(!G||!G.over||_gk39===G)return;if(!document.querySelector
 // Luộc: sau khi ván kết thúc offline, máy không đủ cược nữa và mình đã ăn xu của nó
 const _eg39=endGame;endGame=function(i){const r=_eg39.apply(this,arguments);setTimeout(()=>{try{if(!G||G.online||G._luoc)return;G._luoc=1;const bet=curBet();let tot=0,names=[];
  (SEATMAP[TBL||4]||[0,1,2,3]).forEach(p=>{if(!p)return;const now=seatXu(p),was=LEDG.s0[p];if(now<bet&&was!=null&&was>now&&PR.xu>(LEDG.xu0||0)){const lv=Math.max(0,Math.min(3,+BOTAI[p]||0));const xp=LUOC_XP[lv],xu=Math.round(bet*0.5*(lv+1));
-  const up=addXp(PR,xp);PR.xu+=xu;tot+=xu;names.push(NAMES[p]);bst('luoc');if(lv===3)bst('luoc3');LUOC.tbl++;PR.stats.luocTable=Math.max(PR.stats.luocTable||0,LUOC.tbl);questEvent(PR,'luoc');
+  const up=addXp(PR,xp,PR._mode);PR.xu+=xu;tot+=xu;names.push(NAMES[p]);bst('luoc');if(lv===3)bst('luoc3');LUOC.tbl++;PR.stats.luocTable=Math.max(PR.stats.luocTable||0,LUOC.tbl);questEvent(PR,'luoc');
   setTimeout(()=>{try{sfx('chop');winFX('🍲 LUỘC SẠCH '+NAMES[p].trim().toUpperCase()+'! +'+xp+' XP');toast(`Luộc ${NAMES[p].trim()}: +${fmt(xu)} xu, +${xp} XP`);}catch(e){}},400+names.length*1200);}});
  if(tot){LUOC.xu=tot;LUOC.g=G;saveP();evBadge();}}catch(e){}},350);return r;};
 const _nb39=newBotsNext;newBotsNext=function(){LUOC.tbl=0;return _nb39();};
@@ -3458,7 +3503,7 @@ function cgSettle(){const st=CG.st;if(st.phase==='done')return;st.phase='done';s
   if(CG.g==='3cao'){const sc=bcScore(mh);Object.assign(ev,{sp1:won&&sc.bacao,sp2:won&&!sc.bacao&&sc.score===9,sp3:allLost&&n>1,s4:deal&&sc.bacao,s5:!sc.bacao&&sc.score===9&&me<0});}
   else{const kd=xdKind(mh,st.me===0?15:16);Object.assign(ev,{sp1:won&&kd.kind==='xidach',sp2:won&&kd.kind==='ngulinh',sp3:won&&kd.kind==='xibang',s4:kd.kind==='ngulinh'&&kd.total===21,s5:allLost&&n>1});}
   modeRecord(PR,CG.g,ev);}catch(e){console.warn(e)}
- const up=addXp(PR,modeXp(CG.g,me));const xp=PR._lastXp;xpFloat(xp,up);st.msg=(me>0?`🎉 Bạn ${st.me===0?'(cái) ':''}thắng +${fmt(me)} xu`:me<0?`Bạn ${st.me===0?'(cái) ':''}thua ${fmt(me)} xu`:'Hòa')+` · +${xp} XP`;
+ const up=addXp(PR,modeXp(CG.g,me),CG.g);const xp=PR._lastXp;xpFloat(xp,up);st.msg=(me>0?`🎉 Bạn ${st.me===0?'(cái) ':''}thắng +${fmt(me)} xu`:me<0?`Bạn ${st.me===0?'(cái) ':''}thua ${fmt(me)} xu`:'Hòa')+` · +${xp} XP`;
  sfx(me>0?'win':me<0?'thud':'tap');if(me>0)sfx('coin');cgRender();try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(me>=0?'+':'')+fmt(me)+' xu',me>=0?'gain':'loss');}catch(e){}
  try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);}
 // ---- vào từ màn hình chính
@@ -3529,7 +3574,7 @@ function mgBets(list,cur,on,maxOk){return `<div class="cgbets">${list.map(b=>`<b
 // kết thúc ván: cập nhật xu/XP/thống kê/nhiệm vụ
 const MG_STAT={baucua:'bcua',domino:'dom',xito:'xt',poker:'pk'};
 function mgEnd(net,o){o=o||{};const k=MG_STAT[MG.g];PR.xu=Math.max(0,PR.xu+net);bst(k+'Games');const won=net>0;if(won){bst(k+'Win');questEvent(PR,k+'win');}questEvent(PR,'cgplay');(o.stats||[]).forEach(s=>bst(s));try{const st=MG.st||{};const tbl=(st.bots||(st.seats||[]).slice(1)).map(b=>b.name);const n=tbl.length+1;const bust=tbl.filter(nm=>nm!=='Nhà cái'&&(MG.bxu[nm]||0)<=0).length;modeRecord(PR,MG.g,Object.assign({win:won,net,bet:MG.bet,n,full:n>=(MG.g==='domino'?4:6),bust},o.ev||{}));}catch(e){console.warn(e)}
- const xp0=o.xp!=null?o.xp:modeXp(MG.g,net);const up=addXp(PR,xp0);const xp=PR._lastXp;xpFloat(xp,up);sfx(won?'cgJingle':net<0?'cgLose':'cgChip');
+ const xp0=o.xp!=null?o.xp:modeXp(MG.g,net);const up=addXp(PR,xp0,MG.g);const xp=PR._lastXp;xpFloat(xp,up);sfx(won?'cgJingle':net<0?'cgLose':'cgChip');
  try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(net>=0?'+':'')+fmt(net)+' xu',net>=0?'gain':'loss');}catch(e){}
  try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);return xp;}
 function mgLedger(rows){return rows&&rows.length?`<div class="cgled">${rows.map(l=>`<div><span>${esc(l[0])}</span><b class="${l[1]>0?'pos':l[1]<0?'neg':''}">${l[1]>0?'+':''}${fmt(l[1])}</b></div>`).join('')}</div>`:'';}
@@ -3917,5 +3962,77 @@ const _rh149=renderHome;renderHome=function(){_rh149.apply(this,arguments);try{c
  const old=$('pcAssets');if(old)old.remove();const av=document.querySelector('#home .pcard .av');if(av){let bd=av.querySelector('.bestas');if(bA&&ASSET_SVG[bA.id]){if(!bd){bd=document.createElement('span');bd.className='bestas';av.appendChild(bd);}bd.innerHTML=ASSET_SVG[bA.id];bd.title=bA.name;}else if(bd)bd.remove();}}catch(e){console.warn(e)}};
 // XP thực nhận (đã cộng % EXP)
 const _xpf149=xpFloat;xpFloat=function(xp,up){return _xpf149(PR._lastXp||xp,up);};
+
+// ===== v1.52: thú cưng, hạng sao theo chế độ, hồ sơ người chơi =====
+const PET_SVG={
+ pet_meo:_sv(`<path d="M14 26l4-16 10 10h8l10-10 4 16v12c0 12-9 18-18 18s-18-6-18-18z" fill="#ffb74d"/><path d="M18 14l4 8M46 14l-4 8" stroke="#f57c00" stroke-width="2"/><circle cx="24" cy="34" r="3" fill="#3e2723"/><circle cx="40" cy="34" r="3" fill="#3e2723"/><path d="M29 41l3 3 3-3z" fill="#e91e63"/><path d="M8 40h12M8 46h12M44 40h12M44 46h12" stroke="#5d4037" stroke-width="1.2"/>`),
+ pet_cho:_sv(`<ellipse cx="32" cy="36" rx="18" ry="18" fill="#a1887f"/><ellipse cx="13" cy="30" rx="7" ry="14" fill="#5d4037"/><ellipse cx="51" cy="30" rx="7" ry="14" fill="#5d4037"/><ellipse cx="32" cy="44" rx="9" ry="7" fill="#efebe9"/><circle cx="25" cy="32" r="3" fill="#212121"/><circle cx="39" cy="32" r="3" fill="#212121"/><ellipse cx="32" cy="41" rx="4" ry="3" fill="#212121"/><path d="M30 48q2 5 4 0" fill="#e57373"/>`),
+ pet_vet:_sv(`<path d="M22 30c0-12 8-20 16-20s12 8 12 16l-6 4 2 8c0 10-8 20-18 20-8 0-10-8-6-14z" fill="#43a047"/><path d="M30 34c-8 2-14 10-16 22 8-2 14-6 18-12z" fill="#1e88e5"/><path d="M50 22l8 4-8 6z" fill="#fdd835"/><circle cx="41" cy="20" r="3.5" fill="#fff"/><circle cx="42" cy="20" r="2" fill="#000"/><path d="M28 12q2-8 8-6" stroke="#e53935" stroke-width="3" fill="none"/><path d="M26 54l-4 8M30 54l0 8" stroke="#e53935" stroke-width="3"/>`),
+ pet_cao:_sv(`<path d="M8 10l14 14h20l14-14-4 24-20 22-20-22z" fill="#ff7043"/><path d="M20 38l12 18 12-18-12 4z" fill="#fff"/><path d="M8 10l10 18M56 10L46 28" stroke="#bf360c" stroke-width="2"/><path d="M22 32l6 2M42 32l-6 2" stroke="#212121" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="50" r="2.5" fill="#212121"/>`),
+ pet_rong:_sv(`<defs><linearGradient id="rgG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5252"/><stop offset="1" stop-color="#ffab00"/></linearGradient></defs><path class="rwing" d="M30 26L6 10l6 20-6 4 16 4z" fill="#ffca28" opacity=".9"/><path d="M14 52c4-14 10-22 20-26l6-12 4 8 8 2-4 6c4 6 4 16-2 22-6 4-14 4-20 2l-8 4z" fill="url(#rgG)"/><circle cx="44" cy="22" r="2.5" fill="#fff"/><circle cx="44.5" cy="22" r="1.2" fill="#000"/><path d="M52 26l8 2-6 3 6 3-8 1" fill="#ff6d00" class="rfire"/><path d="M24 40l4 4 4-4 4 4 4-4" stroke="#b71c1c" stroke-width="1.5" fill="none"/>`)};
+function petIcon(id,cls){return id&&PET_SVG[id]?`<span class="petic ${id} ${cls||''}">${PET_SVG[id]}</span>`:'';}
+function starsHTML(step,sm){const s=starInfo(STAR_CUM[Math.min(35,step||0)]);if(!s.step)return `<span class="srk none ${sm?'sm':''}">☆ Chưa xếp hạng</span>`;
+ return `<span class="srk t${s.tier} ${sm?'sm':''}" style="--sc:${s.color}" title="${s.name} ${s.stars} sao"><b>${s.name}</b>${[1,2,3,4,5].map(k=>`<i class="${k<=s.stars?'on':''}">★</i>`).join('')}</span>`;}
+function curStarMode(){if($('cg')&&CG.g)return CG.g;if($('mg')&&MG.g)return MG.g;try{return G&&G.mode==='demla'?'demla':'tlmn';}catch(e){return 'tlmn';}}
+function myStarHTML(m){return starsHTML(starInfo(modeXpOf(PR,m||curStarMode())).step,true);}
+// sao + thú cưng dưới avatar khi chơi
+const _slv152=seatLv;seatLv=function(s){const h=_slv152(s);if(!s||!s.me)return h;return h+`<span class="seatst">${myStarHTML()}${petIcon(PR.pet,'sm')}</span>`;};
+const _rm152=renderMe;renderMe=function(){const r=_rm152.apply(this,arguments);try{const e=$('meInfo');if(e&&!$('cg')&&!$('mg')){let d=e.querySelector('.seatst');if(!d){d=document.createElement('span');d.className='seatst';e.appendChild(d);}d.innerHTML=myStarHTML()+petIcon(petActive(PR)&&PR.pet,'sm');}}catch(x){}return r;};
+// chúc mừng lên sao
+const _ax152=addXp;addXp=function(P,n,m){const r=_ax152(P,n,m);try{if(P===PR&&P._starUp){const u=P._starUp;P._starUp=null;setTimeout(()=>starUpFX(u),900);}}catch(e){}return r;};
+function starUpFX(u){try{const s=starInfo(STAR_CUM[u.step]),nm=(STAR_MODES.find(x=>x[0]===u.mode)||[0,''])[1],tierUp=u.from===0||Math.floor((u.from-1)/5)!==s.tier;
+ const d=document.createElement('div');d.className='starfx'+(tierUp?' big':'');d.style.setProperty('--sc',s.color);
+ d.innerHTML=`<div class="sfx-in"><div class="sfx-stars">${[1,2,3,4,5].map(k=>`<i class="${k<=s.stars?'on':''} ${k===s.stars?'new':''}">★</i>`).join('')}</div><b>${tierUp?'LÊN HẠNG ':'LÊN SAO · '}${s.name.toUpperCase()} ${s.stars}★</b><small>${esc(nm)} · thu nhập thụ động +${starStepBonus(u.step)}% từ chế độ này</small></div>`;
+ document.body.appendChild(d);try{sfx('win');}catch(e){}d.onclick=()=>d.remove();setTimeout(()=>d.remove(),3200);badgeToasts(checkBadges(PR));saveP();}catch(e){console.warn(e)}}
+// màn Hạng sao
+function openStars(){const tot=starBonus(PR);
+ modal(`<h3>⭐ Hạng sao</h3><div class="asum"><span>Thưởng thu nhập <b class="pos">+${fmt(tot)}%</b></span><span>Tối đa <b>+688%</b></span></div>
+ <p class="small">Mỗi chế độ có 7 hạng × 5 sao (Đồng → Bạc → Vàng → Kim cương → Xanh → Đỏ → Đen), tính theo XP kiếm được ở chế độ đó. Mỗi sao cộng % thu nhập thụ động: ${STAR_TIERS.map(t=>`<b style="color:${t[2]}">${t[0]}</b> +${t[1]}%`).join(', ')}.</p>
+ <div class="stlist">${STAR_MODES.map(([m,n])=>{const x=modeXpOf(PR,m),s=starInfo(x);return `<div class="strow"><div class="stn"><b>${n}</b>${starsHTML(s.step)}</div><div class="xpb"><i style="width:${s.max?100:Math.round(100*s.cur/s.need)}%;background:${s.color}"></i></div><small>${s.max?'Tối đa · ':`${fmt(s.cur)}/${fmt(s.need)} XP đến sao kế · `}${fmt(x)} XP · <b class="pos">+${starStepBonus(s.step)}%</b></small></div>`;}).join('')}</div>`);}
+// thú cưng: tab trong Tài sản
+const _oa152=openAssets;openAssets=function(cat){if(cat)asCat=cat;const pet=asCat==='pet';_oa152(pet?'biz':asCat);if(pet)asCat='pet';try{const tabs=document.querySelector('.atabs');if(!tabs)return;
+ const own=PETS.filter(x=>petOwned(PR,x.id)).length;const b=document.createElement('button');b.className=pet?'on':'';b.innerHTML=`Thú cưng<small>${own}/${PETS.length}</small>`;b.onclick=()=>openAssets('pet');tabs.appendChild(b);
+ if(!pet)return;tabs.querySelectorAll('button').forEach(x=>{if(x!==b)x.classList.remove('on');});
+ document.querySelector('.ainfo').innerHTML=`Thú cưng đi theo bạn, cạnh avatar. <b>Chỉ con đang theo</b> được cộng % EXP (cộng thêm vào % Mua sắm). <span class="acnt">${own}/${PETS.length}</span>`;
+ document.querySelector('.agrid').innerHTML=PETS.map(d=>{const o=petOwned(PR,d.id),on=PR.pet===d.id&&o;return `<div class="aitem ${o?'own':''}"><div class="aic">${petIcon(d.id)}</div><div class="ainm"><b>${d.name}</b><small>+${d.pct}% EXP khi đang theo${on?' · <b class="expc">đang theo</b>':''}</small></div>${o?(on?`<button class="alt" onclick="setPet(null)">Cất</button>`:`<button onclick="setPet('${d.id}')">Cho theo</button>`):`<button onclick="askPet('${d.id}')" ${PR.xu<d.price?'disabled':''}>Mua<br><small>${I('coin')}${kxu(d.price)}</small></button>`}</div>`;}).join('');}catch(e){console.warn(e)}};
+function askPet(id){const d=petDef(id);const P2=Object.assign({},PR,{pets:Object.assign({},PR.pets,{[id]:1}),pet:id});
+ modal(`<h3>🐾 Mua ${d.name}</h3><div class="aconf"><div class="aic big">${petIcon(id)}</div><p><b class="expc">+${d.pct}% EXP</b> khi đang theo</p><p>EXP nhận được: <b>+${expBonus(PR)}%</b> → <b class="expc">+${expBonus(P2)}%</b></p><p class="acost">Giá: ${I('coin')} <b>${fmt(d.price)}</b> xu<br><small>Số dư sau khi mua: ${fmt(PR.xu-d.price)} xu</small></p></div>
+ <div class="row" style="gap:8px"><button class="alt" style="flex:1" onclick="openAssets('pet')">Hủy</button><button style="flex:1" id="aOk" onclick="doPet('${id}')" ${PR.xu<d.price?'disabled':''}>Xác nhận mua</button></div>`);}
+function doPet(id){const r=buyPet(PR,id);if(!r.ok){sfx('bad');toast(r.reason);return openAssets('pet');}sfx('coin');toast(`🐾 ${petDef(id).name} đang theo bạn · EXP +${fmt(expBonus(PR))}%`);petSaved();}
+function setPet(id){equipPet(PR,id);toast(id?`🐾 ${petDef(id).name} đang theo bạn`:'Đã cất thú cưng');petSaved();}
+function petSaved(){try{updHud();}catch(e){}badgeToasts(checkBadges(PR));saveP();try{if(typeof cloudPush==='function'&&USER)cloudPush(true);}catch(e){}openAssets('pet');}
+// thu nhập thụ động: thêm % sao
+openPassive=function(){const lv=levelInfo(PR.xp||0).level,base=lv/2/100,bon=assetBonus(PR),sb=starBonus(PR),r=passiveRate(PR);const f=v=>v.toLocaleString('vi-VN',{maximumFractionDigits:3});
+ const rows=ASSETS.filter(a=>!a.exp&&assetLv(PR,a.id)).map(a=>`<div><span>${ASSET_SVG[a.id]?`<i class="pdi">${ASSET_SVG[a.id]}</i>`:''}${esc(a.name)}${a.max>1?' · cấp '+assetLv(PR,a.id):''}</span><b class="pos">+${a.pct*assetLv(PR,a.id)}%</b></div>`).join('');
+ const srows=STAR_MODES.map(([m,n])=>{const s=starInfo(modeXpOf(PR,m));return s.step?`<div><span>⭐ ${n} · ${s.name} ${s.stars}★</span><b class="pos">+${starStepBonus(s.step)}%</b></div>`:'';}).join('');
+ modal(`<h3>⏳ Thu nhập thụ động</h3><div class="pformula">cấp ÷ 2 ÷ 100 xu/giây × (1 + % tài sản + % sao)</div><div class="pformula sm">${lv} ÷ 2 ÷ 100 = ${f(base)} × (1 + ${fmt(bon)}% + ${fmt(sb)}%) = <b>${f(r)} xu/giây</b></div>
+ <div class="prates"><div><small>Mỗi giây</small><b>${f(r)}</b></div><div><small>Mỗi giờ</small><b>${fmt(Math.round(r*3600))}</b></div><div><small>Mỗi ngày</small><b>${fmt(Math.round(r*86400))}</b></div></div>
+ <div class="pbrk"><div><span>Cơ bản (cấp ${lv})</span><b>${f(base)} xu/giây</b></div>${rows||'<div><span>Chưa có tài sản tăng thu nhập</span><b>+0%</b></div>'}<div><span><b>Tổng thưởng tài sản</b></span><b class="pos">+${fmt(bon)}%</b></div>${srows||'<div><span>⭐ Chưa có sao nào</span><b>+0%</b></div>'}<div><span><b>Tổng thưởng hạng sao</b></span><b class="pos">+${fmt(sb)}%</b></div></div>
+ <p class="small" style="text-align:center">Cộng dồn cả khi tắt app, tối đa 24 giờ chưa nhận. Hiện có ${pasFmt(passivePending(PR))} xu.</p><div class="row" style="gap:8px"><button class="alt" style="flex:1" onclick="openAssets('biz')">🏢 Tài sản</button><button class="alt" style="flex:1" onclick="openStars()">⭐ Sao</button><button style="flex:1" onclick="closeModal();doPassive()">Nhận</button></div>`);};
+// thanh Hạng sao ở màn chính + thú cưng cạnh avatar
+const _rh152=renderHome;renderHome=function(){_rh152.apply(this,arguments);try{const t=document.querySelector('#home .tiles');if(!t)return;let a=$('stTile');if(!a){a=document.createElement('button');a.id='stTile';a.onclick=()=>openStars();t.appendChild(a);}a.className='alt tile astile sttile';
+ let best=null;STAR_MODES.forEach(([m,n])=>{const s=starInfo(modeXpOf(PR,m));if(!best||s.step>best.s.step)best={n,s};});const tot=STAR_MODES.reduce((x,[m])=>x+starInfo(modeXpOf(PR,m)).step,0);
+ a.innerHTML=`<span class="alic asic">⭐</span><span class="pasm"><span>Hạng sao</span><small>${best&&best.s.step?esc(best.n)+' · '+best.s.name+' '+best.s.stars+'★':'Chơi để nhận sao'} · ${tot}/280</small></span><span class="aspc"><b class="pos">+${fmt(starBonus(PR))}%</b><small>thu nhập</small></span>`;
+ const as=$('asTile');if(as){const sp=as.querySelector('.aspc b.pos');if(sp&&!as._v152){}}
+ const av=document.querySelector('#home .pcard .av');if(av){let pb=av.querySelector('.petb');const pa=petActive(PR);if(pa){if(!pb){pb=document.createElement('span');pb.className='petb';av.appendChild(pb);}pb.innerHTML=petIcon(pa.id);pb.title=pa.name;}else if(pb)pb.remove();}}catch(e){console.warn(e)}};
+// hồ sơ công khai (lưu trong tlmn_players.avatar.pf, có thể tắt trong Cài đặt)
+function pubProfile(){const a={};ASSETS.forEach(x=>{const l=assetLv(PR,x.id);if(l)a[x.id]=l;});const m={};STAR_MODES.forEach(([k])=>{const s=starInfo(modeXpOf(PR,k)).step;if(s)m[k]=s;});
+ return{a,p:petActive(PR)?PR.pet:null,ps:PETS.filter(x=>petOwned(PR,x.id)).map(x=>x.id),m,ib:assetBonus(PR),eb:expBonus(PR),sb:starBonus(PR)};}
+const _lbs152=lbStats;lbStats=function(){const r=_lbs152();try{r.avatar={av:myAv(),bg:PR.avBg,frame:equipped(PR,'frame').id};if(!PR.privAssets)r.avatar.pf=pubProfile();else r.avatar.pf={hide:1};}catch(e){}return r;};
+function profileBody(pf){if(!pf)return '<p class="small">Người chơi chưa cập nhật hồ sơ tài sản (cần mở phiên bản mới).</p>';if(pf.hide)return '<p class="small">🔒 Người chơi đã ẩn tài sản.</p>';
+ const sec=(t,items)=>`<div class="agrp">${t}</div>`+(items||'<p class="small">Chưa có</p>');
+ const asList=c=>ASSETS.filter(x=>x.cat===c&&pf.a&&pf.a[x.id]).map(x=>`<span class="ppit" title="${esc(x.name)}"><i>${ASSET_SVG[x.id]||''}</i><small>${esc(x.name)}${x.max>1?' · '+pf.a[x.id]:''}</small></span>`).join('');
+ const pets=(pf.ps||[]).map(id=>{const d=petDef(id);return d?`<span class="ppit ${pf.p===id?'on':''}"><i>${petIcon(id)}</i><small>${d.name}${pf.p===id?' · theo':''}</small></span>`:'';}).join('');
+ const stars=STAR_MODES.map(([m,n])=>`<div class="ppst"><span>${n}</span>${starsHTML((pf.m||{})[m]||0,true)}</div>`).join('');
+ return `<div class="asum"><span>Thu nhập <b class="pos">+${fmt((pf.ib||0)+(pf.sb||0))}%</b></span><span>EXP <b class="expc">+${fmt(pf.eb||0)}%</b></span></div><p class="small" style="text-align:center;margin:2px 0 6px">Tài sản +${fmt(pf.ib||0)}% · Hạng sao +${fmt(pf.sb||0)}%</p>
+ ${sec('⭐ Hạng sao',`<div class="ppstars">${stars}</div>`)}${sec('🏢 Kinh doanh',asList('biz')?`<div class="ppg">${asList('biz')}</div>`:'')}${sec('🚗 Phương tiện',asList('veh')?`<div class="ppg">${asList('veh')}</div>`:'')}${sec('🛍️ Mua sắm',asList('shop')?`<div class="ppg">${asList('shop')}</div>`:'')}${sec('🐾 Thú cưng',pets?`<div class="ppg">${pets}</div>`:'')}`;}
+async function openPlayerProfile(uid,back){modal(`<h3>👤 Hồ sơ</h3><p class="small">Đang tải…</p>`);try{await loadSB();const {data}=await SB.from('tlmn_players').select('user_id,name,avatar,level,title,xp,frame').eq('user_id',uid).maybeSingle();
+ if(!data){modal(`<h3>👤 Hồ sơ</h3><p class="small">Không có dữ liệu hồ sơ.</p><button class="alt" onclick="${back||'closeModal()'}">Quay lại</button>`);return;}const av=data.avatar||{},pf=av.pf;
+ modal(`<div class="pphd"><span class="av fr-${esc(data.frame||av.frame||'fr_gold')}" style="--avc:${esc(av.bg||'#456')}">${esc(av.av||'🙂')}${pf&&pf.p&&!pf.hide?`<span class="petb">${petIcon(pf.p)}</span>`:''}</span><div><h3 style="margin:0">${esc(data.name||'?')}</h3><small><span class="lvb">${data.level||1}</span> ${esc(data.title||'')}</small></div></div>${profileBody(pf)}<button class="alt" onclick="${back||'closeModal()'}">Quay lại</button>`);}catch(e){modal(`<h3>👤 Hồ sơ</h3><p class="small">Lỗi tải hồ sơ.</p><button class="alt" onclick="closeModal()">Đóng</button>`);}}
+const _pt152=plTap;plTap=function(uid){_pt152(uid);try{const m=$('modalIn');if(!m||uid===USER.id||m.querySelector('.ppbtn'))return;const p=lobbyPres().find(x=>x.uid===uid);if(!p||p.bot)return;const b=document.createElement('button');b.className='ppbtn';b.innerHTML='👤 Xem hồ sơ &amp; tài sản';b.onclick=()=>openPlayerProfile(uid,`plTap('${uid}')`);const h=m.querySelector('h3');h.insertAdjacentElement('afterend',b);}catch(e){}};
+const _rf152=renderFriends;renderFriends=async function(){const r=await _rf152.apply(this,arguments);try{const rows=[...document.querySelectorAll('#frList > .row')];rows.forEach((row,i)=>{const f=FR[i];if(!f)return;[row.children[0],row.children[1]].forEach(c=>{if(!c)return;c.style.cursor='pointer';c.onclick=()=>openPlayerProfile(f.id,'openOnline()');});});}catch(e){}return r;};
+const _ost152=openSettings;openSettings=function(){_ost152.apply(this,arguments);try{const m=$('modalIn');const rows=m&&m.querySelectorAll('.row');if(!rows||!rows.length)return;const d=document.createElement('div');d.className='row';
+ d.innerHTML=`<span style="flex:1">Công khai tài sản, thú cưng &amp; hạng sao trên hồ sơ</span><button class="alt" id="privBtn">${PR.privAssets?'Đang ẩn':'Đang hiện'}</button>`;rows[rows.length-1].insertAdjacentElement('beforebegin',d);
+ d.querySelector('button').onclick=()=>{PR.privAssets=!PR.privAssets;saveP();try{if(USER&&SB)ensurePlayer();}catch(e){}openSettings();};}catch(e){}};
 boot();
 </script></body></html>

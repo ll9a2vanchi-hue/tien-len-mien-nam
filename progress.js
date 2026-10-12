@@ -136,6 +136,34 @@ for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];
   goals.forEach((g,i)=>{const tier=Math.min(3,i+1),nm=(spi?spi[0]:k==='bust'?I.bust[0]:k==='roleG'?I.role[0]:k==='roleW'?I.role[0]+' thắng lớn':L.split(' (')[0])+' · '+MB_TN[0][i];
    BADGES.push(BG(m+'_'+k+'_'+(i+1),icon,I.n+': '+nm,L+' '+g.toLocaleString('vi-VN')+' '+u+' ('+I.n+')',[150,800,3000,10000][i],tier,s=>V(s,mk(m,k==='streak'?'bestStreak':k))>=g,{series:'m_'+k,mode:m,k:mk(m,k==='streak'?'bestStreak':k),goal:g,legend:i===3}));});}
  MB_SEC.forEach(([k,d,ic],j)=>{const sd=k==='s4'?I.sec[0]:k==='s5'?I.sec[1]:[null,d,ic];BADGES.push(BG(m+'_sec_'+k,sd[2],I.n+': '+(sd[0]||d.split(' ')[0]+' '+(d.split(' ')[1]||'')),sd[1],[3000,3000,4000,5000,5000][j],3,s=>V(s,mk(m,k))>=1,{secret:true,mode:m,k:mk(m,k),goal:1}));});}
+
+// v1.52: thú cưng (1 con đang theo, cộng % EXP) + hạng sao theo chế độ
+const PETS=[{id:'pet_meo',name:'Mèo',price:20000,pct:2},{id:'pet_cho',name:'Chó',price:50000,pct:4},{id:'pet_vet',name:'Vẹt',price:150000,pct:7},{id:'pet_cao',name:'Cáo',price:400000,pct:12},{id:'pet_rong',name:'Rồng',price:1000000,pct:20}];
+function petDef(id){return PETS.find(x=>x.id===id)||null;}
+function petOwned(P,id){return !!(P.pets&&P.pets[id]);}
+function petActive(P){const d=petDef(P.pet);return d&&petOwned(P,d.id)?d:null;}
+function petBonus(P){const d=petActive(P);return d?d.pct:0;}
+function buyPet(P,id){const d=petDef(id);if(!d)return{ok:false,reason:'Không có thú cưng này'};if(petOwned(P,id))return{ok:false,reason:'Đã sở hữu'};if((P.xu||0)<d.price)return{ok:false,reason:'Không đủ xu'};P.xu-=d.price;P.pets=Object.assign({},P.pets,{[id]:1});P.pet=id;return{ok:true,cost:d.price};}
+function equipPet(P,id){if(id&&!petOwned(P,id))return false;P.pet=id||null;return true;}
+const STAR_MODES=[['tlmn','Miền Nam'],['demla','Đếm lá'],['3cao','3 Cào'],['xidach','Xì dách'],['baucua','Bầu cua'],['domino','Domino'],['xito','Xì tố'],['poker','Poker']];
+const STAR_TIERS=[['Đồng',0.4,'#cd7f32'],['Bạc',0.8,'#cfd8dc'],['Vàng',1.2,'#ffd54f'],['Kim cương',2,'#80deea'],['Xanh',2.8,'#42a5f5'],['Đỏ',4,'#ef5350'],['Đen',6,'#9e9e9e']];
+const STAR_TOTAL_XP=300*60*41; // ~300 giờ ở ~41 XP/phút
+const STAR_STEPS=(()=>{const w=[];for(let i=1;i<=35;i++)w.push(Math.pow(i,1.5));const s=w.reduce((a,b)=>a+b,0);const c=w.map(x=>Math.max(10,Math.round(x*STAR_TOTAL_XP/s/10)*10));return c;})();
+const STAR_CUM=STAR_STEPS.reduce((a,c)=>(a.push(a[a.length-1]+c),a),[0]);
+function starInfo(xp){xp=xp||0;let step=0;while(step<35&&xp>=STAR_CUM[step+1])step++;const tier=step?Math.floor((step-1)/5):-1,stars=step?((step-1)%5)+1:0;
+ return{step,tier,stars,name:step?STAR_TIERS[tier][0]:'Chưa xếp hạng',color:step?STAR_TIERS[tier][2]:'#777',cur:step>=35?STAR_STEPS[34]:xp-STAR_CUM[step],need:step>=35?STAR_STEPS[34]:STAR_STEPS[step],max:step>=35};}
+function starStepBonus(step){let b=0;for(let k=1;k<=step;k++)b+=STAR_TIERS[Math.floor((k-1)/5)][1];return Math.round(b*10)/10;}
+function modeXpOf(P,m){return (P.mxp&&P.mxp[m])||0;}
+function starBonus(P){return Math.round(STAR_MODES.reduce((a,[m])=>a+starStepBonus(starInfo(modeXpOf(P,m)).step),0)*10)/10;}
+function addModeXp(P,m,n){if(!m||!(n>0)||!STAR_MODES.some(x=>x[0]===m))return null;P.mxp=Object.assign({},P.mxp);const b=starInfo(P.mxp[m]||0).step;P.mxp[m]=(P.mxp[m]||0)+n;const a=starInfo(P.mxp[m]).step;if(a>b){P._starUp={mode:m,from:b,step:a};return P._starUp;}return null;}
+BADGES.push(BG('pet_first','🐾','Bạn đồng hành','Nuôi thú cưng đầu tiên',2000,1,(s,p)=>PETS.some(x=>petOwned(p,x.id)),{series:'asset'}),
+ BG('pet_rong','🐉','Chủ nhân của Rồng','Sở hữu Rồng',50000,3,(s,p)=>petOwned(p,'pet_rong'),{series:'asset'}),
+ BG('pet_all','🏡','Vườn thú','Sở hữu đủ 5 thú cưng',30000,3,(s,p)=>PETS.every(x=>petOwned(p,x.id)),{series:'asset'}),
+ BG('star_first','⭐','Ngôi sao đầu tiên','Đạt 1 sao ở bất kỳ chế độ',1000,1,(s,p)=>STAR_MODES.some(([m])=>starInfo(modeXpOf(p,m)).step>=1),{series:'star'}),
+ BG('star_gold','🌟','Hạng Vàng','Đạt hạng Vàng ở một chế độ',10000,2,(s,p)=>STAR_MODES.some(([m])=>starInfo(modeXpOf(p,m)).step>=11),{series:'star'}),
+ BG('star_dia','💎','Hạng Kim cương','Đạt hạng Kim cương ở một chế độ',30000,3,(s,p)=>STAR_MODES.some(([m])=>starInfo(modeXpOf(p,m)).step>=16),{series:'star'}),
+ BG('star_all8','🎖️','Toàn năng','Có sao ở cả 8 chế độ',20000,2,(s,p)=>STAR_MODES.every(([m])=>starInfo(modeXpOf(p,m)).step>=1),{series:'star'}),
+ BG('star_black','🖤','Huyền thoại Đen','Đạt Đen 5 sao ở một chế độ',500000,3,(s,p)=>STAR_MODES.some(([m])=>starInfo(modeXpOf(p,m)).step>=35),{series:'star',legend:true}));
 // huy hiệu tài sản (nhóm Chung)
 BADGES.push(BG('asset_first','🏪','Khởi nghiệp','Sở hữu tài sản đầu tiên',2000,1,(s,p)=>ASSETS.some(a=>a.cat==='biz'&&assetLv(p,a.id)>0),{series:'asset'}),
  BG('asset_nhamay','🏭','Ông chủ nhà máy','Sở hữu Nhà máy',20000,2,(s,p)=>assetLv(p,'nhamay')>0,{series:'asset'}),
@@ -214,13 +242,14 @@ const ASSET_MAX=5;const ASSET_CATS={biz:'Kinh doanh',veh:'Phương tiện',shop:
 function assetDef(id){return ASSETS.find(x=>x.id===id);}
 function assetLv(P,id){const a=assetDef(id);const v=P.assets&&P.assets[id];return v>0?Math.min(a?a.max:ASSET_MAX,v|0):0;}
 function assetBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?0:x.pct*assetLv(P,x.id)),0);}
-function expBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?x.pct*assetLv(P,x.id):0),0);}
+function shopExpBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?x.pct*assetLv(P,x.id):0),0);}
+function expBonus(P){return shopExpBonus(P)+(typeof petBonus==='function'?petBonus(P):0);}
 function assetCost(id,toLv){const a=assetDef(id);if(!a||toLv<1||toLv>a.max)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
 function bestAsset(P){let b=null;for(const a of ASSETS)if(assetLv(P,a.id)&&(!b||a.price>b.price))b=a;return b;}
 function passiveBank(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return;ps.frac=passivePending(P,now);ps.last=now;}
 function buyAsset(P,id,now){const a=assetDef(id);if(!a)return{ok:false,reason:'Không có tài sản này'};const lv=assetLv(P,id);if(lv>=a.max)return{ok:false,reason:a.max===1?'Đã sở hữu':'Đã nâng cấp tối đa'};
  const cost=assetCost(id,lv+1);if((P.xu||0)<cost)return{ok:false,reason:'Không đủ xu'};passiveBank(P,now);P.xu-=cost;P.assets=Object.assign({},P.assets||{});P.assets[id]=lv+1;P.stats=P.stats||{};P.stats.assetSpent=(P.stats.assetSpent||0)+cost;return{ok:true,cost,lv:lv+1};}
-function passiveRate(P){return levelInfo(P.xp||0).level/2/100*(1+assetBonus(P)/100);}
+function passiveRate(P){return levelInfo(P.xp||0).level/2/100*(1+(assetBonus(P)+starBonus(P))/100);}
 function passiveInit(P,now){now=now==null?Date.now():+now;if(!P.passive||typeof P.passive.last!=='number'||!isFinite(P.passive.last))P.passive={last:now,frac:0};return P.passive;}
 function passivePending(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);const d=now-ps.last;if(!(d>0))return ps.frac||0;return Math.min(d,PASSIVE_CAP_MS)/1000*passiveRate(P)+(ps.frac||0);}
 function passiveClaim(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return 0;const tot=passivePending(P,now);const got=Math.floor(tot);ps.frac=tot-got;ps.last=now;P.xu+=got;return got;}
@@ -237,7 +266,7 @@ function onPlay(P,info,prev){const s=P.stats;
  if(info.type==='quad')s.quads++;if(info.type==='pairseq'&&info.len>=4)s.pairseq4++;
  if((info.top>>2)===12&&(info.type==='single'||info.type==='pair'||info.type==='triple'))questEvent(P,'two',info.len);
  let bonus=0;if(prev&&(prev.top>>2)===12&&info.type!==prev.type){s.chops++;questEvent(P,'chop');if(P._tbl===2)questEvent(P,'chop2');}
- const lv=prev&&(prev.top>>2)===12&&info.type!==prev.type?addXp(P,XP_CHOP):null;
+ const lv=prev&&(prev.top>>2)===12&&info.type!==prev.type?addXp(P,XP_CHOP,P._mode):null;
  return{bonus,badges:checkBadges(P),lv};}
 // place: 0..3, instant: human won tới trắng
 // Bàn n người: hệ số XP và xu theo số người
@@ -260,7 +289,7 @@ function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.g
  if(ctx.beatHard){s.beatHard=(s.beatHard||0)+ctx.beatHard;questEvent(P,'beatHard',ctx.beatHard);}if(ctx.beatMaster){s.beatMaster=(s.beatMaster||0)+ctx.beatMaster;questEvent(P,'beatMaster',ctx.beatMaster);}
  if(place<=1)questEvent(P,'top2');if(instant&&place===0)s.instant++;if(delta>0)s.earned=(s.earned||0)+delta;
  const xp0=tableXp(n,place,instant,ctx.mode),bxp=Math.round(xp0*bonus);
- const x0=P.xu;P.xu=Math.max(0,P.xu+delta);const paid=P.xu-x0,x1=P.xu;const lv=addXp(P,xp0+bxp);const x2=P.xu;const badges=checkBadges(P);
+ const x0=P.xu;P.xu=Math.max(0,P.xu+delta);const paid=P.xu-x0,x1=P.xu;const lv=addXp(P,xp0+bxp,ctx.mode);const x2=P.xu;const badges=checkBadges(P);
  const ledger={place:paid-(delta>0?bxu:0),bonus:delta>0?bxu:0,level:x2-x1,badges:P.xu-x2};return{delta,bxu,bxp,bonus,badges,lv,ledger};}
 // sổ xu ván: parts {place,bonus,chop,thui,chay,b3,level,badges,exit,misc}
 const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['luoc','Luộc máy'],['demla','Đếm lá'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
@@ -308,8 +337,8 @@ function titleUnlocked(P,t){if(t.min)return levelInfo(P.xp).level>=t.min;if(t.st
 function unlockedTitles(P){return TITLES.filter(t=>titleUnlocked(P,t));}
 function currentTitle(P){migrateTitle(P);const t=P.title&&TITLES.find(x=>x.id===P.title);return t&&titleUnlocked(P,t)?t:titleForLevel(levelInfo(P.xp).level);}
 function setTitle(P,id){const t=TITLES.find(x=>x.id===id);if(!t||!titleUnlocked(P,t))return false;P.title=id;return true;}
-function addXp(P,n){if(n>0){const b=expBonus(P);if(b)n=Math.round(n*(1+b/100));}P._lastXp=n;const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const after=levelInfo(P.xp).level;const ups=[];let xu=0;
+function addXp(P,n,mode){if(n>0){const b=expBonus(P);if(b)n=Math.round(n*(1+b/100));}P._lastXp=n;P._starUp=null;if(mode)addModeXp(P,mode,n);const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const after=levelInfo(P.xp).level;const ups=[];let xu=0;
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // PROGRESS_END
-if(typeof module!=='undefined')module.exports={ASSET_CATS,assetDef,expBonus,bestAsset,ASSETS,ASSET_MAX,assetLv,assetBonus,assetCost,passiveBank,buyAsset,PASSIVE_CAP_MS,passiveRate,passiveInit,passivePending,passiveClaim,MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,XP_DEMLA_N,XP_MODE,modeXp,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
+if(typeof module!=='undefined')module.exports={PETS,petDef,petOwned,petActive,petBonus,buyPet,equipPet,shopExpBonus,STAR_MODES,STAR_TIERS,STAR_TOTAL_XP,STAR_STEPS,STAR_CUM,starInfo,starStepBonus,starBonus,addModeXp,modeXpOf,ASSET_CATS,assetDef,expBonus,bestAsset,ASSETS,ASSET_MAX,assetLv,assetBonus,assetCost,passiveBank,buyAsset,PASSIVE_CAP_MS,passiveRate,passiveInit,passivePending,passiveClaim,MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,XP_DEMLA_N,XP_MODE,modeXp,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
