@@ -414,8 +414,8 @@ function starsHTML(step,sm){const s=starInfo(STAR_CUM[Math.min(35,step||0)]);if(
 function curStarMode(){if($('cg')&&CG.g)return CG.g;if($('mg')&&MG.g)return MG.g;try{return G&&G.mode==='demla'?'demla':'tlmn';}catch(e){return 'tlmn';}}
 function myStarHTML(m){return starsHTML(starInfo(modeXpOf(PR,m||curStarMode())).step,true);}
 // sao + thú cưng dưới avatar khi chơi
-const _slv152=seatLv;seatLv=function(s){const h=_slv152(s);if(!s||!s.me)return h;return h+`<span class="seatst">${myStarHTML()}${petIcon(PR.pet,'sm')}</span>`;};
-const _rm152=renderMe;renderMe=function(){const r=_rm152.apply(this,arguments);try{const e=$('meInfo');if(e&&!$('cg')&&!$('mg')){let d=e.querySelector('.seatst');if(!d){d=document.createElement('span');d.className='seatst';e.appendChild(d);}d.innerHTML=myStarHTML()+petIcon(petActive(PR)&&PR.pet,'sm');}}catch(x){}return r;};
+const _slv152=seatLv;seatLv=function(s){const h=_slv152(s);if(!s||!s.me)return h;return h+(petActive(PR)?`<span class="seatst">${petIcon(PR.pet,'sm')}</span>`:'');};
+const _rm152=renderMe;renderMe=function(){const r=_rm152.apply(this,arguments);try{const e=$('meInfo');if(e&&!$('cg')&&!$('mg')){let d=e.querySelector('.seatst');if(!d){d=document.createElement('span');d.className='seatst';e.appendChild(d);}d.innerHTML=petIcon(petActive(PR)&&PR.pet,'sm');}}catch(x){}return r;};
 // chúc mừng lên sao
 const _ax152=addXp;addXp=function(P,n,m){const r=_ax152(P,n,m);try{if(P===PR&&P._starUp){const u=P._starUp;P._starUp=null;setTimeout(()=>starUpFX(u),900);}}catch(e){}return r;};
 function starUpFX(u){try{const s=starInfo(STAR_CUM[u.step]),nm=(STAR_MODES.find(x=>x[0]===u.mode)||[0,''])[1],tierUp=u.from===0||Math.floor((u.from-1)/5)!==s.tier;
@@ -472,3 +472,19 @@ const _rf152=renderFriends;renderFriends=async function(){const r=await _rf152.a
 const _ost152=openSettings;openSettings=function(){_ost152.apply(this,arguments);try{const m=$('modalIn');const rows=m&&m.querySelectorAll('.row');if(!rows||!rows.length)return;const d=document.createElement('div');d.className='row';
  d.innerHTML=`<span style="flex:1">Công khai tài sản, thú cưng &amp; hạng sao trên hồ sơ</span><button class="alt" id="privBtn">${PR.privAssets?'Đang ẩn':'Đang hiện'}</button>`;rows[rows.length-1].insertAdjacentElement('beforebegin',d);
  d.querySelector('button').onclick=()=>{PR.privAssets=!PR.privAssets;saveP();try{if(USER&&SB)ensurePlayer();}catch(e){}openSettings();};}catch(e){}};
+
+// ===== v1.52.1: hàng 5 sao TRÊN avatar ở mọi ghế (người + máy) và avatar màn chính =====
+function botStarStep(name,m){let h=7;for(const c of String(name||'')+'|'+m)h=(h*131+c.charCodeAt(0))>>>0;const lv=botLvFor(name);return Math.max(0,Math.min(35,Math.round(lv*0.55)+(h%9)-3));}
+function avStarRow(step){const s=step?starInfo(STAR_CUM[step]):{tier:-1,stars:0,name:'Chưa xếp hạng',color:'#9e9e9e'};
+ return `<span class="avst tr${s.tier}" style="--sc:${s.color}" title="${s.step?s.name+' '+s.stars+' sao':'Chưa có sao'}">${[1,2,3,4,5].map(k=>`<i class="${k<=s.stars?'on':''}">★</i>`).join('')}</span>`;}
+function bestStarStep(){return Math.max(0,...STAR_MODES.map(([m])=>starInfo(modeXpOf(PR,m)).step));}
+function avStarTargets(){const out=[],m=curStarMode(),me=()=>starInfo(modeXpOf(PR,m)).step;
+ const hm=document.querySelector('#home .pcard .av');if(hm&&document.body.contains(hm))out.push([hm,bestStarStep()]);
+ const root=$('cg')||$('mg');
+ if(root){root.querySelectorAll('.av').forEach(a=>{if(a.closest('.modal,#modalIn'))return;const isMe=[...a.classList].some(c=>c.startsWith('fr-'))||!!a.closest('.cgs.me,.dmme');
+   let nm='';const b=a.parentNode&&a.parentNode.querySelector('b');if(b)nm=(b.childNodes[0]&&b.childNodes[0].textContent||'').trim();out.push([a,isMe?me():botStarStep(nm,m)]);});return out;}
+ const t=$('table');if(t&&!document.body.classList.contains('athome')){t.querySelectorAll('.seat .av').forEach(a=>{const s=a.closest('.seat'),n=s&&s.querySelector('.nm');out.push([a,botStarStep(n?n.textContent.trim():'',m)]);});
+  const ma=$('meAvM');if(ma)out.push([ma,me()]);}
+ return out;}
+function decorateStars(){try{avStarTargets().forEach(([a,step])=>{const k=String(step);let r=a.querySelector(':scope > .avst');if(r&&r.dataset.k===k)return;if(r)r.remove();a.classList.add('hasst');a.insertAdjacentHTML('beforeend',avStarRow(step));a.lastElementChild.dataset.k=k;});}catch(e){}}
+let _dsq=0;new MutationObserver(()=>{if(_dsq)return;_dsq=requestAnimationFrame(()=>{_dsq=0;decorateStars();});}).observe(document.documentElement,{childList:true,subtree:true});

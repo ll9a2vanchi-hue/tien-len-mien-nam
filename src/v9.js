@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.52';
+const APP_V='1.52.1';
 const CHANGELOG=[
+ ['1.52.1','12/10',['Hàng 5 sao hạng chế độ hiện TRÊN avatar ở mọi ghế (bạn và máy) trong cả 8 chế độ, và trên avatar màn chính (chế độ cao nhất)','Luôn hiện đủ 5 ô sao: sao đạt tô màu hạng (Đen có nền sáng + hào quang tím), sao chưa đạt là viền mờ','Máy có hạng sao cố định theo tên']],
  ['1.52','12/10',['Hạng sao theo từng chế độ: 7 hạng × 5 sao (Đồng → Bạc → Vàng → Kim cương → Xanh → Đỏ → Đen) theo XP kiếm ở chế độ đó; sao hiện dưới avatar khi chơi; mỗi sao cộng % thu nhập thụ động (tối đa +86%/chế độ, +688% cả 8 chế độ); màn Hạng sao + hiệu ứng lên sao + huy hiệu','Thú cưng trong Tài sản: Mèo, Chó, Vẹt, Cáo, Rồng (có hoạt ảnh); 1 con đi theo cạnh avatar, cộng % EXP','Bấm bạn bè/người online để xem hồ sơ: tài sản, thú cưng, hạng sao, tổng % thu nhập & EXP; có thể ẩn trong Cài đặt']],
  ['1.51','12/10',['XP tỉ lệ thời gian ván (~41 XP/phút): Miền Nam 4 người 100/60/35/20, 3 người 46/28/16, 2 người 32/19; Đếm lá 83/50/29/17 (3 người 38/23/13, 2 người 27/16); 3 Cào 8/4/3, Xì dách 13/7/4, Bầu cua 24/12/8, Domino 35/17/12, Xì tố 32/16/10, Poker 30/15/10','Bảng XP từng chế độ trong cửa sổ Cấp độ; nhãn XP ở màn chọn bàn']],
  ['1.50','12/10',['Tài sản thành mục riêng ở màn hình chính: Kinh doanh, Phương tiện (Xe đạp → Du thuyền, tăng % thu nhập, nâng cấp 5 cấp) và Mua sắm (12 món Quần áo, Trang sức, Phụ kiện, Vật phong thủy, tăng % EXP ở mọi chế độ, đủ bộ +40%)','Bấm thanh Thu nhập thụ động để xem công thức, số xu mỗi giây/giờ/ngày và thưởng từng tài sản','Tài sản giá trị nhất hiện cạnh avatar; huy hiệu Bộ sưu tập xe, Tín đồ thời thượng']],
