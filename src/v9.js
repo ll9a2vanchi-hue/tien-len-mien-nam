@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.52.1';
+const APP_V='1.52.2';
 const CHANGELOG=[
+ ['1.52.2','12/10',['Bài to hơn trên điện thoại: bài trên tay xếp 1 hàng hình quạt cong tràn ngang màn hình (như sòng bài), lá to hơn ~10–20%','Bài đánh trên bàn to hơn, tự xếp chồng gọn khi đánh nhiều lá','3 Cào, Xì dách, Poker: bài của bạn to hơn']],
  ['1.52.1','12/10',['Hàng 5 sao hạng chế độ hiện TRÊN avatar ở mọi ghế (bạn và máy) trong cả 8 chế độ, và trên avatar màn chính (chế độ cao nhất)','Luôn hiện đủ 5 ô sao: sao đạt tô màu hạng (Đen có nền sáng + hào quang tím), sao chưa đạt là viền mờ','Máy có hạng sao cố định theo tên']],
  ['1.52','12/10',['Hạng sao theo từng chế độ: 7 hạng × 5 sao (Đồng → Bạc → Vàng → Kim cương → Xanh → Đỏ → Đen) theo XP kiếm ở chế độ đó; sao hiện dưới avatar khi chơi; mỗi sao cộng % thu nhập thụ động (tối đa +86%/chế độ, +688% cả 8 chế độ); màn Hạng sao + hiệu ứng lên sao + huy hiệu','Thú cưng trong Tài sản: Mèo, Chó, Vẹt, Cáo, Rồng (có hoạt ảnh); 1 con đi theo cạnh avatar, cộng % EXP','Bấm bạn bè/người online để xem hồ sơ: tài sản, thú cưng, hạng sao, tổng % thu nhập & EXP; có thể ẩn trong Cài đặt']],
  ['1.51','12/10',['XP tỉ lệ thời gian ván (~41 XP/phút): Miền Nam 4 người 100/60/35/20, 3 người 46/28/16, 2 người 32/19; Đếm lá 83/50/29/17 (3 người 38/23/13, 2 người 27/16); 3 Cào 8/4/3, Xì dách 13/7/4, Bầu cua 24/12/8, Domino 35/17/12, Xì tố 32/16/10, Poker 30/15/10','Bảng XP từng chế độ trong cửa sổ Cấp độ; nhãn XP ở màn chọn bàn']],
@@ -1018,3 +1019,17 @@ function xpTableHTML(){const r=(a,b)=>`<tr><td>${a}</td><td>${b}</td></tr>`,j=a=
  [2,3,4].map(n=>r('Miền Nam '+n+' người',j(XP_PLACE_N[n]))).join('')+[2,3,4].map(n=>r('Đếm lá '+n+' người',j(XP_DEMLA_N[n]))).join('')+
  [['3cao','3 Cào'],['xidach','Xì dách'],['baucua','Bầu cua'],['domino','Domino'],['xito','Xì tố'],['poker','Poker']].map(([k,l])=>r(l,j(XP_MODE[k]))).join('')+
  `</table><p class="small">Thưởng thêm: chặt heo +${XP_CHOP}, tới trắng +${XP_INSTANT} (theo tỉ lệ bàn), luộc máy, nhiệm vụ +${XP_QUEST}, thắng Cao thủ bàn 10k. Cuối cùng nhân % EXP từ Mua sắm.</p></details>`;}
+// v1.52.2: bài to kiểu quạt 1 hàng (mobile) + bài trên bàn to hơn
+function bigCards(){try{const W=innerWidth,H=innerHeight;if(W>700)return;const hd=$('hand');if(!hd)return;const cs=[...hd.querySelectorAll('.card')];const n=cs.length;
+ hd.classList.remove('two');hd.classList.add('fan');hd.querySelectorAll('.brk').forEach(b=>b.remove());cs.forEach(c=>c.classList.remove('r2'));
+ const av=W-44,cw=Math.max(52,Math.min(W*0.22,H*0.118,104)),ch=cw*1.43;const ng=cs.filter(c=>c.classList.contains('gap')).length,gp=ng&&n>1?Math.min(8,Math.max(0,(av-cw-(n-1)*cw*0.3)/ng)):0;
+ const st=n>1?Math.min(cw*0.62,(av-cw-ng*gp)/(n-1)):0;const mid=(n-1)/2,rot=Math.min(1.5,18/Math.max(n,1));
+ hd.style.setProperty('--cw',cw.toFixed(1)+'px');hd.style.setProperty('--ch',ch.toFixed(1)+'px');hd.style.setProperty('--ov',(st-cw).toFixed(1)+'px');hd.style.setProperty('--gp',gp.toFixed(1)+'px');
+ cs.forEach((c,i)=>{const d=i-mid;c.style.setProperty('--ar',(d*rot).toFixed(2)+'deg');c.style.setProperty('--ay',(d*d*0.22).toFixed(1)+'px');});
+ hd.style.height=(ch+mid*mid*0.22+30).toFixed(0)+'px';
+ const pl=$('pile');if(pl){const pc=[...pl.querySelectorAll('.card')],m=pc.length,pw=Math.max(48,Math.min(W*0.215,H*0.118,98));const ps=m>1?Math.min(pw*0.5,(W-40-pw)/(m-1)):0;
+  const pwr=$('pileWrap')||document.documentElement;pwr.style.setProperty('--pw',pw.toFixed(1)+'px');pwr.style.setProperty('--ph',(pw*1.43).toFixed(1)+'px');pc.forEach((c,i)=>{c.style.marginLeft=i?(ps-pw).toFixed(1)+'px':'0';});}}catch(e){console.warn(e)}}
+const _r522=render;render=function(){const r=_r522.apply(this,arguments);bigCards();return r;};
+addEventListener('resize',()=>{try{if(G)bigCards();}catch(e){}});
+const _fp522=fitPile;fitPile=function(){if(innerWidth>700)return _fp522.apply(this,arguments);bigCards();};
+const _cgr522=cgRender;cgRender=function(){const r=_cgr522.apply(this,arguments);try{const o=$('cg');if(o)o.dataset.g=CG.g;}catch(e){}return r;};

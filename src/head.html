@@ -705,6 +705,18 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 .avst.tr2 i.on{text-shadow:0 0 3px var(--sc)}.avst.tr3 i.on,.avst.tr4 i.on{text-shadow:0 0 4px var(--sc),0 0 8px var(--sc)}.avst.tr5 i.on{text-shadow:0 0 5px var(--sc),0 0 10px var(--sc)}
 .avst.tr6{background:linear-gradient(#efe7ff,#a68bdc);box-shadow:0 0 8px #7c4dff,0 0 14px #7c4dff88}.avst.tr6 i{-webkit-text-stroke:.9px #0007;color:#0000}.avst.tr6 i.on{color:#0a0a0a;-webkit-text-stroke:0;text-shadow:0 0 2px #fff}
 #home .pcard .av .avst{font-size:15px;bottom:calc(100% + 2px)}
+#hand.fan{flex-wrap:nowrap!important;align-items:flex-start;padding:26px 6px 0!important;min-height:0!important;overflow:visible}
+#hand.fan .card{transform:translateY(var(--ay,0px)) rotate(var(--ar,0deg));transform-origin:50% 120%;flex:none;transition:transform .15s}
+#hand.fan .card.sel{transform:translateY(calc(var(--ay,0px) - 22px)) rotate(var(--ar,0deg))!important}
+#hand.fan .card.gap{margin-left:calc(var(--ov) + var(--gp))}
+@media(max-width:700px){
+#cg .cgs.me .cgc{--cw:min(24vw,96px);margin-left:calc(var(--cw)*-0.3)}
+#cg[data-g=xidach] .cgs.me .cgc{--cw:min(21vw,86px);margin-left:calc(var(--cw)*-0.42)}
+#cg .cgs.me .cgc:first-child{margin-left:0}
+#cg .cgs.top .cgc{--cw:min(15vw,60px)}
+#mg.mg-poker .pks.me .pkh .cgc{--cw:min(19vw,78px);margin-left:-10px}#mg.mg-poker .pkboard .cgc{--cw:min(12.5vw,54px)}#mg.mg-poker .pkboard .slot{width:min(12.5vw,54px);height:calc(min(12.5vw,54px)*1.42)}
+}
+@media(max-width:700px) and (max-height:800px){#mg.mg-poker .pks.me .pkh .cgc{--cw:62px}#mg.mg-poker .pkboard{min-height:0}#mg.mg-poker .pkboard .cgc{--cw:42px}#mg.mg-poker .pkboard .slot{width:42px;height:60px}#mg.mg-poker .pks:not(.me) .pkh .cgc{--cw:24px}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
