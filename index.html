@@ -657,6 +657,23 @@ body.spec #ctrl,body.spec #hand,body.spec #noBeat,body.spec #me,body.spec #meAvM
 .pks.allin::after{content:'ALL-IN';position:absolute;top:-6px;right:-2px;z-index:3;font-size:9px;font-weight:900;letter-spacing:.5px;padding:1px 5px;border-radius:7px;color:#fff;background:linear-gradient(135deg,#ff3d00,#ffb300);box-shadow:0 0 8px #ff6a00}
 @keyframes aiaura{0%,100%{opacity:.55;box-shadow:0 0 0 2px #ff9d00,0 0 10px 2px #ff5a0088}50%{opacity:1;box-shadow:0 0 0 2px #ffd54a,0 0 22px 7px #ff5a00cc}}
 body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
+#home .tiles .tile.pas{grid-column:1/-1;order:100;flex-direction:row;justify-content:flex-start;align-items:center;gap:8px;padding:7px 8px 7px 12px;cursor:default;font-size:12.5px}
+.tile.pas .pasm{display:flex;flex-direction:column;align-items:flex-start;min-width:0;flex:1;line-height:1.2;text-align:left}.tile.pas .pasm>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-weight:700}
+.tile.pas .pasr{font-style:normal;color:#7dffb0;font-size:11px}.tile.pas small{font-size:9.5px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tile.pas .pasv{font-variant-numeric:tabular-nums;color:#ffe48a;font-size:14px;white-space:nowrap;flex:none}
+.tile.pas .pasgo{flex:none;margin:0;padding:6px 12px;border-radius:12px;font-weight:800;font-size:13px;background:linear-gradient(180deg,#ffe48a,#d9a12b);color:#2a1c08;border:none;box-shadow:0 2px 0 #7a5410}.tile.pas .pasgo:disabled{opacity:.45}
+.tile.pas.full{box-shadow:0 0 0 2px #7dffb0,0 0 14px #7dffb088}.tile.pas small i{font-style:normal}.tile.pas small .pasr{font-weight:800;opacity:1}#home .tiles .tile.pas{background:linear-gradient(160deg,#2c2214,#140e08);border:1px solid #c9962e66;border-radius:16px}.tile.pas.full #pasNote{color:#7dffb0}
+@media(max-width:399px){.tile.pas{font-size:11.5px}.tile.pas .pasr{font-size:10px}.tile.pas small{font-size:9.5px}.tile.pas .pasv{font-size:12.5px}.tile.pas .pasgo{padding:6px 9px}}
+.ainfo{font-size:12px;margin:4px 0 8px;opacity:.9}.agrid{display:flex;flex-direction:column;gap:7px}
+.aitem{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:14px;background:linear-gradient(160deg,#2c2214,#140e08);border:1px solid #c9962e55;min-width:0}.aitem.own{border-color:#7dffb088}.aitem.max{border-color:#ffd84d;box-shadow:0 0 10px #ffd84d55}
+.aic{width:46px;height:46px;flex:none;border-radius:12px;background:radial-gradient(circle at 50% 35%,#fff3,#0003);display:flex;align-items:center;justify-content:center}.aic svg{width:42px;height:42px}.aic.big{width:84px;height:84px;margin:0 auto 6px}.aic.big svg{width:78px;height:78px}
+.ainm{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}.ainm b{font-size:14px}.ainm small{font-size:10.5px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alv{display:flex;gap:3px;margin-top:3px}.alv i{width:14px;height:5px;border-radius:3px;background:#ffffff22}.alv i.on{background:linear-gradient(90deg,#ffd84d,#ff9d00)}
+.aitem button{flex:none;margin:0;padding:5px 9px;font-size:12px;line-height:1.15;min-width:84px}.aitem button small{font-size:11px;display:inline-flex;align-items:center;gap:2px}.aitem button svg{width:11px;height:11px}.amax{flex:none;font-weight:900;color:#ffd84d;font-size:12px;padding:0 6px}
+.aconf{text-align:center}.aconf p{margin:4px 0;font-size:13px}.acost{font-size:15px!important}.pos{color:#7dffb0}
+.tile.pas .pasa{font-style:normal;color:#ffd84d;font-size:10px;margin-left:3px}
+.pcassets{display:flex;align-items:center;gap:6px;margin:-4px 0 10px;padding:6px 10px;width:100%;box-sizing:border-box;border-radius:14px;background:#0005;border:1px solid #c9962e44;flex-wrap:wrap;cursor:pointer}.pca{position:relative;width:26px;height:26px;border-radius:8px;background:#0004;display:inline-flex;align-items:center;justify-content:center}.pca svg{width:22px;height:22px}.pca i{position:absolute;right:-3px;bottom:-3px;font-style:normal;font-size:8.5px;font-weight:900;background:#ffd84d;color:#2a1c08;border-radius:6px;padding:0 3px;line-height:11px}.pcassets small{font-size:10.5px;color:#7dffb0;margin-left:2px}
+@media(max-width:440px){.tile.pas .pasm>span{white-space:normal}.tile.pas .pasa{display:block;margin:0;font-size:10px}.tile.pas.hasa small .tail{display:none}}@media(max-width:399px){.tile.pas small .tail{display:none}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -697,7 +714,7 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='8bc48fd465';
+const APP_VER='e2246e3034';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -906,6 +923,12 @@ for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];
   goals.forEach((g,i)=>{const tier=Math.min(3,i+1),nm=(spi?spi[0]:k==='bust'?I.bust[0]:k==='roleG'?I.role[0]:k==='roleW'?I.role[0]+' thắng lớn':L.split(' (')[0])+' · '+MB_TN[0][i];
    BADGES.push(BG(m+'_'+k+'_'+(i+1),icon,I.n+': '+nm,L+' '+g.toLocaleString('vi-VN')+' '+u+' ('+I.n+')',[150,800,3000,10000][i],tier,s=>V(s,mk(m,k==='streak'?'bestStreak':k))>=g,{series:'m_'+k,mode:m,k:mk(m,k==='streak'?'bestStreak':k),goal:g,legend:i===3}));});}
  MB_SEC.forEach(([k,d,ic],j)=>{const sd=k==='s4'?I.sec[0]:k==='s5'?I.sec[1]:[null,d,ic];BADGES.push(BG(m+'_sec_'+k,sd[2],I.n+': '+(sd[0]||d.split(' ')[0]+' '+(d.split(' ')[1]||'')),sd[1],[3000,3000,4000,5000,5000][j],3,s=>V(s,mk(m,k))>=1,{secret:true,mode:m,k:mk(m,k),goal:1}));});}
+// huy hiệu tài sản (nhóm Chung)
+BADGES.push(BG('asset_first','🏪','Khởi nghiệp','Sở hữu tài sản đầu tiên',2000,1,(s,p)=>ASSETS.some(a=>assetLv(p,a.id)>0),{series:'asset'}),
+ BG('asset_nhamay','🏭','Ông chủ nhà máy','Sở hữu Nhà máy',20000,2,(s,p)=>assetLv(p,'nhamay')>0,{series:'asset'}),
+ BG('asset_tapdoan','🏙️','Chủ tịch tập đoàn','Sở hữu Tập đoàn',50000,3,(s,p)=>assetLv(p,'tapdoan')>0,{series:'asset'}),
+ BG('asset_all','🗂️','Đế chế kinh doanh','Sở hữu đủ 5 tài sản',80000,3,(s,p)=>ASSETS.every(a=>assetLv(p,a.id)>0),{series:'asset'}),
+ BG('asset_max','👑','Tài phiệt tối thượng','Nâng cả 5 tài sản lên cấp 5',300000,3,(s,p)=>ASSETS.every(a=>assetLv(p,a.id)>=ASSET_MAX),{series:'asset',legend:true}));
 // cân số lượng: mỗi chế độ đúng bằng số huy hiệu Miền Nam
 {const cnt=m=>BADGES.filter(b=>badgeMode(b)===m).length;const T=cnt('mn');for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];let j=0;const extra=[100,200,365,500];
  while(cnt(m)<T&&j<extra.length){const g=extra[j++];BADGES.push(BG(m+'_days_x'+j,'🗓️',I.n+': Trung thành · '+g+' ngày','Chơi '+I.n+' trong '+g+' ngày khác nhau',5000+j*2000,3,s=>V(s,mk(m,'days'))>=g,{series:'m_days',mode:m,k:mk(m,'days'),goal:g,legend:true}));}
@@ -965,6 +988,19 @@ function loginState(P,now){const k=dayKey(now),l=P.login;if(l.last===k)return{ca
  const next=(l.last&&dayDiff(l.last,k)===1)?(l.streak%7)+1:1;return{canClaim:true,day:next,reward:LOGIN_REWARDS[next-1]};}
 function claimLogin(P,now){const s=loginState(P,now);if(!s.canClaim)return 0;P.login={last:dayKey(now),streak:s.day};P.xu+=s.reward;return s.reward;}
 function canRescue(P,now){return P.xu<BETS[0]&&P.rescueDay!==dayKey(now);}
+const PASSIVE_CAP_MS=24*3600*1000;
+const ASSETS=[{id:'quan',name:'Quán nước',price:1000000,pct:10},{id:'taphoa',name:'Tiệm tạp hóa',price:2000000,pct:25},{id:'xuongmay',name:'Xưởng may',price:3500000,pct:45},{id:'nhamay',name:'Nhà máy',price:6000000,pct:75},{id:'tapdoan',name:'Tập đoàn',price:10000000,pct:120}];
+const ASSET_MAX=5;
+function assetLv(P,id){const v=P.assets&&P.assets[id];return v>0?Math.min(ASSET_MAX,v|0):0;}
+function assetBonus(P){return ASSETS.reduce((a,x)=>a+x.pct*assetLv(P,x.id),0);}
+function assetCost(id,toLv){const a=ASSETS.find(x=>x.id===id);if(!a||toLv<1||toLv>ASSET_MAX)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
+function passiveBank(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return;ps.frac=passivePending(P,now);ps.last=now;}
+function buyAsset(P,id,now){const a=ASSETS.find(x=>x.id===id);if(!a)return{ok:false,reason:'Không có tài sản này'};const lv=assetLv(P,id);if(lv>=ASSET_MAX)return{ok:false,reason:'Đã nâng cấp tối đa'};
+ const cost=assetCost(id,lv+1);if((P.xu||0)<cost)return{ok:false,reason:'Không đủ xu'};passiveBank(P,now);P.xu-=cost;P.assets=Object.assign({},P.assets||{});P.assets[id]=lv+1;P.stats=P.stats||{};P.stats.assetSpent=(P.stats.assetSpent||0)+cost;return{ok:true,cost,lv:lv+1};}
+function passiveRate(P){return levelInfo(P.xp||0).level/2/100*(1+assetBonus(P)/100);}
+function passiveInit(P,now){now=now==null?Date.now():+now;if(!P.passive||typeof P.passive.last!=='number'||!isFinite(P.passive.last))P.passive={last:now,frac:0};return P.passive;}
+function passivePending(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);const d=now-ps.last;if(!(d>0))return ps.frac||0;return Math.min(d,PASSIVE_CAP_MS)/1000*passiveRate(P)+(ps.frac||0);}
+function passiveClaim(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return 0;const tot=passivePending(P,now);const got=Math.floor(tot);ps.frac=tot-got;ps.last=now;P.xu+=got;return got;}
 const ALLOW_PER_LV=1000;
 function allowanceAmt(P){return ALLOW_PER_LV*levelInfo(P.xp||0).level;}
 function canAllowance(P,now){return (P.xu|0)===0&&P.allowDay!==dayKey(now);}
@@ -1060,6 +1096,8 @@ function mergeSaves(a,b){
  P.inv=Object.assign({},O.inv||{},P.inv||{});if(!P.equip&&O.equip)P.equip=Object.assign({},O.equip);if(!P.avBg&&O.avBg)P.avBg=O.avBg;
  P.stats=P.stats||{};for(const k in (O.stats||{}))if(k!=='streak')P.stats[k]=Math.max(P.stats[k]||0,O.stats[k]||0);
  if(O.login&&O.login.last&&(!P.login||!P.login.last||O.login.last>P.login.last))P.login=Object.assign({},O.login);
+ if(O.assets){P.assets=Object.assign({},P.assets||{});for(const k in O.assets)P.assets[k]=Math.max(P.assets[k]||0,O.assets[k]||0);}
+ if(O.passive&&typeof O.passive.last==='number'&&(!P.passive||!(P.passive.last>=O.passive.last)))P.passive=Object.assign({},O.passive);
  if(O.allowDay&&(!P.allowDay||O.allowDay>P.allowDay))P.allowDay=O.allowDay;
  if(O.rescueDay&&(!P.rescueDay||O.rescueDay>P.rescueDay))P.rescueDay=O.rescueDay;
  if(O.quests&&O.quests.day&&(!P.quests||!P.quests.day||O.quests.day>P.quests.day))P.quests=JSON.parse(JSON.stringify(O.quests));
@@ -3022,8 +3060,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.48.4';
+const APP_V='1.49';
 const CHANGELOG=[
+ ['1.49','12/10',['Thu nhập thụ động: nhận xu liên tục theo cấp (cấp ÷ 2 ÷ 100 xu mỗi giây, cấp 20 = 360 xu/giờ), tích luỹ cả khi tắt app, tối đa 24 giờ; bộ đếm chạy trực tiếp ở màn hình chính, bấm Nhận để lấy; đồng bộ đám mây chống nhận 2 lần','Cửa hàng › Tài sản: Quán nước, Tiệm tạp hóa, Xưởng may, Nhà máy, Tập đoàn — tăng % thu nhập thụ động, nâng cấp tới cấp 5; huy hiệu Ông chủ nhà máy, Chủ tịch tập đoàn, Đế chế kinh doanh, Tài phiệt tối thượng']],
  ['1.48.4','11/10',['Xì tố: lá bài dùng đúng kiểu bài (mặt bài) đã trang bị; kiểm tra mặt sau, kiểu bài, nỉ bàn ở mọi chế độ']],
  ['1.48.3','11/10',['Xì tố “Tố tất” và Poker “Tất tay”: hiệu ứng hoành tráng — chớp màn hình, chữ lớn rực lửa rung, chip đổ ào vào hũ, rung bàn, trống dồn + tiếng chip + tiếng nổ trầm; ghế tất tay có nhãn ALL-IN và hào quang đến lúc lật bài']],
  ['1.48.2','11/10',['Xì tố: lá bài to hơn nữa, góc số + chất to đậm, chất lớn giữa lá, màu tương phản (♠♣ đen, ♥ đỏ, ♦ cam đỏ), vẽ bằng SVG']],
@@ -3768,5 +3807,44 @@ function allinFX(i){const st=MG.st;if(!st)return;const mg=$('mg');if(!mg)return;
  if(seat&&pot){const a=seat.getBoundingClientRect(),z=pot.getBoundingClientRect();const n=RM?6:22;for(let k=0;k<n;k++){const c=document.createElement('span');c.className='aichip';c.innerHTML=I('coin');const x0=a.left+a.width/2+(Math.random()*40-20),y0=a.top+a.height/2+(Math.random()*20-10),x1=z.left+z.width/2+(Math.random()*36-18),y1=z.top+z.height/2+(Math.random()*14-7);
   c.style.left=x0+'px';c.style.top=y0+'px';document.body.appendChild(c);const dx=x1-x0,dy=y1-y0;const an=c.animate(RM?[{opacity:0},{opacity:1,offset:.3},{transform:`translate(${dx}px,${dy}px)`,opacity:1}]:[{transform:'translate(0,0) scale(.6)',opacity:0},{transform:`translate(${dx*.5}px,${dy*.5-70-Math.random()*40}px) scale(1.15) rotate(${Math.random()*360}deg)`,opacity:1,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(.8) rotate(${Math.random()*720}deg)`,opacity:1}],{duration:RM?400:620,delay:(RM?650:760)+k*(RM?40:28),easing:'cubic-bezier(.3,.6,.4,1)',fill:'forwards'});an.onfinish=()=>c.remove();setTimeout(()=>c.remove(),2600);}}
  setTimeout(()=>{const p=mg.querySelector('.pkpot');if(p&&!RM)try{p.animate([{transform:'scale(1)'},{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:350});}catch(e){}},1150);}
+
+// ===================== v1.49: Thu nhập thụ động =====================
+function pasRateH(){return passiveRate(PR)*3600;}
+function pasFmt(v){return v.toLocaleString('vi-VN',{minimumFractionDigits:3,maximumFractionDigits:3});}
+function pasCapped(){const ps=passiveInit(PR);return Date.now()-ps.last>=PASSIVE_CAP_MS;}
+function pasHTML(){const v=passivePending(PR);return `<span class="alic">⏳</span><span class="pasm"><span>Thu nhập thụ động</span><small><i class="pasr">+${fmt(Math.round(pasRateH()*100)/100)} xu/giờ</i> · <i id="pasNote">${pasCapped()?'Đã đầy 24 giờ — nhận ngay!':'<span class="tail">cả khi tắt app, </span>tối đa 24 giờ'}</i></small></span><b class="pasv" id="pasVal">${pasFmt(v)}</b><button class="pasgo" id="pasGo" ${v<1?'disabled':''} onclick="event.stopPropagation();doPassive()">Nhận</button>`;}
+const _rh49=renderHome;renderHome=function(){_rh49.apply(this,arguments);try{if(!PR.passive){passiveInit(PR);saveP();}const t=document.querySelector('#home .tiles');if(!t)return;let b=$('pasTile');if(!b){b=document.createElement('div');b.id='pasTile';t.appendChild(b);}b.className='alt tile pas'+(pasCapped()?' full':'')+(assetBonus(PR)?' hasa':'');b.innerHTML=pasHTML();}catch(e){}};
+setInterval(()=>{try{const v=$('pasVal');if(!v)return;const x=passivePending(PR);v.textContent=pasFmt(x);const g=$('pasGo');if(g)g.disabled=x<1||_pasBusy;const n=$('pasNote');const c=pasCapped();if(n)n.innerHTML=c?'Đã đầy 24 giờ — nhận ngay!':'<span class="tail">cả khi tắt app, </span>tối đa 24 giờ';const t=$('pasTile');if(t)t.classList.toggle('full',c);}catch(e){}},200);
+let _pasBusy=false;
+async function doPassive(){if(_pasBusy)return;_pasBusy=true;const btn=$('pasGo');if(btn){btn.disabled=true;btn.textContent='…';}
+ try{if(typeof SB!=='undefined'&&SB&&typeof USER!=='undefined'&&USER&&navigator.onLine!==false){try{const{data}=await SB.from('tlmn_saves').select('data').eq('user_id',USER.id).maybeSingle();const cp=data&&data.data&&data.data.profile&&data.data.profile.passive;passiveInit(PR);if(cp&&typeof cp.last==='number'&&cp.last>PR.passive.last)PR.passive=Object.assign({},cp);}catch(e){}}
+  const from=btn?btn.getBoundingClientRect():null;const got=passiveClaim(PR);saveP();
+  if(got>0){sfx('cgChip');try{coinFly(from||{left:innerWidth/2-40,top:innerHeight/2,width:80,height:40},got);}catch(e){}try{const r=xuAnchor();floatText(r.left,r.top+r.height+10,'+'+fmt(got)+' xu','gain');}catch(e){}try{animCoin&&animCoin(got);}catch(e){}toast(`⏳ Nhận thu nhập thụ động +${fmt(got)} xu`);}
+  else toast('Chưa đủ 1 xu để nhận');
+  try{if(typeof cloudPush==='function'&&USER)cloudPush(true);}catch(e){}
+ }finally{_pasBusy=false;try{renderHome();}catch(e){}}}
+
+// ===================== v1.49: Tài sản (tăng thu nhập thụ động) =====================
+const ASSET_SVG={
+ quan:`<svg viewBox="0 0 64 64"><defs><linearGradient id="aq1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a65"/><stop offset="1" stop-color="#d84315"/></linearGradient></defs><rect x="10" y="30" width="44" height="26" rx="3" fill="#8d6e63"/><path d="M6 30h52l-6-12H12z" fill="url(#aq1)"/><path d="M6 30h52" stroke="#fff8" stroke-width="2" stroke-dasharray="6 4"/><rect x="16" y="36" width="14" height="20" fill="#5d4037"/><rect x="34" y="36" width="14" height="10" rx="1" fill="#b3e5fc"/><circle cx="46" cy="52" r="4" fill="#fff"/><path d="M43 50h6v4a3 3 0 0 1-6 0z" fill="#6d4c41"/><path d="M45 44q2-3 0-6M48 44q2-3 0-6" stroke="#fff" stroke-width="1.2" fill="none" opacity=".8"/></svg>`,
+ taphoa:`<svg viewBox="0 0 64 64"><defs><linearGradient id="at1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#66bb6a"/><stop offset="1" stop-color="#2e7d32"/></linearGradient></defs><rect x="8" y="22" width="48" height="34" rx="3" fill="#ffe0b2"/><rect x="6" y="14" width="52" height="10" rx="2" fill="url(#at1)"/><text x="32" y="22" font-size="7" font-weight="900" text-anchor="middle" fill="#fff" font-family="Arial">TẠP HÓA</text><path d="M8 24h48v6c-4 3-8 3-12 0-4 3-8 3-12 0-4 3-8 3-12 0-4 3-8 3-12 0z" fill="#ef5350"/><rect x="13" y="34" width="18" height="14" fill="#90caf9"/><rect x="15" y="40" width="4" height="8" fill="#ffca28"/><rect x="21" y="38" width="4" height="10" fill="#ef5350"/><rect x="27" y="42" width="3" height="6" fill="#66bb6a"/><rect x="36" y="34" width="14" height="22" fill="#795548"/><circle cx="47" cy="45" r="1.3" fill="#ffd54f"/></svg>`,
+ xuongmay:`<svg viewBox="0 0 64 64"><defs><linearGradient id="ax1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ba68c8"/><stop offset="1" stop-color="#6a1b9a"/></linearGradient></defs><path d="M6 56V28l12-8v8l12-8v8l12-8v8l16-8v36z" fill="url(#ax1)"/><rect x="10" y="38" width="8" height="8" fill="#e1bee7"/><rect x="22" y="38" width="8" height="8" fill="#e1bee7"/><rect x="34" y="38" width="8" height="8" fill="#e1bee7"/><rect x="46" y="38" width="8" height="8" fill="#e1bee7"/><path d="M40 8l6 0 3 4 6 2-2 8-4-1v9H39v-9l-4 1-2-8 6-2z" fill="#ffca28" stroke="#f57f17" stroke-width="1"/><circle cx="20" cy="52" r="3" fill="#ffd54f"/><path d="M20 52l10-6" stroke="#ffd54f" stroke-width="1.5"/></svg>`,
+ nhamay:`<svg viewBox="0 0 64 64"><defs><linearGradient id="an1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78909c"/><stop offset="1" stop-color="#37474f"/></linearGradient></defs><circle cx="16" cy="8" r="4" fill="#cfd8dc" opacity=".8"/><circle cx="22" cy="5" r="3" fill="#eceff1" opacity=".7"/><circle cx="34" cy="10" r="3.5" fill="#cfd8dc" opacity=".7"/><rect x="12" y="12" width="7" height="22" fill="#b71c1c"/><rect x="12" y="16" width="7" height="3" fill="#fff"/><rect x="30" y="16" width="7" height="18" fill="#b71c1c"/><rect x="30" y="20" width="7" height="3" fill="#fff"/><path d="M4 58V32l14 8v-8l14 8v-8l14 8v-8l14 8v18z" fill="url(#an1)"/><rect x="10" y="44" width="8" height="6" fill="#ffd54f"/><rect x="24" y="44" width="8" height="6" fill="#ffd54f"/><rect x="38" y="44" width="8" height="6" fill="#ffd54f"/><rect x="50" y="46" width="6" height="12" fill="#263238"/></svg>`,
+ tapdoan:`<svg viewBox="0 0 64 64"><defs><linearGradient id="ad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4fc3f7"/><stop offset="1" stop-color="#0d47a1"/></linearGradient><linearGradient id="ad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe082"/><stop offset="1" stop-color="#ff8f00"/></linearGradient></defs><rect x="6" y="30" width="14" height="28" fill="#455a64"/><rect x="44" y="24" width="14" height="34" fill="#546e7a"/><path d="M22 58V14l10-8 10 8v44z" fill="url(#ad1)"/><path d="M32 6v52" stroke="#ffffff55"/><g fill="#e1f5fe" opacity=".85"><rect x="25" y="18" width="4" height="4"/><rect x="35" y="18" width="4" height="4"/><rect x="25" y="26" width="4" height="4"/><rect x="35" y="26" width="4" height="4"/><rect x="25" y="34" width="4" height="4"/><rect x="35" y="34" width="4" height="4"/><rect x="25" y="42" width="4" height="4"/><rect x="35" y="42" width="4" height="4"/></g><rect x="28" y="50" width="8" height="8" fill="#263238"/><circle cx="32" cy="12" r="3" fill="url(#ad2)"/><path d="M32 2v4" stroke="#ff8f00" stroke-width="1.5"/><g fill="#cfd8dc"><rect x="9" y="34" width="3" height="3"/><rect x="14" y="34" width="3" height="3"/><rect x="9" y="40" width="3" height="3"/><rect x="14" y="40" width="3" height="3"/><rect x="47" y="28" width="3" height="3"/><rect x="52" y="28" width="3" height="3"/><rect x="47" y="34" width="3" height="3"/><rect x="52" y="34" width="3" height="3"/></g></svg>`};
+let shopAsset=false;
+const _osh149=openShop;openShop=function(tab){const isA=tab==='asset'||(tab==null&&shopAsset);shopAsset=isA;_osh149(isA?undefined:tab);try{const tabs=document.querySelector('#modalIn .tabs');if(!tabs)return;
+ if(!tabs.querySelector('.atab'))tabs.insertAdjacentHTML('beforeend',`<button class="alt atab ${isA?'on':''}" onclick="openShop('asset')">🏢 Tài sản</button>`);
+ if(!isA)return;tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.classList.contains('atab')));const g=document.querySelector('#modalIn .sgrid');if(!g)return;g.outerHTML=assetGridHTML();}catch(e){console.warn(e)}};
+function assetGridHTML(){const bon=assetBonus(PR);return `<div class="ainfo">Tài sản tăng <b>thu nhập thụ động</b>. Mỗi tài sản mua 1 lần, nâng tối đa cấp 5 (mỗi cấp +% gốc). Đang có: <b class="pos">+${fmt(bon)}%</b></div><div class="agrid">${ASSETS.map(a=>{const lv=assetLv(PR,a.id),nx=lv<ASSET_MAX?assetCost(a.id,lv+1):null;
+ return `<div class="aitem ${lv?'own':''} ${lv>=ASSET_MAX?'max':''}"><div class="aic">${ASSET_SVG[a.id]}</div><div class="ainm"><b>${a.name}</b><small>+${a.pct}%/cấp · ${lv?`đang +${a.pct*lv}%`:'chưa có'}</small><span class="alv">${[1,2,3,4,5].map(k=>`<i class="${k<=lv?'on':''}"></i>`).join('')}</span></div>${nx==null?'<span class="amax">TỐI ĐA</span>':`<button onclick="askAsset('${a.id}')" ${PR.xu<nx?'disabled':''}>${lv?'Nâng cấp '+(lv+1):'Mua'}<br><small>${I('coin')}${kxu(nx)}</small></button>`}</div>`;}).join('')}</div>`;}
+function askAsset(id){const a=ASSETS.find(x=>x.id===id),lv=assetLv(PR,id),cost=assetCost(id,lv+1);if(cost==null)return;const r0=passiveRate(PR)*3600,P2=Object.assign({},PR,{assets:Object.assign({},PR.assets||{},{[id]:lv+1})}),r1=passiveRate(P2)*3600;
+ modal(`<h3>🏢 ${lv?'Nâng cấp':'Mua'} ${a.name}</h3><div class="aconf"><div class="aic big">${ASSET_SVG[id]}</div><p>${lv?`Cấp ${lv} → <b>cấp ${lv+1}</b>`:'Sở hữu <b>cấp 1</b>'} · thưởng thu nhập thụ động <b class="pos">+${a.pct}%</b></p><p>Thu nhập: <b>${fmt(Math.round(r0))}</b> → <b class="pos">${fmt(Math.round(r1))} xu/giờ</b></p><p class="acost">Giá: ${I('coin')} <b>${fmt(cost)}</b> xu<br><small>Số dư sau khi mua: ${fmt(PR.xu-cost)} xu</small></p></div>
+ <div class="row" style="gap:8px"><button class="alt" style="flex:1" onclick="openShop('asset')">Hủy</button><button style="flex:1" id="aOk" onclick="doAsset('${id}')" ${PR.xu<cost?'disabled':''}>Xác nhận mua</button></div>`);}
+function doAsset(id){const r=buyAsset(PR,id);if(!r.ok){sfx('bad');toast(r.reason);return openShop('asset');}const a=ASSETS.find(x=>x.id===id);sfx('coin');toast(`🏢 ${a.name} cấp ${r.lv} · thu nhập thụ động +${fmt(assetBonus(PR))}%`);
+ try{updHud();}catch(e){}badgeToasts(checkBadges(PR));saveP();try{if(typeof cloudPush==='function'&&USER)cloudPush(true);}catch(e){}openShop('asset');}
+// thanh thu nhập: hiện % từ tài sản; thẻ người chơi: tài sản đang có
+const _ph149=pasHTML;pasHTML=function(){let h=_ph149();const b=assetBonus(PR);if(b)h=h.replace('<span>Thu nhập thụ động</span>',`<span>Thu nhập thụ động <i class="pasa">+${fmt(b)}% từ tài sản</i></span>`);return h;};
+const _rh149=renderHome;renderHome=function(){_rh149.apply(this,arguments);try{const pc=document.querySelector('#home .pcard');if(!pc)return;let el=$('pcAssets');const own=ASSETS.filter(a=>assetLv(PR,a.id));if(!own.length){if(el)el.remove();return;}
+ if(!el){el=document.createElement('div');el.id='pcAssets';}if(el.previousElementSibling!==pc)pc.insertAdjacentElement('afterend',el);el.className='pcassets';el.innerHTML=own.map(a=>`<span class="pca" title="${a.name} cấp ${assetLv(PR,a.id)}">${ASSET_SVG[a.id]}<i>${assetLv(PR,a.id)}</i></span>`).join('')+`<small>Tài sản · +${fmt(assetBonus(PR))}% thu nhập thụ động</small>`;el.onclick=()=>openShop('asset');}catch(e){}};
 boot();
 </script></body></html>

@@ -10,6 +10,8 @@ function mergeSaves(a,b){
  P.inv=Object.assign({},O.inv||{},P.inv||{});if(!P.equip&&O.equip)P.equip=Object.assign({},O.equip);if(!P.avBg&&O.avBg)P.avBg=O.avBg;
  P.stats=P.stats||{};for(const k in (O.stats||{}))if(k!=='streak')P.stats[k]=Math.max(P.stats[k]||0,O.stats[k]||0);
  if(O.login&&O.login.last&&(!P.login||!P.login.last||O.login.last>P.login.last))P.login=Object.assign({},O.login);
+ if(O.assets){P.assets=Object.assign({},P.assets||{});for(const k in O.assets)P.assets[k]=Math.max(P.assets[k]||0,O.assets[k]||0);}
+ if(O.passive&&typeof O.passive.last==='number'&&(!P.passive||!(P.passive.last>=O.passive.last)))P.passive=Object.assign({},O.passive);
  if(O.allowDay&&(!P.allowDay||O.allowDay>P.allowDay))P.allowDay=O.allowDay;
  if(O.rescueDay&&(!P.rescueDay||O.rescueDay>P.rescueDay))P.rescueDay=O.rescueDay;
  if(O.quests&&O.quests.day&&(!P.quests||!P.quests.day||O.quests.day>P.quests.day))P.quests=JSON.parse(JSON.stringify(O.quests));

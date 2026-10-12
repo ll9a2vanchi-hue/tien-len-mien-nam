@@ -136,6 +136,12 @@ for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];
   goals.forEach((g,i)=>{const tier=Math.min(3,i+1),nm=(spi?spi[0]:k==='bust'?I.bust[0]:k==='roleG'?I.role[0]:k==='roleW'?I.role[0]+' thắng lớn':L.split(' (')[0])+' · '+MB_TN[0][i];
    BADGES.push(BG(m+'_'+k+'_'+(i+1),icon,I.n+': '+nm,L+' '+g.toLocaleString('vi-VN')+' '+u+' ('+I.n+')',[150,800,3000,10000][i],tier,s=>V(s,mk(m,k==='streak'?'bestStreak':k))>=g,{series:'m_'+k,mode:m,k:mk(m,k==='streak'?'bestStreak':k),goal:g,legend:i===3}));});}
  MB_SEC.forEach(([k,d,ic],j)=>{const sd=k==='s4'?I.sec[0]:k==='s5'?I.sec[1]:[null,d,ic];BADGES.push(BG(m+'_sec_'+k,sd[2],I.n+': '+(sd[0]||d.split(' ')[0]+' '+(d.split(' ')[1]||'')),sd[1],[3000,3000,4000,5000,5000][j],3,s=>V(s,mk(m,k))>=1,{secret:true,mode:m,k:mk(m,k),goal:1}));});}
+// huy hiệu tài sản (nhóm Chung)
+BADGES.push(BG('asset_first','🏪','Khởi nghiệp','Sở hữu tài sản đầu tiên',2000,1,(s,p)=>ASSETS.some(a=>assetLv(p,a.id)>0),{series:'asset'}),
+ BG('asset_nhamay','🏭','Ông chủ nhà máy','Sở hữu Nhà máy',20000,2,(s,p)=>assetLv(p,'nhamay')>0,{series:'asset'}),
+ BG('asset_tapdoan','🏙️','Chủ tịch tập đoàn','Sở hữu Tập đoàn',50000,3,(s,p)=>assetLv(p,'tapdoan')>0,{series:'asset'}),
+ BG('asset_all','🗂️','Đế chế kinh doanh','Sở hữu đủ 5 tài sản',80000,3,(s,p)=>ASSETS.every(a=>assetLv(p,a.id)>0),{series:'asset'}),
+ BG('asset_max','👑','Tài phiệt tối thượng','Nâng cả 5 tài sản lên cấp 5',300000,3,(s,p)=>ASSETS.every(a=>assetLv(p,a.id)>=ASSET_MAX),{series:'asset',legend:true}));
 // cân số lượng: mỗi chế độ đúng bằng số huy hiệu Miền Nam
 {const cnt=m=>BADGES.filter(b=>badgeMode(b)===m).length;const T=cnt('mn');for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];let j=0;const extra=[100,200,365,500];
  while(cnt(m)<T&&j<extra.length){const g=extra[j++];BADGES.push(BG(m+'_days_x'+j,'🗓️',I.n+': Trung thành · '+g+' ngày','Chơi '+I.n+' trong '+g+' ngày khác nhau',5000+j*2000,3,s=>V(s,mk(m,'days'))>=g,{series:'m_days',mode:m,k:mk(m,'days'),goal:g,legend:true}));}
@@ -195,6 +201,19 @@ function loginState(P,now){const k=dayKey(now),l=P.login;if(l.last===k)return{ca
  const next=(l.last&&dayDiff(l.last,k)===1)?(l.streak%7)+1:1;return{canClaim:true,day:next,reward:LOGIN_REWARDS[next-1]};}
 function claimLogin(P,now){const s=loginState(P,now);if(!s.canClaim)return 0;P.login={last:dayKey(now),streak:s.day};P.xu+=s.reward;return s.reward;}
 function canRescue(P,now){return P.xu<BETS[0]&&P.rescueDay!==dayKey(now);}
+const PASSIVE_CAP_MS=24*3600*1000;
+const ASSETS=[{id:'quan',name:'Quán nước',price:1000000,pct:10},{id:'taphoa',name:'Tiệm tạp hóa',price:2000000,pct:25},{id:'xuongmay',name:'Xưởng may',price:3500000,pct:45},{id:'nhamay',name:'Nhà máy',price:6000000,pct:75},{id:'tapdoan',name:'Tập đoàn',price:10000000,pct:120}];
+const ASSET_MAX=5;
+function assetLv(P,id){const v=P.assets&&P.assets[id];return v>0?Math.min(ASSET_MAX,v|0):0;}
+function assetBonus(P){return ASSETS.reduce((a,x)=>a+x.pct*assetLv(P,x.id),0);}
+function assetCost(id,toLv){const a=ASSETS.find(x=>x.id===id);if(!a||toLv<1||toLv>ASSET_MAX)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
+function passiveBank(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return;ps.frac=passivePending(P,now);ps.last=now;}
+function buyAsset(P,id,now){const a=ASSETS.find(x=>x.id===id);if(!a)return{ok:false,reason:'Không có tài sản này'};const lv=assetLv(P,id);if(lv>=ASSET_MAX)return{ok:false,reason:'Đã nâng cấp tối đa'};
+ const cost=assetCost(id,lv+1);if((P.xu||0)<cost)return{ok:false,reason:'Không đủ xu'};passiveBank(P,now);P.xu-=cost;P.assets=Object.assign({},P.assets||{});P.assets[id]=lv+1;P.stats=P.stats||{};P.stats.assetSpent=(P.stats.assetSpent||0)+cost;return{ok:true,cost,lv:lv+1};}
+function passiveRate(P){return levelInfo(P.xp||0).level/2/100*(1+assetBonus(P)/100);}
+function passiveInit(P,now){now=now==null?Date.now():+now;if(!P.passive||typeof P.passive.last!=='number'||!isFinite(P.passive.last))P.passive={last:now,frac:0};return P.passive;}
+function passivePending(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);const d=now-ps.last;if(!(d>0))return ps.frac||0;return Math.min(d,PASSIVE_CAP_MS)/1000*passiveRate(P)+(ps.frac||0);}
+function passiveClaim(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return 0;const tot=passivePending(P,now);const got=Math.floor(tot);ps.frac=tot-got;ps.last=now;P.xu+=got;return got;}
 const ALLOW_PER_LV=1000;
 function allowanceAmt(P){return ALLOW_PER_LV*levelInfo(P.xp||0).level;}
 function canAllowance(P,now){return (P.xu|0)===0&&P.allowDay!==dayKey(now);}
@@ -279,4 +298,4 @@ function addXp(P,n){const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const af
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // PROGRESS_END
-if(typeof module!=='undefined')module.exports={MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
+if(typeof module!=='undefined')module.exports={ASSETS,ASSET_MAX,assetLv,assetBonus,assetCost,passiveBank,buyAsset,PASSIVE_CAP_MS,passiveRate,passiveInit,passivePending,passiveClaim,MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};

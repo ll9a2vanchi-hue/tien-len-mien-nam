@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.48.4';
+const APP_V='1.49';
 const CHANGELOG=[
+ ['1.49','12/10',['Thu nhập thụ động: nhận xu liên tục theo cấp (cấp ÷ 2 ÷ 100 xu mỗi giây, cấp 20 = 360 xu/giờ), tích luỹ cả khi tắt app, tối đa 24 giờ; bộ đếm chạy trực tiếp ở màn hình chính, bấm Nhận để lấy; đồng bộ đám mây chống nhận 2 lần','Cửa hàng › Tài sản: Quán nước, Tiệm tạp hóa, Xưởng may, Nhà máy, Tập đoàn — tăng % thu nhập thụ động, nâng cấp tới cấp 5; huy hiệu Ông chủ nhà máy, Chủ tịch tập đoàn, Đế chế kinh doanh, Tài phiệt tối thượng']],
  ['1.48.4','11/10',['Xì tố: lá bài dùng đúng kiểu bài (mặt bài) đã trang bị; kiểm tra mặt sau, kiểu bài, nỉ bàn ở mọi chế độ']],
  ['1.48.3','11/10',['Xì tố “Tố tất” và Poker “Tất tay”: hiệu ứng hoành tráng — chớp màn hình, chữ lớn rực lửa rung, chip đổ ào vào hũ, rung bàn, trống dồn + tiếng chip + tiếng nổ trầm; ghế tất tay có nhãn ALL-IN và hào quang đến lúc lật bài']],
  ['1.48.2','11/10',['Xì tố: lá bài to hơn nữa, góc số + chất to đậm, chất lớn giữa lá, màu tương phản (♠♣ đen, ♥ đỏ, ♦ cam đỏ), vẽ bằng SVG']],
