@@ -684,6 +684,7 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 .prates{display:flex;gap:6px;margin:8px 0}.prates div{flex:1;text-align:center;padding:6px 2px;border-radius:12px;background:#0004;border:1px solid #c9962e44}.prates small{display:block;font-size:10.5px;opacity:.75}.prates b{font-size:15px;color:#7dffb0}
 .pbrk{background:#0004;border-radius:12px;padding:6px 10px;margin:6px 0;font-size:12.5px}.pbrk>div{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px dashed #ffffff14}.pbrk>div:last-child{border:0}.pbrk .pdi svg{width:16px;height:16px;vertical-align:-3px;margin-right:4px}
 @media(max-width:399px){.astile .pasm small{display:none}}
+.xptbl{margin:8px 0}.xptbl summary{cursor:pointer;font-weight:700;color:#ffd84d}.xptbl table{width:100%;border-collapse:collapse;font-size:13px}.xptbl td{padding:3px 4px;border-bottom:1px solid #ffffff14}.xptbl td+td{text-align:right;font-weight:700}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -724,7 +725,7 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='7e51150872';
+const APP_VER='ef04c163f4';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -1040,8 +1041,12 @@ function onPlay(P,info,prev){const s=P.stats;
 // Bàn n người: hệ số XP và xu theo số người
 const TABLE_XP={2:0.5,3:0.75,4:1};
 const PLACE_XU={2:[1,-1],3:[1.5,0,-1],4:PLACE_MULT};
-const XP_PLACE_N={2:[100,20],3:[100,50,20],4:[100,60,35,20]};
-function tableXp(n,place,instant){n=XP_PLACE_N[n]?n:4;return Math.round(((XP_PLACE_N[n][place]||20)+(instant&&place===0?XP_INSTANT:0))*TABLE_XP[n]);}
+// v1.51: XP tỉ lệ thời gian ván (~41 XP/phút)
+const XP_PLACE_N={2:[32,19],3:[46,28,16],4:[100,60,35,20]};
+const XP_DEMLA_N={2:[27,16],3:[38,23,13],4:[83,50,29,17]};
+const XP_MODE={'3cao':[8,4,3],xidach:[13,7,4],baucua:[24,12,8],domino:[35,17,12],xito:[32,16,10],poker:[30,15,10]};
+function modeXp(g,net){const t=XP_MODE[g]||[30,15,10];return net>0?t[0]:net===0?t[1]:t[2];}
+function tableXp(n,place,instant,mode){const T=mode==='demla'?XP_DEMLA_N:XP_PLACE_N;n=T[n]?n:4;const row=T[n],last=row[row.length-1];return Math.round((row[place]==null?last:row[place])+(instant&&place===0?XP_INSTANT*row[0]/100:0));}
 function tableXu(bet,n,place,instant){n=PLACE_XU[n]?n:4;return Math.round(bet*(instant?(place===0?n-1:-1):(PLACE_XU[n][place]==null?-1:PLACE_XU[n][place])));}
 // ctx: {bonus:% thưởng vì về trên máy khó, beatHard, beatMaster, usedTwo, last3s, comeback, online}
 function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.games++;questEvent(P,'game');if(ctx.online)questEvent(P,'online');
@@ -1052,7 +1057,7 @@ function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.g
  if(place<n-1)questEvent(P,'notlast');
  if(ctx.beatHard){s.beatHard=(s.beatHard||0)+ctx.beatHard;questEvent(P,'beatHard',ctx.beatHard);}if(ctx.beatMaster){s.beatMaster=(s.beatMaster||0)+ctx.beatMaster;questEvent(P,'beatMaster',ctx.beatMaster);}
  if(place<=1)questEvent(P,'top2');if(instant&&place===0)s.instant++;if(delta>0)s.earned=(s.earned||0)+delta;
- const xp0=tableXp(n,place,instant),bxp=Math.round(xp0*bonus);
+ const xp0=tableXp(n,place,instant,ctx.mode),bxp=Math.round(xp0*bonus);
  const x0=P.xu;P.xu=Math.max(0,P.xu+delta);const paid=P.xu-x0,x1=P.xu;const lv=addXp(P,xp0+bxp);const x2=P.xu;const badges=checkBadges(P);
  const ledger={place:paid-(delta>0?bxu:0),bonus:delta>0?bxu:0,level:x2-x1,badges:P.xu-x2};return{delta,bxu,bxp,bonus,badges,lv,ledger};}
 // sổ xu ván: parts {place,bonus,chop,thui,chay,b3,level,badges,exit,misc}
@@ -2371,7 +2376,7 @@ hookEnd=function(place,instant,n){let ctx={};
  if(G&&G.online){const gx=(ONL._gx&&ONL.st&&ONL._gx.id===(ONL.st.dealId||'x'))?ONL._gx:{};ctx={online:true,usedTwo:!!gx.usedTwo,last3s:!!gx.last3s&&place===0};}
  else if(G){const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];const below=all.slice(all.indexOf(0)+1).filter(p=>p);
   ctx={bonus:aiBeatBonus(all,0,BOTAI),noXuBonus:masterTbl(),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
- try{Object.assign(ctx,modeCtx(place,instant));}catch(e){}
+ ctx.mode=G&&G.mode==='demla'?'demla':'tlmn';try{Object.assign(ctx,modeCtx(place,instant));}catch(e){}
  const r=onGameEnd(PR,place,instant,n||4,ctx);if(G)G.lastRes=r;try{LEDG.res=r;}catch(e){}
  toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu${r.bxu?` (thưởng máy khó +${fmt(r.bxu)})`:''}`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);};
@@ -2385,7 +2390,7 @@ function setTblBet(b){const was=(PR.bet||0)>=MASTER_BET;PR.bet=b;if(was!==(b>=MA
 function suggestBet(){const ok=BETS2.filter(b=>b<MASTER_BET&&b*8<=PR.xu);return ok.length?ok[ok.length-1]:BETS2[0];}
 openTables=function(){if(!BETS2.includes(PR.bet)||PR.bet>PR.xu)PR.bet=Math.min(suggestBet(),PR.xu>=100?suggestBet():100);const sug=suggestBet();
  const opt=n=>{const x=TABLE_XP[n],pl=PLACE_XU[n].map(m=>{const v=Math.round(PR.bet*m);return (v>0?'+':v<0?'−':'')+kxu(Math.abs(v));}).join(' / ');
-  return `<button class="alt ${pickN===n?'on':''}" onclick="pickN=${n};openTables()"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu: ${pl}</small></span><span class="mul">XP ×${x}</span></button>`;};
+  return `<button class="alt ${pickN===n?'on':''}" onclick="pickN=${n};openTables()"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu: ${pl}</small></span><span class="mul">XP ${((()=>{try{return modeOf()}catch(e){return ''}})()==='demla'?XP_DEMLA_N:XP_PLACE_N)[n].join('/')}</span></button>`;};
  modal(`<h3>${I('bot')} Chơi với máy</h3><p class="small">1. Chọn số người</p><div class="tsel">${opt(2)}${opt(3)}${opt(4)}</div>
  <p class="small" style="margin-top:12px">2. Chọn mức cược · Bạn có ${I('coin')} ${fmt(PR.xu)}</p><div class="betrow">${BETS2.map(b=>`<button ${b>PR.xu?'disabled':''} onclick="setTblBet(${b})" class="${b>=MASTER_BET?'mbet ':''}${b===PR.bet?'':'alt'}">${b>=MASTER_BET?'10k':fmt(b)}${b>=MASTER_BET?'<small>Cao thủ</small>':b===sug?'<small>gợi ý</small>':''}</button>`).join('')}</div>${PR.bet>=MASTER_BET?'<p class="small mnote">🥋 Bàn 10.000: toàn bộ máy là <b>Cao thủ</b>. Thắng máy Cao thủ vẫn được <b>thưởng thêm XP</b>, nhưng không thưởng thêm xu (xu theo thứ hạng như thường).</p>':'<p class="small mnote">Mức 10k: bàn toàn Cao thủ.</p>'}
  <p class="small">Độ khó máy: <b>${PR.bet>=MASTER_BET?"toàn Cao thủ":"ngẫu nhiên theo cấp của bạn"}</b></p>
@@ -3080,8 +3085,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.50';
+const APP_V='1.51';
 const CHANGELOG=[
+ ['1.51','12/10',['XP tỉ lệ thời gian ván (~41 XP/phút): Miền Nam 4 người 100/60/35/20, 3 người 46/28/16, 2 người 32/19; Đếm lá 83/50/29/17 (3 người 38/23/13, 2 người 27/16); 3 Cào 8/4/3, Xì dách 13/7/4, Bầu cua 24/12/8, Domino 35/17/12, Xì tố 32/16/10, Poker 30/15/10','Bảng XP từng chế độ trong cửa sổ Cấp độ; nhãn XP ở màn chọn bàn']],
  ['1.50','12/10',['Tài sản thành mục riêng ở màn hình chính: Kinh doanh, Phương tiện (Xe đạp → Du thuyền, tăng % thu nhập, nâng cấp 5 cấp) và Mua sắm (12 món Quần áo, Trang sức, Phụ kiện, Vật phong thủy, tăng % EXP ở mọi chế độ, đủ bộ +40%)','Bấm thanh Thu nhập thụ động để xem công thức, số xu mỗi giây/giờ/ngày và thưởng từng tài sản','Tài sản giá trị nhất hiện cạnh avatar; huy hiệu Bộ sưu tập xe, Tín đồ thời thượng']],
  ['1.49','12/10',['Thu nhập thụ động: nhận xu liên tục theo cấp (cấp ÷ 2 ÷ 100 xu mỗi giây, cấp 20 = 360 xu/giờ), tích luỹ cả khi tắt app, tối đa 24 giờ; bộ đếm chạy trực tiếp ở màn hình chính, bấm Nhận để lấy; đồng bộ đám mây chống nhận 2 lần','Cửa hàng › Tài sản: Quán nước, Tiệm tạp hóa, Xưởng may, Nhà máy, Tập đoàn — tăng % thu nhập thụ động, nâng cấp tới cấp 5; huy hiệu Ông chủ nhà máy, Chủ tịch tập đoàn, Đế chế kinh doanh, Tài phiệt tối thượng']],
  ['1.48.4','11/10',['Xì tố: lá bài dùng đúng kiểu bài (mặt bài) đã trang bị; kiểm tra mặt sau, kiểu bài, nỉ bàn ở mọi chế độ']],
@@ -3320,7 +3326,7 @@ function titleReq(t){if(t.min)return 'Đạt cấp '+t.min;if(t.stat){const n={t
 openTitles=function(){const L=levelInfo(PR.xp),cur=currentTitle(PR);
  const cats=[['Cấp độ',TITLES.filter(t=>t.min)]];const g={};TITLES.filter(t=>!t.min).forEach(t=>{const c=t.cat||'Thành tích';(g[c]=g[c]||[]).push(t);});Object.keys(g).forEach(c=>cats.push([c,g[c]]));
  const own=TITLES.filter(t=>titleUnlocked(PR,t)).length;
- modal(`<h3>${I('medal')} Cấp ${L.level} · ${titleHTML(cur)}</h3><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><p class="small">${fmt(L.cur)}/${fmt(L.need)} XP đến cấp ${L.level+1} (thưởng ${fmt(levelReward(L.level+1))} xu). Đã mở ${own}/${TITLES.length} danh hiệu.</p>`+
+ modal(`<h3>${I('medal')} Cấp ${L.level} · ${titleHTML(cur)}</h3><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><p class="small">${fmt(L.cur)}/${fmt(L.need)} XP đến cấp ${L.level+1} (thưởng ${fmt(levelReward(L.level+1))} xu). Đã mở ${own}/${TITLES.length} danh hiệu.</p>${xpTableHTML()}`+
  cats.map(([c,arr])=>`<div class="tcat">${c} <small class="small">(${arr.filter(t=>titleUnlocked(PR,t)).length}/${arr.length})</small></div>`+arr.map(t=>{const u=titleUnlocked(PR,t);return `<div class="trow ${u?'':'lk'}"><div style="flex:1;min-width:0">${titleHTML(t)}<small>${titleReq(t)}</small></div>${t.id===cur.id?I('check'):u?`<button class="alt" onclick="pickTitle('${t.id}')">Chọn</button>`:I('lock')}</div>`;}).join('')).join(''));};
 const _osh49=openShop;openShop=function(tab){_osh49(tab);try{document.querySelectorAll('#modalIn [onclick^="doBuy("]').forEach(b=>{const id=(b.getAttribute('onclick').match(/doBuy\('([^']+)'/)||[])[1];const it=SHOP.find(x=>x.id===id);if(it&&it.lv&&levelInfo(PR.xp).level<it.lv&&!it.badge){const s=document.createElement('span');s.className='lk';s.innerHTML=I('lock')+' Cấp '+it.lv;b.replaceWith(s);return;}if(it&&it.badge&&!(PR.badges&&PR.badges[it.badge])){const bd=BADGES.find(x=>x.id===it.badge)||{};const s=document.createElement('span');s.className='lk';s.innerHTML=I('lock')+' '+esc(bd.name||'Huy hiệu');s.title='Cần huy hiệu: '+(bd.name||'');b.replaceWith(s);}});}catch(e){}};
 // ======== v50: trạng thái chế độ chơi + xem bàn người chơi với máy ========
@@ -3353,6 +3359,12 @@ function specOffRender(d){const b=$('ospB');if(!b||!d)return;OSV.d=d;if(d.k==='n
  b.innerHTML=`<div class="osM">${esc(gmLabel(d.gm))}</div>${d.k==='tl'?`<div class="osP">${(d.pile||[]).map(c=>cgCard(c,true,0)).join('')||'<span class="small">Bàn trống</span>'}</div><div class="osC">${esc(d.cap||'')}</div>`:`<div class="osC">${esc(d.msg||'')}</div>`}<div class="osG">${d.seats.map(seat).join('')}</div>`;try{svaScan(b);}catch(e){}}
 const _pt50=plTap;plTap=function(uid){_pt50(uid);try{const p=lobbyPres().find(x=>x.uid===uid);const m=$('modalIn');if(!m||!p||!p.bot||p.room||!p.share||m.querySelector('.ospx'))return;const bt=document.createElement('button');bt.className='alt ospx';bt.textContent='👁 Xem bàn ('+gmLabel(p.gm)+')';bt.onclick=()=>specOff(uid,p.name);const h=m.querySelector('p');h?h.after(bt):m.appendChild(bt);}catch(e){}};
 const _os50=openSettings;openSettings=function(){_os50.apply(this,arguments);try{const m=$('modalIn');const d=document.createElement('div');d.className='row';d.innerHTML=`<span style="flex:1">Cho người khác xem bàn của tôi</span><button class="${SHARE?'':'alt'}" onclick="SHARE=!SHARE;localStorage.setItem('tlmn_share',SHARE?'1':'0');lobbyTrack();openSettings()">${SHARE?'Bật':'Tắt'}</button>`;const r=[...m.querySelectorAll('.row')].pop();r?r.after(d):m.appendChild(d);}catch(e){}};
+
+function xpTableHTML(){const r=(a,b)=>`<tr><td>${a}</td><td>${b}</td></tr>`,j=a=>a.join(' / ');
+ return `<details class="xptbl"><summary>XP mỗi ván theo chế độ</summary><p class="small">XP tỉ lệ thời gian ván (~41 XP/phút). Thắng / Hòa / Thua hoặc theo thứ hạng.</p><table>`+
+ [2,3,4].map(n=>r('Miền Nam '+n+' người',j(XP_PLACE_N[n]))).join('')+[2,3,4].map(n=>r('Đếm lá '+n+' người',j(XP_DEMLA_N[n]))).join('')+
+ [['3cao','3 Cào'],['xidach','Xì dách'],['baucua','Bầu cua'],['domino','Domino'],['xito','Xì tố'],['poker','Poker']].map(([k,l])=>r(l,j(XP_MODE[k]))).join('')+
+ `</table><p class="small">Thưởng thêm: chặt heo +${XP_CHOP}, tới trắng +${XP_INSTANT} (theo tỉ lệ bàn), luộc máy, nhiệm vụ +${XP_QUEST}, thắng Cao thủ bàn 10k. Cuối cùng nhân % EXP từ Mua sắm.</p></details>`;}
 // ===== Sòng phụ: 3 cào & Xì dách (offline, đấu với nhà cái máy) =====
 const CG={g:null,bet:200,st:null};const CG_NAMES=['Anh Tư','Chị Bảy','Chú Năm','Cô Ba','Bác Hai','Anh Sáu','Bé Út','Ông Tám','Dì Chín','Anh Mười'];const CG_AV=['🧔','👩','👨‍🦳','👵','👴','🧑','👱‍♀️','👨','👩‍🦰','🤵'];
 const CG_BETS=[100,200,500,1000,2000,5000];
@@ -3446,7 +3458,7 @@ function cgSettle(){const st=CG.st;if(st.phase==='done')return;st.phase='done';s
   if(CG.g==='3cao'){const sc=bcScore(mh);Object.assign(ev,{sp1:won&&sc.bacao,sp2:won&&!sc.bacao&&sc.score===9,sp3:allLost&&n>1,s4:deal&&sc.bacao,s5:!sc.bacao&&sc.score===9&&me<0});}
   else{const kd=xdKind(mh,st.me===0?15:16);Object.assign(ev,{sp1:won&&kd.kind==='xidach',sp2:won&&kd.kind==='ngulinh',sp3:won&&kd.kind==='xibang',s4:kd.kind==='ngulinh'&&kd.total===21,s5:allLost&&n>1});}
   modeRecord(PR,CG.g,ev);}catch(e){console.warn(e)}
- const xp=won?30:me===0?15:10;const up=addXp(PR,xp);xpFloat(xp,up);st.msg=(me>0?`🎉 Bạn ${st.me===0?'(cái) ':''}thắng +${fmt(me)} xu`:me<0?`Bạn ${st.me===0?'(cái) ':''}thua ${fmt(me)} xu`:'Hòa')+` · +${xp} XP`;
+ const up=addXp(PR,modeXp(CG.g,me));const xp=PR._lastXp;xpFloat(xp,up);st.msg=(me>0?`🎉 Bạn ${st.me===0?'(cái) ':''}thắng +${fmt(me)} xu`:me<0?`Bạn ${st.me===0?'(cái) ':''}thua ${fmt(me)} xu`:'Hòa')+` · +${xp} XP`;
  sfx(me>0?'win':me<0?'thud':'tap');if(me>0)sfx('coin');cgRender();try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(me>=0?'+':'')+fmt(me)+' xu',me>=0?'gain':'loss');}catch(e){}
  try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);}
 // ---- vào từ màn hình chính
@@ -3517,7 +3529,7 @@ function mgBets(list,cur,on,maxOk){return `<div class="cgbets">${list.map(b=>`<b
 // kết thúc ván: cập nhật xu/XP/thống kê/nhiệm vụ
 const MG_STAT={baucua:'bcua',domino:'dom',xito:'xt',poker:'pk'};
 function mgEnd(net,o){o=o||{};const k=MG_STAT[MG.g];PR.xu=Math.max(0,PR.xu+net);bst(k+'Games');const won=net>0;if(won){bst(k+'Win');questEvent(PR,k+'win');}questEvent(PR,'cgplay');(o.stats||[]).forEach(s=>bst(s));try{const st=MG.st||{};const tbl=(st.bots||(st.seats||[]).slice(1)).map(b=>b.name);const n=tbl.length+1;const bust=tbl.filter(nm=>nm!=='Nhà cái'&&(MG.bxu[nm]||0)<=0).length;modeRecord(PR,MG.g,Object.assign({win:won,net,bet:MG.bet,n,full:n>=(MG.g==='domino'?4:6),bust},o.ev||{}));}catch(e){console.warn(e)}
- const xp=o.xp!=null?o.xp:(won?30:net===0?15:10);const up=addXp(PR,xp);xpFloat(xp,up);sfx(won?'cgJingle':net<0?'cgLose':'cgChip');
+ const xp0=o.xp!=null?o.xp:modeXp(MG.g,net);const up=addXp(PR,xp0);const xp=PR._lastXp;xpFloat(xp,up);sfx(won?'cgJingle':net<0?'cgLose':'cgChip');
  try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(net>=0?'+':'')+fmt(net)+' xu',net>=0?'gain':'loss');}catch(e){}
  try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);return xp;}
 function mgLedger(rows){return rows&&rows.length?`<div class="cgled">${rows.map(l=>`<div><span>${esc(l[0])}</span><b class="${l[1]>0?'pos':l[1]<0?'neg':''}">${l[1]>0?'+':''}${fmt(l[1])}</b></div>`).join('')}</div>`:'';}

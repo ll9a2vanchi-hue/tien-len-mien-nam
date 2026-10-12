@@ -24,8 +24,8 @@ let m=mergeSaves(mk(500,2,111,1),mk(100,50,999,9));t('merge higher xp wins',m.pr
 m=mergeSaves(mk(100,50,999,9),mk(500,2,111,1));t('merge symmetric',m.profile.xp===500);
 const a=mk(300,1,1,1);a.profile.title='tay_mo';m=mergeSaves(a,mk(10,9,1,5));t('merge keeps title',m.profile.title==='tay_mo');
 // bàn 2/3/4 người
-t('xp 4p first',X.tableXp(4,0)===100&&X.tableXp(4,3)===20);t('xp 2p half',X.tableXp(2,0)===50&&X.tableXp(2,1)===10);t('xp 3p 75%',X.tableXp(3,0)===75&&X.tableXp(3,2)===15);
-t('xp instant scaled',X.tableXp(2,0,true)===125);t('xu 2p',X.tableXu(100,2,0)===100&&X.tableXu(100,2,1)===-100);t('xu 3p',X.tableXu(100,3,0)===150&&X.tableXu(100,3,1)===0&&X.tableXu(100,3,2)===-100);
+t('xp 4p first',X.tableXp(4,0)===100&&X.tableXp(4,3)===20);t('xp 2p',X.tableXp(2,0)===32&&X.tableXp(2,1)===19);t('xp 3p',X.tableXp(3,0)===46&&X.tableXp(3,2)===16);t('demla',X.tableXp(4,0,false,'demla')===83&&X.tableXp(3,1,false,'demla')===23&&X.tableXp(2,1,false,'demla')===16);t('modeXp',X.modeXp('3cao',5)===8&&X.modeXp('xidach',0)===7&&X.modeXp('domino',-1)===12&&X.modeXp('poker',1)===30);
+t('xp instant scaled',X.tableXp(2,0,true)===80);t('xu 2p',X.tableXu(100,2,0)===100&&X.tableXu(100,2,1)===-100);t('xu 3p',X.tableXu(100,3,0)===150&&X.tableXu(100,3,1)===0&&X.tableXu(100,3,2)===-100);
 t('xu 4p unchanged',X.tableXu(100,4,0)===200&&X.tableXu(100,4,3)===-100);t('xu instant 3p',X.tableXu(100,3,0,true)===200&&X.tableXu(100,3,1,true)===-100);
 {const q=X.newProfile();const x0=q.xu;X.onGameEnd(q,0,false,2);t('onGameEnd 2p xp',q.xp===50&&q.xu>=x0+100);}
 {const q=X.newProfile();q.title='cao_thu';t('migrate old title id',X.currentTitle(q).id==='tan_binh'&&q.title==='cao_thu_an');q.title='do_te';X.migrateTitle(q);t('migrate badge title',q.title==='do_te_heo');}

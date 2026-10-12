@@ -27,7 +27,7 @@ hookEnd=function(place,instant,n){let ctx={};
  if(G&&G.online){const gx=(ONL._gx&&ONL.st&&ONL._gx.id===(ONL.st.dealId||'x'))?ONL._gx:{};ctx={online:true,usedTwo:!!gx.usedTwo,last3s:!!gx.last3s&&place===0};}
  else if(G){const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];const below=all.slice(all.indexOf(0)+1).filter(p=>p);
   ctx={bonus:aiBeatBonus(all,0,BOTAI),noXuBonus:masterTbl(),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
- try{Object.assign(ctx,modeCtx(place,instant));}catch(e){}
+ ctx.mode=G&&G.mode==='demla'?'demla':'tlmn';try{Object.assign(ctx,modeCtx(place,instant));}catch(e){}
  const r=onGameEnd(PR,place,instant,n||4,ctx);if(G)G.lastRes=r;try{LEDG.res=r;}catch(e){}
  toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu${r.bxu?` (thưởng máy khó +${fmt(r.bxu)})`:''}`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);};
@@ -41,7 +41,7 @@ function setTblBet(b){const was=(PR.bet||0)>=MASTER_BET;PR.bet=b;if(was!==(b>=MA
 function suggestBet(){const ok=BETS2.filter(b=>b<MASTER_BET&&b*8<=PR.xu);return ok.length?ok[ok.length-1]:BETS2[0];}
 openTables=function(){if(!BETS2.includes(PR.bet)||PR.bet>PR.xu)PR.bet=Math.min(suggestBet(),PR.xu>=100?suggestBet():100);const sug=suggestBet();
  const opt=n=>{const x=TABLE_XP[n],pl=PLACE_XU[n].map(m=>{const v=Math.round(PR.bet*m);return (v>0?'+':v<0?'−':'')+kxu(Math.abs(v));}).join(' / ');
-  return `<button class="alt ${pickN===n?'on':''}" onclick="pickN=${n};openTables()"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu: ${pl}</small></span><span class="mul">XP ×${x}</span></button>`;};
+  return `<button class="alt ${pickN===n?'on':''}" onclick="pickN=${n};openTables()"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu: ${pl}</small></span><span class="mul">XP ${((()=>{try{return modeOf()}catch(e){return ''}})()==='demla'?XP_DEMLA_N:XP_PLACE_N)[n].join('/')}</span></button>`;};
  modal(`<h3>${I('bot')} Chơi với máy</h3><p class="small">1. Chọn số người</p><div class="tsel">${opt(2)}${opt(3)}${opt(4)}</div>
  <p class="small" style="margin-top:12px">2. Chọn mức cược · Bạn có ${I('coin')} ${fmt(PR.xu)}</p><div class="betrow">${BETS2.map(b=>`<button ${b>PR.xu?'disabled':''} onclick="setTblBet(${b})" class="${b>=MASTER_BET?'mbet ':''}${b===PR.bet?'':'alt'}">${b>=MASTER_BET?'10k':fmt(b)}${b>=MASTER_BET?'<small>Cao thủ</small>':b===sug?'<small>gợi ý</small>':''}</button>`).join('')}</div>${PR.bet>=MASTER_BET?'<p class="small mnote">🥋 Bàn 10.000: toàn bộ máy là <b>Cao thủ</b>. Thắng máy Cao thủ vẫn được <b>thưởng thêm XP</b>, nhưng không thưởng thêm xu (xu theo thứ hạng như thường).</p>':'<p class="small mnote">Mức 10k: bàn toàn Cao thủ.</p>'}
  <p class="small">Độ khó máy: <b>${PR.bet>=MASTER_BET?"toàn Cao thủ":"ngẫu nhiên theo cấp của bạn"}</b></p>
@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.50';
+const APP_V='1.51';
 const CHANGELOG=[
+ ['1.51','12/10',['XP tỉ lệ thời gian ván (~41 XP/phút): Miền Nam 4 người 100/60/35/20, 3 người 46/28/16, 2 người 32/19; Đếm lá 83/50/29/17 (3 người 38/23/13, 2 người 27/16); 3 Cào 8/4/3, Xì dách 13/7/4, Bầu cua 24/12/8, Domino 35/17/12, Xì tố 32/16/10, Poker 30/15/10','Bảng XP từng chế độ trong cửa sổ Cấp độ; nhãn XP ở màn chọn bàn']],
  ['1.50','12/10',['Tài sản thành mục riêng ở màn hình chính: Kinh doanh, Phương tiện (Xe đạp → Du thuyền, tăng % thu nhập, nâng cấp 5 cấp) và Mua sắm (12 món Quần áo, Trang sức, Phụ kiện, Vật phong thủy, tăng % EXP ở mọi chế độ, đủ bộ +40%)','Bấm thanh Thu nhập thụ động để xem công thức, số xu mỗi giây/giờ/ngày và thưởng từng tài sản','Tài sản giá trị nhất hiện cạnh avatar; huy hiệu Bộ sưu tập xe, Tín đồ thời thượng']],
  ['1.49','12/10',['Thu nhập thụ động: nhận xu liên tục theo cấp (cấp ÷ 2 ÷ 100 xu mỗi giây, cấp 20 = 360 xu/giờ), tích luỹ cả khi tắt app, tối đa 24 giờ; bộ đếm chạy trực tiếp ở màn hình chính, bấm Nhận để lấy; đồng bộ đám mây chống nhận 2 lần','Cửa hàng › Tài sản: Quán nước, Tiệm tạp hóa, Xưởng may, Nhà máy, Tập đoàn — tăng % thu nhập thụ động, nâng cấp tới cấp 5; huy hiệu Ông chủ nhà máy, Chủ tịch tập đoàn, Đế chế kinh doanh, Tài phiệt tối thượng']],
  ['1.48.4','11/10',['Xì tố: lá bài dùng đúng kiểu bài (mặt bài) đã trang bị; kiểm tra mặt sau, kiểu bài, nỉ bàn ở mọi chế độ']],
@@ -976,7 +977,7 @@ function titleReq(t){if(t.min)return 'Đạt cấp '+t.min;if(t.stat){const n={t
 openTitles=function(){const L=levelInfo(PR.xp),cur=currentTitle(PR);
  const cats=[['Cấp độ',TITLES.filter(t=>t.min)]];const g={};TITLES.filter(t=>!t.min).forEach(t=>{const c=t.cat||'Thành tích';(g[c]=g[c]||[]).push(t);});Object.keys(g).forEach(c=>cats.push([c,g[c]]));
  const own=TITLES.filter(t=>titleUnlocked(PR,t)).length;
- modal(`<h3>${I('medal')} Cấp ${L.level} · ${titleHTML(cur)}</h3><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><p class="small">${fmt(L.cur)}/${fmt(L.need)} XP đến cấp ${L.level+1} (thưởng ${fmt(levelReward(L.level+1))} xu). Đã mở ${own}/${TITLES.length} danh hiệu.</p>`+
+ modal(`<h3>${I('medal')} Cấp ${L.level} · ${titleHTML(cur)}</h3><div class="xpb"><i style="width:${100*L.cur/L.need}%"></i></div><p class="small">${fmt(L.cur)}/${fmt(L.need)} XP đến cấp ${L.level+1} (thưởng ${fmt(levelReward(L.level+1))} xu). Đã mở ${own}/${TITLES.length} danh hiệu.</p>${xpTableHTML()}`+
  cats.map(([c,arr])=>`<div class="tcat">${c} <small class="small">(${arr.filter(t=>titleUnlocked(PR,t)).length}/${arr.length})</small></div>`+arr.map(t=>{const u=titleUnlocked(PR,t);return `<div class="trow ${u?'':'lk'}"><div style="flex:1;min-width:0">${titleHTML(t)}<small>${titleReq(t)}</small></div>${t.id===cur.id?I('check'):u?`<button class="alt" onclick="pickTitle('${t.id}')">Chọn</button>`:I('lock')}</div>`;}).join('')).join(''));};
 const _osh49=openShop;openShop=function(tab){_osh49(tab);try{document.querySelectorAll('#modalIn [onclick^="doBuy("]').forEach(b=>{const id=(b.getAttribute('onclick').match(/doBuy\('([^']+)'/)||[])[1];const it=SHOP.find(x=>x.id===id);if(it&&it.lv&&levelInfo(PR.xp).level<it.lv&&!it.badge){const s=document.createElement('span');s.className='lk';s.innerHTML=I('lock')+' Cấp '+it.lv;b.replaceWith(s);return;}if(it&&it.badge&&!(PR.badges&&PR.badges[it.badge])){const bd=BADGES.find(x=>x.id===it.badge)||{};const s=document.createElement('span');s.className='lk';s.innerHTML=I('lock')+' '+esc(bd.name||'Huy hiệu');s.title='Cần huy hiệu: '+(bd.name||'');b.replaceWith(s);}});}catch(e){}};
 // ======== v50: trạng thái chế độ chơi + xem bàn người chơi với máy ========
@@ -1009,3 +1010,9 @@ function specOffRender(d){const b=$('ospB');if(!b||!d)return;OSV.d=d;if(d.k==='n
  b.innerHTML=`<div class="osM">${esc(gmLabel(d.gm))}</div>${d.k==='tl'?`<div class="osP">${(d.pile||[]).map(c=>cgCard(c,true,0)).join('')||'<span class="small">Bàn trống</span>'}</div><div class="osC">${esc(d.cap||'')}</div>`:`<div class="osC">${esc(d.msg||'')}</div>`}<div class="osG">${d.seats.map(seat).join('')}</div>`;try{svaScan(b);}catch(e){}}
 const _pt50=plTap;plTap=function(uid){_pt50(uid);try{const p=lobbyPres().find(x=>x.uid===uid);const m=$('modalIn');if(!m||!p||!p.bot||p.room||!p.share||m.querySelector('.ospx'))return;const bt=document.createElement('button');bt.className='alt ospx';bt.textContent='👁 Xem bàn ('+gmLabel(p.gm)+')';bt.onclick=()=>specOff(uid,p.name);const h=m.querySelector('p');h?h.after(bt):m.appendChild(bt);}catch(e){}};
 const _os50=openSettings;openSettings=function(){_os50.apply(this,arguments);try{const m=$('modalIn');const d=document.createElement('div');d.className='row';d.innerHTML=`<span style="flex:1">Cho người khác xem bàn của tôi</span><button class="${SHARE?'':'alt'}" onclick="SHARE=!SHARE;localStorage.setItem('tlmn_share',SHARE?'1':'0');lobbyTrack();openSettings()">${SHARE?'Bật':'Tắt'}</button>`;const r=[...m.querySelectorAll('.row')].pop();r?r.after(d):m.appendChild(d);}catch(e){}};
+
+function xpTableHTML(){const r=(a,b)=>`<tr><td>${a}</td><td>${b}</td></tr>`,j=a=>a.join(' / ');
+ return `<details class="xptbl"><summary>XP mỗi ván theo chế độ</summary><p class="small">XP tỉ lệ thời gian ván (~41 XP/phút). Thắng / Hòa / Thua hoặc theo thứ hạng.</p><table>`+
+ [2,3,4].map(n=>r('Miền Nam '+n+' người',j(XP_PLACE_N[n]))).join('')+[2,3,4].map(n=>r('Đếm lá '+n+' người',j(XP_DEMLA_N[n]))).join('')+
+ [['3cao','3 Cào'],['xidach','Xì dách'],['baucua','Bầu cua'],['domino','Domino'],['xito','Xì tố'],['poker','Poker']].map(([k,l])=>r(l,j(XP_MODE[k]))).join('')+
+ `</table><p class="small">Thưởng thêm: chặt heo +${XP_CHOP}, tới trắng +${XP_INSTANT} (theo tỉ lệ bàn), luộc máy, nhiệm vụ +${XP_QUEST}, thắng Cao thủ bàn 10k. Cuối cùng nhân % EXP từ Mua sắm.</p></details>`;}
