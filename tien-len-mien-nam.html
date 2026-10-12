@@ -757,7 +757,7 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='0f4ac8ee1a';
+const APP_VER='a38aed4453';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -1552,8 +1552,10 @@ function thuiValue(hand,bet){hand=(hand||[]).filter(c=>c>=0);const out={amount:0
  for(let r=0;r<=9;r++){const ok=[r,r+1,r+2].every(x=>by[x]&&by[x].filter(c=>!used.has(c)).length>=2);if(ok){[r,r+1,r+2].forEach(x=>by[x].filter(c=>!used.has(c)).slice(0,2).forEach(c=>{used.add(c);out.cards.push(c);}));out.amount+=bet;out.items.push({k:'3 đôi thông',v:bet});r+=2;}}
  out.amount=Math.round(out.amount);return out;}
 // hands: mảng theo ghế; rank: thứ tự về; trả [{payer,receiver,amount,cards,items}]
+// 3 bích về nhất: CHỈ khi nước cuối là 1 lá đơn 3♠ (đôi/sám/sảnh có 3♠ không tính)
+function isB3Win(p){return !!(p&&p.length===1&&Number(p[0])===0);}
 // thúi/cháy: trả cho người về ngay trên mình; 3 bích về nhất: trả cho người nhất
-function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=!!(winPlay&&winPlay.map(Number).includes(0));const out=[];
+function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=isB3Win(winPlay);const out=[];
  rank.slice(1).forEach((p,j)=>{const above=rank[j];const v=thuiValue(hands[p],bet);const chay=(hands[p]||[]).length===13;if(chay){v.amount+=2*bet;v.items.push({k:'cháy bài',v:2*bet});}
   if(b3&&above===w){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}
   if(v.amount)out.push({payer:p,receiver:above,amount:v.amount,cards:v.cards,items:v.items,b3:b3&&above===w,chay});
@@ -3148,8 +3150,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.52.2';
+const APP_V='1.52.3';
 const CHANGELOG=[
+ ['1.52.3','13/10',['Sửa luật 3 bích về nhất: chỉ tính khi lá cuối cùng là 3♠ đánh lẻ (đôi, sám, sảnh có 3♠ không tính)']],
  ['1.52.2','12/10',['Bài to hơn trên điện thoại: bài trên tay xếp 1 hàng hình quạt cong tràn ngang màn hình (như sòng bài), lá to hơn ~10–20%','Bài đánh trên bàn to hơn, tự xếp chồng gọn khi đánh nhiều lá','3 Cào, Xì dách, Poker: bài của bạn to hơn']],
  ['1.52.1','12/10',['Hàng 5 sao hạng chế độ hiện TRÊN avatar ở mọi ghế (bạn và máy) trong cả 8 chế độ, và trên avatar màn chính (chế độ cao nhất)','Luôn hiện đủ 5 ô sao: sao đạt tô màu hạng (Đen có nền sáng + hào quang tím), sao chưa đạt là viền mờ','Máy có hạng sao cố định theo tên']],
  ['1.52','12/10',['Hạng sao theo từng chế độ: 7 hạng × 5 sao (Đồng → Bạc → Vàng → Kim cương → Xanh → Đỏ → Đen) theo XP kiếm ở chế độ đó; sao hiện dưới avatar khi chơi; mỗi sao cộng % thu nhập thụ động (tối đa +86%/chế độ, +688% cả 8 chế độ); màn Hạng sao + hiệu ứng lên sao + huy hiệu','Thú cưng trong Tài sản: Mèo, Chó, Vẹt, Cáo, Rồng (có hoạt ảnh); 1 con đi theo cạnh avatar, cộng % EXP','Bấm bạn bè/người online để xem hồ sơ: tài sản, thú cưng, hạng sao, tổng % thu nhập & EXP; có thể ẩn trong Cài đặt']],

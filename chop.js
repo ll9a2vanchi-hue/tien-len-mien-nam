@@ -20,8 +20,10 @@ function thuiValue(hand,bet){hand=(hand||[]).filter(c=>c>=0);const out={amount:0
  for(let r=0;r<=9;r++){const ok=[r,r+1,r+2].every(x=>by[x]&&by[x].filter(c=>!used.has(c)).length>=2);if(ok){[r,r+1,r+2].forEach(x=>by[x].filter(c=>!used.has(c)).slice(0,2).forEach(c=>{used.add(c);out.cards.push(c);}));out.amount+=bet;out.items.push({k:'3 đôi thông',v:bet});r+=2;}}
  out.amount=Math.round(out.amount);return out;}
 // hands: mảng theo ghế; rank: thứ tự về; trả [{payer,receiver,amount,cards,items}]
+// 3 bích về nhất: CHỈ khi nước cuối là 1 lá đơn 3♠ (đôi/sám/sảnh có 3♠ không tính)
+function isB3Win(p){return !!(p&&p.length===1&&Number(p[0])===0);}
 // thúi/cháy: trả cho người về ngay trên mình; 3 bích về nhất: trả cho người nhất
-function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=!!(winPlay&&winPlay.map(Number).includes(0));const out=[];
+function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=isB3Win(winPlay);const out=[];
  rank.slice(1).forEach((p,j)=>{const above=rank[j];const v=thuiValue(hands[p],bet);const chay=(hands[p]||[]).length===13;if(chay){v.amount+=2*bet;v.items.push({k:'cháy bài',v:2*bet});}
   if(b3&&above===w){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}
   if(v.amount)out.push({payer:p,receiver:above,amount:v.amount,cards:v.cards,items:v.items,b3:b3&&above===w,chay});
@@ -32,4 +34,4 @@ function demlaCard(c){const r=c>>2;return r<=7?1:r<=10?1.5:r===11?2:((c&3)>=2?4:
 function demlaUnits(hand){const u=(hand||[]).reduce((a,c)=>a+demlaCard(c),0);return (hand||[]).length===13?u*2:u;}
 function demlaSettle(hands,rank,bet){const d={};rank.forEach(p=>d[p]=0);if(!rank.length)return d;const w=rank[0];
  rank.slice(1).forEach(p=>{const a=Math.round(bet/5*demlaUnits(hands[p]));d[p]-=a;d[w]+=a;});return d;}
-if(typeof module!=='undefined')module.exports={demlaCard,demlaUnits,demlaSettle,thuiValue,thuiSettle,isTwoCombo,isBombInfo,chopValue,chopStep,chopSettle};
+if(typeof module!=='undefined')module.exports={isB3Win,demlaCard,demlaUnits,demlaSettle,thuiValue,thuiSettle,isTwoCombo,isBombInfo,chopValue,chopStep,chopSettle};
