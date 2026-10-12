@@ -137,11 +137,13 @@ for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];
    BADGES.push(BG(m+'_'+k+'_'+(i+1),icon,I.n+': '+nm,L+' '+g.toLocaleString('vi-VN')+' '+u+' ('+I.n+')',[150,800,3000,10000][i],tier,s=>V(s,mk(m,k==='streak'?'bestStreak':k))>=g,{series:'m_'+k,mode:m,k:mk(m,k==='streak'?'bestStreak':k),goal:g,legend:i===3}));});}
  MB_SEC.forEach(([k,d,ic],j)=>{const sd=k==='s4'?I.sec[0]:k==='s5'?I.sec[1]:[null,d,ic];BADGES.push(BG(m+'_sec_'+k,sd[2],I.n+': '+(sd[0]||d.split(' ')[0]+' '+(d.split(' ')[1]||'')),sd[1],[3000,3000,4000,5000,5000][j],3,s=>V(s,mk(m,k))>=1,{secret:true,mode:m,k:mk(m,k),goal:1}));});}
 // huy hiệu tài sản (nhóm Chung)
-BADGES.push(BG('asset_first','🏪','Khởi nghiệp','Sở hữu tài sản đầu tiên',2000,1,(s,p)=>ASSETS.some(a=>assetLv(p,a.id)>0),{series:'asset'}),
+BADGES.push(BG('asset_first','🏪','Khởi nghiệp','Sở hữu tài sản đầu tiên',2000,1,(s,p)=>ASSETS.some(a=>a.cat==='biz'&&assetLv(p,a.id)>0),{series:'asset'}),
  BG('asset_nhamay','🏭','Ông chủ nhà máy','Sở hữu Nhà máy',20000,2,(s,p)=>assetLv(p,'nhamay')>0,{series:'asset'}),
  BG('asset_tapdoan','🏙️','Chủ tịch tập đoàn','Sở hữu Tập đoàn',50000,3,(s,p)=>assetLv(p,'tapdoan')>0,{series:'asset'}),
- BG('asset_all','🗂️','Đế chế kinh doanh','Sở hữu đủ 5 tài sản',80000,3,(s,p)=>ASSETS.every(a=>assetLv(p,a.id)>0),{series:'asset'}),
- BG('asset_max','👑','Tài phiệt tối thượng','Nâng cả 5 tài sản lên cấp 5',300000,3,(s,p)=>ASSETS.every(a=>assetLv(p,a.id)>=ASSET_MAX),{series:'asset',legend:true}));
+ BG('asset_all','🗂️','Đế chế kinh doanh','Sở hữu đủ 5 tài sản kinh doanh',80000,3,(s,p)=>ASSETS.filter(a=>a.cat==='biz').every(a=>assetLv(p,a.id)>0),{series:'asset'}),
+ BG('asset_max','👑','Tài phiệt tối thượng','Nâng cả 5 tài sản kinh doanh lên cấp 5',300000,3,(s,p)=>ASSETS.filter(a=>a.cat==='biz').every(a=>assetLv(p,a.id)>=ASSET_MAX),{series:'asset',legend:true}),
+ BG('veh_all','🛥️','Bộ sưu tập xe','Sở hữu đủ 5 phương tiện',20000,2,(s,p)=>ASSETS.filter(a=>a.cat==='veh').every(a=>assetLv(p,a.id)>0),{series:'asset'}),
+ BG('shop_all','🛍️','Tín đồ thời thượng','Mua đủ 12 món Mua sắm',30000,3,(s,p)=>ASSETS.filter(a=>a.cat==='shop').every(a=>assetLv(p,a.id)>0),{series:'asset'}));
 // cân số lượng: mỗi chế độ đúng bằng số huy hiệu Miền Nam
 {const cnt=m=>BADGES.filter(b=>badgeMode(b)===m).length;const T=cnt('mn');for(const m in MODE_BADGE_INFO){const I=MODE_BADGE_INFO[m];let j=0;const extra=[100,200,365,500];
  while(cnt(m)<T&&j<extra.length){const g=extra[j++];BADGES.push(BG(m+'_days_x'+j,'🗓️',I.n+': Trung thành · '+g+' ngày','Chơi '+I.n+' trong '+g+' ngày khác nhau',5000+j*2000,3,s=>V(s,mk(m,'days'))>=g,{series:'m_days',mode:m,k:mk(m,'days'),goal:g,legend:true}));}
@@ -202,13 +204,21 @@ function loginState(P,now){const k=dayKey(now),l=P.login;if(l.last===k)return{ca
 function claimLogin(P,now){const s=loginState(P,now);if(!s.canClaim)return 0;P.login={last:dayKey(now),streak:s.day};P.xu+=s.reward;return s.reward;}
 function canRescue(P,now){return P.xu<BETS[0]&&P.rescueDay!==dayKey(now);}
 const PASSIVE_CAP_MS=24*3600*1000;
-const ASSETS=[{id:'quan',name:'Quán nước',price:1000000,pct:10},{id:'taphoa',name:'Tiệm tạp hóa',price:2000000,pct:25},{id:'xuongmay',name:'Xưởng may',price:3500000,pct:45},{id:'nhamay',name:'Nhà máy',price:6000000,pct:75},{id:'tapdoan',name:'Tập đoàn',price:10000000,pct:120}];
-const ASSET_MAX=5;
-function assetLv(P,id){const v=P.assets&&P.assets[id];return v>0?Math.min(ASSET_MAX,v|0):0;}
-function assetBonus(P){return ASSETS.reduce((a,x)=>a+x.pct*assetLv(P,x.id),0);}
-function assetCost(id,toLv){const a=ASSETS.find(x=>x.id===id);if(!a||toLv<1||toLv>ASSET_MAX)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
+const ASSETS=[
+ {id:'quan',cat:'biz',name:'Quán nước',price:1000000,pct:10,max:5},{id:'taphoa',cat:'biz',name:'Tiệm tạp hóa',price:2000000,pct:25,max:5},{id:'xuongmay',cat:'biz',name:'Xưởng may',price:3500000,pct:45,max:5},{id:'nhamay',cat:'biz',name:'Nhà máy',price:6000000,pct:75,max:5},{id:'tapdoan',cat:'biz',name:'Tập đoàn',price:10000000,pct:120,max:5},
+ {id:'xedap',cat:'veh',name:'Xe đạp',price:50000,pct:2,max:5},{id:'xemay',cat:'veh',name:'Xe máy',price:120000,pct:4,max:5},{id:'xega',cat:'veh',name:'Xe tay ga',price:250000,pct:6,max:5},{id:'oto',cat:'veh',name:'Ô tô',price:500000,pct:10,max:5},{id:'duthuyen',cat:'veh',name:'Du thuyền',price:1000000,pct:15,max:5},
+ ...[['ao','Quần áo',[['ao1','Áo thun',10000],['ao2','Áo sơ mi lụa',100000],['ao3','Vest hàng hiệu',500000]]],['tt','Trang sức',[['tt1','Nhẫn bạc',30000],['tt2','Dây chuyền vàng',250000],['tt3','Kim cương',1000000]]],
+  ['pk','Phụ kiện',[['pk1','Kính râm',20000],['pk2','Đồng hồ',150000],['pk3','Túi hàng hiệu',700000]]],['ps','Vật phong thủy',[['ps1','Cóc ngậm tiền',50000],['ps2','Tỳ hưu',300000],['ps3','Cây tài lộc ngọc',1000000]]]]
+  .flatMap(([g,gn,its])=>its.map(([id,name,price],i)=>({id,cat:'shop',grp:g,grpName:gn,name,price,pct:[1,3,6][i],max:1,exp:true})))];
+const ASSET_MAX=5;const ASSET_CATS={biz:'Kinh doanh',veh:'Phương tiện',shop:'Mua sắm'};
+function assetDef(id){return ASSETS.find(x=>x.id===id);}
+function assetLv(P,id){const a=assetDef(id);const v=P.assets&&P.assets[id];return v>0?Math.min(a?a.max:ASSET_MAX,v|0):0;}
+function assetBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?0:x.pct*assetLv(P,x.id)),0);}
+function expBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?x.pct*assetLv(P,x.id):0),0);}
+function assetCost(id,toLv){const a=assetDef(id);if(!a||toLv<1||toLv>a.max)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
+function bestAsset(P){let b=null;for(const a of ASSETS)if(assetLv(P,a.id)&&(!b||a.price>b.price))b=a;return b;}
 function passiveBank(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return;ps.frac=passivePending(P,now);ps.last=now;}
-function buyAsset(P,id,now){const a=ASSETS.find(x=>x.id===id);if(!a)return{ok:false,reason:'Không có tài sản này'};const lv=assetLv(P,id);if(lv>=ASSET_MAX)return{ok:false,reason:'Đã nâng cấp tối đa'};
+function buyAsset(P,id,now){const a=assetDef(id);if(!a)return{ok:false,reason:'Không có tài sản này'};const lv=assetLv(P,id);if(lv>=a.max)return{ok:false,reason:a.max===1?'Đã sở hữu':'Đã nâng cấp tối đa'};
  const cost=assetCost(id,lv+1);if((P.xu||0)<cost)return{ok:false,reason:'Không đủ xu'};passiveBank(P,now);P.xu-=cost;P.assets=Object.assign({},P.assets||{});P.assets[id]=lv+1;P.stats=P.stats||{};P.stats.assetSpent=(P.stats.assetSpent||0)+cost;return{ok:true,cost,lv:lv+1};}
 function passiveRate(P){return levelInfo(P.xp||0).level/2/100*(1+assetBonus(P)/100);}
 function passiveInit(P,now){now=now==null?Date.now():+now;if(!P.passive||typeof P.passive.last!=='number'||!isFinite(P.passive.last))P.passive={last:now,frac:0};return P.passive;}
@@ -294,8 +304,8 @@ function titleUnlocked(P,t){if(t.min)return levelInfo(P.xp).level>=t.min;if(t.st
 function unlockedTitles(P){return TITLES.filter(t=>titleUnlocked(P,t));}
 function currentTitle(P){migrateTitle(P);const t=P.title&&TITLES.find(x=>x.id===P.title);return t&&titleUnlocked(P,t)?t:titleForLevel(levelInfo(P.xp).level);}
 function setTitle(P,id){const t=TITLES.find(x=>x.id===id);if(!t||!titleUnlocked(P,t))return false;P.title=id;return true;}
-function addXp(P,n){const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const after=levelInfo(P.xp).level;const ups=[];let xu=0;
+function addXp(P,n){if(n>0){const b=expBonus(P);if(b)n=Math.round(n*(1+b/100));}P._lastXp=n;const before=levelInfo(P.xp).level;P.xp=(P.xp||0)+n;const after=levelInfo(P.xp).level;const ups=[];let xu=0;
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // PROGRESS_END
-if(typeof module!=='undefined')module.exports={ASSETS,ASSET_MAX,assetLv,assetBonus,assetCost,passiveBank,buyAsset,PASSIVE_CAP_MS,passiveRate,passiveInit,passivePending,passiveClaim,MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
+if(typeof module!=='undefined')module.exports={ASSET_CATS,assetDef,expBonus,bestAsset,ASSETS,ASSET_MAX,assetLv,assetBonus,assetCost,passiveBank,buyAsset,PASSIVE_CAP_MS,passiveRate,passiveInit,passivePending,passiveClaim,MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};

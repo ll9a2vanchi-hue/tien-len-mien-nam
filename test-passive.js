@@ -22,8 +22,20 @@ const legacy={xu:5,xp:0};ok(P.passivePending(legacy,t0)===0&&legacy.passive.last
  ok(Math.abs(P.passivePending(p,t0+10e3)-1.1)<1e-9,'phần đã tích trước khi nâng cấp được giữ theo tốc độ cũ');
  for(let i=0;i<3;i++)P.buyAsset(p,'quan',t0+10e3);ok(P.assetLv(p,'quan')===5&&P.assetBonus(p)===50,'cấp 5 = 5× (50%)');ok(!P.buyAsset(p,'quan',t0).ok,'không nâng quá cấp 5');
  const poor={xu:10,xp:0};ok(!P.buyAsset(poor,'quan',t0).ok&&poor.xu===10&&!P.assetLv(poor,'quan'),'không đủ xu thì không mua');
- const all=Object.assign(P.newProfile(),{xu:1e9,xp:0});P.passiveInit(all,t0);P.ASSETS.forEach(a=>P.buyAsset(all,a.id,t0));ok(P.assetBonus(all)===275,'đủ 5 tài sản = +275%');
+ const all=Object.assign(P.newProfile(),{xu:1e9,xp:0});P.passiveInit(all,t0);P.ASSETS.filter(a=>a.cat==='biz').forEach(a=>P.buyAsset(all,a.id,t0));ok(P.assetBonus(all)===275,'đủ 5 tài sản = +275%');
  let b=P.checkBadges(all).map(x=>x.id);ok(['asset_first','asset_nhamay','asset_tapdoan','asset_all'].every(i=>b.includes(i))&&!b.includes('asset_max'),'huy hiệu sở hữu');
- P.ASSETS.forEach(a=>{while(P.assetLv(all,a.id)<5)P.buyAsset(all,a.id,t0);});ok(P.assetBonus(all)===1375,'max cả 5 = +1375%');ok(P.checkBadges(all).some(x=>x.id==='asset_max'),'huy hiệu max tất cả');
+ P.ASSETS.filter(a=>a.cat==='biz').forEach(a=>{while(P.assetLv(all,a.id)<5)P.buyAsset(all,a.id,t0);});ok(P.assetBonus(all)===1375,'max cả 5 = +1375%');ok(P.checkBadges(all).some(x=>x.id==='asset_max'),'huy hiệu max tất cả');
  const A={profile:{xu:0,xp:5000,assets:{quan:2,nhamay:1}},updatedAt:9},B={profile:{xu:0,xp:0,assets:{quan:4,tapdoan:1}},updatedAt:1};const m=C.mergeSaves(A,B).profile.assets;ok(m.quan===4&&m.nhamay===1&&m.tapdoan===1,'gộp tài sản lấy cấp cao nhất');}
+// ---- Phương tiện + Mua sắm + EXP
+{const P2=Object.assign(P.newProfile(),{xu:1e9,xp:0});const veh=P.ASSETS.filter(a=>a.cat==='veh');ok(veh.map(a=>a.price+':'+a.pct).join()==='50000:2,120000:4,250000:6,500000:10,1000000:15','5 phương tiện đúng giá/%');
+ ok(P.assetCost('xedap',2)===25000&&P.assetCost('duthuyen',5)===1250000,'giá nâng cấp phương tiện cùng quy tắc');
+ veh.forEach(a=>P.buyAsset(P2,a.id,t0));ok(P.assetBonus(P2)===37,'đủ 5 xe cấp 1 = +37% thu nhập');ok(P.checkBadges(P2).some(b=>b.id==='veh_all'),'huy hiệu bộ sưu tập xe');
+ const sh=P.ASSETS.filter(a=>a.cat==='shop');ok(sh.length===12&&sh.map(a=>a.price).join()==='10000,100000,500000,30000,250000,1000000,20000,150000,700000,50000,300000,1000000','12 món mua sắm đúng giá');
+ ok(P.buyAsset(P2,'ao1',t0).ok&&!P.buyAsset(P2,'ao1',t0).ok&&P.assetLv(P2,'ao1')===1,'mua sắm chỉ mua 1 lần');
+ ok(P.expBonus(P2)===1&&P.assetBonus(P2)===37,'EXP% tách riêng khỏi thu nhập%');
+ sh.forEach(a=>P.buyAsset(P2,a.id,t0));ok(P.expBonus(P2)===40,'đủ 12 món = +40% EXP');ok(P.checkBadges(P2).some(b=>b.id==='shop_all'),'huy hiệu mua sắm');
+ const x0=P2.xp;P.addXp(P2,30);ok(P2.xp-x0===42,'EXP +40%: 30 → 42');
+ const big=Object.assign(P.newProfile(),{xu:0,xp:0,assets:{}});sh.forEach(a=>big.assets[a.id]=1);big.assets.extra=1;ok(P.expBonus(big)===40,'không có giới hạn trần nhưng chỉ tính món hợp lệ');
+ ok(P.bestAsset(P2).id==='duthuyen'||P.bestAsset(P2).price>=1000000,'tài sản giá trị nhất');
+ const A={profile:{xu:0,xp:5000,assets:{xedap:3,ps3:1}},updatedAt:9},B={profile:{xu:0,xp:0,assets:{xedap:5,ao1:1}},updatedAt:1};const m=C.mergeSaves(A,B).profile.assets;ok(m.xedap===5&&m.ps3===1&&m.ao1===1,'gộp: cấp cao hơn thắng, giữ mọi món');}
 process.exit(f?1:0);

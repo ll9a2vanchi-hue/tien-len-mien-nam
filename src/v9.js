@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.49';
+const APP_V='1.50';
 const CHANGELOG=[
+ ['1.50','12/10',['Tài sản thành mục riêng ở màn hình chính: Kinh doanh, Phương tiện (Xe đạp → Du thuyền, tăng % thu nhập, nâng cấp 5 cấp) và Mua sắm (12 món Quần áo, Trang sức, Phụ kiện, Vật phong thủy, tăng % EXP ở mọi chế độ, đủ bộ +40%)','Bấm thanh Thu nhập thụ động để xem công thức, số xu mỗi giây/giờ/ngày và thưởng từng tài sản','Tài sản giá trị nhất hiện cạnh avatar; huy hiệu Bộ sưu tập xe, Tín đồ thời thượng']],
  ['1.49','12/10',['Thu nhập thụ động: nhận xu liên tục theo cấp (cấp ÷ 2 ÷ 100 xu mỗi giây, cấp 20 = 360 xu/giờ), tích luỹ cả khi tắt app, tối đa 24 giờ; bộ đếm chạy trực tiếp ở màn hình chính, bấm Nhận để lấy; đồng bộ đám mây chống nhận 2 lần','Cửa hàng › Tài sản: Quán nước, Tiệm tạp hóa, Xưởng may, Nhà máy, Tập đoàn — tăng % thu nhập thụ động, nâng cấp tới cấp 5; huy hiệu Ông chủ nhà máy, Chủ tịch tập đoàn, Đế chế kinh doanh, Tài phiệt tối thượng']],
  ['1.48.4','11/10',['Xì tố: lá bài dùng đúng kiểu bài (mặt bài) đã trang bị; kiểm tra mặt sau, kiểu bài, nỉ bàn ở mọi chế độ']],
  ['1.48.3','11/10',['Xì tố “Tố tất” và Poker “Tất tay”: hiệu ứng hoành tráng — chớp màn hình, chữ lớn rực lửa rung, chip đổ ào vào hũ, rung bàn, trống dồn + tiếng chip + tiếng nổ trầm; ghế tất tay có nhãn ALL-IN và hào quang đến lúc lật bài']],
