@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.52.9';
+const APP_V='1.53.0';;
 const CHANGELOG=[
+ ['1.53.0','13/10',['Bầu Cua: bỏ dòng hướng dẫn dài dưới nút Làm cái','Thu gọn thanh điều khiển, nút vai trò và nút Lắc để dành diện tích cho bàn cược','Giảm chiều cao khu vực bát và khoảng cách để đủ 6 ô cược trên màn hình']],
  ['1.52.9','13/10',['Bầu Cua: chuyển nút chọn 2–6 người lên ngay dưới hàng avatar, luôn dễ thấy','Làm nổi bật nút đang chọn và khóa đổi người khi đang lắc/mở bát','Không thay đổi luật chơi và số xu khi nâng cấp vị trí nút']],
  ['1.52.8','13/10',['Bầu Cua: chọn 2–6 người chơi ngay trong bàn, gồm nhà cái và người chơi','Tự điều chỉnh số người máy khi chuyển giữa Chơi con và Làm cái','Sắp xếp avatar thành tối đa 2 hàng × 3 cột, chip màu dưới từng người','Cân bằng khoảng trống giữa người chơi, bát và 6 ô cược trên màn hình dài','Đã kiểm tra cú pháp JavaScript và mô phỏng đủ 2–6 vị trí ở cả hai vai trò']],
  ['1.52.7','13/10',['Bầu Cua: bố cục thích ứng màn hình điện thoại, cân đối bàn cược và khu vực điều khiển','Chip màu dưới avatar rõ hơn, phân biệt người đã đặt và chưa đặt','Làm mới ô cược, màu bàn và trạng thái thắng theo cách nhẹ và ổn định','Không thay đổi luật chơi hoặc JavaScript Bầu Cua để hạn chế lỗi đứng màn hình']],
