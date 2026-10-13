@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.52.4';
+const APP_V='1.52.5';
 const CHANGELOG=[
+ ['1.52.5','13/10',['Bầu Cua: sửa bố cục bị lệch và phần nội dung không vừa màn hình điện thoại','Hiển thị chip màu và số xu đã cược ngay dưới avatar từng người chơi','Chip mờ khi chưa đặt, chip sáng khi đã đặt để dễ phân biệt','Thu gọn bát, bàn cược và nút điều khiển; hỗ trợ cuộn khi màn hình thấp']],
  ['1.52.4','13/10',['Bầu Cua: sửa lỗi mất xu khi thoát bàn trước khi mở bát','Bầu Cua: ngăn đổi lượt cược khi máy đang đặt hoặc đang lắc','Bầu Cua: tối ưu bàn cược và nút bấm trên điện thoại, hiển thị tên người chơi gọn hơn','Hỗ trợ giảm chuyển động trong giao diện Bầu Cua']],
  ['1.52.2','12/10',['Bài to hơn trên điện thoại: bài trên tay xếp 1 hàng hình quạt cong tràn ngang màn hình (như sòng bài), lá to hơn ~10–20%','Bài đánh trên bàn to hơn, tự xếp chồng gọn khi đánh nhiều lá','3 Cào, Xì dách, Poker: bài của bạn to hơn']],
  ['1.52.1','12/10',['Hàng 5 sao hạng chế độ hiện TRÊN avatar ở mọi ghế (bạn và máy) trong cả 8 chế độ, và trên avatar màn chính (chế độ cao nhất)','Luôn hiện đủ 5 ô sao: sao đạt tô màu hạng (Đen có nền sáng + hào quang tím), sao chưa đạt là viền mờ','Máy có hạng sao cố định theo tên']],
