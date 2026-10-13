@@ -736,8 +736,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.52.6';
+const APP_V='1.52.7';
 const CHANGELOG=[
+ ['1.52.7','13/10',['Bầu Cua: bố cục thích ứng màn hình điện thoại, cân đối bàn cược và khu vực điều khiển','Chip màu dưới avatar rõ hơn, phân biệt người đã đặt và chưa đặt','Làm mới ô cược, màu bàn và trạng thái thắng theo cách nhẹ và ổn định','Không thay đổi luật chơi hoặc JavaScript Bầu Cua để hạn chế lỗi đứng màn hình']],
  ['1.52.6','13/10',['Bầu Cua: làm mới giao diện bàn đỏ, ô cược nổi khối và thanh điều khiển','Cân đối khoảng trống trên màn hình dài, giữ toàn bộ nút điều khiển dễ thao tác','Chip người chơi phát sáng nhẹ khi đã cược, loại bỏ số tiền cược hiển thị trùng','Hiệu ứng lắc bát, chip rơi và ô thắng sinh động hơn; tôn trọng chế độ giảm chuyển động']],
  ['1.52.5','13/10',['Bầu Cua: sửa bố cục bị lệch và phần nội dung không vừa màn hình điện thoại','Hiển thị chip màu và số xu đã cược ngay dưới avatar từng người chơi','Chip mờ khi chưa đặt, chip sáng khi đã đặt để dễ phân biệt','Thu gọn bát, bàn cược và nút điều khiển; hỗ trợ cuộn khi màn hình thấp']],
  ['1.52.4','13/10',['Bầu Cua: sửa lỗi mất xu khi thoát bàn trước khi mở bát','Bầu Cua: ngăn đổi lượt cược khi máy đang đặt hoặc đang lắc','Bầu Cua: tối ưu bàn cược và nút bấm trên điện thoại, hiển thị tên người chơi gọn hơn','Hỗ trợ giảm chuyển động trong giao diện Bầu Cua']],
