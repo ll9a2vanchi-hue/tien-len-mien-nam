@@ -65,7 +65,7 @@ function bcCtl(){const st=MG.st;if(st.phase==='shake')return '<p class="small" s
  const led=st.phase==='done'?mgLedger(st.ledger):'';const tot=bcTot(st.bets);const need=bcTot(st.bots.reduce((a,b)=>{for(const s in b.bets)a[s]=(a[s]||0)+b.bets[s];return a;},{}))*3;
  return `${led}<div class="cgrole"><button class="${st.role==='con'?'':'alt'}" onclick="bcRole('con')">🙋 Chơi con</button><button class="${st.role==='cai'?'':'alt'}" onclick="bcRole('cai')">🎩 Làm cái</button></div>
  ${st.role==='con'?`${mgBets(BC_CHIPS,st.chip,'bcChip',b=>b<=PR.xu)}<div class="cgrow"><button class="cgbig alt" ${tot?'':'disabled'} onclick="bcClear()">Xóa cược</button><button class="cgbig" ${tot?'':'disabled'} onclick="bcShake()">Lắc · ${kxu(tot)}</button></div>`
- :`<p class="small cgnote">Làm cái: ăn/chung từng nhà. Cần ≥ ${fmt(need)} xu (gấp 3 tổng cược).</p><div class="cgrow"><button class="cgbig alt" onclick="bcNew()">Đổi lượt cược</button><button class="cgbig" ${PR.xu<need?'disabled':''} onclick="bcShake()">Lắc</button></div>`}`;}
+ :`<div class="cgrow"><button class="cgbig alt" onclick="bcNew()">Đổi lượt cược</button><button class="cgbig" ${PR.xu<need?'disabled':''} onclick="bcShake()">Lắc</button></div>`}`;}
 function bcChip(b){MG.st.chip=b;MG.bet=b;sfx('tap');bcR();}
 function bcRole(r){const st=MG.st;if(st.phase!=='bet'&&st.phase!=='done')return;localStorage.setItem('tlmn_bcrole',r);st.role=r;bcResetSeats();}
 function bcNew(){const st=MG.st;if(!st||st.placing||st.phase==='shake'||st.phase==='open')return;st.phase='bet';st.bets={};st.res=null;st.msg='';st.ledger=null;bcBotBets();bcR();}
