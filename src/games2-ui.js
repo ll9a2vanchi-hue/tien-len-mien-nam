@@ -27,11 +27,14 @@ const _snap52=ospSnap;ospSnap=function(){try{if(MG.g&&document.body.classList.co
 // ===================== BẦU CUA =====================
 const BC_CHIPS=[100,200,500,1000,2000,5000];
 MG_MODE.baucua={
- open(){MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,500000);const st=MG.st={role:(localStorage.getItem('tlmn_bcrole')==='cai'?'cai':'con'),chip:BC_CHIPS.includes(MG.bet)?MG.bet:200,bets:{},bots:mgBots(3),phase:'bet',dice:bcuaRoll(),res:null,bet:0};bcBotBets();bcR();},
+ open(){MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,500000);const st=MG.st={role:(localStorage.getItem('tlmn_bcrole')==='cai'?'cai':'con'),chip:BC_CHIPS.includes(MG.bet)?MG.bet:200,bets:{},bots:mgBots(Math.max(0,bcSeatCount()-(localStorage.getItem('tlmn_bcrole')==='cai'?1:2))),phase:'bet',dice:bcuaRoll(),res:null,bet:0};bcBotBets();bcR();},
  pub(){const st=MG.st;if(!st)return{seats:[],msg:''};const show=st.phase==='open'||st.phase==='done';return{msg:(show?'Kết quả: '+st.dice.map(d=>BC_EMO[d]).join(' '):st.phase==='shake'?'Đang lắc…':'Đặt cược')+(st.msg?' · '+st.msg:''),seats:[{name:PR.name||'Người chơi',av:myAv(),dealer:st.role==='cai',cards:null,cnt:0,lab:bcBetTxt(st.bets),v:st.res?st.res.me:null}].concat(st.bots.map((b,i)=>({name:b.name,av:b.av,cards:null,cnt:0,lab:bcBetTxt(b.bets||{}),v:st.res?st.res.b[i]:null})))};},
  quit(){/* Cược chỉ là dự kiến đến khi bcOpen() quyết toán; thoát trước khi mở bát không trừ xu. */}
 };
-const BC_COL=['#ffd84d','#4fc3f7','#ff7ab6','#7dff9a'];
+const BC_COL=['#ffd84d','#4fc3f7','#ff7ab6','#7dff9a','#d9a0ff','#ffad61'];
+function bcSeatCount(){const n=Number(localStorage.getItem('tlmn_bcseats'));return Number.isInteger(n)&&n>=2&&n<=6?n:4;}
+function bcSetSeats(n){const st=MG.st;if(!st||st.placing||st.phase==='shake'||st.phase==='open')return;const count=Number(n);if(!Number.isInteger(count)||count<2||count>6)return;localStorage.setItem('tlmn_bcseats',String(count));bcResetSeats();}
+function bcResetSeats(){const st=MG.st;if(!st)return;const wanted=Math.max(0,bcSeatCount()-(st.role==='cai'?1:2));st.bots=mgBots(wanted);st.bets={};st.res=null;st.ledger=null;st.msg='';st._botsIn=0;st.phase='bet';bcBotBets();bcR();}
 function bcSeatChip(html,o,total){const marker='<span class="bc-seat-chip '+(total?'active':'idle')+'" style="--cc:'+BC_COL[o]+'" title="'+(total?'Đã đặt '+fmt(total)+' xu':'Chưa đặt cược')+'"><span class="bc-seat-chip-dot"></span>'+(total?kxu(total):'—')+'</span>';return html.replace('</span><b>', '</span>'+marker+'<b>');}
 function bcChipsOn(s){const st=MG.st;const out=[];if(st.bets[s])out.push({o:0,a:st.bets[s],av:myAv()});st.bots.forEach((b,i)=>{const a=(b.bets||{})[s];if(a)out.push({o:i+1,a,av:b.av});});return out;}
 function bcBetTxt(b){return Object.entries(b).filter(([,v])=>v).map(([s,v])=>BC_EMO[s]+kxu(v)).join(' ');}
@@ -40,7 +43,7 @@ function bcPlan(maxK,amts){const st=MG.st;const plan=[];st.bots.forEach((b,i)=>{
  for(let i=plan.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[plan[i],plan[j]]=[plan[j],plan[i]];}return plan;}
 function bcPlay(plan,done){const st=MG.st;st.placing=true;let q=0;const gap=RM?160:380;(function nx(){if(MG.st!==st)return;if(q>=plan.length){st.placing=false;bcR();if(done)done();return;}const [i,sy,a]=plan[q++];const b=st.bots[i];b.bets[sy]=(b.bets[sy]||0)+a;bcR();bcFlyIn(i+1,sy);setTimeout(nx,gap);})();}
 function bcBotBets(){const st=MG.st;mgRefill(st.bots,500);st.bots.forEach(b=>b.bets={});if(st.role==='con')return;bcPlay(bcPlan(3,[100,200,500,1000]));}
-function bcFlyIn(o,sy){const chip=document.querySelector(`#mg .bct[data-s="${sy}"] .bcc[data-o="${o}"]`);const src=o===0?document.querySelector('#mg .bcleg .av'):document.querySelector(`#mg .bcs[data-o="${o}"] .av`);if(!chip)return;sfx('cgChip');if(!src)return;
+function bcFlyIn(o,sy){const chip=document.querySelector(`#mg .bct[data-s="${sy}"] .bcc[data-o="${o}"]`);const src=o===0?document.querySelector('#mg .bcs[data-o="0"] .av'):document.querySelector(`#mg .bcs[data-o="${o}"] .av`);if(!chip)return;sfx('cgChip');if(!src)return;
  const a=src.getBoundingClientRect(),b=chip.getBoundingClientRect();const f=chip.cloneNode(true);f.classList.add('bcfly');f.style.left=(a.left+a.width/2-b.width/2)+'px';f.style.top=(a.top+a.height/2-b.height/2)+'px';document.body.appendChild(f);chip.style.opacity='0';
  const dx=b.left-(a.left+a.width/2-b.width/2),dy=b.top-(a.top+a.height/2-b.height/2);const dur=RM?220:520;
  const kf=RM?[{opacity:.4,transform:'translate(0,0)'},{opacity:1,transform:`translate(${dx}px,${dy}px)`}]:[{transform:'translate(0,0) scale(.6) rotate(0)'},{transform:`translate(${dx*.5}px,${dy*.5-60}px) scale(1.25) rotate(200deg)`,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(1) rotate(360deg)`}];
@@ -49,17 +52,21 @@ function bcR(){const o=$('mg');const st=MG.st;if(!o||!st)return;const show=st.ph
  const tile=s=>{const hit=show?st.dice.filter(d=>d===s).length:0;const chips=bcChipsOn(s);
   return `<button class="bct ${hit?'hit':''} ${show&&!hit&&chips.length?'miss':''}" data-s="${s}" onclick="bcPut('${s}')"><span class="bce">${BC_EMO[s]}</span><b>${BC_NAME[s]}</b>${hit?`<em class="bcx">×${hit}</em>`:''}<div class="bcch">${chips.map(c=>`<i class="bcc ${c.o===0?'me':''}" data-o="${c.o}" style="--cc:${BC_COL[c.o]}"><span>${c.av}</span>${kxu(c.a)}</i>`).join('')}</div></button>`;};
  const dealer=st.role==='cai'?{name:'Bạn (cái)',av:myAv(),me:1}:{name:'Nhà cái',av:'🎩'};
- o.innerHTML=mgTop()+`<div class="bctbl"><div class="bcseats"><div class="bcs dl" data-o="d" style="--cc:${st.role==='cai'?BC_COL[0]:'#bbb'}">${mgSeat(dealer,'<i class="cgdl">CÁI</i>')}</div>${st.bots.map((b,i)=>`<div class="bcs" data-o="${i+1}" style="--cc:${BC_COL[i+1]}">`+bcSeatChip(mgSeat(b,st.res?`<i class="mgv ${st.res.b[i]>0?'pos':st.res.b[i]<0?'neg':''}">${st.res.b[i]>0?'+':''}${kxu(st.res.b[i])}</i>`:''),i+1,bcTot(b.bets))+'</div>').join('')}</div>${st.role==='con'?`<div class="bcleg"><span class="bcs me" data-o="0" style="--cc:${BC_COL[0]}"><span class="av ${frameCls()}" style="--avc:#3a5">${myAv()}</span><span class="bc-seat-chip ${bcTot(st.bets)?'active':'idle'}" style="--cc:${BC_COL[0]}"><span class="bc-seat-chip-dot"></span>${bcTot(st.bets)?kxu(bcTot(st.bets)):'—'}</span><b>Bạn</b>${seatLv({me:1})}</span></div>`:''}
+ const mySeat=st.role==='con'?'<div class="bcs me" data-o="0" style="--cc:'+BC_COL[0]+'"><div class="bcmy"><span class="av '+frameCls()+'" style="--avc:#3a5">'+myAv()+'</span><b>Bạn</b><span class="bc-seat-chip '+(bcTot(st.bets)?'active':'idle')+'" style="--cc:'+BC_COL[0]+'"><span class="bc-seat-chip-dot"></span>'+(bcTot(st.bets)?kxu(bcTot(st.bets)):'—')+'</span></div></div>':'';
+ const dealerSeat='<div class="bcs dl" data-o="d" style="--cc:'+(st.role==='cai'?BC_COL[0]:'#f4d78b')+'">'+mgSeat(dealer,'<i class="cgdl">CÁI</i>')+'</div>';
+ const botSeats=st.bots.map((b,i)=>'<div class="bcs" data-o="'+(i+1)+'" style="--cc:'+BC_COL[i+1]+'">'+bcSeatChip(mgSeat(b,st.res?'<i class="mgv '+(st.res.b[i]>0?'pos':st.res.b[i]<0?'neg':'')+'">'+(st.res.b[i]>0?'+':'')+kxu(st.res.b[i])+'</i>':''),i+1,bcTot(b.bets))+'</div>').join('');
+ o.innerHTML=mgTop()+`<div class="bctbl"><div class="bcseats">${dealerSeat}${mySeat}${botSeats}</div>
+
  <div class="bcplate ${st.phase==='shake'?'shaking':''} ${show?'open':''}"><div class="bcdice">${st.dice.map((d,i)=>`<span class="bcd" style="--i:${i}">${BC_EMO[d]}</span>`).join('')}</div><div class="bcbowl"></div></div>
  <div class="cgmsg">${esc(st.msg||(st.phase==='bet'?(st.role==='con'?'Chọn chip rồi chạm vào ô để đặt (đặt được nhiều ô)':'Các nhà đã đặt. Bạn làm cái — bấm Lắc'):''))}</div>
  <div class="bcboard">${BC_SYM.map(tile).join('')}</div></div><div class="cgctl">${bcCtl()}</div>`;try{svaScan(o);}catch(e){}}
 function bcCtl(){const st=MG.st;if(st.phase==='shake')return '<p class="small" style="text-align:center">Đang lắc…</p>';if(st.phase==='open')return `<button class="cgbig" onclick="bcOpen()">Mở bát 🥣</button>`;
  const led=st.phase==='done'?mgLedger(st.ledger):'';const tot=bcTot(st.bets);const need=bcTot(st.bots.reduce((a,b)=>{for(const s in b.bets)a[s]=(a[s]||0)+b.bets[s];return a;},{}))*3;
- return `${led}<div class="cgrole"><button class="${st.role==='con'?'':'alt'}" onclick="bcRole('con')">🙋 Chơi con</button><button class="${st.role==='cai'?'':'alt'}" onclick="bcRole('cai')">🎩 Làm cái</button></div>
+ return `${led}<div class="bcsetup"><span class="bcsetup-label">👥 Người chơi</span><div class="bcseat-options">${[2,3,4,5,6].map(n=>`<button type="button" class="${bcSeatCount()===n?'selected':''}" onclick="bcSetSeats(${n})" ${st.placing?'disabled':''}>${n}</button>`).join('')}</div></div><div class="cgrole"><button class="${st.role==='con'?'':'alt'}" onclick="bcRole('con')">🙋 Chơi con</button><button class="${st.role==='cai'?'':'alt'}" onclick="bcRole('cai')">🎩 Làm cái</button></div>
  ${st.role==='con'?`${mgBets(BC_CHIPS,st.chip,'bcChip',b=>b<=PR.xu)}<div class="cgrow"><button class="cgbig alt" ${tot?'':'disabled'} onclick="bcClear()">Xóa cược</button><button class="cgbig" ${tot?'':'disabled'} onclick="bcShake()">Lắc · ${kxu(tot)}</button></div>`
  :`<p class="small cgnote">Làm cái: ăn/chung từng nhà. Cần ≥ ${fmt(need)} xu (gấp 3 tổng cược).</p><div class="cgrow"><button class="cgbig alt" onclick="bcNew()">Đổi lượt cược</button><button class="cgbig" ${PR.xu<need?'disabled':''} onclick="bcShake()">Lắc</button></div>`}`;}
 function bcChip(b){MG.st.chip=b;MG.bet=b;sfx('tap');bcR();}
-function bcRole(r){const st=MG.st;if(st.phase!=='bet'&&st.phase!=='done')return;localStorage.setItem('tlmn_bcrole',r);st.role=r;bcNew();}
+function bcRole(r){const st=MG.st;if(st.phase!=='bet'&&st.phase!=='done')return;localStorage.setItem('tlmn_bcrole',r);st.role=r;bcResetSeats();}
 function bcNew(){const st=MG.st;if(!st||st.placing||st.phase==='shake'||st.phase==='open')return;st.phase='bet';st.bets={};st.res=null;st.msg='';st.ledger=null;bcBotBets();bcR();}
 function bcPut(s){const st=MG.st;if(st.placing)return;if(st.phase==='done')bcNew();if(st.phase!=='bet'||st.role!=='con')return;const tot=bcTot(st.bets);if(tot+st.chip>PR.xu)return toast('Không đủ xu');st.bets[s]=(st.bets[s]||0)+st.chip;bcR();bcFlyIn(0,s);}
 function bcClear(){MG.st.bets={};bcR();}
