@@ -1,0 +1,23 @@
+/* Bầu Cua mobile-first v2 — scoped, does not affect other games */
+#mg.mg-baucua .bcboard{gap:clamp(5px,1.4vw,10px);margin-top:12px}
+#mg.mg-baucua .bct{min-width:0;border-radius:16px;overflow:hidden;touch-action:manipulation}
+#mg.mg-baucua .bcplate{min-height:180px}
+#mg.mg-baucua .cgctl{padding-bottom:max(8px,env(safe-area-inset-bottom))}
+#mg.mg-baucua .cgbig{min-height:52px;touch-action:manipulation}
+#mg.mg-baucua button:focus-visible{outline:3px solid #fff3a5;outline-offset:2px}
+#mg.mg-baucua .slv .tt{max-width:75px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:480px){
+ #mg.mg-baucua .bcboard{gap:5px;margin-top:8px}
+ #mg.mg-baucua .bct{padding:6px 2px 5px;border-radius:13px}
+ #mg.mg-baucua .bcplate{min-height:145px}
+ #mg.mg-baucua .cgctl{margin-top:8px}
+ #mg.mg-baucua .cgbig{min-height:54px}
+ #mg.mg-baucua .slv .tt{max-width:65px}
+}
+@media(max-height:750px) and (max-width:600px){
+ #mg.mg-baucua .bcplate{min-height:115px}
+ #mg.mg-baucua .bcboard{margin-top:5px}
+}
+@media(prefers-reduced-motion:reduce){
+ #mg.mg-baucua .bcbowl,#mg.mg-baucua .bct{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
