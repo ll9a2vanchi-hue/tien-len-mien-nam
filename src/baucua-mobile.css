@@ -120,3 +120,21 @@
 #mg.mg-baucua .bcsetup-board .bcseat-options button{min-width:36px;width:36px;height:34px;border-radius:10px}
 #mg.mg-baucua .bcsetup-board .bcseat-options button.selected{outline:2px solid #fff4b0;outline-offset:1px}
 @media(max-width:370px){#mg.mg-baucua .bcsetup-board{gap:4px;padding:5px}#mg.mg-baucua .bcsetup-board .bcseat-options button{width:30px;min-width:30px;height:32px}}
+
+/* v1.53.0: compact bottom controls; show full six betting tiles */
+#mg.mg-baucua .cgctl{gap:3px!important;padding:5px 5px max(6px,env(safe-area-inset-bottom))!important;border-radius:10px 10px 0 0}
+#mg.mg-baucua .cgrole{margin:0!important;gap:7px!important}
+#mg.mg-baucua .cgrole button{min-height:36px!important;padding:5px 11px!important;font-size:clamp(13px,3.3vw,16px)!important;line-height:1.15!important}
+#mg.mg-baucua .cgrow{margin:3px 0 0!important;gap:8px!important}
+#mg.mg-baucua .cgbig{min-height:43px!important;height:44px!important;padding:6px 8px!important;line-height:1.15!important}
+#mg.mg-baucua .bcseat-options button{touch-action:manipulation}
+#mg.mg-baucua .bcsetup-board{min-height:37px!important;padding:3px 7px!important;margin:0 auto!important}
+#mg.mg-baucua .bcsetup-board .bcseat-options button{height:31px!important}
+#mg.mg-baucua .bctbl{gap:clamp(3px,.65vh,8px)!important}
+#mg.mg-baucua .bcseats{gap:3px 4px!important;padding:2px 2px 5px!important}
+#mg.mg-baucua .bcseats .bcs{padding:2px!important}
+#mg.mg-baucua .bcplate{width:clamp(112px,25vw,148px)!important;height:clamp(78px,10vh,102px)!important;margin:0 auto!important}
+#mg.mg-baucua .cgmsg{padding:5px 9px!important}
+#mg.mg-baucua .bcboard{margin:3px 0!important;gap:6px!important}
+#mg.mg-baucua .bct{min-height:clamp(92px,11vh,132px)!important}
+@media(max-height:800px){#mg.mg-baucua .bct{min-height:84px!important}#mg.mg-baucua .bcplate{height:73px!important;width:108px!important}}
