@@ -77,3 +77,38 @@
  #mg.mg-baucua .bct,#mg.mg-baucua .bc-seat-chip{transition:none!important}
  #mg.mg-baucua .bcbowl,#mg.mg-baucua .bct{animation-duration:.01ms!important}
 }
+
+/* v1.52.8: 2–6 total seats and balanced table on tall phones */
+#mg.mg-baucua .bctbl{justify-content:space-evenly;gap:clamp(5px,1.1vh,14px)}
+#mg.mg-baucua .bcseats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-content:center;justify-content:center;gap:6px 4px;width:100%;padding:4px 2px 8px;box-sizing:border-box}
+#mg.mg-baucua .bcseats .bcs{min-width:0;max-width:100%;padding:3px 2px;overflow:hidden;border-radius:12px;background:#3a071a36}
+#mg.mg-baucua .bcseats .bcs .mgseat{min-width:0;max-width:100%;font-size:11px}
+#mg.mg-baucua .bcseats .bcs .mgseat .av{width:clamp(28px,8vw,40px);height:clamp(28px,8vw,40px)}
+#mg.mg-baucua .bcseats .bcs .mgseat b{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mg.mg-baucua .bcseats .bcs .mgseat .mgv{display:none}
+#mg.mg-baucua .bcmy{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:800;min-width:0}
+#mg.mg-baucua .bcmy .av{display:grid;place-items:center;width:clamp(28px,8vw,40px);height:clamp(28px,8vw,40px);border-radius:50%}
+#mg.mg-baucua .bcmy b{font-size:12px}
+#mg.mg-baucua .bcseats .bc-seat-chip{margin:2px auto 0;max-width:100%;box-sizing:border-box}
+#mg.mg-baucua .bcplate{margin:4px auto;flex:none}
+#mg.mg-baucua .bcboard{margin:5px 0;flex:none}
+#mg.mg-baucua .bct{min-height:clamp(106px,12.5vh,145px)}
+#mg.mg-baucua .cgctl{display:flex;flex-direction:column;gap:5px;padding:7px 5px max(8px,env(safe-area-inset-bottom))}
+#mg.mg-baucua .bcsetup{display:flex;align-items:center;justify-content:center;gap:10px;min-width:0}
+#mg.mg-baucua .bcsetup-label{font-size:12px;font-weight:800;white-space:nowrap;color:#ffe0a4}
+#mg.mg-baucua .bcseat-options{display:flex;align-items:center;gap:5px}
+#mg.mg-baucua .bcseat-options button{width:32px;height:30px;min-width:0;margin:0;padding:0;border-radius:9px;border:1px solid #d3a75a;background:#24131c;color:#ffe9b9;font-size:13px;font-weight:900}
+#mg.mg-baucua .bcseat-options button.selected{background:linear-gradient(#ffe8a0,#d8a64c);color:#402008;box-shadow:0 0 0 2px #fff6}
+#mg.mg-baucua .bcseat-options button:disabled{opacity:.45}
+@media(max-height:760px) and (max-width:600px){
+ #mg.mg-baucua .bctbl{justify-content:flex-start;gap:4px}
+ #mg.mg-baucua .bcseats{gap:3px}
+ #mg.mg-baucua .bcplate{width:115px;height:73px;margin:3px auto}
+ #mg.mg-baucua .bct{min-height:82px}
+ #mg.mg-baucua .bcsetup{gap:5px}
+}
+@media(max-width:350px){
+ #mg.mg-baucua .bcsetup-label{font-size:10px}
+ #mg.mg-baucua .bcseat-options{gap:3px}
+ #mg.mg-baucua .bcseat-options button{width:28px;height:28px}
+}
