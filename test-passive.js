@@ -32,8 +32,8 @@ const legacy={xu:5,xp:0};ok(P.passivePending(legacy,t0)===0&&legacy.passive.last
  veh.forEach(a=>P.buyAsset(P2,a.id,t0));ok(P.assetBonus(P2)===37,'đủ 5 xe cấp 1 = +37% thu nhập');ok(P.checkBadges(P2).some(b=>b.id==='veh_all'),'huy hiệu bộ sưu tập xe');
  const sh=P.ASSETS.filter(a=>a.cat==='shop');ok(sh.length===12&&sh.map(a=>a.price).join()==='10000,100000,500000,30000,250000,1000000,20000,150000,700000,50000,300000,1000000','12 món mua sắm đúng giá');
  ok(P.buyAsset(P2,'ao1',t0).ok&&!P.buyAsset(P2,'ao1',t0).ok&&P.assetLv(P2,'ao1')===1,'mua sắm chỉ mua 1 lần');
- ok(P.expBonus(P2)===1&&P.assetBonus(P2)===37,'EXP% tách riêng khỏi thu nhập%');
- sh.forEach(a=>P.buyAsset(P2,a.id,t0));ok(P.expBonus(P2)===40,'đủ 12 món = +40% EXP');ok(P.checkBadges(P2).some(b=>b.id==='shop_all'),'huy hiệu mua sắm');
+ ok(P.shopExpBonus(P2)===1&&P.assetBonus(P2)===37,'EXP% tách riêng khỏi thu nhập%');
+ sh.forEach(a=>P.buyAsset(P2,a.id,t0));ok(P.shopExpBonus(P2)===40,'đủ 12 món = +40% EXP');ok(P.checkBadges(P2).some(b=>b.id==='shop_all'),'huy hiệu mua sắm');
  const x0=P2.xp;P.addXp(P2,30);ok(P2.xp-x0===42,'EXP +40%: 30 → 42');
  const big=Object.assign(P.newProfile(),{xu:0,xp:0,assets:{}});sh.forEach(a=>big.assets[a.id]=1);big.assets.extra=1;ok(P.expBonus(big)===40,'không có giới hạn trần nhưng chỉ tính món hợp lệ');
  ok(P.bestAsset(P2).id==='duthuyen'||P.bestAsset(P2).price>=1000000,'tài sản giá trị nhất');

@@ -10,7 +10,7 @@ P=S.ensureInv(X.newProfile());const d1=new Date(2026,9,11,10),d1b=new Date(2026,
 t('free spin first',E.spinState(P,d1).free&&E.spinState(P,d1).can);const r1=E.doSpin(P,d1,rng);t('spin gives prize',r1&&r1.prize);
 t('no second free same day',!E.spinState(P,d1b).free);const ex=P.spin.extra;t('no spin without extra',ex>0||E.doSpin(P,d1b,rng)===null);
 t('reset at midnight',E.spinState(P,d2).free);
-const xu0=P.xu;t('buy spin costs',E.buySpin(P,d2)&&P.xu===xu0-E.SPIN_COST&&P.spin.extra>=1);P.xu=0;t('buy spin needs xu',!E.buySpin(P,d2));
+P.xu=Math.max(P.xu,E.SPIN_COST*3);const xu0=P.xu;t('buy spin costs',E.buySpin(P,d2)&&P.xu===xu0-E.SPIN_COST&&P.spin.extra>=1);P.xu=0;t('buy spin needs xu',!E.buySpin(P,d2));
 {const Q=S.ensureInv(X.newProfile());Q.spin={day:E.dk(d1),used:1,extra:2,total:1};t('extra spin used',E.doSpin(Q,d1,rng)&&Q.spin.extra>=1);}
 // phân phối phần thưởng + item
 {let c={};for(let i=0;i<5000;i++){const k=E.pickPrize(rng);c[k]=(c[k]||0)+1;}t('common prize more frequent than jackpot',c[0]>c[E.SPIN_PRIZES.length-1]*5);}

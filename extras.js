@@ -3,11 +3,11 @@
 function exitPenalty(bet){return Math.ceil(bet||0);}
 function applyExitPenalty(P,bet){const n=Math.min(P.xu,exitPenalty(bet==null?P.bet:bet));P.xu-=n;P.stats&&(P.stats.quits=(P.stats.quits||0)+1);return n;}
 // ---- Vòng quay may mắn ----
-const SPIN_COST=200;
+const SPIN_COST=2000; // v1.54: ×10 (giữ nguyên tỉ lệ trúng)
 const SPIN_PRIZES=[
- {id:'x50',label:'50 xu',xu:50,w:22,col:'#2e7d32'},{id:'x100',label:'100 xu',xu:100,w:20,col:'#1565c0'},{id:'xp50',label:'50 XP',xp:50,w:16,col:'#6a1b9a'},
- {id:'x200',label:'200 xu',xu:200,w:12,col:'#ef6c00'},{id:'item',label:'Vật phẩm',item:true,w:10,col:'#ad1457'},{id:'spin',label:'+1 lượt',spin:1,w:8,col:'#00838f'},
- {id:'xp150',label:'150 XP',xp:150,w:7,col:'#4527a0'},{id:'x500',label:'500 xu',xu:500,w:4,col:'#c62828'},{id:'emo',label:'Biểu cảm',emote:true,w:3,col:'#558b2f'},{id:'x2000',label:'2K xu',xu:2000,w:1,col:'#b8860b'}];
+ {id:'x50',label:'500 xu',xu:500,w:22,col:'#2e7d32'},{id:'x100',label:'1K xu',xu:1000,w:20,col:'#1565c0'},{id:'xp50',label:'50 XP',xp:50,w:16,col:'#6a1b9a'},
+ {id:'x200',label:'2K xu',xu:2000,w:12,col:'#ef6c00'},{id:'item',label:'Vật phẩm',item:true,w:10,col:'#ad1457'},{id:'spin',label:'+1 lượt',spin:1,w:8,col:'#00838f'},
+ {id:'xp150',label:'150 XP',xp:150,w:7,col:'#4527a0'},{id:'x500',label:'5K xu',xu:5000,w:4,col:'#c62828'},{id:'emo',label:'Biểu cảm',emote:true,w:3,col:'#558b2f'},{id:'x2000',label:'20K xu',xu:20000,w:1,col:'#b8860b'}];
 function dk(d){d=d||new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 function ensureSpin(P,now){P.spin=P.spin||{day:null,used:0,extra:0,total:0};if(P.spin.day!==dk(now)){P.spin.day=dk(now);P.spin.used=0;}return P.spin;}
 function spinState(P,now){const s=ensureSpin(P,now);return{free:s.used<1,extra:s.extra,can:s.used<1||s.extra>0};}
@@ -18,7 +18,7 @@ function doSpin(P,now,rng,level){const s=ensureSpin(P,now);if(s.used<1)s.used=1;
  const idx=pickPrize(rng),pz=SPIN_PRIZES[idx],got={};
  if(pz.xu){P.xu+=pz.xu;got.xu=pz.xu;}if(pz.xp){got.xp=pz.xp;got.lv=typeof addXp==='function'?addXp(P,pz.xp):null;}if(pz.spin){s.extra+=pz.spin;got.spin=pz.spin;}
  if(pz.item||pz.emote){const pool=SHOP.filter(x=>x.price>0&&!owns(P,x.id)&&(pz.emote?x.type==='emote':(x.type!=='emote'&&(x.r||1)<=2&&x.price<=5000)));
-  if(pool.length){const it=pool[Math.floor((rng||Math.random)()*pool.length)];ensureInv(P);P.inv[it.id]=Date.now();got.item=it.id;}else{P.xu+=300;got.xu=300;}}
+  if(pool.length){const it=pool[Math.floor((rng||Math.random)()*pool.length)];ensureInv(P);P.inv[it.id]=Date.now();got.item=it.id;}else{P.xu+=3000;got.xu=3000;}}
  return{idx,prize:pz,got};}
 // ---- Ném đồ / tặng quà ----
 const THROWS=[

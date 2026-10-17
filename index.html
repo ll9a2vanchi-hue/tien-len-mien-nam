@@ -733,6 +733,10 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 .banner.wnban{background:linear-gradient(#ffe48a,#f4c542);color:#3a2400;border:2px solid #fff3b0;font-size:24px;line-height:1.2}.banner.wnban small{display:block;font-size:13px;font-weight:700}
 .ptabs{display:flex;gap:4px;overflow-x:auto;margin:4px 0 8px;padding-bottom:2px;scrollbar-width:none}.ptabs::-webkit-scrollbar{display:none}.ptabs button{flex:none;font-size:12px;padding:6px 9px;margin:0;white-space:nowrap}.ptabs button.on{background:linear-gradient(#ffe48a,#f4c542);color:#2a1a00}.ppan{min-height:150px;max-height:48vh;overflow:auto}.pcard .pt{cursor:pointer}
 #modalIn button[style*="width:100%"]{box-sizing:border-box}
+.exchip{align-self:flex-start;margin:2px 0 4px;padding:3px 10px;border-radius:99px;font:700 11px inherit;background:linear-gradient(135deg,#7c4dff33,#00e5ff22);border:1px solid #b388ff88;color:#e1d5ff;cursor:pointer}
+.extot{text-align:center;padding:10px;border-radius:14px;background:linear-gradient(160deg,#2a1a55,#12102b);border:1px solid #b388ff66;margin-bottom:8px}.extot b{display:block;font-size:30px;color:#c6a8ff}.extot small{opacity:.75;font-size:11px}
+.excap{height:8px;border-radius:9px;background:#0006;margin:6px 0;overflow:hidden}.excap i{display:block;height:100%;background:linear-gradient(90deg,#7c4dff,#00e5ff)}
+.exlist{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}.exrow{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:11px;background:#ffffff0d;min-width:0}.exrow.z{opacity:.55}.exrow i{font-style:normal;font-size:20px}.exrow span{flex:1;min-width:0}.exrow b{display:block;font-size:13px}.exrow small{display:block;font-size:10.5px;opacity:.7;line-height:1.25}.exrow em{font-style:normal;font-weight:800;color:#8ef0a8;white-space:nowrap}
 /* Bầu Cua v1.52.5 — scoped mobile layout + avatar bet chips */
 #mg.mg-baucua{padding-left:5px;padding-right:5px;min-width:0}
 #mg.mg-baucua .bctbl{flex:1 1 auto;min-height:0;min-width:0;gap:5px;padding:6px 4px;border-width:3px;border-radius:16px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
@@ -913,7 +917,7 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='957bab69ab';
+const APP_VER='e7b879a3b9';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -986,7 +990,8 @@ function botMove(hand,cur,mustInclude,others){
 // RULES_END
 // PROGRESS_START
 const START_XU=1000,RESCUE_XU=500,BETS=[50,100,200,500,1000];
-const LOGIN_REWARDS=[100,150,200,300,400,600,1000];
+const LOGIN_REWARDS=[1000,1500,2000,3000,4000,6000,10000]; // v1.54: ×10
+const QUEST_XU_MULT=5; // v1.54: thưởng xu nhiệm vụ ×5
 const PLACE_MULT=[2,0.5,-0.5,-1];
 // Huy hiệu: chuỗi đồng/bạc/vàng (tier 1/2/3) + bí mật (secret). Giữ nguyên id cũ để chuyển tiến độ.
 const BG=(id,icon,name,desc,xu,tier,test,o)=>Object.assign({id,icon,name,desc,xu,tier,test},o||{});
@@ -1175,7 +1180,7 @@ function badgeMode(b){if(b.mode)return b.mode;const id=b.id;if(/^demla_/.test(id
  const ser=b.series;if(['games','wins','streak','chop','bomb','table','ai','combo','thui','chay','b3','skill','luoc','earn'].includes(ser)||(b.secret&&/^sec_(notwo|3s|bigbet|comeback|luoc3|chain|bigthui|allin)/.test(id)))return 'mn';return 'chung';}
 const BADGE_TIER=[null,{name:'Đồng',col:'#cd7f32'},{name:'Bạc',col:'#c0c8d0'},{name:'Vàng',col:'#ffd84d'}];
 // Nhiệm vụ: 3 hằng ngày + 3 hằng tuần (thưởng lớn). Giữ id cũ.
-const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu});
+const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu:xu*QUEST_XU_MULT});
 const QUEST_POOL=[
  Q('play3','Chơi 3 ván','game',3,150),Q('play5','Chơi 5 ván','game',5,250),Q('win1','Về nhất 1 ván','win',1,200),Q('win2','Về nhất 2 ván','win',2,400),
  Q('demla1','Về nhất 1 ván Đếm lá','demlawin',1,300),Q('dom1','Thắng 1 ván Domino','domwin',1,300),Q('xt1','Thắng 1 ván Xì tố','xtwin',1,300),Q('pk1','Thắng 1 ván Poker','pkwin',1,300),Q('bcua1','Thắng 2 ván Bầu cua','bcuawin',2,250),Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
@@ -1234,7 +1239,20 @@ function assetDef(id){return ASSETS.find(x=>x.id===id);}
 function assetLv(P,id){const a=assetDef(id);const v=P.assets&&P.assets[id];return v>0?Math.min(a?a.max:ASSET_MAX,v|0):0;}
 function assetBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?0:x.pct*assetLv(P,x.id)),0);}
 function shopExpBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?x.pct*assetLv(P,x.id):0),0);}
-function expBonus(P){return shopExpBonus(P)+(typeof petBonus==='function'?petBonus(P):0);}
+// ---- Thưởng EXP (v1.54): mỗi nguồn cộng dồn, tổng bị chặn ở EXP_CAP ----
+const EXP_CAP=300;
+let _shopRef=null;function _shopList(){if(typeof SHOP!=='undefined')return SHOP;if(!_shopRef){try{_shopRef=require('./shop.js').SHOP;}catch(e){_shopRef=[];}}return _shopRef;}
+function ownedValue(P,avatar){let v=0;for(const it of _shopList()){if(!(it.price>0))continue;if((it.type==='avatar')!==!!avatar)continue;if(P.inv&&P.inv[it.id])v+=it.price;}return v;}
+function expBreakdown(P){const rd=x=>Math.round(x*100)/100;const sv=ownedValue(P,false),av=ownedValue(P,true),earned=(P.stats&&P.stats.earned)||0,nb=Object.keys(P.badges||{}).length;
+ const rows=[{k:'shop',ic:'🛍️',label:'Vật phẩm cửa hàng',info:fmt0(sv)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(sv/1000000)},
+  {k:'avatar',ic:'😎',label:'Avatar sở hữu',info:fmt0(av)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(av/1000000)},
+  {k:'earned',ic:'🪙',label:'Tổng xu đã thắng',info:fmt0(earned)+' xu · mỗi 100.000 xu = +1%',pct:rd(earned/100000)},
+  {k:'badge',ic:'🏅',label:'Huy hiệu',info:nb+' huy hiệu · mỗi huy hiệu = +0,05%',pct:rd(nb*0.05)},
+  {k:'asset',ic:'🏢',label:'Tài sản mua sắm',info:'Quần áo, trang sức, phụ kiện, phong thủy',pct:shopExpBonus(P)},
+  {k:'pet',ic:'🐾',label:'Thú cưng',info:'Thú đang theo bạn',pct:typeof petBonus==='function'?petBonus(P):0}];
+ const raw=rd(rows.reduce((a,r)=>a+r.pct,0));return{rows,raw,total:Math.min(EXP_CAP,raw),cap:EXP_CAP,capped:raw>EXP_CAP};}
+function fmt0(n){return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+function expBonus(P){return expBreakdown(P).total;}
 function assetCost(id,toLv){const a=assetDef(id);if(!a||toLv<1||toLv>a.max)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
 function bestAsset(P){let b=null;for(const a of ASSETS)if(assetLv(P,a.id)&&(!b||a.price>b.price))b=a;return b;}
 function passiveBank(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return;ps.frac=passivePending(P,now);ps.last=now;}
@@ -1532,11 +1550,11 @@ function rtTransport(ch){return{send:(e,p)=>ch.send({type:'broadcast',event:e,pa
 function exitPenalty(bet){return Math.ceil(bet||0);}
 function applyExitPenalty(P,bet){const n=Math.min(P.xu,exitPenalty(bet==null?P.bet:bet));P.xu-=n;P.stats&&(P.stats.quits=(P.stats.quits||0)+1);return n;}
 // ---- Vòng quay may mắn ----
-const SPIN_COST=200;
+const SPIN_COST=2000; // v1.54: ×10 (giữ nguyên tỉ lệ trúng)
 const SPIN_PRIZES=[
- {id:'x50',label:'50 xu',xu:50,w:22,col:'#2e7d32'},{id:'x100',label:'100 xu',xu:100,w:20,col:'#1565c0'},{id:'xp50',label:'50 XP',xp:50,w:16,col:'#6a1b9a'},
- {id:'x200',label:'200 xu',xu:200,w:12,col:'#ef6c00'},{id:'item',label:'Vật phẩm',item:true,w:10,col:'#ad1457'},{id:'spin',label:'+1 lượt',spin:1,w:8,col:'#00838f'},
- {id:'xp150',label:'150 XP',xp:150,w:7,col:'#4527a0'},{id:'x500',label:'500 xu',xu:500,w:4,col:'#c62828'},{id:'emo',label:'Biểu cảm',emote:true,w:3,col:'#558b2f'},{id:'x2000',label:'2K xu',xu:2000,w:1,col:'#b8860b'}];
+ {id:'x50',label:'500 xu',xu:500,w:22,col:'#2e7d32'},{id:'x100',label:'1K xu',xu:1000,w:20,col:'#1565c0'},{id:'xp50',label:'50 XP',xp:50,w:16,col:'#6a1b9a'},
+ {id:'x200',label:'2K xu',xu:2000,w:12,col:'#ef6c00'},{id:'item',label:'Vật phẩm',item:true,w:10,col:'#ad1457'},{id:'spin',label:'+1 lượt',spin:1,w:8,col:'#00838f'},
+ {id:'xp150',label:'150 XP',xp:150,w:7,col:'#4527a0'},{id:'x500',label:'5K xu',xu:5000,w:4,col:'#c62828'},{id:'emo',label:'Biểu cảm',emote:true,w:3,col:'#558b2f'},{id:'x2000',label:'20K xu',xu:20000,w:1,col:'#b8860b'}];
 function dk(d){d=d||new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 function ensureSpin(P,now){P.spin=P.spin||{day:null,used:0,extra:0,total:0};if(P.spin.day!==dk(now)){P.spin.day=dk(now);P.spin.used=0;}return P.spin;}
 function spinState(P,now){const s=ensureSpin(P,now);return{free:s.used<1,extra:s.extra,can:s.used<1||s.extra>0};}
@@ -1547,7 +1565,7 @@ function doSpin(P,now,rng,level){const s=ensureSpin(P,now);if(s.used<1)s.used=1;
  const idx=pickPrize(rng),pz=SPIN_PRIZES[idx],got={};
  if(pz.xu){P.xu+=pz.xu;got.xu=pz.xu;}if(pz.xp){got.xp=pz.xp;got.lv=typeof addXp==='function'?addXp(P,pz.xp):null;}if(pz.spin){s.extra+=pz.spin;got.spin=pz.spin;}
  if(pz.item||pz.emote){const pool=SHOP.filter(x=>x.price>0&&!owns(P,x.id)&&(pz.emote?x.type==='emote':(x.type!=='emote'&&(x.r||1)<=2&&x.price<=5000)));
-  if(pool.length){const it=pool[Math.floor((rng||Math.random)()*pool.length)];ensureInv(P);P.inv[it.id]=Date.now();got.item=it.id;}else{P.xu+=300;got.xu=300;}}
+  if(pool.length){const it=pool[Math.floor((rng||Math.random)()*pool.length)];ensureInv(P);P.inv[it.id]=Date.now();got.item=it.id;}else{P.xu+=3000;got.xu=3000;}}
  return{idx,prize:pz,got};}
 // ---- Ném đồ / tặng quà ----
 const THROWS=[
@@ -3327,8 +3345,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.53';
+const APP_V='1.54';
 const CHANGELOG=[
+ ['1.54','18/10',['THƯỞNG EXP mới: mỗi 1.000.000 xu vật phẩm cửa hàng = +1%, mỗi 1.000.000 xu avatar = +1%, mỗi 100.000 xu đã thắng = +1%, mỗi huy hiệu +0,05% (cộng dồn với tài sản & thú cưng, trần +300%)','Màn hình "Thưởng EXP" liệt kê từng nguồn, tổng và trần — mở từ thẻ người chơi ở màn hình chính và tab Kinh nghiệm trong hồ sơ','Nhiệm vụ: thưởng xu ×5','Quà điểm danh hằng ngày: ×10 (1.000 → 10.000 xu), chuỗi ngày giữ nguyên','Vòng quay may mắn: giá quay và mọi giải xu ×10 (2.000 xu/lượt, giải đến 20.000 xu), tỉ lệ trúng giữ nguyên','Máy chủ nâng trần đồng bộ xu/XP/thắng để không bị cắt số liệu']],
  ['1.53','18/10',['Luật mới: THÚI 3 BÍCH — người bét còn giữ 3♠ trên tay phải trả GẤP ĐÔI (thêm 2× cược) cho người về ngay trên mình','Rời ván giữa chừng nay phạt 100% mức cược (trước là 50%) — cập nhật cảnh báo ở mọi chế độ','Khung chọn bàn/mức cược Tiến lên và Đếm lá không còn tràn ở 360/412/461','Danh hiệu dài tự chạy ngang (marquee); bật giảm chuyển động thì hiện dấu …','Bầu cua hiển thị cột sao dọc','Thúi/cháy nổi bật, rõ ràng hơn ở màn kết quả và xem lại ván','Xì tố: nhãn "Tố ×N" lớn cạnh ghế, ghế thắng sáng + bài thắng nâng lên + banner','Màn hình chính: chạm avatar mở hồ sơ nhiều tab (kinh nghiệm, tài sản, thành tích, sao, pet); chạm danh hiệu để chọn','Bảng xếp hạng "thắng nhiều": sửa reset tuần, đếm thắng các chế độ mới, xếp hạng đồng điểm','Đếm lá: chặt chồng giống Tiến lên (có kiểm thử)','Máy Dễ/Thường/Khó không còn mở ván bằng 3 đôi thông/tứ quý (giữ để chặt heo); Cao thủ giữ nguyên','Xì tố: máy tố nhẹ khi bài mạnh, thỉnh thoảng bluff tất tay theo độ khó (Dễ ~1%, Cao thủ ~9%)','Kiểm tra xáo bài: tất cả chế độ dùng Fisher-Yates, thêm kiểm thử thống kê; sửa chọn đối thủ ngẫu nhiên']],
  ['1.53.0','13/10',['Bầu Cua: bỏ dòng hướng dẫn dài dưới nút Làm cái','Thu gọn thanh điều khiển, nút vai trò và nút Lắc để dành diện tích cho bàn cược','Giảm chiều cao khu vực bát và khoảng cách để đủ 6 ô cược trên màn hình']],
  ['1.52.9','13/10',['Bầu Cua: chuyển nút chọn 2–6 người lên ngay dưới hàng avatar, luôn dễ thấy','Làm nổi bật nút đang chọn và khóa đổi người khi đang lắc/mở bát','Không thay đổi luật chơi và số xu khi nâng cấp vị trí nút']],
@@ -4301,7 +4320,7 @@ function profPanel(tab,pf,I0,mine){const sg=v=>fmt(v);
  if(tab==='xp'){const s=I0.stats||{};const rows=mine?[['Ván đã chơi',s.games],['Thắng',s.wins],['Chuỗi thắng tốt nhất',s.bestStreak],['Chặt heo',s.chops],['Tổng xu thắng',s.earned]]:[['XP',I0.xp]];
   return `<div class="xpb"><i style="width:${mine?Math.round(100*I0.cur/I0.need):100}%"></i></div><p class="small" style="text-align:center">${mine?`${fmt(I0.cur)}/${fmt(I0.need)} XP đến cấp ${I0.level+1} · Tổng ${fmt(I0.xp)} XP`:`Tổng ${fmt(I0.xp)} XP`}</p>
   <div class="asum"><span>EXP <b class="expc">+${fmt(pf&&!pf.hide?pf.eb||0:0)}%</b></span><span>Thu nhập <b class="pos">+${fmt(pf&&!pf.hide?(pf.ib||0)+(pf.sb||0):0)}%</b></span></div>
-  <div class="pbrk">${rows.map(([a,b])=>`<div><span>${a}</span><b>${sg(b||0)}</b></div>`).join('')}</div>${mine?'<button class="alt" style="width:100%" onclick="openTitles()">🎖️ Đổi danh hiệu</button>':''}`;}
+  <div class="pbrk">${rows.map(([a,b])=>`<div><span>${a}</span><b>${sg(b||0)}</b></div>`).join('')}</div>${mine?'<button class="alt" style="width:100%;margin-bottom:6px" onclick="openExpBonus()">✨ Thưởng EXP · xem chi tiết</button><button class="alt" style="width:100%" onclick="openTitles()">🎖️ Đổi danh hiệu</button>':''}`;}
  if(!pf)return '<p class="small">Người chơi chưa cập nhật hồ sơ (cần mở phiên bản mới).</p>';if(pf.hide)return '<p class="small">🔒 Người chơi đã ẩn tài sản.</p>';
  const sec=(t,b)=>`<div class="agrp">${t}</div>${b||'<p class="small">Chưa có</p>'}`;
  const asList=c=>ASSETS.filter(x=>x.cat===c&&pf.a&&pf.a[x.id]).map(x=>`<span class="ppit"><i>${ASSET_SVG[x.id]||''}</i><small>${esc(x.name)}${x.max>1?' · '+pf.a[x.id]:''}</small></span>`).join('');
@@ -4321,5 +4340,11 @@ openPlayerProfile=async function(uid,back){modal(`<h3>👤 Hồ sơ</h3><p class
  if(!data){modal(`<h3>👤 Hồ sơ</h3><p class="small">Không có dữ liệu hồ sơ.</p><button class="alt" onclick="${back||'closeModal()'}">Quay lại</button>`);return;}const av=data.avatar||{};
  PROF={mine:false,tab:'xp',pf:av.pf||null,back,info:{name:data.name,av:av.av,bg:av.bg,frame:data.frame||av.frame,level:data.level||1,title:{name:data.title||'',tier:1},xp:data.xp||0,stats:{}}};profRender();}catch(e){modal(`<h3>👤 Hồ sơ</h3><p class="small">Lỗi tải hồ sơ.</p><button class="alt" onclick="closeModal()">Đóng</button>`);}};
 const _rh153=renderHome;renderHome=function(){_rh153.apply(this,arguments);try{const pc=document.querySelector('#home .pcard');if(!pc)return;pc.onclick=()=>openMyProfile();const pt=pc.querySelector('.pt');if(pt){pt.style.cursor='pointer';pt.onclick=e=>{e.stopPropagation();openTitles();};}}catch(e){}};
+
+// ===== v1.54: màn hình Thưởng EXP =====
+function openExpBonus(back){const B=expBreakdown(PR);const rows=B.rows.map(r=>`<div class="exrow ${r.pct?'':'z'}"><i>${r.ic}</i><span><b>${r.label}</b><small>${r.info}</small></span><em>+${fmt(r.pct)}%</em></div>`).join('');
+ modal(`<h3>✨ Thưởng EXP</h3><div class="extot"><small>Tổng thưởng đang áp dụng</small><b>+${fmt(B.total)}%</b><div class="excap"><i style="width:${Math.min(100,100*B.total/B.cap)}%"></i></div><small>Trần +${B.cap}%${B.capped?' · đã chạm trần (cộng dồn '+fmt(B.raw)+'%)':''}</small></div>
+ <div class="exlist">${rows}</div><p class="small" style="text-align:center">Áp dụng cho mọi nguồn XP: ván chơi, nhiệm vụ, quà.</p>${back?'<button class="alt" style="width:100%" onclick="openMyProfile()">← Hồ sơ</button>':''}`);}
+const _rh154=renderHome;renderHome=function(){_rh154.apply(this,arguments);try{const pi=document.querySelector('#home .pcard .pi');if(!pi||pi.querySelector('.exchip'))return;const c=document.createElement('button');c.className='exchip';c.textContent='✨ EXP +'+fmt(expBonus(PR))+'%';c.onclick=e=>{e.stopPropagation();openExpBonus();};const px=pi.querySelector('.pxu');px.parentNode.insertBefore(c,px);}catch(e){}};
 boot();
 </script></body></html>

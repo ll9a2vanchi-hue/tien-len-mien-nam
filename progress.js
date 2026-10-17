@@ -1,6 +1,7 @@
 // PROGRESS_START
 const START_XU=1000,RESCUE_XU=500,BETS=[50,100,200,500,1000];
-const LOGIN_REWARDS=[100,150,200,300,400,600,1000];
+const LOGIN_REWARDS=[1000,1500,2000,3000,4000,6000,10000]; // v1.54: ×10
+const QUEST_XU_MULT=5; // v1.54: thưởng xu nhiệm vụ ×5
 const PLACE_MULT=[2,0.5,-0.5,-1];
 // Huy hiệu: chuỗi đồng/bạc/vàng (tier 1/2/3) + bí mật (secret). Giữ nguyên id cũ để chuyển tiến độ.
 const BG=(id,icon,name,desc,xu,tier,test,o)=>Object.assign({id,icon,name,desc,xu,tier,test},o||{});
@@ -189,7 +190,7 @@ function badgeMode(b){if(b.mode)return b.mode;const id=b.id;if(/^demla_/.test(id
  const ser=b.series;if(['games','wins','streak','chop','bomb','table','ai','combo','thui','chay','b3','skill','luoc','earn'].includes(ser)||(b.secret&&/^sec_(notwo|3s|bigbet|comeback|luoc3|chain|bigthui|allin)/.test(id)))return 'mn';return 'chung';}
 const BADGE_TIER=[null,{name:'Đồng',col:'#cd7f32'},{name:'Bạc',col:'#c0c8d0'},{name:'Vàng',col:'#ffd84d'}];
 // Nhiệm vụ: 3 hằng ngày + 3 hằng tuần (thưởng lớn). Giữ id cũ.
-const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu});
+const Q=(id,name,ev,goal,xu)=>({id,name,ev,goal,xu:xu*QUEST_XU_MULT});
 const QUEST_POOL=[
  Q('play3','Chơi 3 ván','game',3,150),Q('play5','Chơi 5 ván','game',5,250),Q('win1','Về nhất 1 ván','win',1,200),Q('win2','Về nhất 2 ván','win',2,400),
  Q('demla1','Về nhất 1 ván Đếm lá','demlawin',1,300),Q('dom1','Thắng 1 ván Domino','domwin',1,300),Q('xt1','Thắng 1 ván Xì tố','xtwin',1,300),Q('pk1','Thắng 1 ván Poker','pkwin',1,300),Q('bcua1','Thắng 2 ván Bầu cua','bcuawin',2,250),Q('luoc1','Luộc sạch 1 máy','luoc',1,400),Q('top2','Về nhất hoặc nhì 3 ván','top2',3,300),Q('pairs5','Đánh 5 đôi','pair',5,150),Q('triple2','Đánh 2 sám cô','triple',2,200),Q('straight3','Đánh 3 sảnh','straight',3,200),
@@ -248,7 +249,20 @@ function assetDef(id){return ASSETS.find(x=>x.id===id);}
 function assetLv(P,id){const a=assetDef(id);const v=P.assets&&P.assets[id];return v>0?Math.min(a?a.max:ASSET_MAX,v|0):0;}
 function assetBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?0:x.pct*assetLv(P,x.id)),0);}
 function shopExpBonus(P){return ASSETS.reduce((a,x)=>a+(x.exp?x.pct*assetLv(P,x.id):0),0);}
-function expBonus(P){return shopExpBonus(P)+(typeof petBonus==='function'?petBonus(P):0);}
+// ---- Thưởng EXP (v1.54): mỗi nguồn cộng dồn, tổng bị chặn ở EXP_CAP ----
+const EXP_CAP=300;
+let _shopRef=null;function _shopList(){if(typeof SHOP!=='undefined')return SHOP;if(!_shopRef){try{_shopRef=require('./shop.js').SHOP;}catch(e){_shopRef=[];}}return _shopRef;}
+function ownedValue(P,avatar){let v=0;for(const it of _shopList()){if(!(it.price>0))continue;if((it.type==='avatar')!==!!avatar)continue;if(P.inv&&P.inv[it.id])v+=it.price;}return v;}
+function expBreakdown(P){const rd=x=>Math.round(x*100)/100;const sv=ownedValue(P,false),av=ownedValue(P,true),earned=(P.stats&&P.stats.earned)||0,nb=Object.keys(P.badges||{}).length;
+ const rows=[{k:'shop',ic:'🛍️',label:'Vật phẩm cửa hàng',info:fmt0(sv)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(sv/1000000)},
+  {k:'avatar',ic:'😎',label:'Avatar sở hữu',info:fmt0(av)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(av/1000000)},
+  {k:'earned',ic:'🪙',label:'Tổng xu đã thắng',info:fmt0(earned)+' xu · mỗi 100.000 xu = +1%',pct:rd(earned/100000)},
+  {k:'badge',ic:'🏅',label:'Huy hiệu',info:nb+' huy hiệu · mỗi huy hiệu = +0,05%',pct:rd(nb*0.05)},
+  {k:'asset',ic:'🏢',label:'Tài sản mua sắm',info:'Quần áo, trang sức, phụ kiện, phong thủy',pct:shopExpBonus(P)},
+  {k:'pet',ic:'🐾',label:'Thú cưng',info:'Thú đang theo bạn',pct:typeof petBonus==='function'?petBonus(P):0}];
+ const raw=rd(rows.reduce((a,r)=>a+r.pct,0));return{rows,raw,total:Math.min(EXP_CAP,raw),cap:EXP_CAP,capped:raw>EXP_CAP};}
+function fmt0(n){return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+function expBonus(P){return expBreakdown(P).total;}
 function assetCost(id,toLv){const a=assetDef(id);if(!a||toLv<1||toLv>a.max)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
 function bestAsset(P){let b=null;for(const a of ASSETS)if(assetLv(P,a.id)&&(!b||a.price>b.price))b=a;return b;}
 function passiveBank(P,now){now=now==null?Date.now():+now;const ps=passiveInit(P,now);if(now<ps.last)return;ps.frac=passivePending(P,now);ps.last=now;}
@@ -346,4 +360,4 @@ function addXp(P,n,mode){if(n>0){const b=expBonus(P);if(b)n=Math.round(n*(1+b/10
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // PROGRESS_END
-if(typeof module!=='undefined')module.exports={totalWins,lbWeekKey,WIN_MODES,PETS,petDef,petOwned,petActive,petBonus,buyPet,equipPet,shopExpBonus,STAR_MODES,STAR_TIERS,STAR_TOTAL_XP,STAR_STEPS,STAR_CUM,starInfo,starStepBonus,starBonus,addModeXp,modeXpOf,ASSET_CATS,assetDef,expBonus,bestAsset,ASSETS,ASSET_MAX,assetLv,assetBonus,assetCost,passiveBank,buyAsset,PASSIVE_CAP_MS,passiveRate,passiveInit,passivePending,passiveClaim,MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,XP_DEMLA_N,XP_MODE,modeXp,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
+if(typeof module!=='undefined')module.exports={QUEST_XU_MULT,EXP_CAP,expBreakdown,ownedValue,totalWins,lbWeekKey,WIN_MODES,PETS,petDef,petOwned,petActive,petBonus,buyPet,equipPet,shopExpBonus,STAR_MODES,STAR_TIERS,STAR_TOTAL_XP,STAR_STEPS,STAR_CUM,starInfo,starStepBonus,starBonus,addModeXp,modeXpOf,ASSET_CATS,assetDef,expBonus,bestAsset,ASSETS,ASSET_MAX,assetLv,assetBonus,assetCost,passiveBank,buyAsset,PASSIVE_CAP_MS,passiveRate,passiveInit,passivePending,passiveClaim,MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,XP_DEMLA_N,XP_MODE,modeXp,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
