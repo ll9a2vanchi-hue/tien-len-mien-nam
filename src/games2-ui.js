@@ -150,7 +150,7 @@ function btCanAct(b,i){return !b.fold[i]&&!b.allin[i];}
 function btLive(b){return b.fold.map((f,i)=>f?-1:i).filter(i=>i>=0);}
 function btRoundDone(b){return b.fold.every((f,i)=>f||b.allin[i]||(b.acted[i]&&b.rb[i]===b.hi));}
 function btNextFrom(b,i){for(let k=1;k<=b.n;k++){const j=(i+k)%b.n;if(btCanAct(b,j))return j;}return -1;}
-function btNewRound(b){b.rz={};b.rzLast=-1;b.rb=b.rb.map(()=>0);b.acted=b.acted.map(()=>false);b.hi=0;b.raises=0;}
+function btNewRound(b){b.rz={};b.cl={};b.rzLast=-1;b.rb=b.rb.map(()=>0);b.acted=b.acted.map(()=>false);b.hi=0;b.raises=0;}
 function btPot(b){return b.contrib.reduce((a,x)=>a+x,0);}
 function shuf(d){d=d.slice();for(let i=d.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]];}return d;}
 // ước lượng khả năng thắng: biết bài mình + bài ngửa của đối thủ
@@ -162,7 +162,7 @@ function botBet(b,i,eq,opt){const tc=btToCall(b,i),pot=btPot(b);const odds=tc/(p
  if(tc>0&&adj<odds*0.9&&r>0.07)return{a:'fold'};
  if((adj>0.68||(r<0.06&&adj>0.3))&&b.raises<(opt.maxR||3)&&b.stack[i]>tc){return{a:'raise',T:b.hi+Math.max(opt.raise(b),b.minR)};}
  return{a:tc?'call':'check'};}
-function btSeatLab(b,i){const rz=b.rz&&b.rz[i]&&!b.fold[i]?`<i class="pkraise ${b.rzLast===i?'new':''}">${b.rz[i]}</i>`:'';return b.fold[i]?'<i class="pkst f">Bỏ</i>':b.allin[i]?(rz||'<i class="pkst a">Tất tay</i>'):(rz?rz:'')+(b.rb[i]?`<i class="pkchip">${kxu(b.rb[i])}</i>`:'');}
+function btSeatLab(b,i){const rz=b.rz&&b.rz[i]&&!b.fold[i]?`<i class="pkraise ${b.rzLast===i?'new':''}">${b.rz[i]}</i>`:'';const cl=b.cl&&b.cl[i]&&!b.fold[i]&&!b.allin[i]&&!rz?`<i class="pkst ${b.cl[i]==='Theo'?'c':'k'}">${b.cl[i]}</i>`:'';return b.fold[i]?'<i class="pkst f">Bỏ</i>':b.allin[i]?(rz||'<i class="pkst a">Tất tay</i>'):(rz?rz:cl)+(b.rb[i]?`<i class="pkchip">${kxu(b.rb[i])}</i>`:'');}
 
 function mgFly(src,target,delay,dur,flip){return new Promise(res=>{if(!src||!target){res();return;}target.style.opacity='0';setTimeout(()=>{const sr=src.getBoundingClientRect(),tr=target.getBoundingClientRect();if(!tr.width){target.style.opacity='';res();return;}
  if(RM){target.style.opacity='';sfx('cgSlide');res();return;}const f=document.createElement('div');f.className='card back cgc cgfly';f.style.cssText=`left:${sr.left+sr.width/2-tr.width/2}px;top:${sr.top+sr.height/2-tr.height/2}px;width:${tr.width}px;height:${tr.height}px`;document.body.appendChild(f);
@@ -193,7 +193,7 @@ function xtStep(){const st=MG.st;if(!st||MG.g!=='xito'||st.phase!=='bet'||st.ani
  const i=b.cur;if(i===0){st.msg='Lượt bạn';xtR();return;}
  if(st._bt===i)return;st._bt=i;setTimeout(()=>{st._bt=null;if(MG.st!==st||b.cur!==i)return;const opps=st.hands.map((h,j)=>j!==i&&!b.fold[j]?h.slice(1):null).filter(Boolean);
   const eq=xtEq(st.hands[i],opps,DECK32,80);const plan=xtBotPlan(eq,st.round,xtBotDiff(botLvFor(st.seats[i].name)),b.stack[i]>btToCall(b,i)&&!b.bluffed,Math.random);let d=botBet(b,i,eq,{maxR:3,raise:()=>(plan.kind==='raise'?plan.mult:1)*st.bet});if(plan.kind==='raise'&&d.a!=='fold'&&b.raises<3&&b.stack[i]>btToCall(b,i)+st.bet)d={a:'raise',T:b.hi+Math.max(plan.mult*st.bet,b.minR)};if(plan.kind==='allin')d={a:'allin'};if(plan.kind==='bluff'){d={a:'allin'};b.bluffed=true;}if(d.a==='raise'&&d.T-b.rb[i]>=b.stack[i])d={a:'allin'};xtDo(i,d.a,d.T);},420+Math.random()*350);}
-function xtDo(i,a,T){const st=MG.st,b=st.b;if(b.cur!==i)return;const tc=btToCall(b,i);if(a==='check'&&tc)a='call';const _wa=b.allin[i],_oh=b.hi;btAct(b,i,a,T);if(a==='raise'||a==='allin'){b.rz=b.rz||{};const m=Math.max(1,Math.round((b.hi-_oh)/((MG.st&&MG.st.bet)||MG.bet||100)));b.rz[i]=a==='allin'?'TỐ TẤT':(MG.g==='xito'?'Tố ×'+m:'Tố '+kxu(b.hi));b.rzLast=i;}if(!_wa&&b.allin[i]&&!b.fold[i])setTimeout(()=>allinFX(i),40);const nm=i===0?'Bạn':st.seats[i].name;
+function xtDo(i,a,T){const st=MG.st,b=st.b;if(b.cur!==i)return;const tc=btToCall(b,i);if(a==='check'&&tc)a='call';const _wa=b.allin[i],_oh=b.hi;btAct(b,i,a,T);if(a==='raise'||a==='allin'){b.rz=b.rz||{};const m=Math.max(1,Math.round((b.hi-_oh)/((MG.st&&MG.st.bet)||MG.bet||100)));b.rz={};b.cl={};b.rz[i]=a==='allin'?'TỐ TẤT':(MG.g==='xito'?'Tố ×'+m:'Tố '+kxu(b.hi));b.rzLast=i;}else if(a==='call'||a==='check'){b.cl=b.cl||{};b.cl[i]=(tc>0&&!b.allin[i])?'Theo':(tc>0?'Theo':'Xem');}if(!_wa&&b.allin[i]&&!b.fold[i])setTimeout(()=>allinFX(i),40);const nm=i===0?'Bạn':st.seats[i].name;
  st.msg=nm+' '+({fold:'úp bỏ',check:'xem',call:tc?'theo '+kxu(tc):'xem',raise:'tố '+kxu(b.hi),allin:'TỐ TẤT '+kxu(b.rb[i])})[a];if(a==='allin'){sfx('cgFan');}sfx(a==='fold'?'pass':a==='raise'||a==='allin'?'cgChip':'tap');if(a==='raise'||a==='allin')setTimeout(()=>sfx('cgChip'),120);
  b.cur=btRoundDone(b)?-1:btNextFrom(b,i);xtR();setTimeout(xtStep,350);}
 function xtShow(){const st=MG.st,b=st.b;st.phase='done';st.busy=false;while(st.hands.some((h,i)=>!b.fold[i]&&h.length<5)){st.hands.forEach((h,i)=>{if(!b.fold[i]&&h.length<5)h.push(st.deck.pop());});}
@@ -234,7 +234,7 @@ function pkStep(){const st=MG.st;if(!st||MG.g!=='poker'||st.phase!=='bet')return
  const i=b.cur;if(i===0){st.msg='Lượt bạn';pkR();return;}
  if(st._bt===i)return;st._bt=i;setTimeout(()=>{st._bt=null;if(MG.st!==st||b.cur!==i)return;const nOpp=btLive(b).length-1;const eq=pkEq(st.hands[i],st.board,Math.max(1,nOpp),st.street?80:50);
   const d=botBet(b,i,eq,{maxR:4,raise:bb=>Math.max(st.bet,Math.round(btPot(b)*0.6/st.bet)*st.bet)});pkDo(i,d.a,d.T);},420+Math.random()*380);}
-function pkDo(i,a,T){const st=MG.st,b=st.b;if(b.cur!==i)return;const tc=btToCall(b,i);if(a==='check'&&tc)a='call';const _wa=b.allin[i],_oh=b.hi;btAct(b,i,a,T);if(a==='raise'||a==='allin'){b.rz=b.rz||{};const m=Math.max(1,Math.round((b.hi-_oh)/((MG.st&&MG.st.bet)||MG.bet||100)));b.rz[i]=a==='allin'?'TỐ TẤT':(MG.g==='xito'?'Tố ×'+m:'Tố '+kxu(b.hi));b.rzLast=i;}if(!_wa&&b.allin[i]&&!b.fold[i])setTimeout(()=>allinFX(i),40);const nm=i===0?'Bạn':st.seats[i].name;
+function pkDo(i,a,T){const st=MG.st,b=st.b;if(b.cur!==i)return;const tc=btToCall(b,i);if(a==='check'&&tc)a='call';const _wa=b.allin[i],_oh=b.hi;btAct(b,i,a,T);if(a==='raise'||a==='allin'){b.rz=b.rz||{};const m=Math.max(1,Math.round((b.hi-_oh)/((MG.st&&MG.st.bet)||MG.bet||100)));b.rz={};b.cl={};b.rz[i]=a==='allin'?'TỐ TẤT':(MG.g==='xito'?'Tố ×'+m:'Tố '+kxu(b.hi));b.rzLast=i;}else if(a==='call'||a==='check'){b.cl=b.cl||{};b.cl[i]=(tc>0&&!b.allin[i])?'Theo':(tc>0?'Theo':'Xem');}if(!_wa&&b.allin[i]&&!b.fold[i])setTimeout(()=>allinFX(i),40);const nm=i===0?'Bạn':st.seats[i].name;
  st.msg=nm+' '+({fold:'bỏ bài',check:'xem',call:tc?'theo '+kxu(Math.min(tc,b.rb[i])):'xem',raise:'tố lên '+kxu(b.hi),allin:'tất tay '+kxu(b.rb[i])})[a];sfx(a==='fold'?'pass':a==='raise'||a==='allin'?'cgChip':'tap');
  b.cur=btRoundDone(b)?-1:btNextFrom(b,i);pkR();setTimeout(pkStep,350);}
 function pkShow(){const st=MG.st,b=st.b;st.phase='done';st.busy=false;const live=btLive(b);if(live.length>1)while(st.board.length<5)st.board.push(st.deck.pop());
@@ -529,12 +529,12 @@ function profPanel(tab,pf,I0,mine){const sg=v=>fmt(v);
 function profRender(){const P=PROF;if(!P)return;const I0=P.info,t=I0.title&&I0.title.name?I0.title:{name:I0.title||'',tier:1};
  modal(`<div class="pphd"><span class="av fr-${esc(I0.frame||'fr_gold')}" style="--avc:${esc(I0.bg||'#456')}">${esc(I0.av||'🙂')}${P.pf&&P.pf.p&&!P.pf.hide?`<span class="petb">${petIcon(P.pf.p)}</span>`:''}</span><div style="min-width:0"><h3 style="margin:0">${esc(I0.name||'?')}</h3><small><span class="lvb">${I0.level||1}</span> ${titleHTML(t)}</small></div></div>
  <div class="ptabs">${PROF_TABS.map(([k,l])=>`<button class="${k===P.tab?'on':'alt'}" onclick="profTab('${k}')">${l}</button>`).join('')}</div><div class="ppan">${profPanel(P.tab,P.pf,I0,P.mine)}</div>
- <button class="alt" style="width:100%;margin-top:8px" onclick="${P.back||'closeModal()'}">${P.mine?'Đóng':'Quay lại'}</button>`);}
+ ${P.act||''}<button class="alt" style="width:100%;margin-top:8px" onclick="${P.back||'closeModal()'}">${P.mine?'Đóng':'Quay lại'}</button>`);}
 function profTab(t){if(PROF){PROF.tab=t;profRender();}}
 function openMyProfile(tab){PROF={mine:true,tab:tab||'xp',pf:pubProfile(),info:profInfoMe(),back:'closeModal()'};profRender();}
-openPlayerProfile=async function(uid,back){modal(`<h3>👤 Hồ sơ</h3><p class="small">Đang tải…</p>`);try{await loadSB();const {data}=await SB.from('tlmn_players').select('user_id,name,avatar,level,title,xp,frame').eq('user_id',uid).maybeSingle();
+openPlayerProfile=async function(uid,back,act){modal(`<h3>👤 Hồ sơ</h3><p class="small">Đang tải…</p>`);try{await loadSB();const {data}=await SB.from('tlmn_players').select('user_id,name,avatar,level,title,xp,frame').eq('user_id',uid).maybeSingle();
  if(!data){modal(`<h3>👤 Hồ sơ</h3><p class="small">Không có dữ liệu hồ sơ.</p><button class="alt" onclick="${back||'closeModal()'}">Quay lại</button>`);return;}const av=data.avatar||{};
- PROF={mine:false,tab:'xp',pf:av.pf||null,back,info:{name:data.name,av:av.av,bg:av.bg,frame:data.frame||av.frame,level:data.level||1,title:{name:data.title||'',tier:1},xp:data.xp||0,stats:{}}};profRender();}catch(e){modal(`<h3>👤 Hồ sơ</h3><p class="small">Lỗi tải hồ sơ.</p><button class="alt" onclick="closeModal()">Đóng</button>`);}};
+ PROF={mine:false,tab:'xp',pf:av.pf||null,back,act:act||'',info:{name:data.name,av:av.av,bg:av.bg,frame:data.frame||av.frame,level:data.level||1,title:{name:data.title||'',tier:1},xp:data.xp||0,stats:{}}};profRender();}catch(e){modal(`<h3>👤 Hồ sơ</h3><p class="small">Lỗi tải hồ sơ.</p><button class="alt" onclick="closeModal()">Đóng</button>`);}};
 const _rh153=renderHome;renderHome=function(){_rh153.apply(this,arguments);try{const pc=document.querySelector('#home .pcard');if(!pc)return;pc.onclick=()=>openMyProfile();const pt=pc.querySelector('.pt');if(pt){pt.style.cursor='pointer';pt.onclick=e=>{e.stopPropagation();openTitles();};}}catch(e){}};
 
 // ===== v1.54: màn hình Thưởng EXP =====
@@ -552,3 +552,9 @@ const _wfx155=winFX;winFX=function(txt,me){const ef=equipped(PR,'fx');if(!me||!e
  else if(ef.mode==='phoenix'){fx('<div class="fxphx">🐦‍🔥</div>',3000);setTimeout(()=>{fx('<div class="fxflash"></div>',1400);for(let i=0;i<48;i++)fx(`<div class="fxemb" style="left:${R()*100}vw;--dx:${(R()-.5)*120}px;animation-duration:${1.4+R()*1.6}s;animation-delay:${R()*.8}s">${pick(i)}</div>`,3800);},900);}
 };
 const _se155=showEmote;showEmote=function(p,e,bub){_se155.apply(this,arguments);try{const d=typeof _bubOf!=='undefined'&&_bubOf[p];if(!d||!d.classList)return;const pk=SHOP.find(x=>x.type==='emote'&&x.ea&&x.list.includes(String(e)));if(pk)d.classList.add('ea-'+pk.ea);}catch(err){}};
+
+// ===== v1.56: chạm người chơi (xếp hạng / danh sách online) mở thẳng hồ sơ đầy đủ =====
+function plActsHTML(uid){const p=(typeof lobbyPres==='function'?lobbyPres():[]).find(x=>x.uid===uid);if(!p)return '';const free=p.room&&(p.seats||0)<(p.size||4);
+ return `<div class="placts">${FRIENDS.has(uid)?'<span class="small">✓ Đã là bạn bè</span>':`<button onclick="addFriendUid('${esc(uid)}')">Kết bạn</button>`}${ONL.active&&ONL.code&&p.room!==ONL.code?`<button class="alt" onclick="inviteFriend('${esc(uid)}');closeModal()">Mời vào bàn</button>`:''}${p.room&&p.room!==(ONL.active&&ONL.code)?`<button class="alt" ${free?'':'disabled'} onclick="closeModal();joinSame('${esc(p.room)}',${p.pubT?1:0})">${free?'Vào cùng bàn':'Bàn đã đủ người'}</button>`:''}</div>`;}
+const _plOld156=plTap;plTap=function(uid){if(uid===USER.id)return openMyProfile();const p=lobbyPres().find(x=>x.uid===uid);if(!p)return toast('Người chơi đã rời sảnh');if(p.bot)return _plOld156(uid);openPlayerProfile(uid,'openOnline()',plActsHTML(uid));};
+function lbTap(uid){if(!uid)return;if(typeof USER!=='undefined'&&USER&&uid===USER.id)return openMyProfile();openPlayerProfile(uid,'openLeaderboard()');}
