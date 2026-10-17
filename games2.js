@@ -48,4 +48,12 @@ function pkEquity(hole,board,nOpp,iters,mode,deckAll){const used=new Set(hole.co
   for(let o=0;o<nOpp;o++){const oh=d.slice(p,p+=(mode==='xt'?5:2));const os=mode==='xt'?eval5(oh,'xt'):best5(oh.concat(bd),'pk').sc;const c=cmpSc(os,mine);if(c>0){lose=true;break;}if(c===0)tie++;}
   if(!lose)w+=tie?1/(tie+1):1;}return w/iters;}
 const DECK52=[...Array(52).keys()],DECK32=[...Array(52).keys()].filter(c=>{const r=c>>2;return r>=4&&r<=11;});
-if(typeof module!=='undefined')module.exports={BC_SYM,bcuaRoll,bcuaPay,dmTiles,dmPips,dmFits,dmPlace,dmStarter,dmSettle,dmBlockedWinner,dmBotPick,pkV,eval5,cmpSc,best5,handName,evalPartial,sidePots,awardPots,pkEquity,DECK52,DECK32};
+// Xì tố: máy tố nhẹ khi bài mạnh, thỉnh thoảng bluff tất tay (tỉ lệ theo độ khó: Dễ hiếm, Cao thủ ~9%)
+const XT_BLUFF=[0.01,0.03,0.06,0.09];
+function xtBotDiff(lv){return lv<5?0:lv<12?1:lv<25?2:3;}
+function xtBotPlan(eq,round,diff,canBluff,rng){rng=rng||Math.random;diff=Math.max(0,Math.min(3,diff|0));
+ if(canBluff&&eq<0.5&&round>=1&&rng()<XT_BLUFF[diff]*(round>=2?1.3:1))return{kind:'bluff'};
+ if(eq>0.88&&round>=2&&rng()<0.12)return{kind:'allin'};
+ if(eq>0.7){const ms=eq>0.85?[1,2,3]:[1,1,2];return{kind:'raise',mult:ms[Math.floor(rng()*ms.length)]};}
+ return{kind:'norm'};}
+if(typeof module!=='undefined')module.exports={XT_BLUFF,xtBotDiff,xtBotPlan,BC_SYM,bcuaRoll,bcuaPay,dmTiles,dmPips,dmFits,dmPlace,dmStarter,dmSettle,dmBlockedWinner,dmBotPick,pkV,eval5,cmpSc,best5,handName,evalPartial,sidePots,awardPots,pkEquity,DECK52,DECK32};

@@ -1,6 +1,6 @@
 // EXTRAS_START
 // ---- Phạt rời bàn ----
-function exitPenalty(bet){return Math.ceil((bet||0)*0.5);}
+function exitPenalty(bet){return Math.ceil(bet||0);}
 function applyExitPenalty(P,bet){const n=Math.min(P.xu,exitPenalty(bet==null?P.bet:bet));P.xu-=n;P.stats&&(P.stats.quits=(P.stats.quits||0)+1);return n;}
 // ---- Vòng quay may mắn ----
 const SPIN_COST=200;

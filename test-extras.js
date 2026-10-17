@@ -2,8 +2,8 @@ const X=require('./progress.js'),S=require('./shop.js');Object.assign(global,X,S
 let pass=0,fail=0;const t=(n,v)=>{v?pass++:(fail++,console.log('FAIL',n));};
 let seed=3;const rng=()=>(seed=(seed*16807)%2147483647)/2147483647;
 // phạt rời bàn
-t('penalty 50%',E.exitPenalty(100)===50&&E.exitPenalty(5000)===2500&&E.exitPenalty(25)===13);
-let P=S.ensureInv(X.newProfile());P.bet=500;t('apply penalty',E.applyExitPenalty(P)===250&&P.xu===750&&P.stats.quits===1);
+t('penalty 100%',E.exitPenalty(100)===100&&E.exitPenalty(5000)===5000&&E.exitPenalty(25)===25);
+let P=S.ensureInv(X.newProfile());P.bet=500;t('apply penalty',E.applyExitPenalty(P)===500&&P.xu===500&&P.stats.quits===1);
 P.xu=10;t('penalty capped at balance',E.applyExitPenalty(P,1000)===10&&P.xu===0);
 // vòng quay
 P=S.ensureInv(X.newProfile());const d1=new Date(2026,9,11,10),d1b=new Date(2026,9,11,23,59),d2=new Date(2026,9,12,0,1);
@@ -29,7 +29,7 @@ t('only host changes bet',E.canChangeBet(ta,'a')&&!E.canChangeBet(ta,'b'));
 const full=E.lobbyTables([1,2,3,4,5].map(i=>({uid:'u'+i,table:c1,at:i})))[0];t('max 4 seats',full.count===4&&full.status==='đủ người');
 const Q=X.newProfile();Q.xu=50;t('cannot sit full',!E.canSit(full,Q,'z').ok);t('cannot sit poor',!E.canSit(tb,Q,'z').ok);Q.xu=99999;t('can sit',E.canSit(tb,Q,'z').ok);
 // cửa hàng mở rộng
-t('shop >= 90 items',S.SHOP.length>=90);t('unique ids',new Set(S.SHOP.map(x=>x.id)).size===S.SHOP.length);t('all have rarity',S.SHOP.every(x=>x.r>=1&&x.r<=4));
+t('shop >= 90 items',S.SHOP.length>=90);t('unique ids',new Set(S.SHOP.map(x=>x.id)).size===S.SHOP.length);t('all have rarity',S.SHOP.every(x=>x.r>=1&&x.r<=5));
 const dd=S.dailyDeal('2026-10-11');t('daily deal stable & discounted',dd.id===S.dailyDeal('2026-10-11').id&&dd.price<S.shopItem(dd.id).price);
 {const R=S.ensureInv(X.newProfile());R.xu=1e6;const b=R.xu;S.buyItem(R,dd.id,99,'2026-10-11');t('buy at deal price',b-R.xu===dd.price);}
 t('new types equip',(()=>{const R=S.ensureInv(X.newProfile());R.xu=1e6;S.buyItem(R,'deck_night',99);return S.equipItem(R,'deck_night')&&S.equipped(R,'deck').id==='deck_night'&&S.equipped(R,'fx').id==='fx_confetti';})());

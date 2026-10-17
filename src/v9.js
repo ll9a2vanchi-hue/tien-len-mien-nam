@@ -41,10 +41,11 @@ function setTblBet(b){const was=(PR.bet||0)>=MASTER_BET;PR.bet=b;if(was!==(b>=MA
 function suggestBet(){const ok=BETS2.filter(b=>b<MASTER_BET&&b*8<=PR.xu);return ok.length?ok[ok.length-1]:BETS2[0];}
 openTables=function(){if(!BETS2.includes(PR.bet)||PR.bet>PR.xu)PR.bet=Math.min(suggestBet(),PR.xu>=100?suggestBet():100);const sug=suggestBet();
  const opt=n=>{const x=TABLE_XP[n],pl=PLACE_XU[n].map(m=>{const v=Math.round(PR.bet*m);return (v>0?'+':v<0?'−':'')+kxu(Math.abs(v));}).join(' / ');
-  return `<button class="alt ${pickN===n?'on':''}" onclick="pickN=${n};openTables()"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu: ${pl}</small></span><span class="mul">XP ${((()=>{try{return modeOf()}catch(e){return ''}})()==='demla'?XP_DEMLA_N:XP_PLACE_N)[n].join('/')}</span></button>`;};
+  return `<button class="alt ${pickN===n?'on':''}" onclick="pickN=${n};openTables()"><span class="seats">${'👤'.repeat(n)}</span><span class="ti"><b>Bàn ${n} người</b><small>Xu: ${pl}</small></span><span class="mul">${((()=>{try{return modeOf()}catch(e){return ''}})()==='demla'?XP_DEMLA_N:XP_PLACE_N)[n].join('/')}</span></button>`;};
  modal(`<h3>${I('bot')} Chơi với máy</h3><p class="small">1. Chọn số người</p><div class="tsel">${opt(2)}${opt(3)}${opt(4)}</div>
  <p class="small" style="margin-top:12px">2. Chọn mức cược · Bạn có ${I('coin')} ${fmt(PR.xu)}</p><div class="betrow">${BETS2.map(b=>`<button ${b>PR.xu?'disabled':''} onclick="setTblBet(${b})" class="${b>=MASTER_BET?'mbet ':''}${b===PR.bet?'':'alt'}">${b>=MASTER_BET?'10k':fmt(b)}${b>=MASTER_BET?'<small>Cao thủ</small>':b===sug?'<small>gợi ý</small>':''}</button>`).join('')}</div>${PR.bet>=MASTER_BET?'<p class="small mnote">🥋 Bàn 10.000: toàn bộ máy là <b>Cao thủ</b>. Thắng máy Cao thủ vẫn được <b>thưởng thêm XP</b>, nhưng không thưởng thêm xu (xu theo thứ hạng như thường).</p>':'<p class="small mnote">Mức 10k: bàn toàn Cao thủ.</p>'}
  <p class="small">Độ khó máy: <b>${PR.bet>=MASTER_BET?"toàn Cao thủ":"ngẫu nhiên theo cấp của bạn"}</b></p>
+ <details class="xptbl"><summary>Luật thanh toán</summary><p class="small">• Thúi heo/hàng: người thua còn heo, tứ quý, 3 đôi thông trả người về ngay trên.<br>• Cháy bài (còn 13 lá): trả thêm 2× cược.<br>• 3 bích về nhất: nước cuối là 1 lá 3♠ đánh lẻ → mỗi người trả thêm 1× cược.<br>• <b>Thúi 3 bích</b>: người về <b>bét</b> mà còn 3♠ trả <b>gấp đôi (2× cược)</b> cho người về ngay trên.<br>• Chặt heo / <b>chặt chồng</b> (cả Miền Nam và Đếm lá): người chặt sau cùng thu toàn bộ tiền chồng từ người vừa bị chặt.<br>• Rời bàn giữa ván: phạt <b>100%</b> mức cược.</p></details>
  <button class="bigbtn" onclick="startTable(pickN)" ${PR.xu<PR.bet?'disabled':''}>${I('bot')} VÀO BÀN ${pickN} NGƯỜI · ${fmt(PR.bet)} xu</button>`);};
 // ---- Âm thanh nâng cấp + nhạc nền
 let MUSIC=localStorage.getItem('tlmn_music')==='1',MVOL=+(localStorage.getItem('tlmn_mvol')||0.35);
@@ -147,23 +148,24 @@ function flushBadges(){if(_bShow||!BQ.length)return;if(!badgeIdle()){return;}con
  const close=()=>{o.remove();_bShow=false;setTimeout(flushBadges,250);};o.addEventListener('click',close);}
 setInterval(flushBadges,1000);
 // ---- Bảng xếp hạng online
-function lbWeek(){const k=weekKey(new Date());if(!PR.wk||PR.wk.key!==k)PR.wk={key:k,wins:0,xp:0};return PR.wk;}
-const _he12=hookEnd;hookEnd=function(place,instant,n){const x0=PR.xp;_he12(place,instant,n);const w=lbWeek();w.xp+=Math.max(0,PR.xp-x0);if(place===0)w.wins++;saveP();};
-function lbStats(){const w=lbWeek();let ns=null;try{ns=equipped(PR,'name').id;}catch(e){}return{xp:PR.xp|0,xu:PR.xu|0,wins:PR.stats.wins|0,games:PR.stats.games|0,week_key:w.key,week_wins:w.wins|0,week_xp:w.xp|0,frame:equipped(PR,'frame').id,name_style:ns};}
+function lbWeek(){const k=lbWeekKey();if(!PR.wk||PR.wk.key!==k)PR.wk={key:k,wins:0,xp:0};return PR.wk;}
+const _he12=hookEnd;hookEnd=function(place,instant,n){_he12(place,instant,n);const w=lbWeek();if(place===0)w.wins++;saveP();};
+function lbWinMini(){lbWeek().wins++;}
+function lbStats(){const w=lbWeek();let ns=null;try{ns=equipped(PR,'name').id;}catch(e){}return{xp:PR.xp|0,xu:PR.xu|0,wins:totalWins(PR),games:PR.stats.games|0,week_key:w.key,week_wins:w.wins|0,week_xp:w.xp|0,frame:equipped(PR,'frame').id,name_style:ns};}
 const _cp12=cloudPush;cloudPush=async function(q){const r=await _cp12(q);try{if(USER&&SB)await ensurePlayer();}catch(e){}return r;};
 const LB_TABS=[['xp','Cấp độ','xp'],['xu','Giàu nhất','xu'],['wins','Thắng nhiều','wins'],['week','Tuần này','week_wins']];let lbTab='xp';
 async function openLeaderboard(tab){if(tab)lbTab=tab;const tabs=`<div class="lbtabs">${LB_TABS.map(([k,n])=>`<button class="${k===lbTab?'':'alt'}" onclick="openLeaderboard('${k}')">${n}</button>`).join('')}</div>`;
  if(typeof USER==='undefined'||!USER||navigator.onLine===false){modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}<p>${navigator.onLine===false?'Bạn đang ngoại tuyến. Kết nối mạng để xem bảng xếp hạng.':'Hãy <b>đăng nhập</b> để lên bảng xếp hạng cùng mọi người.'}</p>${navigator.onLine===false?'':`<button onclick="openAccount()">${I('user')} Đăng nhập / Đăng ký</button>`}`);return;}
  modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}<p class="small">Đang tải…</p>`);
- try{await loadSB();await ensurePlayer();const col=LB_TABS.find(t=>t[0]===lbTab)[2],wk=weekKey(new Date());
-  let q=SB.from('tlmn_players').select('user_id,name,avatar,level,title,xp,xu,wins,week_wins,week_xp,week_key,frame,name_style').order(col,{ascending:false}).order('xp',{ascending:false}).limit(50);if(lbTab==='week')q=q.eq('week_key',wk);
+ try{await loadSB();await ensurePlayer();const col=LB_TABS.find(t=>t[0]===lbTab)[2],wk=lbWeekKey();
+  let q=SB.from('tlmn_players').select('user_id,name,avatar,level,title,xp,xu,wins,week_wins,week_xp,week_key,frame,name_style').order(col,{ascending:false}).order('xp',{ascending:false}).order('games',{ascending:true}).order('user_id').limit(50);if(lbTab==='week')q=q.eq('week_key',wk);
   const {data,error}=await q;if(error)throw error;const me=data.find(r=>r.user_id===USER.id);let myRank=me?data.indexOf(me)+1:null,myRow=me;try{lbRankSeen(myRank)}catch(e){}
   if(!me){const {data:mr}=await SB.from('tlmn_players').select('user_id,name,avatar,level,title,xp,xu,wins,week_wins,week_key,frame,name_style').eq('user_id',USER.id).maybeSingle();myRow=mr;
    if(mr){let c=SB.from('tlmn_players').select('user_id',{count:'exact',head:true}).gt(col,mr[col]||0);if(lbTab==='week')c=c.eq('week_key',wk);const {count}=await c;myRank=(count||0)+1;try{lbRankSeen(myRank)}catch(e){}}}
   const val=r=>lbTab==='xp'?`Cấp ${r.level} · ${fmt(r.xp)} XP`:lbTab==='xu'?`${I('coin')} ${fmt(r.xu)}`:lbTab==='wins'?`${fmt(r.wins)} thắng`:`${fmt(r.week_wins)} thắng · ${fmt(r.week_xp||0)} XP`;
   const row=(r,i,mine)=>{const a=r.avatar||{};return `<div class="lbrow ${i<3?'pod p'+i:''} ${mine?'mine':''}"><span class="lbn">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><span class="av lbav ${r.frame?'fr-'+r.frame:''}" style="background:${esc(a.bg||'#345')}">${esc(a.av||'🙂')}</span><span class="lbname"><b class="${esc(r.name_style||'')}">${esc(r.name||'Người chơi')}</b><small>${titleHTML?titleHTML({name:esc(r.title||''),tier:((TITLES.find(t=>t.name===r.title)||{}).tier)||1}):esc(r.title||'')}</small></span><span class="lbv">${val(r)}</span></div>`;};
   if(document.querySelector('#modalIn h3')?.textContent.indexOf('xếp hạng')<0)return;
-  modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}${lbTab==='week'?'<p class="small">Làm mới mỗi thứ Hai</p>':''}<div class="lblist">${data.length?data.map((r,i)=>row(r,i,r.user_id===USER.id)).join(''):'<p class="small">Chưa có ai trên bảng.</p>'}</div>
+  modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}${lbTab==='week'?'<p class="small">Làm mới mỗi thứ Hai</p>':''}<div class="lblist">${data.length?(()=>{const rk=[];data.forEach((r,i)=>rk.push(i>0&&(r[LB_TABS.find(t=>t[0]===lbTab)[2]]||0)===(data[i-1][LB_TABS.find(t=>t[0]===lbTab)[2]]||0)?rk[i-1]:i+1));return data.map((r,i)=>row(r,rk[i]-1,r.user_id===USER.id)).join('');})():'<p class="small">Chưa có ai trên bảng.</p>'}</div>
    ${myRow?`<div class="lbme">${row(myRow,(myRank||0)-1,true).replace(/<span class="lbn">[^<]*<\/span>/,`<span class="lbn">#${myRank||'?'}</span>`)}</div>`:''}<p class="small">Số liệu do máy bạn gửi lên khi sao lưu, máy chủ giới hạn mức tăng để chống gian lận.</p>`);
  }catch(e){modal(`<h3>🏆 Bảng xếp hạng</h3>${tabs}<p>Không tải được: ${esc(e.message||String(e))}</p>`);}}
 const _rh12=renderHome;renderHome=function(){_rh12();const g=document.querySelector('#home .tiles');if(g&&g.insertAdjacentHTML)g.insertAdjacentHTML('beforeend',`<button class="alt tile" onclick="openLeaderboard()"><span style="font-size:28px;line-height:30px">🏆</span><span>Xếp hạng</span></button>`);};
@@ -546,13 +548,13 @@ function applyThui(list){let net=0;const out=list.map(s=>{let amt=s.amount;if(s.
 function thuiFX(){const T=THUI;if(!T||!T.list.length)return;const n=T.list.length,b3=T.list.some(x=>x.b3);
  
  let t0=600;if(b3){setTimeout(()=>{fx(`<div class="banner b3ban">♠ 3 BÍCH VỀ NHẤT! ♠</div>`,2200);sfx('win');try{SND.fanfare&&sfx('fanfare');}catch(e){}},300);t0=2400;}
- T.list.forEach((s,i)=>setTimeout(()=>{const lab=s.chay?'🔥 CHÁY BÀI!':(s.items.some(x=>/heo/.test(x.k))?'THÚI HEO!':s.items.some(x=>/tứ quý|đôi thông/.test(x.k))?'THÚI HÀNG!':'3 BÍCH!');
+ T.list.forEach((s,i)=>setTimeout(()=>{const lab=s.t3?'♠ THÚI 3 BÍCH ×2!':s.chay?'🔥 CHÁY BÀI!':(s.items.some(x=>/heo/.test(x.k))?'THÚI HEO!':s.items.some(x=>/tứ quý|đôi thông/.test(x.k))?'THÚI HÀNG!':'3 BÍCH!');
   finCaption(`${lab} ${s.lp===0?'Bạn':NAMES[s.lp]} −${fmt(s.paid)} xu`,1700,true);sfx(s.chay?'chop':'coin');if(s.paid)moneyFX(s.lp,s.lr,s.paid,lab);render();},t0+i*900));}
 function markThuiCards(){if(!THUI)return;const set={};THUI.list.forEach(s=>{set[s.lp]=new Set(s.cards||[]);});
  document.querySelectorAll('#finHands .finfan').forEach(f=>{});/* fans đánh dấu khi tạo */
  const h=$('hand');if(h&&set[0])h.querySelectorAll('.card').forEach(c=>{if(set[0].has(+c.dataset.c))c.classList.add('thui');});}
 const _rvh27=revealHands;revealHands=function(){_rvh27();try{if(!THUI)return;const box=$('finHands');if(!box)return;const fans=[...box.querySelectorAll('.finfan')];let k=0;
- (G.seats||[0,1,2,3]).forEach(p=>{if(p===0)return;const h=(G.hands[p]||[]);if(!h.length)return;const f=fans[k++];if(!f)return;const s=THUI.list.find(x=>x.lp===p);if(!s)return;f.classList.add('thuifan');if(s.chay)f.setAttribute('data-l','CHÁY BÀI');
+ (G.seats||[0,1,2,3]).forEach(p=>{if(p===0)return;const h=(G.hands[p]||[]);if(!h.length)return;const f=fans[k++];if(!f)return;const s=THUI.list.find(x=>x.lp===p);if(!s)return;f.classList.add('thuifan');f.setAttribute('data-l',s.t3?'THÚI 3 BÍCH ×2':s.chay?'CHÁY BÀI':s.items.some(x=>/heo/.test(x.k))?'THÚI HEO':'THÚI HÀNG');
   f.querySelectorAll('.card').forEach(c=>{if((s.cards||[]).includes(+c.dataset.c))c.classList.add('thui');});});markThuiCards();}catch(e){}};
 // offline
 const _dp27=doPlay;doPlay=function(p,c,s){try{if(G&&!G.online&&G.hands[p]&&c&&G.hands[p].length===c.length){G.finPlay=G.finPlay||{};G.finPlay[p]=c.slice();}}catch(e){}return _dp27(p,c,s);};
@@ -567,9 +569,10 @@ const _os27=onlineState;onlineState=function(st,fh){let fresh=false;try{if(st&&s
     const sp=st.seats[s.payer],sr=st.seats[s.receiver];if(sp&&sp.bot)addBotXu(lp,-s.amount);if(sr&&sr.bot)addBotXu(lr,s.amount);return Object.assign({},s,{lp,lr,paid:lp===0?amt:s.amount});});THUI={list,net};}}}}catch(e){console.error(e);}
  const r=_os27(st,fh);if(fresh&&THUI)setTimeout(thuiFX,100);return r;};
 // dòng trong bảng kết quả
-function thuiRow(){const T=THUI;const m=$('modalIn');if(!T||!T.list.length||!m||m.querySelector('.thuirow'))return;const mine=T.list.filter(s=>s.lp===0||s.lr===0);
- const txt=T.list.map(s=>`${s.lp===0?'Bạn':esc(NAMES[s.lp])} → ${s.lr===0?'bạn':esc(NAMES[s.lr])}: ${s.items.map(x=>x.k).join(', ')} (${fmt(s.paid)} xu)`).join('<br>');
- const d=document.createElement('div');d.className='thuirow';d.innerHTML=`<b>Thúi / cháy / 3 bích</b> <span class="${T.net>=0?'gain':'loss'}">${T.net>=0?'+':'−'}${fmt(Math.abs(T.net))} xu</span><div class="small">${txt}</div>`;
+function thuiRow(){const T=THUI;const m=$('modalIn');if(!T||!T.list.length||!m||m.querySelector('.thuirow'))return;
+ const nm=i=>i===0?'Bạn':esc(NAMES[i]);const cls=k=>/3 bích/.test(k)?'k3':/cháy/.test(k)?'kc':'kt';
+ const lines=T.list.map(s=>{const mine=s.lp===0||s.lr===0;return `<div class="thl ${mine?'mine':''}"><div class="thw"><b>${nm(s.lp)}</b> <i>→</i> <b>${nm(s.lr)}</b><span class="thx loss">${s.lp===0?'−':s.lr===0?'+':''}${fmt(s.paid)} xu</span></div><div class="thi">${s.items.map(x=>`<em class="${cls(x.k)}">${x.k==='thúi 3 bích'?'♠ Thúi 3 bích ×2':x.k}</em>`).join('')}</div></div>`;}).join('');
+ const d=document.createElement('div');d.className='thuirow';d.innerHTML=`<div class="thh"><b>⚠ Thúi / cháy / 3 bích</b> <span class="${T.net>=0?'gain':'loss'}">Bạn ${T.net>=0?'+':'−'}${fmt(Math.abs(T.net))} xu</span></div>${lines}`;
  const rb=m.querySelector('.rewbox')||m.querySelector('button');if(rb)rb.before(d);else m.appendChild(d);}
 const _sr27=showResult;showResult=function(r){const x=_sr27(r);try{thuiRow();}catch(e){}return x;};
 const _sor27=showOnlineResult;showOnlineResult=function(st){const x=_sor27(st);try{thuiRow();}catch(e){}return x;};
@@ -589,8 +592,8 @@ function ledgStart(){LEDG={res:null,xu0:PR.xu,s0:{},chop:0,t:Date.now()};setTime
 const _ng29=newGame;newGame=function(n){const r=_ng29(n);try{if(G&&!G.online)ledgStart();}catch(e){}return r;};
 const _os29=onlineState;onlineState=function(st,fh){try{if(st&&st.dealId&&LEDG.deal!==st.dealId){ledgStart();LEDG.deal=st.dealId;}}catch(e){}const r=_os29(st,fh);
  try{if(st&&!st.over&&LEDG.deal===st.dealId&&!LEDG.snap){LEDG.snap=1;(G.seats||[0,1,2,3]).forEach(p=>{LEDG.s0[p]=seatXu(p);});}}catch(e){}return r;};
-function thuiParts(){const o={thui:0,chay:0,b3:0};if(!THUI)return o;THUI.list.forEach(s=>{if(s.lp!==0&&s.lr!==0)return;const sign=s.lp===0?-1:1;let left=s.lp===0?s.paid:s.amount;
-  s.items.forEach(it=>{const v=Math.min(left,it.v);left-=v;const k=it.k==='cháy bài'?'chay':it.k==='3 bích về nhất'?'b3':'thui';o[k]+=sign*v;});});return o;}
+function thuiParts(){const o={thui:0,chay:0,b3:0,t3:0};if(!THUI)return o;THUI.list.forEach(s=>{if(s.lp!==0&&s.lr!==0)return;const sign=s.lp===0?-1:1;let left=s.lp===0?s.paid:s.amount;
+  s.items.forEach(it=>{const v=Math.min(left,it.v);left-=v;const k=it.k==='cháy bài'?'chay':it.k==='3 bích về nhất'?'b3':it.k==='thúi 3 bích'?'t3':'thui';o[k]+=sign*v;});});return o;}
 function ledgerParts(){const r=LEDG.res||(G&&G.lastRes)||{},L=r.ledger||{};const t=thuiParts();const chop=G&&!G.online?(G.chopNet||0):(LEDG.chop||0);
  const parts=Object.assign({},L,t,{chop});const known=ledgerItems(parts).total;const actual=LEDG.xu0==null?known:PR.xu-LEDG.xu0;parts.misc=actual-known;return{parts,actual};}
 function ledgerBox(){const m=$('modalIn');if(!m||m.querySelector('.ledger'))return;const {parts,actual}=ledgerParts();const {items,total}=ledgerItems(parts);
@@ -736,8 +739,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.52.3';
+const APP_V='1.53';
 const CHANGELOG=[
+ ['1.53','18/10',['Luật mới: THÚI 3 BÍCH — người bét còn giữ 3♠ trên tay phải trả GẤP ĐÔI (thêm 2× cược) cho người về ngay trên mình','Rời ván giữa chừng nay phạt 100% mức cược (trước là 50%) — cập nhật cảnh báo ở mọi chế độ','Khung chọn bàn/mức cược Tiến lên và Đếm lá không còn tràn ở 360/412/461','Danh hiệu dài tự chạy ngang (marquee); bật giảm chuyển động thì hiện dấu …','Bầu cua hiển thị cột sao dọc','Thúi/cháy nổi bật, rõ ràng hơn ở màn kết quả và xem lại ván','Xì tố: nhãn "Tố ×N" lớn cạnh ghế, ghế thắng sáng + bài thắng nâng lên + banner','Màn hình chính: chạm avatar mở hồ sơ nhiều tab (kinh nghiệm, tài sản, thành tích, sao, pet); chạm danh hiệu để chọn','Bảng xếp hạng "thắng nhiều": sửa reset tuần, đếm thắng các chế độ mới, xếp hạng đồng điểm','Đếm lá: chặt chồng giống Tiến lên (có kiểm thử)','Máy Dễ/Thường/Khó không còn mở ván bằng 3 đôi thông/tứ quý (giữ để chặt heo); Cao thủ giữ nguyên','Xì tố: máy tố nhẹ khi bài mạnh, thỉnh thoảng bluff tất tay theo độ khó (Dễ ~1%, Cao thủ ~9%)','Kiểm tra xáo bài: tất cả chế độ dùng Fisher-Yates, thêm kiểm thử thống kê; sửa chọn đối thủ ngẫu nhiên']],
  ['1.52.3','13/10',['Sửa luật 3 bích về nhất: chỉ tính khi lá cuối cùng là 3♠ đánh lẻ (đôi, sám, sảnh có 3♠ không tính)']],
  ['1.52.2','12/10',['Bài to hơn trên điện thoại: bài trên tay xếp 1 hàng hình quạt cong tràn ngang màn hình (như sòng bài), lá to hơn ~10–20%','Bài đánh trên bàn to hơn, tự xếp chồng gọn khi đánh nhiều lá','3 Cào, Xì dách, Poker: bài của bạn to hơn']],
  ['1.52.1','12/10',['Hàng 5 sao hạng chế độ hiện TRÊN avatar ở mọi ghế (bạn và máy) trong cả 8 chế độ, và trên avatar màn chính (chế độ cao nhất)','Luôn hiện đủ 5 ô sao: sao đạt tô màu hạng (Đen có nền sáng + hào quang tím), sao chưa đạt là viền mờ','Máy có hạng sao cố định theo tên']],

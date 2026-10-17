@@ -25,8 +25,9 @@ function isB3Win(p){return !!(p&&p.length===1&&Number(p[0])===0);}
 // thúi/cháy: trả cho người về ngay trên mình; 3 bích về nhất: trả cho người nhất
 function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=isB3Win(winPlay);const out=[];
  rank.slice(1).forEach((p,j)=>{const above=rank[j];const v=thuiValue(hands[p],bet);const chay=(hands[p]||[]).length===13;if(chay){v.amount+=2*bet;v.items.push({k:'cháy bài',v:2*bet});}
+  if(j===rank.length-2&&(hands[p]||[]).map(Number).includes(0)){v.amount+=2*bet;v.items.push({k:'thúi 3 bích',v:2*bet});}
   if(b3&&above===w){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}
-  if(v.amount)out.push({payer:p,receiver:above,amount:v.amount,cards:v.cards,items:v.items,b3:b3&&above===w,chay});
+  if(v.amount)out.push({payer:p,receiver:above,amount:v.amount,cards:v.cards,items:v.items,b3:b3&&above===w,t3:v.items.some(i=>i.k==='thúi 3 bích'),chay});
   if(b3&&above!==w)out.push({payer:p,receiver:w,amount:bet,cards:[],items:[{k:'3 bích về nhất',v:bet}],b3:true,chay:false});});return out;}
 // ---- Tiến Lên đếm lá: mỗi người thua trả người nhất bet/5 × số lá còn lại (heo tính 2 lá)
 // giá mỗi lá (đơn vị = cược/5): 3-10 = 1, J/Q/K = 1.5, A = 2, 2 đen = 3, 2 đỏ = 4; cháy (còn 13 lá) x2

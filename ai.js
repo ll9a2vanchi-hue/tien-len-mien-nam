@@ -32,17 +32,20 @@ function aiGroupCost(g,K){const info=detect(g);if(!info)return 9;let v=1;const r
  if(info.type==='single')v+=0.25*(11-Math.min(r,11))/11;if(info.type==='pair')v+=0.1*(11-Math.min(r,11))/11;
  if(info.type==='quad'||(info.type==='pairseq'&&info.len>=3))v-=0.4;return v;}
 function aiCtx(hand,ctx,level){const U=aiUnknown(hand,ctx&&ctx.played);const others=(ctx&&ctx.others)||[13];return{U,uc:rankCounts(U),maxOther:Math.max(0,...others),minOther:Math.min(...others),others,ctl:level>=3?0.85:0.7};}
+// v1.53: bộ chặt (3 đôi thông trở lên, tứ quý) để dành chặt heo; chỉ Cao thủ mới dám mở ván bằng bộ chặt
+let AI_LV=0;
+function aiIsBombCards(g){const i=detect(g);return !!i&&(i.type==='quad'||(i.type==='pairseq'&&i.len>=3));}
 function aiMove(level,hand,cur,mustInclude,ctx,rng){rng=rng||Math.random;const others=(ctx&&ctx.others)||[13];
  if(level<=0){let cs=combos(hand).filter(x=>canBeat(x.info,cur));if(mustInclude!=null)cs=cs.filter(x=>x.cards.includes(mustInclude));if(!cs.length)return null;
-  const fin=cs.find(x=>x.cards.length===hand.length);if(fin)return fin.cards;if(cur&&rng()<0.3)return null;if(rng()<0.45)return cs[Math.floor(rng()*cs.length)].cards;return botMove(hand,cur,mustInclude,others);}
+  const fin=cs.find(x=>x.cards.length===hand.length);if(fin)return fin.cards;if(cur&&rng()<0.3)return null;if(rng()<0.45){let pool=cs;if(!cur){const nb=cs.filter(x=>!aiIsBombCards(x.cards));if(nb.length)pool=nb;}return pool[Math.floor(rng()*pool.length)].cards;}return botMove(hand,cur,mustInclude,others);}
  if(level===1)return botMove(hand,cur,mustInclude,others);
- const k=aiSmart(2,hand,cur,mustInclude,ctx,rng);if(level>=3&&!(ctx&&ctx.noSearch)&&(hand.length<=9||Math.min(...((ctx&&ctx.others)||[13]))<=6))return aiSearch(hand,cur,mustInclude,ctx,rng,k);return k;}
+ AI_LV=level;const k=aiSmart(2,hand,cur,mustInclude,ctx,rng);if(level>=3&&!(ctx&&ctx.noSearch)&&(hand.length<=9||Math.min(...((ctx&&ctx.others)||[13]))<=6))return aiSearch(hand,cur,mustInclude,ctx,rng,k);return k;}
 function aiSmart(level,hand,cur,mustInclude,ctx,rng){const K=aiCtx(hand,ctx,level),t0=Date.now(),memo=new Map(),budget={n:level>=3?6000:2500};
  let cs=combos(hand).filter(x=>canBeat(x.info,cur));if(mustInclude!=null)cs=cs.filter(x=>x.cards.includes(mustInclude));if(!cs.length)return null;
  const fin=cs.find(x=>x.cards.length===hand.length);if(fin)return fin.cards;
  const threat=K.minOther<=2,next=K.others[0];
  const split=h=>aiSplit(h,K,memo,budget);const beat=g=>aiBeatable(detect(g),K.U,K.uc,K.maxOther);
- if(!cur){const S=split(hand),gs=S.groups;const ctl=gs.filter(g=>!beat(g)),weak=gs.filter(g=>beat(g));
+ if(!cur){const S=split(hand);let gs=S.groups;if(AI_LV<3){const nbg=gs.filter(g=>!aiIsBombCards(g));if(nbg.length)gs=nbg;}const ctl=gs.filter(g=>!beat(g)),weak=gs.filter(g=>beat(g));
   if(mustInclude!=null){const g=gs.find(g=>g.includes(mustInclude));if(g)return g;}
   // Có thể về liền: đánh nhóm kiểm soát trước, nhóm yếu cuối cùng
   if(weak.length<=1&&ctl.length){return ctl.sort((a,b)=>b.length-a.length)[0];}

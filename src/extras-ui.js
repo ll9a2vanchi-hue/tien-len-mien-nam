@@ -21,7 +21,7 @@ const _se=showEmote;showEmote=function(p,e,bub){_se(p,e);const host=p===0?$('meI
 function fitPile(){const pw=$('pileWrap'),t=$('table');if(!pw||!pw.style||!pw.style.setProperty||!t||!t.getBoundingClientRect)return;const r=t.getBoundingClientRect();const n=Math.max(1,(G&&G.pile||[]).length);
  const base=Math.min(r.width*0.2,r.height*0.2,110),w=Math.min(base,(r.width*0.62)/(1+0.58*(n-1)));pw.style.setProperty('--pw',w.toFixed(1)+'px');pw.style.setProperty('--ph',(w*1.42).toFixed(1)+'px');}
 // ---- Phạt rời bàn
-function confirmExit(what){const pen=exitPenalty(curBet());return confirm(`${what}\n\nRời bàn giữa ván sẽ bị phạt 50% mức cược: -${fmt(pen)} xu.${ONL.active?' Máy sẽ chơi thay bạn.':''}`);}
+function confirmExit(what){const pen=exitPenalty(curBet());return confirm(`${what}\n\nRời bàn giữa ván sẽ bị phạt 100% mức cược: -${fmt(pen)} xu.${ONL.active?' Máy sẽ chơi thay bạn.':''}`);}
 function tableBet(){return (ONL.st&&ONL.st.bet)||(ONL.room&&ONL.room.bet)||PR.bet;}
 function curBet(){return ONL.active?tableBet():PR.bet;}
 function payExit(){const n=applyExitPenalty(PR,curBet());saveP();updHud();toast(`Phạt rời bàn: -${fmt(n)} xu`);sfx('bad');}

@@ -1,0 +1,5 @@
+const H=require('./tools-h.js');(async()=>{const b=await H.launch();
+for(const w of [360,412,461]){const p=await H.open(b,w,780,()=>{PR.xp=40000;PR.xu=4e6;PR.mxp={tlmn:STAR_CUM[12],poker:STAR_CUM[20]};buyAsset(PR,'xedap');buyPet(PR,'pet_meo');saveP();renderHome();});await p.waitForTimeout(500);
+await p.screenshot({path:`shots/v76-home-${w}.png`});await p.evaluate(()=>document.querySelector('#home .pcard .av').click());await p.waitForTimeout(400);
+for(const t of ['xp','as','ach','star','pet']){await p.evaluate(t=>profTab(t),t);await p.waitForTimeout(250);const r=await p.evaluate(()=>{const m=document.getElementById('modalIn');return m.scrollWidth-m.clientWidth});if(r>1)console.log('OVERFLOW',w,t,r);await p.screenshot({path:`shots/v76-prof-${t}-${w}.png`});}
+await p.evaluate(()=>{closeModal();document.querySelector('#home .pcard .pt').click()});await p.waitForTimeout(400);console.log(w,await p.evaluate(()=>document.querySelector('#modalIn h3').innerText),p.errs);await p.screenshot({path:`shots/v76-titles-${w}.png`});await p.close();}await b.close();})();

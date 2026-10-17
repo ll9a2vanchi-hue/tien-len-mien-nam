@@ -219,6 +219,11 @@ function dayKey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth(
 function dayDiff(a,b){const p=k=>{const[y,m,d]=k.split('-').map(Number);return Date.UTC(y,m-1,d)/864e5;};return p(b)-p(a);}
 function newProfile(){return{xu:START_XU,bet:100,rescueDay:null,login:{last:null,streak:0},badges:{},
  xp:0,title:null,stats:{games:0,wins:0,streak:0,bestStreak:0,chops:0,quads:0,pairseq4:0,longStraight:0,instant:0},quests:{day:null,list:[]}};}
+// tổng số trận thắng mọi chế độ (Miền Nam + Đếm lá nằm trong stats.wins; 6 chế độ còn lại tính riêng)
+const WIN_MODES=['3cao','xidach','baucua','domino','xito','poker'];
+function totalWins(P){const s=(P&&P.stats)||{};return (s.wins|0)+WIN_MODES.reduce((a,m)=>a+(s['m_'+m+'_wins']|0),0);}
+// khóa tuần theo giờ Việt Nam (UTC+7) để mọi người cùng mốc reset thứ Hai 00:00
+function lbWeekKey(now){const t=new Date((now==null?Date.now():+now)+7*3600e3);const w=(t.getUTCDay()+6)%7;const m=new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate()-w));return m.getUTCFullYear()+'-'+String(m.getUTCMonth()+1).padStart(2,'0')+'-'+String(m.getUTCDate()).padStart(2,'0');}
 function weekKey(d){d=new Date(d||new Date());const w=(d.getDay()+6)%7;d.setDate(d.getDate()-w);return dayKey(d);}
 function pickQuests(pool,rng){pool=pool.slice();const list=[];while(list.length<3&&pool.length){const q=pool.splice(Math.floor(rng()*pool.length),1)[0];if(list.some(x=>questDef(x.id).ev===q.ev))continue;list.push({id:q.id,prog:0,claimed:false});}return list;}
 function ensureDaily(P,now,rng){rng=rng||Math.random;const k=dayKey(now),wk=weekKey(now);let ch=false;
@@ -292,7 +297,7 @@ function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.g
  const x0=P.xu;P.xu=Math.max(0,P.xu+delta);const paid=P.xu-x0,x1=P.xu;const lv=addXp(P,xp0+bxp,ctx.mode);const x2=P.xu;const badges=checkBadges(P);
  const ledger={place:paid-(delta>0?bxu:0),bonus:delta>0?bxu:0,level:x2-x1,badges:P.xu-x2};return{delta,bxu,bxp,bonus,badges,lv,ledger};}
 // sổ xu ván: parts {place,bonus,chop,thui,chay,b3,level,badges,exit,misc}
-const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['luoc','Luộc máy'],['demla','Đếm lá'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
+const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['t3','Thúi 3 bích (bét còn 3♠)'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['luoc','Luộc máy'],['demla','Đếm lá'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
 function ledgerItems(parts){const items=LEDGER_LABELS.map(([k,l])=>({k,l,v:Math.round(parts[k]||0)})).filter(x=>x.v);return{items,total:items.reduce((a,x)=>a+x.v,0)};}
 
 // ---------- Cấp độ / XP / Danh hiệu ----------
@@ -341,4 +346,4 @@ function addXp(P,n,mode){if(n>0){const b=expBonus(P);if(b)n=Math.round(n*(1+b/10
  for(let l=before+1;l<=after;l++){ups.push(l);xu+=levelReward(l);}P.xu+=xu;
  const newTitles=TITLES.filter(t=>t.min&&t.min>before&&t.min<=after);return{xp:n,ups,xu,newTitles};}
 // PROGRESS_END
-if(typeof module!=='undefined')module.exports={PETS,petDef,petOwned,petActive,petBonus,buyPet,equipPet,shopExpBonus,STAR_MODES,STAR_TIERS,STAR_TOTAL_XP,STAR_STEPS,STAR_CUM,starInfo,starStepBonus,starBonus,addModeXp,modeXpOf,ASSET_CATS,assetDef,expBonus,bestAsset,ASSETS,ASSET_MAX,assetLv,assetBonus,assetCost,passiveBank,buyAsset,PASSIVE_CAP_MS,passiveRate,passiveInit,passivePending,passiveClaim,MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,XP_DEMLA_N,XP_MODE,modeXp,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};
+if(typeof module!=='undefined')module.exports={totalWins,lbWeekKey,WIN_MODES,PETS,petDef,petOwned,petActive,petBonus,buyPet,equipPet,shopExpBonus,STAR_MODES,STAR_TIERS,STAR_TOTAL_XP,STAR_STEPS,STAR_CUM,starInfo,starStepBonus,starBonus,addModeXp,modeXpOf,ASSET_CATS,assetDef,expBonus,bestAsset,ASSETS,ASSET_MAX,assetLv,assetBonus,assetCost,passiveBank,buyAsset,PASSIVE_CAP_MS,passiveRate,passiveInit,passivePending,passiveClaim,MODE_BADGE_INFO,modeRecord,badgeMode,allowanceAmt,canAllowance,claimAllowance,ledgerItems,LEDGER_LABELS,validName,WEEKLY_POOL,BADGE_TIER,weekKey,questDef,TABLE_XP,PLACE_XU,XP_PLACE_N,XP_DEMLA_N,XP_MODE,modeXp,tableXp,tableXu,TITLE_MIGRATE,migrateTitle,XP_PLACE,XP_CHOP,XP_INSTANT,XP_QUEST,xpNeed,levelInfo,levelReward,TITLES,titleForLevel,titleUnlocked,unlockedTitles,currentTitle,setTitle,addXp,START_XU,BETS,LOGIN_REWARDS,BADGES,QUEST_POOL,dayKey,newProfile,ensureDaily,questEvent,claimQuest,loginState,claimLogin,canRescue,rescue,checkBadges,onPlay,onGameEnd};

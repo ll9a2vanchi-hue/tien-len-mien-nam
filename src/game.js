@@ -6,7 +6,8 @@ const AV_EMO={m:['👨','🧔','👨‍🦱','🧑','👦','🧑‍🦱','👨�
 const AV_COL=['#7b3fa0','#b5651d','#c2185b','#00897b','#5d4037','#3949ab','#ef6c00','#6d4c41','#2e7d32','#ad1457'];
 let NAMES=['Bạn','Lan','Tuấn','Mai'],AVATARS=[['😎','#2b6cb0'],['👩','#7b3fa0'],['👨','#b5651d'],['👧','#c2185b']],BOTLV=[0,5,12,20];
 const pick=a=>a[Math.random()*a.length|0];
-function rollBots(){const pool=BOT_POOL.slice().sort(()=>Math.random()-.5).slice(0,3),cols=AV_COL.slice().sort(()=>Math.random()-.5);
+function fyShuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+function rollBots(){const pool=fyShuf(BOT_POOL).slice(0,3),cols=fyShuf(AV_COL);
  NAMES=['Bạn',...pool.map(x=>x[0])];AVATARS=[[myAv(),PR.avBg],...pool.map((x,i)=>[pick(AV_EMO[x[1]]),cols[i]])];
  const my=levelInfo(PR.xp).level;BOTLV=[0,...[0,1,2].map(()=>Math.max(1,Math.min(60,Math.round(my+(Math.random()*16-6)))))];}
 const PTS=[3,1,-1,-3];
