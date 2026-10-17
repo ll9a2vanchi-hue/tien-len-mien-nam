@@ -733,6 +733,146 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 .banner.wnban{background:linear-gradient(#ffe48a,#f4c542);color:#3a2400;border:2px solid #fff3b0;font-size:24px;line-height:1.2}.banner.wnban small{display:block;font-size:13px;font-weight:700}
 .ptabs{display:flex;gap:4px;overflow-x:auto;margin:4px 0 8px;padding-bottom:2px;scrollbar-width:none}.ptabs::-webkit-scrollbar{display:none}.ptabs button{flex:none;font-size:12px;padding:6px 9px;margin:0;white-space:nowrap}.ptabs button.on{background:linear-gradient(#ffe48a,#f4c542);color:#2a1a00}.ppan{min-height:150px;max-height:48vh;overflow:auto}.pcard .pt{cursor:pointer}
 #modalIn button[style*="width:100%"]{box-sizing:border-box}
+/* Bầu Cua v1.52.5 — scoped mobile layout + avatar bet chips */
+#mg.mg-baucua{padding-left:5px;padding-right:5px;min-width:0}
+#mg.mg-baucua .bctbl{flex:1 1 auto;min-height:0;min-width:0;gap:5px;padding:6px 4px;border-width:3px;border-radius:16px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+#mg.mg-baucua .bcseats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;width:100%;flex:none}
+#mg.mg-baucua .bcs{min-width:0;padding:3px 1px}
+#mg.mg-baucua .mgseat{width:100%;min-width:0;gap:2px;font-size:11px}
+#mg.mg-baucua .mgseat .av{width:32px;height:32px;font-size:18px}
+#mg.mg-baucua .mgseat b{max-width:100%;font-size:11px}
+#mg.mg-baucua .mgseat .cgbx{max-width:100%;font-size:10px;white-space:nowrap}
+#mg.mg-baucua .mgseat .slv{max-width:100%;flex-wrap:nowrap}
+#mg.mg-baucua .mgseat .slv .tt{max-width:48px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mg.mg-baucua .bc-seat-chip{display:inline-flex;align-items:center;justify-content:center;gap:3px;max-width:100%;height:18px;padding:0 5px;border-radius:12px;font-size:10px;font-weight:900;line-height:1;color:#fff;background:#231c22;border:1px solid var(--cc);box-shadow:0 0 0 1px #0006;white-space:nowrap}
+#mg.mg-baucua .bc-seat-chip-dot{display:inline-block;width:10px;height:10px;flex:none;border-radius:50%;background:var(--cc);border:2px dashed #fff9;box-sizing:border-box}
+#mg.mg-baucua .bc-seat-chip.idle{opacity:.48}
+#mg.mg-baucua .bc-seat-chip.active{box-shadow:0 0 0 1px var(--cc),0 0 8px #fff3}
+#mg.mg-baucua .bcleg{flex:none;margin:0}
+#mg.mg-baucua .bcleg .bcs{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+#mg.mg-baucua .bcleg .bc-seat-chip{order:2}
+#mg.mg-baucua .bcplate{width:130px;height:78px;min-height:0;margin:8px auto 2px;flex:none}
+#mg.mg-baucua .bcbowl{max-width:100%}
+#mg.mg-baucua .cgmsg{font-size:12px;line-height:1.25;min-height:0;text-align:center}
+#mg.mg-baucua .bcboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:2px;flex:none;min-width:0}
+#mg.mg-baucua .bct{min-width:0;overflow:hidden;border-radius:12px;padding:5px 1px 4px;touch-action:manipulation}
+#mg.mg-baucua .bct .bce{font-size:25px;line-height:1}
+#mg.mg-baucua .bct b{font-size:11px}
+#mg.mg-baucua .bcch{max-width:100%;gap:2px}
+#mg.mg-baucua .bcc{max-width:100%;font-size:9px;padding:0 3px 0 1px}
+#mg.mg-baucua .cgctl{flex:0 1 auto;min-height:0;max-height:40dvh;overflow-y:auto;overflow-x:hidden;padding:5px 2px max(5px,env(safe-area-inset-bottom));margin:0}
+#mg.mg-baucua .cgrole{margin-bottom:3px}
+#mg.mg-baucua .cgrole button{padding:6px 8px;font-size:12px}
+#mg.mg-baucua .cgbets{gap:3px;margin-bottom:4px}
+#mg.mg-baucua .cgbets button{padding:7px 0;font-size:11px}
+#mg.mg-baucua .cgbig{min-height:42px;padding:9px 5px;font-size:14px;touch-action:manipulation}
+#mg.mg-baucua button:focus-visible{outline:2px solid #fff3a5;outline-offset:1px}
+@media(max-height:720px) and (max-width:600px){
+ #mg.mg-baucua .bctbl{gap:3px;padding:3px}
+ #mg.mg-baucua .mgseat .av{width:27px;height:27px;font-size:16px}
+ #mg.mg-baucua .bcplate{width:112px;height:65px;margin:3px auto 0}
+ #mg.mg-baucua .bct{padding:3px 1px}
+ #mg.mg-baucua .bct .bce{font-size:21px}
+ #mg.mg-baucua .cgctl{max-height:43dvh}
+}
+@media(prefers-reduced-motion:reduce){
+ #mg.mg-baucua .bcbowl,#mg.mg-baucua .bct{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
+/* v1.52.7: safe mobile layout. CSS only — game rules and JS unchanged. */
+#mg.mg-baucua{overflow-x:hidden;min-width:0;background:radial-gradient(ellipse at 50% 35%,#8c1b34 0%,#5e1025 75%,#450b1d 100%)}
+#mg.mg-baucua .bctbl{display:flex;flex-direction:column;min-height:0;min-width:0;overflow-x:hidden;overflow-y:auto;gap:8px;border-color:#b88a49;background:radial-gradient(ellipse at 50% 30%,#a21c35 0%,#74162b 66%,#590e22 100%);box-shadow:inset 0 0 24px #25040b55}
+#mg.mg-baucua .bcseats{flex:0 0 auto;align-items:start;gap:3px;padding-bottom:4px;border-bottom:1px solid #eabf7855}
+#mg.mg-baucua .bcs{max-width:100%;overflow:hidden}
+#mg.mg-baucua .bc-seat-chip{font-size:11px;height:20px;transition:box-shadow .2s ease,opacity .2s ease}
+#mg.mg-baucua .bc-seat-chip.active{box-shadow:0 0 0 1px var(--cc),0 0 9px var(--cc)}
+#mg.mg-baucua .bc-seat-chip.idle{opacity:.48}
+#mg.mg-baucua .bcplate{width:clamp(124px,29vw,165px);height:clamp(86px,12vh,118px);min-height:0;margin:clamp(5px,1.2vh,14px) auto 4px;flex:none}
+#mg.mg-baucua .cgmsg{flex:none;align-self:center;max-width:100%;padding:7px 10px;border:1px solid #e9c37777;border-radius:20px;background:#310c1ab8;color:#ffe3a5;font-size:clamp(11px,2.6vw,13px);line-height:1.25;text-align:center}
+#mg.mg-baucua .bcboard{flex:0 0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(6px,1.5vw,11px);width:100%;margin:clamp(6px,1.8vh,18px) 0;padding:0 2px;box-sizing:border-box}
+#mg.mg-baucua .bct{min-width:0;min-height:clamp(108px,13vh,150px);border:2px solid #c79a4b;border-radius:16px;background:linear-gradient(150deg,#fff9e1,#f8e6b6 58%,#eac981);box-shadow:inset 0 2px 0 #fff9,0 3px 0 #9b702c,0 6px 12px #26041055;transition:box-shadow .15s ease,filter .15s ease}
+#mg.mg-baucua .bct .bce{font-size:clamp(28px,6vw,40px);line-height:1.12}
+#mg.mg-baucua .bct b{font-size:clamp(12px,2.8vw,15px)}
+#mg.mg-baucua .bct:active{filter:brightness(.95);box-shadow:inset 0 2px 3px #8b632a55,0 1px 0 #9b702c}
+#mg.mg-baucua .bct.hit{box-shadow:0 0 0 2px #fff1a8,0 0 17px #ffe27d}
+#mg.mg-baucua .bct.miss{opacity:.72}
+#mg.mg-baucua .cgctl{flex:none;min-height:0;max-height:none;overflow:visible;background:linear-gradient(#390d1d,#270917);border-top:1px solid #e8b76166;border-radius:12px 12px 0 0;padding:7px 5px max(8px,env(safe-area-inset-bottom));margin:0}
+#mg.mg-baucua .cgrole{margin-bottom:5px}
+#mg.mg-baucua .cgrole button{border-radius:12px}
+#mg.mg-baucua .cgbig{min-height:48px;border-radius:13px}
+#mg.mg-baucua button:focus-visible{outline:2px solid #fff3a5;outline-offset:2px}
+@media(max-height:740px) and (max-width:600px){
+ #mg.mg-baucua .bctbl{gap:4px}
+ #mg.mg-baucua .bcplate{width:120px;height:78px;margin:4px auto 0}
+ #mg.mg-baucua .bct{min-height:86px}
+ #mg.mg-baucua .bcboard{margin:4px 0}
+ #mg.mg-baucua .cgmsg{padding:5px 8px}
+}
+@media(prefers-reduced-motion:reduce){
+ #mg.mg-baucua .bct,#mg.mg-baucua .bc-seat-chip{transition:none!important}
+ #mg.mg-baucua .bcbowl,#mg.mg-baucua .bct{animation-duration:.01ms!important}
+}
+
+/* v1.52.8: 2–6 total seats and balanced table on tall phones */
+#mg.mg-baucua .bctbl{justify-content:space-evenly;gap:clamp(5px,1.1vh,14px)}
+#mg.mg-baucua .bcseats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-content:center;justify-content:center;gap:6px 4px;width:100%;padding:4px 2px 8px;box-sizing:border-box}
+#mg.mg-baucua .bcseats .bcs{min-width:0;max-width:100%;padding:3px 2px;overflow:hidden;border-radius:12px;background:#3a071a36}
+#mg.mg-baucua .bcseats .bcs .mgseat{min-width:0;max-width:100%;font-size:11px}
+#mg.mg-baucua .bcseats .bcs .mgseat .av{width:clamp(28px,8vw,40px);height:clamp(28px,8vw,40px)}
+#mg.mg-baucua .bcseats .bcs .mgseat b{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mg.mg-baucua .bcseats .bcs .mgseat .mgv{display:none}
+#mg.mg-baucua .bcmy{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:800;min-width:0}
+#mg.mg-baucua .bcmy .av{display:grid;place-items:center;width:clamp(28px,8vw,40px);height:clamp(28px,8vw,40px);border-radius:50%}
+#mg.mg-baucua .bcmy b{font-size:12px}
+#mg.mg-baucua .bcseats .bc-seat-chip{margin:2px auto 0;max-width:100%;box-sizing:border-box}
+#mg.mg-baucua .bcplate{margin:4px auto;flex:none}
+#mg.mg-baucua .bcboard{margin:5px 0;flex:none}
+#mg.mg-baucua .bct{min-height:clamp(106px,12.5vh,145px)}
+#mg.mg-baucua .cgctl{display:flex;flex-direction:column;gap:5px;padding:7px 5px max(8px,env(safe-area-inset-bottom))}
+#mg.mg-baucua .bcsetup{display:flex;align-items:center;justify-content:center;gap:10px;min-width:0}
+#mg.mg-baucua .bcsetup-label{font-size:12px;font-weight:800;white-space:nowrap;color:#ffe0a4}
+#mg.mg-baucua .bcseat-options{display:flex;align-items:center;gap:5px}
+#mg.mg-baucua .bcseat-options button{width:32px;height:30px;min-width:0;margin:0;padding:0;border-radius:9px;border:1px solid #d3a75a;background:#24131c;color:#ffe9b9;font-size:13px;font-weight:900}
+#mg.mg-baucua .bcseat-options button.selected{background:linear-gradient(#ffe8a0,#d8a64c);color:#402008;box-shadow:0 0 0 2px #fff6}
+#mg.mg-baucua .bcseat-options button:disabled{opacity:.45}
+@media(max-height:760px) and (max-width:600px){
+ #mg.mg-baucua .bctbl{justify-content:flex-start;gap:4px}
+ #mg.mg-baucua .bcseats{gap:3px}
+ #mg.mg-baucua .bcplate{width:115px;height:73px;margin:3px auto}
+ #mg.mg-baucua .bct{min-height:82px}
+ #mg.mg-baucua .bcsetup{gap:5px}
+}
+@media(max-width:350px){
+ #mg.mg-baucua .bcsetup-label{font-size:10px}
+ #mg.mg-baucua .bcseat-options{gap:3px}
+ #mg.mg-baucua .bcseat-options button{width:28px;height:28px}
+}
+
+/* v1.52.9: always-visible selector under avatar row */
+#mg.mg-baucua .bcsetup-board{flex:none;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;min-height:42px;margin:1px auto 2px;padding:5px 9px;border:1px solid #f6d38588;border-radius:14px;background:linear-gradient(135deg,#471021,#2a0918);box-shadow:0 2px 8px #1a001344;box-sizing:border-box}
+#mg.mg-baucua .bcsetup-board .bcsetup-label{font-size:12px;color:#ffe6ad}
+#mg.mg-baucua .bcsetup-board .bcseat-options{gap:5px}
+#mg.mg-baucua .bcsetup-board .bcseat-options button{min-width:36px;width:36px;height:34px;border-radius:10px}
+#mg.mg-baucua .bcsetup-board .bcseat-options button.selected{outline:2px solid #fff4b0;outline-offset:1px}
+@media(max-width:370px){#mg.mg-baucua .bcsetup-board{gap:4px;padding:5px}#mg.mg-baucua .bcsetup-board .bcseat-options button{width:30px;min-width:30px;height:32px}}
+
+/* v1.53.0: compact bottom controls; show full six betting tiles */
+#mg.mg-baucua .cgctl{gap:3px!important;padding:5px 5px max(6px,env(safe-area-inset-bottom))!important;border-radius:10px 10px 0 0}
+#mg.mg-baucua .cgrole{margin:0!important;gap:7px!important}
+#mg.mg-baucua .cgrole button{min-height:36px!important;padding:5px 11px!important;font-size:clamp(13px,3.3vw,16px)!important;line-height:1.15!important}
+#mg.mg-baucua .cgrow{margin:3px 0 0!important;gap:8px!important}
+#mg.mg-baucua .cgbig{min-height:43px!important;height:44px!important;padding:6px 8px!important;line-height:1.15!important}
+#mg.mg-baucua .bcseat-options button{touch-action:manipulation}
+#mg.mg-baucua .bcsetup-board{min-height:37px!important;padding:3px 7px!important;margin:0 auto!important}
+#mg.mg-baucua .bcsetup-board .bcseat-options button{height:31px!important}
+#mg.mg-baucua .bctbl{gap:clamp(3px,.65vh,8px)!important}
+#mg.mg-baucua .bcseats{gap:3px 4px!important;padding:2px 2px 5px!important}
+#mg.mg-baucua .bcseats .bcs{padding:2px!important}
+#mg.mg-baucua .bcplate{width:clamp(112px,25vw,148px)!important;height:clamp(78px,10vh,102px)!important;margin:0 auto!important}
+#mg.mg-baucua .cgmsg{padding:5px 9px!important}
+#mg.mg-baucua .bcboard{margin:3px 0!important;gap:6px!important}
+#mg.mg-baucua .bct{min-height:clamp(92px,11vh,132px)!important}
+@media(max-height:800px){#mg.mg-baucua .bct{min-height:84px!important}#mg.mg-baucua .bcplate{height:73px!important;width:108px!important}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -773,7 +913,7 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='f08cb9f67a';
+const APP_VER='957bab69ab';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -3190,6 +3330,13 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
 const APP_V='1.53';
 const CHANGELOG=[
  ['1.53','18/10',['Luật mới: THÚI 3 BÍCH — người bét còn giữ 3♠ trên tay phải trả GẤP ĐÔI (thêm 2× cược) cho người về ngay trên mình','Rời ván giữa chừng nay phạt 100% mức cược (trước là 50%) — cập nhật cảnh báo ở mọi chế độ','Khung chọn bàn/mức cược Tiến lên và Đếm lá không còn tràn ở 360/412/461','Danh hiệu dài tự chạy ngang (marquee); bật giảm chuyển động thì hiện dấu …','Bầu cua hiển thị cột sao dọc','Thúi/cháy nổi bật, rõ ràng hơn ở màn kết quả và xem lại ván','Xì tố: nhãn "Tố ×N" lớn cạnh ghế, ghế thắng sáng + bài thắng nâng lên + banner','Màn hình chính: chạm avatar mở hồ sơ nhiều tab (kinh nghiệm, tài sản, thành tích, sao, pet); chạm danh hiệu để chọn','Bảng xếp hạng "thắng nhiều": sửa reset tuần, đếm thắng các chế độ mới, xếp hạng đồng điểm','Đếm lá: chặt chồng giống Tiến lên (có kiểm thử)','Máy Dễ/Thường/Khó không còn mở ván bằng 3 đôi thông/tứ quý (giữ để chặt heo); Cao thủ giữ nguyên','Xì tố: máy tố nhẹ khi bài mạnh, thỉnh thoảng bluff tất tay theo độ khó (Dễ ~1%, Cao thủ ~9%)','Kiểm tra xáo bài: tất cả chế độ dùng Fisher-Yates, thêm kiểm thử thống kê; sửa chọn đối thủ ngẫu nhiên']],
+ ['1.53.0','13/10',['Bầu Cua: bỏ dòng hướng dẫn dài dưới nút Làm cái','Thu gọn thanh điều khiển, nút vai trò và nút Lắc để dành diện tích cho bàn cược','Giảm chiều cao khu vực bát và khoảng cách để đủ 6 ô cược trên màn hình']],
+ ['1.52.9','13/10',['Bầu Cua: chuyển nút chọn 2–6 người lên ngay dưới hàng avatar, luôn dễ thấy','Làm nổi bật nút đang chọn và khóa đổi người khi đang lắc/mở bát','Không thay đổi luật chơi và số xu khi nâng cấp vị trí nút']],
+ ['1.52.8','13/10',['Bầu Cua: chọn 2–6 người chơi ngay trong bàn, gồm nhà cái và người chơi','Tự điều chỉnh số người máy khi chuyển giữa Chơi con và Làm cái','Sắp xếp avatar thành tối đa 2 hàng × 3 cột, chip màu dưới từng người','Cân bằng khoảng trống giữa người chơi, bát và 6 ô cược trên màn hình dài','Đã kiểm tra cú pháp JavaScript và mô phỏng đủ 2–6 vị trí ở cả hai vai trò']],
+ ['1.52.7','13/10',['Bầu Cua: bố cục thích ứng màn hình điện thoại, cân đối bàn cược và khu vực điều khiển','Chip màu dưới avatar rõ hơn, phân biệt người đã đặt và chưa đặt','Làm mới ô cược, màu bàn và trạng thái thắng theo cách nhẹ và ổn định','Không thay đổi luật chơi hoặc JavaScript Bầu Cua để hạn chế lỗi đứng màn hình']],
+ ['1.52.6','13/10',['Bầu Cua: làm mới giao diện bàn đỏ, ô cược nổi khối và thanh điều khiển','Cân đối khoảng trống trên màn hình dài, giữ toàn bộ nút điều khiển dễ thao tác','Chip người chơi phát sáng nhẹ khi đã cược, loại bỏ số tiền cược hiển thị trùng','Hiệu ứng lắc bát, chip rơi và ô thắng sinh động hơn; tôn trọng chế độ giảm chuyển động']],
+ ['1.52.5','13/10',['Bầu Cua: sửa bố cục bị lệch và phần nội dung không vừa màn hình điện thoại','Hiển thị chip màu và số xu đã cược ngay dưới avatar từng người chơi','Chip mờ khi chưa đặt, chip sáng khi đã đặt để dễ phân biệt','Thu gọn bát, bàn cược và nút điều khiển; hỗ trợ cuộn khi màn hình thấp']],
+ ['1.52.4','13/10',['Bầu Cua: sửa lỗi mất xu khi thoát bàn trước khi mở bát','Bầu Cua: ngăn đổi lượt cược khi máy đang đặt hoặc đang lắc','Bầu Cua: tối ưu bàn cược và nút bấm trên điện thoại, hiển thị tên người chơi gọn hơn','Hỗ trợ giảm chuyển động trong giao diện Bầu Cua']],
  ['1.52.3','13/10',['Sửa luật 3 bích về nhất: chỉ tính khi lá cuối cùng là 3♠ đánh lẻ (đôi, sám, sảnh có 3♠ không tính)']],
  ['1.52.2','12/10',['Bài to hơn trên điện thoại: bài trên tay xếp 1 hàng hình quạt cong tràn ngang màn hình (như sòng bài), lá to hơn ~10–20%','Bài đánh trên bàn to hơn, tự xếp chồng gọn khi đánh nhiều lá','3 Cào, Xì dách, Poker: bài của bạn to hơn']],
  ['1.52.1','12/10',['Hàng 5 sao hạng chế độ hiện TRÊN avatar ở mọi ghế (bạn và máy) trong cả 8 chế độ, và trên avatar màn chính (chế độ cao nhất)','Luôn hiện đủ 5 ô sao: sao đạt tô màu hạng (Đen có nền sáng + hào quang tím), sao chưa đạt là viền mờ','Máy có hạng sao cố định theo tên']],
@@ -3665,11 +3812,15 @@ const _snap52=ospSnap;ospSnap=function(){try{if(MG.g&&document.body.classList.co
 // ===================== BẦU CUA =====================
 const BC_CHIPS=[100,200,500,1000,2000,5000];
 MG_MODE.baucua={
- open(){MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,500000);const st=MG.st={role:(localStorage.getItem('tlmn_bcrole')==='cai'?'cai':'con'),chip:BC_CHIPS.includes(MG.bet)?MG.bet:200,bets:{},bots:mgBots(3),phase:'bet',dice:bcuaRoll(),res:null,bet:0};bcBotBets();bcR();},
+ open(){MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,500000);const st=MG.st={role:(localStorage.getItem('tlmn_bcrole')==='cai'?'cai':'con'),chip:BC_CHIPS.includes(MG.bet)?MG.bet:200,bets:{},bots:mgBots(Math.max(0,bcSeatCount()-(localStorage.getItem('tlmn_bcrole')==='cai'?1:2))),phase:'bet',dice:bcuaRoll(),res:null,bet:0};bcBotBets();bcR();},
  pub(){const st=MG.st;if(!st)return{seats:[],msg:''};const show=st.phase==='open'||st.phase==='done';return{msg:(show?'Kết quả: '+st.dice.map(d=>BC_EMO[d]).join(' '):st.phase==='shake'?'Đang lắc…':'Đặt cược')+(st.msg?' · '+st.msg:''),seats:[{name:PR.name||'Người chơi',av:myAv(),dealer:st.role==='cai',cards:null,cnt:0,lab:bcBetTxt(st.bets),v:st.res?st.res.me:null}].concat(st.bots.map((b,i)=>({name:b.name,av:b.av,cards:null,cnt:0,lab:bcBetTxt(b.bets||{}),v:st.res?st.res.b[i]:null})))};},
- quit(){const st=MG.st;if(st&&st.role==='con'){const t=Object.values(st.bets).reduce((a,x)=>a+x,0);PR.xu=Math.max(0,PR.xu-t);saveP();}}
+ quit(){/* Cược chỉ là dự kiến đến khi bcOpen() quyết toán; thoát trước khi mở bát không trừ xu. */}
 };
-const BC_COL=['#ffd84d','#4fc3f7','#ff7ab6','#7dff9a'];
+const BC_COL=['#ffd84d','#4fc3f7','#ff7ab6','#7dff9a','#d9a0ff','#ffad61'];
+function bcSeatCount(){const n=Number(localStorage.getItem('tlmn_bcseats'));return Number.isInteger(n)&&n>=2&&n<=6?n:4;}
+function bcSetSeats(n){const st=MG.st;if(!st||st.placing||st.phase==='shake'||st.phase==='open')return;const count=Number(n);if(!Number.isInteger(count)||count<2||count>6)return;localStorage.setItem('tlmn_bcseats',String(count));bcResetSeats();}
+function bcResetSeats(){const st=MG.st;if(!st)return;const wanted=Math.max(0,bcSeatCount()-(st.role==='cai'?1:2));st.bots=mgBots(wanted);st.bets={};st.res=null;st.ledger=null;st.msg='';st._botsIn=0;st.phase='bet';bcBotBets();bcR();}
+function bcSeatChip(html,o,total){const marker='<span class="bc-seat-chip '+(total?'active':'idle')+'" style="--cc:'+BC_COL[o]+'" title="'+(total?'Đã đặt '+fmt(total)+' xu':'Chưa đặt cược')+'"><span class="bc-seat-chip-dot"></span>'+(total?kxu(total):'—')+'</span>';return html.replace('</span><b>', '</span>'+marker+'<b>');}
 function bcChipsOn(s){const st=MG.st;const out=[];if(st.bets[s])out.push({o:0,a:st.bets[s],av:myAv()});st.bots.forEach((b,i)=>{const a=(b.bets||{})[s];if(a)out.push({o:i+1,a,av:b.av});});return out;}
 function bcBetTxt(b){return Object.entries(b).filter(([,v])=>v).map(([s,v])=>BC_EMO[s]+kxu(v)).join(' ');}
 function bcTot(b){return Object.values(b||{}).reduce((a,x)=>a+x,0);}
@@ -3677,7 +3828,7 @@ function bcPlan(maxK,amts){const st=MG.st;const plan=[];st.bots.forEach((b,i)=>{
  for(let i=plan.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[plan[i],plan[j]]=[plan[j],plan[i]];}return plan;}
 function bcPlay(plan,done){const st=MG.st;st.placing=true;let q=0;const gap=RM?160:380;(function nx(){if(MG.st!==st)return;if(q>=plan.length){st.placing=false;bcR();if(done)done();return;}const [i,sy,a]=plan[q++];const b=st.bots[i];b.bets[sy]=(b.bets[sy]||0)+a;bcR();bcFlyIn(i+1,sy);setTimeout(nx,gap);})();}
 function bcBotBets(){const st=MG.st;mgRefill(st.bots,500);st.bots.forEach(b=>b.bets={});if(st.role==='con')return;bcPlay(bcPlan(3,[100,200,500,1000]));}
-function bcFlyIn(o,sy){const chip=document.querySelector(`#mg .bct[data-s="${sy}"] .bcc[data-o="${o}"]`);const src=o===0?document.querySelector('#mg .bcleg .av'):document.querySelector(`#mg .bcs[data-o="${o}"] .av`);if(!chip)return;sfx('cgChip');if(!src)return;
+function bcFlyIn(o,sy){const chip=document.querySelector(`#mg .bct[data-s="${sy}"] .bcc[data-o="${o}"]`);const src=o===0?document.querySelector('#mg .bcs[data-o="0"] .av'):document.querySelector(`#mg .bcs[data-o="${o}"] .av`);if(!chip)return;sfx('cgChip');if(!src)return;
  const a=src.getBoundingClientRect(),b=chip.getBoundingClientRect();const f=chip.cloneNode(true);f.classList.add('bcfly');f.style.left=(a.left+a.width/2-b.width/2)+'px';f.style.top=(a.top+a.height/2-b.height/2)+'px';document.body.appendChild(f);chip.style.opacity='0';
  const dx=b.left-(a.left+a.width/2-b.width/2),dy=b.top-(a.top+a.height/2-b.height/2);const dur=RM?220:520;
  const kf=RM?[{opacity:.4,transform:'translate(0,0)'},{opacity:1,transform:`translate(${dx}px,${dy}px)`}]:[{transform:'translate(0,0) scale(.6) rotate(0)'},{transform:`translate(${dx*.5}px,${dy*.5-60}px) scale(1.25) rotate(200deg)`,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(1) rotate(360deg)`}];
@@ -3686,7 +3837,12 @@ function bcR(){const o=$('mg');const st=MG.st;if(!o||!st)return;const show=st.ph
  const tile=s=>{const hit=show?st.dice.filter(d=>d===s).length:0;const chips=bcChipsOn(s);
   return `<button class="bct ${hit?'hit':''} ${show&&!hit&&chips.length?'miss':''}" data-s="${s}" onclick="bcPut('${s}')"><span class="bce">${BC_EMO[s]}</span><b>${BC_NAME[s]}</b>${hit?`<em class="bcx">×${hit}</em>`:''}<div class="bcch">${chips.map(c=>`<i class="bcc ${c.o===0?'me':''}" data-o="${c.o}" style="--cc:${BC_COL[c.o]}"><span>${c.av}</span>${kxu(c.a)}</i>`).join('')}</div></button>`;};
  const dealer=st.role==='cai'?{name:'Bạn (cái)',av:myAv(),me:1}:{name:'Nhà cái',av:'🎩'};
- o.innerHTML=mgTop()+`<div class="bctbl"><div class="bcseats"><div class="bcs dl" data-o="d" style="--cc:${st.role==='cai'?BC_COL[0]:'#bbb'}">${mgSeat(dealer,'<i class="cgdl">CÁI</i>')}</div>${st.bots.map((b,i)=>`<div class="bcs" data-o="${i+1}" style="--cc:${BC_COL[i+1]}">`+mgSeat(b,st.res?`<i class="mgv ${st.res.b[i]>0?'pos':st.res.b[i]<0?'neg':''}">${st.res.b[i]>0?'+':''}${kxu(st.res.b[i])}</i>`:(bcTot(b.bets)?`<i class="mgv">${kxu(bcTot(b.bets))}</i>`:''))+'</div>').join('')}</div>${st.role==='con'?`<div class="bcleg"><span class="bcs me" data-o="0" style="--cc:${BC_COL[0]}"><span class="av ${frameCls()}" style="--avc:#3a5">${myAv()}</span><b>Bạn</b>${seatLv({me:1})}${bcTot(st.bets)?' · '+kxu(bcTot(st.bets)):''}</span></div>`:''}
+ const mySeat=st.role==='con'?'<div class="bcs me" data-o="0" style="--cc:'+BC_COL[0]+'"><div class="bcmy"><span class="av '+frameCls()+'" style="--avc:#3a5">'+myAv()+'</span><b>Bạn</b><span class="bc-seat-chip '+(bcTot(st.bets)?'active':'idle')+'" style="--cc:'+BC_COL[0]+'"><span class="bc-seat-chip-dot"></span>'+(bcTot(st.bets)?kxu(bcTot(st.bets)):'—')+'</span></div></div>':'';
+ const dealerSeat='<div class="bcs dl" data-o="d" style="--cc:'+(st.role==='cai'?BC_COL[0]:'#f4d78b')+'">'+mgSeat(dealer,'<i class="cgdl">CÁI</i>')+'</div>';
+ const botSeats=st.bots.map((b,i)=>'<div class="bcs" data-o="'+(i+1)+'" style="--cc:'+BC_COL[i+1]+'">'+bcSeatChip(mgSeat(b,st.res?'<i class="mgv '+(st.res.b[i]>0?'pos':st.res.b[i]<0?'neg':'')+'">'+(st.res.b[i]>0?'+':'')+kxu(st.res.b[i])+'</i>':''),i+1,bcTot(b.bets))+'</div>').join('');
+ o.innerHTML=mgTop()+`<div class="bctbl"><div class="bcseats">${dealerSeat}${mySeat}${botSeats}</div>
+ <div class="bcsetup bcsetup-board"><span class="bcsetup-label">👥 Số người chơi</span><div class="bcseat-options">${[2,3,4,5,6].map(n=>`<button type="button" class="${bcSeatCount()===n?'selected':''}" onclick="bcSetSeats(${n})" ${(st.placing||st.phase==='shake'||st.phase==='open')?'disabled':''} aria-label="${n} người chơi" aria-pressed="${bcSeatCount()===n}">${n}</button>`).join('')}</div></div>
+
  <div class="bcplate ${st.phase==='shake'?'shaking':''} ${show?'open':''}"><div class="bcdice">${st.dice.map((d,i)=>`<span class="bcd" style="--i:${i}">${BC_EMO[d]}</span>`).join('')}</div><div class="bcbowl"></div></div>
  <div class="cgmsg">${esc(st.msg||(st.phase==='bet'?(st.role==='con'?'Chọn chip rồi chạm vào ô để đặt (đặt được nhiều ô)':'Các nhà đã đặt. Bạn làm cái — bấm Lắc'):''))}</div>
  <div class="bcboard">${BC_SYM.map(tile).join('')}</div></div><div class="cgctl">${bcCtl()}</div>`;try{svaScan(o);}catch(e){}}
@@ -3694,10 +3850,10 @@ function bcCtl(){const st=MG.st;if(st.phase==='shake')return '<p class="small" s
  const led=st.phase==='done'?mgLedger(st.ledger):'';const tot=bcTot(st.bets);const need=bcTot(st.bots.reduce((a,b)=>{for(const s in b.bets)a[s]=(a[s]||0)+b.bets[s];return a;},{}))*3;
  return `${led}<div class="cgrole"><button class="${st.role==='con'?'':'alt'}" onclick="bcRole('con')">🙋 Chơi con</button><button class="${st.role==='cai'?'':'alt'}" onclick="bcRole('cai')">🎩 Làm cái</button></div>
  ${st.role==='con'?`${mgBets(BC_CHIPS,st.chip,'bcChip',b=>b<=PR.xu)}<div class="cgrow"><button class="cgbig alt" ${tot?'':'disabled'} onclick="bcClear()">Xóa cược</button><button class="cgbig" ${tot?'':'disabled'} onclick="bcShake()">Lắc · ${kxu(tot)}</button></div>`
- :`<p class="small cgnote">Làm cái: ăn/chung từng nhà. Cần ≥ ${fmt(need)} xu (gấp 3 tổng cược).</p><div class="cgrow"><button class="cgbig alt" onclick="bcNew()">Đổi lượt cược</button><button class="cgbig" ${PR.xu<need?'disabled':''} onclick="bcShake()">Lắc</button></div>`}`;}
+ :`<div class="cgrow"><button class="cgbig alt" onclick="bcNew()">Đổi lượt cược</button><button class="cgbig" ${PR.xu<need?'disabled':''} onclick="bcShake()">Lắc</button></div>`}`;}
 function bcChip(b){MG.st.chip=b;MG.bet=b;sfx('tap');bcR();}
-function bcRole(r){const st=MG.st;if(st.phase!=='bet'&&st.phase!=='done')return;localStorage.setItem('tlmn_bcrole',r);st.role=r;bcNew();}
-function bcNew(){const st=MG.st;st.phase='bet';st.bets={};st.res=null;st.msg='';st.ledger=null;bcBotBets();bcR();}
+function bcRole(r){const st=MG.st;if(st.phase!=='bet'&&st.phase!=='done')return;localStorage.setItem('tlmn_bcrole',r);st.role=r;bcResetSeats();}
+function bcNew(){const st=MG.st;if(!st||st.placing||st.phase==='shake'||st.phase==='open')return;st.phase='bet';st.bets={};st.res=null;st.msg='';st.ledger=null;bcBotBets();bcR();}
 function bcPut(s){const st=MG.st;if(st.placing)return;if(st.phase==='done')bcNew();if(st.phase!=='bet'||st.role!=='con')return;const tot=bcTot(st.bets);if(tot+st.chip>PR.xu)return toast('Không đủ xu');st.bets[s]=(st.bets[s]||0)+st.chip;bcR();bcFlyIn(0,s);}
 function bcClear(){MG.st.bets={};bcR();}
 function bcShake(){const st=MG.st;if(st.placing)return;if(st.phase==='done'){st.res=null;st.ledger=null;st.msg='';if(st.role==='con'&&bcTot(st.bets)>PR.xu)st.bets={};if(st.role==='cai'){st.phase='bet';mgRefill(st.bots,500);st.bots.forEach(b=>b.bets={});bcR();return bcPlay(bcPlan(3,[100,200,500,1000]),bcShake2);}st.phase='bet';}if(st.role==='con'&&!bcTot(st.bets))return;
@@ -3712,7 +3868,7 @@ function bcOpen(){const st=MG.st;if(st.phase!=='open')return;st.phase='done';st.
  st.res={me,b:bv};const triple=st.dice[0]===st.dice[1]&&st.dice[1]===st.dice[2];st.msg=(me>0?`🎉 Bạn thắng +${fmt(me)} xu`:me<0?`Bạn thua ${fmt(me)} xu`:'Hòa')+(triple?' · Bão '+BC_NAME[st.dice[0]]+'!':'');
  const _tb=bcTot(st.bets),_cnt=k=>st.dice.filter(d=>d==k).length;const xp=mgEnd(me,{stats:triple&&me>0?['bcuaTriple']:[],ev:st.role==='cai'?{role:true,dealer:true,sp1:triple&&me>0}:{sp1:triple&&me>0,sp2:Object.keys(st.bets).some(k=>st.bets[k]>0&&_cnt(k)>=2),sp3:_tb>0&&me>=2*_tb,s4:triple&&st.bets[st.dice[0]]>0,s5:Object.keys(st.bets).filter(k=>st.bets[k]>0).length>=6}});st.msg+=` · +${xp} XP`;bcR();bcFlyChips();}
 function bcFlyChips(){const st=MG.st;const dl=document.querySelector('#mg .bcs.dl .av');document.querySelectorAll('#mg .bct .bcc').forEach((c,q)=>{const s=c.closest('.bct').dataset.s;const hit=st.dice.includes(s);const o=c.dataset.o;
-  const tgt=hit?(o==='0'?(st.role==='con'?document.querySelector('#mg .bcleg .av'):dl):document.querySelector(`#mg .bcs[data-o="${o}"] .av`)):(st.role==='cai'?dl:document.querySelector('#mg .bcs.dl .av'));if(!tgt)return;
+  const tgt=hit?(o==='0'?(st.role==='con'?document.querySelector('#mg .bcs[data-o="0"] .av'):dl):document.querySelector(`#mg .bcs[data-o="${o}"] .av`)):(st.role==='cai'?dl:document.querySelector('#mg .bcs.dl .av'));if(!tgt)return;
   if(hit)c.classList.add('win');if(RM)return;const a=c.getBoundingClientRect(),b=tgt.getBoundingClientRect();const f=c.cloneNode(true);f.classList.add('bcfly');f.style.left=a.left+'px';f.style.top=a.top+'px';document.body.appendChild(f);
   const dx=b.left+b.width/2-a.left-a.width/2,dy=b.top+b.height/2-a.top-a.height/2;f.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${dx*.5}px,${dy*.5-40}px) scale(1.15)`,opacity:1,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(.6)`,opacity:.2}],{duration:750,delay:700+q*70,easing:'ease-in',fill:'both'}).onfinish=()=>{f.remove();if(q%2===0)sfx('cgChip');};c.style.transition='opacity .3s';setTimeout(()=>c.style.opacity='.25',700+q*70);});}
 
