@@ -117,7 +117,7 @@ openShop=function(tab){if(tab)shopTab=tab;const lv=levelInfo(PR.xp).level,day=dk
  modal(`<h3>${I('shop')} Cửa hàng</h3><div class="row" style="justify-content:space-between"><span>Số dư</span><b>${I('coin')} ${fmt(PR.xu)} xu</b></div>
  <div class="deal"><span style="font-size:26px">🔥</span><div style="flex:1"><b>Ưu đãi hôm nay -${deal.off}%</b><br><small>${di.name} · ${TABN[di.type]} · ${RARITY[di.r].name}</small></div><button class="alt" onclick="openShop('${di.type}')">Xem</button></div>
  <div class="tabs">${Object.keys(TABN).map(k=>`<button class="alt ${k===shopTab?'on':''}" onclick="openShop('${k}')">${TABN[k]}</button>`).join('')}</div>
- <div class="sgrid">${SHOP.filter(x=>x.type===shopTab).sort((a,b)=>(a.r-b.r)||(a.price-b.price)).map(card).join('')}</div>`);};
+ <div class="sgrid">${SHOP.filter(x=>x.type===shopTab).sort((a,b)=>((b.price>=100000)-(a.price>=100000))||(a.r-b.r)||(a.price-b.price)).map(card).join('')}</div>`);};
 doBuy=function(id){const it=shopItem(id),pr=priceOf(id,dk());if(!confirm(`Mua "${it.name}" (${RARITY[it.r].name}) với giá ${fmt(pr)} xu?`))return;const r=buyItem(PR,id,levelInfo(PR.xp).level,dk());
  if(!r.ok){sfx('bad');toast(r.reason);}else{sfx('coin');toast(`${I('check')} Đã mua ${it.name}`);if(it.type!=='emote')equipItem(PR,id);applyCosmetics();saveP();updHud();}openShop();};
 // ---- Trang chủ: thêm vòng quay + màu tên

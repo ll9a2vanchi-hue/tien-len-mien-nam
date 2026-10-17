@@ -57,6 +57,37 @@ SHOP.push(
  {id:'nc_cyan',type:'name',name:'Tên Băng Lam',price:800,r:2,css:'color:#7cf9ff;text-shadow:0 0 6px #00e5ff88'},{id:'nc_red',type:'name',name:'Tên Hỏa Long',price:1500,r:3,css:'background:linear-gradient(90deg,#ff5722,#ffd84d);-webkit-background-clip:text;background-clip:text;color:transparent'},
  {id:'nc_rainbow',type:'name',name:'Tên Cầu Vồng',price:3000,r:4,css:'background:linear-gradient(90deg,#ff5252,#ffd740,#69f0ae,#40c4ff,#e040fb);-webkit-background-clip:text;background-clip:text;color:transparent',tag:'hot'}
 );
+// ---- v1.55: vật phẩm cao cấp (100.000 – 1.000.000 xu), hiệu ứng động riêng; CSS ở head.html (theo id)
+SHOP.push(
+ BK('back_aurora','Cực Quang',150000,4,'linear-gradient(115deg,#00e676,#00b0ff,#7c4dff,#00e676) 0 0/300% 300%',{tag:'new',anim:'flow'}),
+ BK('back_holo','Hologram',300000,4,'repeating-conic-gradient(from 0deg at 50% 50%,#ff5ea8 0 30deg,#ffd24a 30deg 60deg,#5effa8 60deg 90deg,#5ec8ff 90deg 120deg,#b85eff 120deg 150deg,#ff5ea8 150deg 180deg)',{anim:'hue'}),
+ BK('back_inferno','Địa Ngục Hỏa',500000,5,'radial-gradient(circle at 50% 110%,#fff59d 0 8%,#ff9800 22%,#d84315 48%,#260500 85%)',{anim:'pulse',tag:'hot'}),
+ BK('back_diamond','Kim Cương Hoàng Gia',1000000,5,'linear-gradient(115deg,transparent 38%,#ffffffcc 50%,transparent 62%) 150% 0/250% 100%,radial-gradient(circle at 30% 25%,#fff 0 3%,transparent 4%),conic-gradient(from 30deg,#4dd0e1,#e1f5fe,#80deea,#b39ddb,#e1f5fe,#4dd0e1)',{anim:'sheen'}),
+ FT('felt_aurora','Cực Quang Đêm',150000,4,['#26c6a0','#0d6b6b','#1a2a6c','#08102e'],{anim:'aurora',tag:'new'}),
+ FT('felt_petal','Hoa Rơi Mùa Xuân',250000,4,['#ff8fb4','#c2336f','#6b1642','#2e0820'],{anim:'petal'}),
+ FT('felt_galaxy','Dải Ngân Hà',400000,5,['#5e35b1','#26115e','#10073a','#04010f'],{anim:'stars'}),
+ FT('felt_vault','Kho Vàng Hoàng Gia',800000,5,['#f6d365','#b8860b','#6b4a00','#2b1d00'],{anim:'gold',tag:'hot'}),
+ {id:'deck_neon2',type:'deck',name:'Neon Cyber',price:120000,r:4,css:'background:linear-gradient(160deg,#10002b,#240046)!important;color:#7cf9ff;box-shadow:0 0 0 2px #00e5ff,0 0 10px #ff40ff;animation:dkglow 2.2s ease-in-out infinite'},
+ {id:'deck_goldleaf',type:'deck',name:'Lá Vàng Dát',price:300000,r:4,css:'background:linear-gradient(115deg,#fff3b0 0 30%,#ffe27a 45%,#fff3b0 60% 100%) 0 0/250% 100%!important;box-shadow:0 0 0 2px #c9962e inset,0 3px 8px #000a!important;animation:dkshim 3s linear infinite'},
+ {id:'deck_obsidian',type:'deck',name:'Hắc Diện Thạch',price:600000,r:5,css:'background:linear-gradient(160deg,#2b2b36,#0d0d12)!important;box-shadow:0 0 0 2px #b388ff inset,0 0 12px #7c4dffaa!important;filter:invert(.9) hue-rotate(180deg) contrast(1.1);animation:dkglow 3s ease-in-out infinite'},
+ {id:'deck_holo2',type:'deck',name:'Cầu Vồng Holo',price:900000,r:5,css:'background:linear-gradient(135deg,#fff,#ffe9f5,#e7f7ff,#f3ffe9,#fff)!important;box-shadow:0 0 0 2px #fff,0 0 12px #ff9ee5;animation:dkhue 4s linear infinite',tag:'hot'},
+ {id:'fx_firework',type:'fx',name:'Pháo Hoa Đêm',price:120000,r:4,mode:'firework',parts:['🎆','🎇','✨','💥']},
+ {id:'fx_meteor',type:'fx',name:'Mưa Sao Băng',price:250000,r:4,mode:'meteor',parts:['☄️','⭐','🌠','✨']},
+ {id:'fx_goldstorm',type:'fx',name:'Bão Vàng',price:500000,r:5,mode:'storm',parts:['🪙','💰','👑','💎'],tag:'hot'},
+ {id:'fx_phoenix',type:'fx',name:'Phượng Hoàng Tái Sinh',price:1000000,r:5,mode:'phoenix',parts:['🔥','✨','🪶','🧨'],tag:'new'},
+ {id:'bub_rainbow',type:'bubble',name:'Bong Bóng Cầu Vồng',price:100000,r:4,css:'background:linear-gradient(90deg,#ff9a9e,#fad0c4,#a1c4fd,#c2ffd8,#ff9a9e) 0 0/300% 100%;color:#2b0a3d;overflow:hidden',anim:'rainbow'},
+ {id:'bub_ice',type:'bubble',name:'Bong Bóng Băng Giá',price:200000,r:4,css:'background:linear-gradient(#e0f7ff,#81d4fa);color:#012a4a;box-shadow:0 0 14px #4fc3f7,0 0 0 2px #e1f5fe;overflow:hidden',anim:'sheen'},
+ {id:'bub_galaxy',type:'bubble',name:'Bong Bóng Thiên Hà',price:400000,r:5,css:'background:radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 75% 65%,#fff 0 1px,transparent 2px),linear-gradient(135deg,#311b92,#0d0630);color:#e1d5ff;box-shadow:0 0 16px #7c4dff,0 0 0 2px #b388ff;overflow:hidden',anim:'sheen'},
+ {id:'bub_diamond',type:'bubble',name:'Bong Bóng Kim Cương',price:700000,r:5,css:'background:linear-gradient(135deg,#ffffff,#b3ecff,#f3e5ff);color:#073b4c;box-shadow:0 0 18px #80deea,0 0 0 2px #fff;overflow:hidden',anim:'sheen'},
+ {id:'nc_aurora',type:'name',name:'Tên Cực Quang',price:100000,r:4,css:'background:linear-gradient(90deg,#00e676,#00b0ff,#b388ff,#00e676) 0 0/300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ncflow 4s linear infinite'},
+ {id:'nc_neonpink',type:'name',name:'Tên Neon Hồng',price:200000,r:4,css:'color:#ffd1f3;animation:ncneon 1.6s ease-in-out infinite'},
+ {id:'nc_lava',type:'name',name:'Tên Dung Nham',price:450000,r:5,css:'background:linear-gradient(90deg,#fff59d,#ff9800,#d84315,#fff59d) 0 0/300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 4px #ff5722);animation:ncflow 2.2s linear infinite'},
+ {id:'nc_diamond',type:'name',name:'Tên Kim Cương',price:900000,r:5,css:'background:linear-gradient(110deg,#80deea 0 35%,#fff 50%,#80deea 65% 100%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 5px #b3ecff);animation:ncflow 2.6s linear infinite',tag:'hot'},
+ {id:'em_legend',type:'emote',name:'Huyền Thoại',list:['👑','💎','🏆','💯','⚡','🔥'],price:150000,r:4,ea:'gold'},
+ {id:'em_cosmic',type:'emote',name:'Vũ Trụ',list:['🌌','🪐','☄️','🚀','👽','🛸'],price:300000,r:4,ea:'cosmic'},
+ {id:'em_godfather',type:'emote',name:'Bố Già',list:['Ta cho ngươi cơ hội','Chơi tới bến','Đừng đùa với ta','Cả sòng im lặng','Ván này ta lấy','Xin chào, thua rồi'],price:600000,r:5,ea:'mafia'},
+ {id:'em_ultra',type:'emote',name:'Siêu Sao Bùng Nổ',list:['🌟','🎆','🎇','🥇','🎊','🤩'],price:1000000,r:5,ea:'ultra',tag:'new'}
+);
 SHOP.forEach(x=>{if(!x.r)x.r=x.price===0?1:x.price>=2500?4:x.price>=1200?3:x.price>=500?2:1;});
 const RARITY=[null,{name:'Thường',col:'#b0bec5'},{name:'Hiếm',col:'#42a5f5'},{name:'Sử thi',col:'#ab47bc'},{name:'Huyền thoại',col:'#ffb300'},{name:'Tối thượng',col:'#ff4081'}];
 // Ưu đãi mỗi ngày: 1 món giảm 30% (xác định theo ngày)

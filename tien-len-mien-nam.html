@@ -737,6 +737,60 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 .extot{text-align:center;padding:10px;border-radius:14px;background:linear-gradient(160deg,#2a1a55,#12102b);border:1px solid #b388ff66;margin-bottom:8px}.extot b{display:block;font-size:30px;color:#c6a8ff}.extot small{opacity:.75;font-size:11px}
 .excap{height:8px;border-radius:9px;background:#0006;margin:6px 0;overflow:hidden}.excap i{display:block;height:100%;background:linear-gradient(90deg,#7c4dff,#00e5ff)}
 .exlist{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}.exrow{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:11px;background:#ffffff0d;min-width:0}.exrow.z{opacity:.55}.exrow i{font-style:normal;font-size:20px}.exrow span{flex:1;min-width:0}.exrow b{display:block;font-size:13px}.exrow small{display:block;font-size:10.5px;opacity:.7;line-height:1.25}.exrow em{font-style:normal;font-weight:800;color:#8ef0a8;white-space:nowrap}
+
+/* ===== v1.55 vật phẩm cao cấp ===== */
+@keyframes bkhue{from{filter:hue-rotate(0)}to{filter:hue-rotate(360deg)}}
+@keyframes bkwob{0%,100%{filter:hue-rotate(-45deg) saturate(1.2)}50%{filter:hue-rotate(45deg) saturate(1.5) brightness(1.15)}}
+@keyframes bkfire{0%,100%{filter:brightness(1);box-shadow:0 0 6px #ff6d00}50%{filter:brightness(1.4) saturate(1.4);box-shadow:0 0 18px #ffab00,0 0 30px #ff3d00}}
+@keyframes bkspark{0%,100%{filter:brightness(1) saturate(1)}45%{filter:brightness(1.35) saturate(1.3)}55%{filter:brightness(1.6) saturate(.7)}}
+body[data-back=back_aurora] .back,.bk-back_aurora{animation:bkwob 5s ease-in-out infinite}
+body[data-back=back_holo] .back,.bk-back_holo{animation:bkhue 4s linear infinite}
+body[data-back=back_inferno] .back,.bk-back_inferno{animation:bkfire 1.6s ease-in-out infinite}
+body[data-back=back_diamond] .back,.bk-back_diamond{animation:bkspark 2.2s ease-in-out infinite;box-shadow:0 0 10px #b3ecff}
+@keyframes ftflow{from{background-position:150% 0}to{background-position:-50% 0}}
+@keyframes ftfall{to{background-position:30px 90px,-40px 120px}}
+@keyframes fttw{from{opacity:.35}to{opacity:1}}
+body[data-felt=felt_aurora] #table::before,body[data-felt=felt_petal] #table::before,body[data-felt=felt_galaxy] #table::before,body[data-felt=felt_vault] #table::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0}
+body[data-felt=felt_aurora] #table::before{background:linear-gradient(120deg,transparent 15%,#7cffcb66 38%,#7c9cff66 55%,#d17cff44 68%,transparent 85%) 0 0/250% 100%;mix-blend-mode:screen;animation:ftflow 8s linear infinite}
+body[data-felt=felt_petal] #table::before{background:radial-gradient(ellipse 7px 4px at 20% 0,#ffc1d8cc 98%,transparent) 0 0/90px 90px,radial-gradient(ellipse 5px 3px at 70% 40%,#ffffffaa 98%,transparent) 0 0/120px 120px,radial-gradient(ellipse 6px 3px at 45% 75%,#ff8fb4aa 98%,transparent) 0 0/140px 140px;animation:ftfall 10s linear infinite}
+body[data-felt=felt_galaxy] #table::before{background:radial-gradient(circle at 15% 25%,#fff 0 1px,transparent 2px) 0 0/70px 70px,radial-gradient(circle at 60% 70%,#c3adff 0 1.2px,transparent 2.4px) 0 0/110px 110px,radial-gradient(ellipse at 50% 50%,#7c4dff33,transparent 70%);animation:fttw 2.6s ease-in-out infinite alternate}
+body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,transparent 40%,#fff3b077 50%,transparent 60%) 0 0/250% 100%;box-shadow:inset 0 0 40px #ffd54f66;animation:ftflow 4.5s linear infinite}
+@keyframes dkglow{0%,100%{box-shadow:0 0 0 2px #00e5ff,0 0 6px #ff40ff}50%{box-shadow:0 0 0 2px #ff40ff,0 0 16px #00e5ff}}
+@keyframes dkshim{0%,100%{filter:brightness(1)}50%{filter:brightness(1.14) saturate(1.3)}}
+@keyframes dkhue{from{filter:hue-rotate(0) saturate(1.2)}to{filter:hue-rotate(360deg) saturate(1.2)}}
+.bubble.bub_rainbow::before,.bubble.bub_ice::before,.bubble.bub_galaxy::before,.bubble.bub_diamond::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 35%,#ffffffaa 50%,transparent 65%) 0 0/250% 100%;animation:ftflow 1.8s linear infinite}
+.bubble.bub_rainbow::before{background:linear-gradient(90deg,#ff000044,#ffff0044,#00ff0044,#00ffff44,#0000ff44,#ff00ff44,#ff000044) 0 0/300% 100%;animation:ftflow 2.4s linear infinite}
+.bubble.bub_galaxy::before{background:linear-gradient(115deg,transparent 35%,#b388ff88 50%,transparent 65%) 0 0/250% 100%}
+@keyframes ncflow{from{background-position:0 0}to{background-position:300% 0}}
+@keyframes ncneon{0%,100%{text-shadow:0 0 4px #ff40ff,0 0 10px #ff40ff;opacity:1}50%{text-shadow:0 0 2px #ff40ff,0 0 22px #ff00c8,0 0 34px #ff00c8;opacity:.85}}
+.nc_diamond{background-size:250% 100%!important}
+@keyframes eaping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+@keyframes easpin{to{transform:rotate(360deg)}}
+.bubble.ea-gold,.bubble.ea-cosmic,.bubble.ea-mafia,.bubble.ea-ultra{font-size:26px;overflow:visible}
+.bubble.ea-gold{background:linear-gradient(#fff7c2,#f5c542)!important;box-shadow:0 0 18px #ffca28,0 0 0 2px #fff3b0!important}
+.bubble.ea-gold::before,.bubble.ea-ultra::before{content:"";position:absolute;inset:-4px;border-radius:inherit;border:2px solid #ffd54f;pointer-events:none;background:none!important;animation:eaping 1.3s ease-out infinite}
+.bubble.ea-cosmic{background:radial-gradient(circle at 30% 30%,#5e35b1,#12063a)!important;color:#fff!important;box-shadow:0 0 18px #7c4dff,0 0 0 2px #b388ff!important}
+.bubble.ea-cosmic::before{content:"✦";position:absolute;left:50%;top:50%;width:0;height:0;font-size:14px;color:#fff;background:none!important;pointer-events:none;animation:easpin 2.2s linear infinite;text-shadow:0 0 6px #b388ff;transform-origin:0 0;line-height:0;margin:0}
+.bubble.ea-cosmic::before{inset:auto;box-shadow:none}
+.bubble.ea-mafia{background:linear-gradient(#2b0000,#090000)!important;color:#ffcdd2!important;font-size:15px;box-shadow:0 0 14px #b71c1c,0 0 0 2px #d32f2f!important;letter-spacing:.3px}
+.bubble.ea-mafia::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,transparent 40%,#ff52526b 50%,transparent 60%) 0 0/250% 100%;pointer-events:none;animation:ftflow 2s linear infinite}
+.bubble.ea-ultra{font-size:32px;background:linear-gradient(120deg,#fff,#ffe9f9)!important;box-shadow:0 0 22px #ff4081,0 0 0 2px #fff!important}
+.bubble.ea-ultra::before{border-color:#ff4081;animation:eaping .9s ease-out infinite}
+.fxp{position:absolute;pointer-events:none;font-size:22px;animation:fxburst 1.3s ease-out forwards;opacity:0}
+@keyframes fxburst{0%{opacity:1;transform:translate(0,0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2)}}
+.fxm{position:absolute;top:-60px;pointer-events:none;font-size:26px;animation:fxmet 1.5s ease-in forwards}
+.fxm::after{content:"";position:absolute;right:50%;top:50%;width:90px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,#ffe082);transform:translate(0,-50%) rotate(-30deg);transform-origin:right center}
+@keyframes fxmet{from{transform:translate(0,0)}to{transform:translate(-45vw,70vh)}}
+.fxflash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle,#fff6c9aa,transparent 70%);animation:fxfl 1.1s ease-out forwards}
+@keyframes fxfl{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+.fxcoin{position:absolute;top:-30px;pointer-events:none;font-size:26px;animation:fxcoin linear forwards}
+@keyframes fxcoin{0%{transform:translateX(0) rotateY(0)}50%{transform:translateX(24px) rotateY(180deg)}100%{transform:translate(-12px,112vh) rotateY(540deg)}}
+.fxphx{position:absolute;left:-30%;top:30%;font-size:96px;pointer-events:none;filter:drop-shadow(0 0 18px #ff6d00);animation:fxphx 2.6s cubic-bezier(.3,.6,.4,1) forwards}
+@keyframes fxphx{0%{transform:translate(0,40vh) scale(.6) rotate(-20deg)}55%{transform:translate(85vw,-10vh) scale(1.3) rotate(-5deg)}100%{transform:translate(150vw,-30vh) scale(1) rotate(10deg)}}
+.fxemb{position:absolute;bottom:-20px;pointer-events:none;font-size:22px;animation:fxemb ease-out forwards}
+@keyframes fxemb{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--dx),-85vh)}}
+@media (prefers-reduced-motion:reduce){[class*=bk-back_],body[data-back] .back,.nc_aurora,.nc_neonpink,.nc_lava,.nc_diamond,.bubble::before,[data-deck] .card,#table::before{animation:none!important}}
+.sitem{min-width:0}.sgrid{min-width:0}
 /* Bầu Cua v1.52.5 — scoped mobile layout + avatar bet chips */
 #mg.mg-baucua{padding-left:5px;padding-right:5px;min-width:0}
 #mg.mg-baucua .bctbl{flex:1 1 auto;min-height:0;min-width:0;gap:5px;padding:6px 4px;border-width:3px;border-radius:16px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
@@ -917,7 +971,7 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='e7b879a3b9';
+const APP_VER='db41fb56f5';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -1430,6 +1484,37 @@ SHOP.push(
  {id:'nc_white',type:'name',name:'Tên Trắng',price:0,r:1,css:'color:#fff7dc'},{id:'nc_gold',type:'name',name:'Tên Vàng Kim',price:800,r:2,css:'color:#ffd84d;text-shadow:0 0 6px #ffb30088'},
  {id:'nc_cyan',type:'name',name:'Tên Băng Lam',price:800,r:2,css:'color:#7cf9ff;text-shadow:0 0 6px #00e5ff88'},{id:'nc_red',type:'name',name:'Tên Hỏa Long',price:1500,r:3,css:'background:linear-gradient(90deg,#ff5722,#ffd84d);-webkit-background-clip:text;background-clip:text;color:transparent'},
  {id:'nc_rainbow',type:'name',name:'Tên Cầu Vồng',price:3000,r:4,css:'background:linear-gradient(90deg,#ff5252,#ffd740,#69f0ae,#40c4ff,#e040fb);-webkit-background-clip:text;background-clip:text;color:transparent',tag:'hot'}
+);
+// ---- v1.55: vật phẩm cao cấp (100.000 – 1.000.000 xu), hiệu ứng động riêng; CSS ở head.html (theo id)
+SHOP.push(
+ BK('back_aurora','Cực Quang',150000,4,'linear-gradient(115deg,#00e676,#00b0ff,#7c4dff,#00e676) 0 0/300% 300%',{tag:'new',anim:'flow'}),
+ BK('back_holo','Hologram',300000,4,'repeating-conic-gradient(from 0deg at 50% 50%,#ff5ea8 0 30deg,#ffd24a 30deg 60deg,#5effa8 60deg 90deg,#5ec8ff 90deg 120deg,#b85eff 120deg 150deg,#ff5ea8 150deg 180deg)',{anim:'hue'}),
+ BK('back_inferno','Địa Ngục Hỏa',500000,5,'radial-gradient(circle at 50% 110%,#fff59d 0 8%,#ff9800 22%,#d84315 48%,#260500 85%)',{anim:'pulse',tag:'hot'}),
+ BK('back_diamond','Kim Cương Hoàng Gia',1000000,5,'linear-gradient(115deg,transparent 38%,#ffffffcc 50%,transparent 62%) 150% 0/250% 100%,radial-gradient(circle at 30% 25%,#fff 0 3%,transparent 4%),conic-gradient(from 30deg,#4dd0e1,#e1f5fe,#80deea,#b39ddb,#e1f5fe,#4dd0e1)',{anim:'sheen'}),
+ FT('felt_aurora','Cực Quang Đêm',150000,4,['#26c6a0','#0d6b6b','#1a2a6c','#08102e'],{anim:'aurora',tag:'new'}),
+ FT('felt_petal','Hoa Rơi Mùa Xuân',250000,4,['#ff8fb4','#c2336f','#6b1642','#2e0820'],{anim:'petal'}),
+ FT('felt_galaxy','Dải Ngân Hà',400000,5,['#5e35b1','#26115e','#10073a','#04010f'],{anim:'stars'}),
+ FT('felt_vault','Kho Vàng Hoàng Gia',800000,5,['#f6d365','#b8860b','#6b4a00','#2b1d00'],{anim:'gold',tag:'hot'}),
+ {id:'deck_neon2',type:'deck',name:'Neon Cyber',price:120000,r:4,css:'background:linear-gradient(160deg,#10002b,#240046)!important;color:#7cf9ff;box-shadow:0 0 0 2px #00e5ff,0 0 10px #ff40ff;animation:dkglow 2.2s ease-in-out infinite'},
+ {id:'deck_goldleaf',type:'deck',name:'Lá Vàng Dát',price:300000,r:4,css:'background:linear-gradient(115deg,#fff3b0 0 30%,#ffe27a 45%,#fff3b0 60% 100%) 0 0/250% 100%!important;box-shadow:0 0 0 2px #c9962e inset,0 3px 8px #000a!important;animation:dkshim 3s linear infinite'},
+ {id:'deck_obsidian',type:'deck',name:'Hắc Diện Thạch',price:600000,r:5,css:'background:linear-gradient(160deg,#2b2b36,#0d0d12)!important;box-shadow:0 0 0 2px #b388ff inset,0 0 12px #7c4dffaa!important;filter:invert(.9) hue-rotate(180deg) contrast(1.1);animation:dkglow 3s ease-in-out infinite'},
+ {id:'deck_holo2',type:'deck',name:'Cầu Vồng Holo',price:900000,r:5,css:'background:linear-gradient(135deg,#fff,#ffe9f5,#e7f7ff,#f3ffe9,#fff)!important;box-shadow:0 0 0 2px #fff,0 0 12px #ff9ee5;animation:dkhue 4s linear infinite',tag:'hot'},
+ {id:'fx_firework',type:'fx',name:'Pháo Hoa Đêm',price:120000,r:4,mode:'firework',parts:['🎆','🎇','✨','💥']},
+ {id:'fx_meteor',type:'fx',name:'Mưa Sao Băng',price:250000,r:4,mode:'meteor',parts:['☄️','⭐','🌠','✨']},
+ {id:'fx_goldstorm',type:'fx',name:'Bão Vàng',price:500000,r:5,mode:'storm',parts:['🪙','💰','👑','💎'],tag:'hot'},
+ {id:'fx_phoenix',type:'fx',name:'Phượng Hoàng Tái Sinh',price:1000000,r:5,mode:'phoenix',parts:['🔥','✨','🪶','🧨'],tag:'new'},
+ {id:'bub_rainbow',type:'bubble',name:'Bong Bóng Cầu Vồng',price:100000,r:4,css:'background:linear-gradient(90deg,#ff9a9e,#fad0c4,#a1c4fd,#c2ffd8,#ff9a9e) 0 0/300% 100%;color:#2b0a3d;overflow:hidden',anim:'rainbow'},
+ {id:'bub_ice',type:'bubble',name:'Bong Bóng Băng Giá',price:200000,r:4,css:'background:linear-gradient(#e0f7ff,#81d4fa);color:#012a4a;box-shadow:0 0 14px #4fc3f7,0 0 0 2px #e1f5fe;overflow:hidden',anim:'sheen'},
+ {id:'bub_galaxy',type:'bubble',name:'Bong Bóng Thiên Hà',price:400000,r:5,css:'background:radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 75% 65%,#fff 0 1px,transparent 2px),linear-gradient(135deg,#311b92,#0d0630);color:#e1d5ff;box-shadow:0 0 16px #7c4dff,0 0 0 2px #b388ff;overflow:hidden',anim:'sheen'},
+ {id:'bub_diamond',type:'bubble',name:'Bong Bóng Kim Cương',price:700000,r:5,css:'background:linear-gradient(135deg,#ffffff,#b3ecff,#f3e5ff);color:#073b4c;box-shadow:0 0 18px #80deea,0 0 0 2px #fff;overflow:hidden',anim:'sheen'},
+ {id:'nc_aurora',type:'name',name:'Tên Cực Quang',price:100000,r:4,css:'background:linear-gradient(90deg,#00e676,#00b0ff,#b388ff,#00e676) 0 0/300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ncflow 4s linear infinite'},
+ {id:'nc_neonpink',type:'name',name:'Tên Neon Hồng',price:200000,r:4,css:'color:#ffd1f3;animation:ncneon 1.6s ease-in-out infinite'},
+ {id:'nc_lava',type:'name',name:'Tên Dung Nham',price:450000,r:5,css:'background:linear-gradient(90deg,#fff59d,#ff9800,#d84315,#fff59d) 0 0/300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 4px #ff5722);animation:ncflow 2.2s linear infinite'},
+ {id:'nc_diamond',type:'name',name:'Tên Kim Cương',price:900000,r:5,css:'background:linear-gradient(110deg,#80deea 0 35%,#fff 50%,#80deea 65% 100%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 5px #b3ecff);animation:ncflow 2.6s linear infinite',tag:'hot'},
+ {id:'em_legend',type:'emote',name:'Huyền Thoại',list:['👑','💎','🏆','💯','⚡','🔥'],price:150000,r:4,ea:'gold'},
+ {id:'em_cosmic',type:'emote',name:'Vũ Trụ',list:['🌌','🪐','☄️','🚀','👽','🛸'],price:300000,r:4,ea:'cosmic'},
+ {id:'em_godfather',type:'emote',name:'Bố Già',list:['Ta cho ngươi cơ hội','Chơi tới bến','Đừng đùa với ta','Cả sòng im lặng','Ván này ta lấy','Xin chào, thua rồi'],price:600000,r:5,ea:'mafia'},
+ {id:'em_ultra',type:'emote',name:'Siêu Sao Bùng Nổ',list:['🌟','🎆','🎇','🥇','🎊','🤩'],price:1000000,r:5,ea:'ultra',tag:'new'}
 );
 SHOP.forEach(x=>{if(!x.r)x.r=x.price===0?1:x.price>=2500?4:x.price>=1200?3:x.price>=500?2:1;});
 const RARITY=[null,{name:'Thường',col:'#b0bec5'},{name:'Hiếm',col:'#42a5f5'},{name:'Sử thi',col:'#ab47bc'},{name:'Huyền thoại',col:'#ffb300'},{name:'Tối thượng',col:'#ff4081'}];
@@ -2597,7 +2682,7 @@ openShop=function(tab){if(tab)shopTab=tab;const lv=levelInfo(PR.xp).level,day=dk
  modal(`<h3>${I('shop')} Cửa hàng</h3><div class="row" style="justify-content:space-between"><span>Số dư</span><b>${I('coin')} ${fmt(PR.xu)} xu</b></div>
  <div class="deal"><span style="font-size:26px">🔥</span><div style="flex:1"><b>Ưu đãi hôm nay -${deal.off}%</b><br><small>${di.name} · ${TABN[di.type]} · ${RARITY[di.r].name}</small></div><button class="alt" onclick="openShop('${di.type}')">Xem</button></div>
  <div class="tabs">${Object.keys(TABN).map(k=>`<button class="alt ${k===shopTab?'on':''}" onclick="openShop('${k}')">${TABN[k]}</button>`).join('')}</div>
- <div class="sgrid">${SHOP.filter(x=>x.type===shopTab).sort((a,b)=>(a.r-b.r)||(a.price-b.price)).map(card).join('')}</div>`);};
+ <div class="sgrid">${SHOP.filter(x=>x.type===shopTab).sort((a,b)=>((b.price>=100000)-(a.price>=100000))||(a.r-b.r)||(a.price-b.price)).map(card).join('')}</div>`);};
 doBuy=function(id){const it=shopItem(id),pr=priceOf(id,dk());if(!confirm(`Mua "${it.name}" (${RARITY[it.r].name}) với giá ${fmt(pr)} xu?`))return;const r=buyItem(PR,id,levelInfo(PR.xp).level,dk());
  if(!r.ok){sfx('bad');toast(r.reason);}else{sfx('coin');toast(`${I('check')} Đã mua ${it.name}`);if(it.type!=='emote')equipItem(PR,id);applyCosmetics();saveP();updHud();}openShop();};
 // ---- Trang chủ: thêm vòng quay + màu tên
@@ -3345,8 +3430,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.54';
+const APP_V='1.55';
 const CHANGELOG=[
+ ['1.55','18/10',['28 vật phẩm cao cấp mới (100.000 – 1.000.000 xu), mỗi nhóm 4 món có hiệu ứng động riêng:','Mặt sau bài: Cực Quang, Hologram, Địa Ngục Hỏa, Kim Cương Hoàng Gia','Mặt bàn: Cực Quang Đêm, Hoa Rơi Mùa Xuân, Dải Ngân Hà, Kho Vàng Hoàng Gia','Bộ bài: Neon Cyber, Lá Vàng Dát, Hắc Diện Thạch, Cầu Vồng Holo','Bong bóng chat: Cầu Vồng, Băng Giá, Thiên Hà, Kim Cương','Màu tên: Cực Quang, Neon Hồng, Dung Nham, Kim Cương','Hiệu ứng thắng: Pháo Hoa Đêm, Mưa Sao Băng, Bão Vàng, Phượng Hoàng Tái Sinh','Biểu cảm: Huyền Thoại, Vũ Trụ, Bố Già, Siêu Sao Bùng Nổ (có hiệu ứng riêng khi gửi)','Các món này được tính vào Thưởng EXP (mỗi 1.000.000 xu = +1%); ưu đãi -30% mỗi ngày vẫn áp dụng; món cao cấp xếp đầu mỗi tab cửa hàng']],
  ['1.54','18/10',['THƯỞNG EXP mới: mỗi 1.000.000 xu vật phẩm cửa hàng = +1%, mỗi 1.000.000 xu avatar = +1%, mỗi 100.000 xu đã thắng = +1%, mỗi huy hiệu +0,05% (cộng dồn với tài sản & thú cưng, trần +300%)','Màn hình "Thưởng EXP" liệt kê từng nguồn, tổng và trần — mở từ thẻ người chơi ở màn hình chính và tab Kinh nghiệm trong hồ sơ','Nhiệm vụ: thưởng xu ×5','Quà điểm danh hằng ngày: ×10 (1.000 → 10.000 xu), chuỗi ngày giữ nguyên','Vòng quay may mắn: giá quay và mọi giải xu ×10 (2.000 xu/lượt, giải đến 20.000 xu), tỉ lệ trúng giữ nguyên','Máy chủ nâng trần đồng bộ xu/XP/thắng để không bị cắt số liệu']],
  ['1.53','18/10',['Luật mới: THÚI 3 BÍCH — người bét còn giữ 3♠ trên tay phải trả GẤP ĐÔI (thêm 2× cược) cho người về ngay trên mình','Rời ván giữa chừng nay phạt 100% mức cược (trước là 50%) — cập nhật cảnh báo ở mọi chế độ','Khung chọn bàn/mức cược Tiến lên và Đếm lá không còn tràn ở 360/412/461','Danh hiệu dài tự chạy ngang (marquee); bật giảm chuyển động thì hiện dấu …','Bầu cua hiển thị cột sao dọc','Thúi/cháy nổi bật, rõ ràng hơn ở màn kết quả và xem lại ván','Xì tố: nhãn "Tố ×N" lớn cạnh ghế, ghế thắng sáng + bài thắng nâng lên + banner','Màn hình chính: chạm avatar mở hồ sơ nhiều tab (kinh nghiệm, tài sản, thành tích, sao, pet); chạm danh hiệu để chọn','Bảng xếp hạng "thắng nhiều": sửa reset tuần, đếm thắng các chế độ mới, xếp hạng đồng điểm','Đếm lá: chặt chồng giống Tiến lên (có kiểm thử)','Máy Dễ/Thường/Khó không còn mở ván bằng 3 đôi thông/tứ quý (giữ để chặt heo); Cao thủ giữ nguyên','Xì tố: máy tố nhẹ khi bài mạnh, thỉnh thoảng bluff tất tay theo độ khó (Dễ ~1%, Cao thủ ~9%)','Kiểm tra xáo bài: tất cả chế độ dùng Fisher-Yates, thêm kiểm thử thống kê; sửa chọn đối thủ ngẫu nhiên']],
  ['1.53.0','13/10',['Bầu Cua: bỏ dòng hướng dẫn dài dưới nút Làm cái','Thu gọn thanh điều khiển, nút vai trò và nút Lắc để dành diện tích cho bàn cược','Giảm chiều cao khu vực bát và khoảng cách để đủ 6 ô cược trên màn hình']],
@@ -4346,5 +4432,15 @@ function openExpBonus(back){const B=expBreakdown(PR);const rows=B.rows.map(r=>`<
  modal(`<h3>✨ Thưởng EXP</h3><div class="extot"><small>Tổng thưởng đang áp dụng</small><b>+${fmt(B.total)}%</b><div class="excap"><i style="width:${Math.min(100,100*B.total/B.cap)}%"></i></div><small>Trần +${B.cap}%${B.capped?' · đã chạm trần (cộng dồn '+fmt(B.raw)+'%)':''}</small></div>
  <div class="exlist">${rows}</div><p class="small" style="text-align:center">Áp dụng cho mọi nguồn XP: ván chơi, nhiệm vụ, quà.</p>${back?'<button class="alt" style="width:100%" onclick="openMyProfile()">← Hồ sơ</button>':''}`);}
 const _rh154=renderHome;renderHome=function(){_rh154.apply(this,arguments);try{const pi=document.querySelector('#home .pcard .pi');if(!pi||pi.querySelector('.exchip'))return;const c=document.createElement('button');c.className='exchip';c.textContent='✨ EXP +'+fmt(expBonus(PR))+'%';c.onclick=e=>{e.stopPropagation();openExpBonus();};const px=pi.querySelector('.pxu');px.parentNode.insertBefore(c,px);}catch(e){}};
+
+// ===== v1.55: hiệu ứng thắng cao cấp + hiệu ứng biểu cảm =====
+const _wfx155=winFX;winFX=function(txt,me){const ef=equipped(PR,'fx');if(!me||!ef||!ef.mode||RM)return _wfx155(txt,me);sfx('win');fx_banner(txt);const R=Math.random,W=innerWidth,H=innerHeight,P=ef.parts,pick=i=>P[i%P.length];
+ if(ef.mode==='firework'){for(let b=0;b<7;b++){const cx=W*(.15+R()*.7),cy=H*(.12+R()*.4),dl=b*.38;fx(`<div class="fxflash" style="animation-delay:${dl}s;background:radial-gradient(circle at ${cx}px ${cy}px,#fff4,transparent 40%)"></div>`,3800);
+   for(let k=0;k<16;k++){const a=k/16*Math.PI*2,d=50+R()*60;fx(`<div class="fxp" style="left:${cx}px;top:${cy}px;--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d+18}px;animation-delay:${dl}s">${k%3?pick(b+k):'•'}</div>`,3800);}}}
+ else if(ef.mode==='meteor'){for(let i=0;i<16;i++)fx(`<div class="fxm" style="left:${30+R()*80}vw;animation-delay:${R()*2.2}s;animation-duration:${1.1+R()*.8}s">${pick(i)}</div>`,4400);}
+ else if(ef.mode==='storm'){fx('<div class="fxflash"></div>',1400);for(let i=0;i<90;i++)fx(`<div class="fxcoin" style="left:${R()*100}vw;animation-duration:${1.3+R()*1.5}s;animation-delay:${R()*1.6}s">${pick(i)}</div>`,4600);}
+ else if(ef.mode==='phoenix'){fx('<div class="fxphx">🐦‍🔥</div>',3000);setTimeout(()=>{fx('<div class="fxflash"></div>',1400);for(let i=0;i<48;i++)fx(`<div class="fxemb" style="left:${R()*100}vw;--dx:${(R()-.5)*120}px;animation-duration:${1.4+R()*1.6}s;animation-delay:${R()*.8}s">${pick(i)}</div>`,3800);},900);}
+};
+const _se155=showEmote;showEmote=function(p,e,bub){_se155.apply(this,arguments);try{const d=typeof _bubOf!=='undefined'&&_bubOf[p];if(!d||!d.classList)return;const pk=SHOP.find(x=>x.type==='emote'&&x.ea&&x.list.includes(String(e)));if(pk)d.classList.add('ea-'+pk.ea);}catch(err){}};
 boot();
 </script></body></html>

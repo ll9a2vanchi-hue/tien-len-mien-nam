@@ -737,6 +737,60 @@ body.rm .pks.allin::before,.rm .pks.allin::before{animation:none;opacity:.9}
 .extot{text-align:center;padding:10px;border-radius:14px;background:linear-gradient(160deg,#2a1a55,#12102b);border:1px solid #b388ff66;margin-bottom:8px}.extot b{display:block;font-size:30px;color:#c6a8ff}.extot small{opacity:.75;font-size:11px}
 .excap{height:8px;border-radius:9px;background:#0006;margin:6px 0;overflow:hidden}.excap i{display:block;height:100%;background:linear-gradient(90deg,#7c4dff,#00e5ff)}
 .exlist{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}.exrow{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:11px;background:#ffffff0d;min-width:0}.exrow.z{opacity:.55}.exrow i{font-style:normal;font-size:20px}.exrow span{flex:1;min-width:0}.exrow b{display:block;font-size:13px}.exrow small{display:block;font-size:10.5px;opacity:.7;line-height:1.25}.exrow em{font-style:normal;font-weight:800;color:#8ef0a8;white-space:nowrap}
+
+/* ===== v1.55 vật phẩm cao cấp ===== */
+@keyframes bkhue{from{filter:hue-rotate(0)}to{filter:hue-rotate(360deg)}}
+@keyframes bkwob{0%,100%{filter:hue-rotate(-45deg) saturate(1.2)}50%{filter:hue-rotate(45deg) saturate(1.5) brightness(1.15)}}
+@keyframes bkfire{0%,100%{filter:brightness(1);box-shadow:0 0 6px #ff6d00}50%{filter:brightness(1.4) saturate(1.4);box-shadow:0 0 18px #ffab00,0 0 30px #ff3d00}}
+@keyframes bkspark{0%,100%{filter:brightness(1) saturate(1)}45%{filter:brightness(1.35) saturate(1.3)}55%{filter:brightness(1.6) saturate(.7)}}
+body[data-back=back_aurora] .back,.bk-back_aurora{animation:bkwob 5s ease-in-out infinite}
+body[data-back=back_holo] .back,.bk-back_holo{animation:bkhue 4s linear infinite}
+body[data-back=back_inferno] .back,.bk-back_inferno{animation:bkfire 1.6s ease-in-out infinite}
+body[data-back=back_diamond] .back,.bk-back_diamond{animation:bkspark 2.2s ease-in-out infinite;box-shadow:0 0 10px #b3ecff}
+@keyframes ftflow{from{background-position:150% 0}to{background-position:-50% 0}}
+@keyframes ftfall{to{background-position:30px 90px,-40px 120px}}
+@keyframes fttw{from{opacity:.35}to{opacity:1}}
+body[data-felt=felt_aurora] #table::before,body[data-felt=felt_petal] #table::before,body[data-felt=felt_galaxy] #table::before,body[data-felt=felt_vault] #table::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0}
+body[data-felt=felt_aurora] #table::before{background:linear-gradient(120deg,transparent 15%,#7cffcb66 38%,#7c9cff66 55%,#d17cff44 68%,transparent 85%) 0 0/250% 100%;mix-blend-mode:screen;animation:ftflow 8s linear infinite}
+body[data-felt=felt_petal] #table::before{background:radial-gradient(ellipse 7px 4px at 20% 0,#ffc1d8cc 98%,transparent) 0 0/90px 90px,radial-gradient(ellipse 5px 3px at 70% 40%,#ffffffaa 98%,transparent) 0 0/120px 120px,radial-gradient(ellipse 6px 3px at 45% 75%,#ff8fb4aa 98%,transparent) 0 0/140px 140px;animation:ftfall 10s linear infinite}
+body[data-felt=felt_galaxy] #table::before{background:radial-gradient(circle at 15% 25%,#fff 0 1px,transparent 2px) 0 0/70px 70px,radial-gradient(circle at 60% 70%,#c3adff 0 1.2px,transparent 2.4px) 0 0/110px 110px,radial-gradient(ellipse at 50% 50%,#7c4dff33,transparent 70%);animation:fttw 2.6s ease-in-out infinite alternate}
+body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,transparent 40%,#fff3b077 50%,transparent 60%) 0 0/250% 100%;box-shadow:inset 0 0 40px #ffd54f66;animation:ftflow 4.5s linear infinite}
+@keyframes dkglow{0%,100%{box-shadow:0 0 0 2px #00e5ff,0 0 6px #ff40ff}50%{box-shadow:0 0 0 2px #ff40ff,0 0 16px #00e5ff}}
+@keyframes dkshim{0%,100%{filter:brightness(1)}50%{filter:brightness(1.14) saturate(1.3)}}
+@keyframes dkhue{from{filter:hue-rotate(0) saturate(1.2)}to{filter:hue-rotate(360deg) saturate(1.2)}}
+.bubble.bub_rainbow::before,.bubble.bub_ice::before,.bubble.bub_galaxy::before,.bubble.bub_diamond::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 35%,#ffffffaa 50%,transparent 65%) 0 0/250% 100%;animation:ftflow 1.8s linear infinite}
+.bubble.bub_rainbow::before{background:linear-gradient(90deg,#ff000044,#ffff0044,#00ff0044,#00ffff44,#0000ff44,#ff00ff44,#ff000044) 0 0/300% 100%;animation:ftflow 2.4s linear infinite}
+.bubble.bub_galaxy::before{background:linear-gradient(115deg,transparent 35%,#b388ff88 50%,transparent 65%) 0 0/250% 100%}
+@keyframes ncflow{from{background-position:0 0}to{background-position:300% 0}}
+@keyframes ncneon{0%,100%{text-shadow:0 0 4px #ff40ff,0 0 10px #ff40ff;opacity:1}50%{text-shadow:0 0 2px #ff40ff,0 0 22px #ff00c8,0 0 34px #ff00c8;opacity:.85}}
+.nc_diamond{background-size:250% 100%!important}
+@keyframes eaping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+@keyframes easpin{to{transform:rotate(360deg)}}
+.bubble.ea-gold,.bubble.ea-cosmic,.bubble.ea-mafia,.bubble.ea-ultra{font-size:26px;overflow:visible}
+.bubble.ea-gold{background:linear-gradient(#fff7c2,#f5c542)!important;box-shadow:0 0 18px #ffca28,0 0 0 2px #fff3b0!important}
+.bubble.ea-gold::before,.bubble.ea-ultra::before{content:"";position:absolute;inset:-4px;border-radius:inherit;border:2px solid #ffd54f;pointer-events:none;background:none!important;animation:eaping 1.3s ease-out infinite}
+.bubble.ea-cosmic{background:radial-gradient(circle at 30% 30%,#5e35b1,#12063a)!important;color:#fff!important;box-shadow:0 0 18px #7c4dff,0 0 0 2px #b388ff!important}
+.bubble.ea-cosmic::before{content:"✦";position:absolute;left:50%;top:50%;width:0;height:0;font-size:14px;color:#fff;background:none!important;pointer-events:none;animation:easpin 2.2s linear infinite;text-shadow:0 0 6px #b388ff;transform-origin:0 0;line-height:0;margin:0}
+.bubble.ea-cosmic::before{inset:auto;box-shadow:none}
+.bubble.ea-mafia{background:linear-gradient(#2b0000,#090000)!important;color:#ffcdd2!important;font-size:15px;box-shadow:0 0 14px #b71c1c,0 0 0 2px #d32f2f!important;letter-spacing:.3px}
+.bubble.ea-mafia::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,transparent 40%,#ff52526b 50%,transparent 60%) 0 0/250% 100%;pointer-events:none;animation:ftflow 2s linear infinite}
+.bubble.ea-ultra{font-size:32px;background:linear-gradient(120deg,#fff,#ffe9f9)!important;box-shadow:0 0 22px #ff4081,0 0 0 2px #fff!important}
+.bubble.ea-ultra::before{border-color:#ff4081;animation:eaping .9s ease-out infinite}
+.fxp{position:absolute;pointer-events:none;font-size:22px;animation:fxburst 1.3s ease-out forwards;opacity:0}
+@keyframes fxburst{0%{opacity:1;transform:translate(0,0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2)}}
+.fxm{position:absolute;top:-60px;pointer-events:none;font-size:26px;animation:fxmet 1.5s ease-in forwards}
+.fxm::after{content:"";position:absolute;right:50%;top:50%;width:90px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,#ffe082);transform:translate(0,-50%) rotate(-30deg);transform-origin:right center}
+@keyframes fxmet{from{transform:translate(0,0)}to{transform:translate(-45vw,70vh)}}
+.fxflash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle,#fff6c9aa,transparent 70%);animation:fxfl 1.1s ease-out forwards}
+@keyframes fxfl{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+.fxcoin{position:absolute;top:-30px;pointer-events:none;font-size:26px;animation:fxcoin linear forwards}
+@keyframes fxcoin{0%{transform:translateX(0) rotateY(0)}50%{transform:translateX(24px) rotateY(180deg)}100%{transform:translate(-12px,112vh) rotateY(540deg)}}
+.fxphx{position:absolute;left:-30%;top:30%;font-size:96px;pointer-events:none;filter:drop-shadow(0 0 18px #ff6d00);animation:fxphx 2.6s cubic-bezier(.3,.6,.4,1) forwards}
+@keyframes fxphx{0%{transform:translate(0,40vh) scale(.6) rotate(-20deg)}55%{transform:translate(85vw,-10vh) scale(1.3) rotate(-5deg)}100%{transform:translate(150vw,-30vh) scale(1) rotate(10deg)}}
+.fxemb{position:absolute;bottom:-20px;pointer-events:none;font-size:22px;animation:fxemb ease-out forwards}
+@keyframes fxemb{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--dx),-85vh)}}
+@media (prefers-reduced-motion:reduce){[class*=bk-back_],body[data-back] .back,.nc_aurora,.nc_neonpink,.nc_lava,.nc_diamond,.bubble::before,[data-deck] .card,#table::before{animation:none!important}}
+.sitem{min-width:0}.sgrid{min-width:0}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
