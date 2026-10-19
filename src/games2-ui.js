@@ -558,3 +558,23 @@ function plActsHTML(uid){const p=(typeof lobbyPres==='function'?lobbyPres():[]).
  return `<div class="placts">${FRIENDS.has(uid)?'<span class="small">✓ Đã là bạn bè</span>':`<button onclick="addFriendUid('${esc(uid)}')">Kết bạn</button>`}${ONL.active&&ONL.code&&p.room!==ONL.code?`<button class="alt" onclick="inviteFriend('${esc(uid)}');closeModal()">Mời vào bàn</button>`:''}${p.room&&p.room!==(ONL.active&&ONL.code)?`<button class="alt" ${free?'':'disabled'} onclick="closeModal();joinSame('${esc(p.room)}',${p.pubT?1:0})">${free?'Vào cùng bàn':'Bàn đã đủ người'}</button>`:''}</div>`;}
 const _plOld156=plTap;plTap=function(uid){if(uid===USER.id)return openMyProfile();const p=lobbyPres().find(x=>x.uid===uid);if(!p)return toast('Người chơi đã rời sảnh');if(p.bot)return _plOld156(uid);openPlayerProfile(uid,'openOnline()',plActsHTML(uid));};
 function lbTap(uid){if(!uid)return;if(typeof USER!=='undefined'&&USER&&uid===USER.id)return openMyProfile();openPlayerProfile(uid,'openLeaderboard()');}
+
+// ===== v1.57: mức cược cao mở khóa theo hạng sao của chế độ (Miền Nam / Đếm lá) =====
+const HI_BETS=[[20000,1],[30000,2],[50000,3],[70000,4],[100000,5],[150000,6]];// [cược, bậc hạng: 1 Bạc … 6 Đen]
+HI_BETS.forEach(([b])=>{if(!BETS2.includes(b))BETS2.push(b);});
+function hiBetMode(){try{return (typeof ONL!=='undefined'&&ONL.active)?'tlmn':(MODE==='demla'?'demla':'tlmn');}catch(e){return 'tlmn';}}
+function hiBetReq(b){const t=HI_BETS.find(x=>x[0]===b);return t?t[1]:0;}
+function hiBetOk(P,b,m){const r=hiBetReq(b);if(!r)return true;return starInfo(modeXpOf(P,m||hiBetMode())).step>=r*5+1;}
+function hiBetLabel(b){const r=hiBetReq(b);return r?STAR_TIERS[r][0]:'';}
+function hiBetTap(b){const m=hiBetMode();if(!hiBetOk(PR,b,m)){sfx('bad');return toast(`🔒 Cần hạng ${hiBetLabel(b)} ở ${m==='demla'?'Đếm lá':'Tiến lên'} để mở mức ${kxu(b)}`);}if(PR.xu<b){sfx('bad');return toast('Không đủ xu cho mức '+fmt(b));}setTblBet(b);}
+const _ot157=openTables;openTables=function(){const m=hiBetMode();if(hiBetReq(PR.bet)&&!hiBetOk(PR,PR.bet,m))PR.bet=suggestBet();_ot157.apply(this,arguments);try{const row=document.querySelector('#modalIn .betrow');if(!row)return;const sug=suggestBet();
+ const base=BETS2.filter(b=>!hiBetReq(b)).map(b=>`<button ${b>PR.xu?'disabled':''} onclick="setTblBet(${b})" class="${b>=MASTER_BET?'mbet ':''}${b===PR.bet?'':'alt'}">${b>=MASTER_BET?'10k':fmt(b)}${b>=MASTER_BET?'<small>Cao thủ</small>':b===sug?'<small>gợi ý</small>':''}</button>`).join('');
+ const hi=HI_BETS.map(([b,r])=>{const ok=hiBetOk(PR,b,m),col=STAR_TIERS[r][2];return `<button onclick="hiBetTap(${b})" class="hbet ${ok?'':'lk'} ${b===PR.bet?'':'alt'}" style="--hc:${col}">${ok?'':'🔒 '}${kxu(b)}<small>${ok?'Cao thủ · ':''}${STAR_TIERS[r][0]}</small></button>`;}).join('');
+ row.innerHTML=base+'<div class="hbhead">⭐ Mức cao · mở theo hạng sao '+(m==='demla'?'Đếm lá':'Tiến lên')+'</div>'+hi;
+ if(PR.bet>=MASTER_BET){const n=document.querySelector('#modalIn .mnote');if(n)n.innerHTML=`🥋 Bàn ${fmt(PR.bet)}: toàn bộ máy là <b>Cao thủ</b>. Thắng máy Cao thủ vẫn được <b>thưởng thêm XP</b> (như bàn 10k), không thưởng thêm xu.`;}}catch(e){console.warn(e)}};
+// máy ở bàn cao có đủ xu theo mức cược
+const _bxs157=botXuSeed;botXuSeed=function(name,lv){const s=_bxs157(name,lv);try{const b=(typeof curBet==='function'?curBet():PR.bet)||0;if(b>=MASTER_BET)return Math.max(s,b*(8+hashStr(name)%13));}catch(e){}return s;};
+// online: chủ bàn chỉ chọn mức đã mở khóa
+const _rr157=renderRoom;renderRoom=function(){_rr157.apply(this,arguments);try{if(!ONL.active||!ONL.host)return;const sel=document.querySelector('#home .pcard select[onchange^="setTableBet"]');if(!sel)return;const bet=ONL.room&&ONL.room.bet||PR.bet;
+ sel.innerHTML=[100,200,500,1000,2000,5000,10000,...HI_BETS.map(x=>x[0])].map(b=>{const ok=hiBetOk(PR,b,'tlmn')&&b<=PR.xu;return `<option value="${b}" ${b===bet?'selected':''} ${ok?'':'disabled'}>${fmt(b)}${hiBetReq(b)?' · '+hiBetLabel(b)+(ok?'':' 🔒'):''}</option>`;}).join('');}catch(e){}};
+const _stb157=setTableBet;setTableBet=function(b){if(!hiBetOk(PR,b,'tlmn'))return toast('🔒 Cần hạng '+hiBetLabel(b)+' Tiến lên');return _stb157(b);};

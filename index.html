@@ -795,6 +795,9 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 .pkst.c,.pkst.k{display:block;width:max-content;margin:2px auto;font-size:12px;font-weight:900;padding:0 9px;border-radius:10px;color:#fff;white-space:nowrap}.pkst.c{background:linear-gradient(#43a047,#1b5e20);border:1.5px solid #a5d6a7}.pkst.k{background:linear-gradient(#1e88e5,#0d47a1);border:1.5px solid #90caf9}.pkst.f{display:block;width:max-content;margin:2px auto;font-size:12px;padding:0 9px;border-radius:10px;color:#ddd}
 @media(max-width:700px){#s1 .nmrow,#s3 .nmrow{flex-direction:column;gap:2px}#s1 .blv,#s3 .blv{max-width:76px;display:flex;flex-direction:column;align-items:center;gap:2px;overflow:visible}#s1 .blv .tt,#s3 .blv .tt,#s1 .nm,#s3 .nm{max-width:76px;box-sizing:border-box}#s1 .nm,#s3 .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#s1,#s3{min-width:0;max-width:78px}}
 #mg.mg-baucua .avst{top:0;transform:none;font-size:8px;line-height:.86;padding:2px 1px}
+.betrow .hbhead{grid-column:1/-1;font-size:11px;font-weight:700;opacity:.85;margin-top:4px;text-align:center}
+.betrow button.hbet{border:1.5px solid var(--hc)!important;min-width:0}.betrow button.hbet small{color:var(--hc);opacity:1;font-weight:800}.betrow button.hbet:not(.alt){background:linear-gradient(var(--hc),#0006)!important;color:#fff}.betrow button.hbet:not(.alt) small{color:#fff}
+.betrow button.hbet.lk{opacity:.55;filter:grayscale(.4)}.betrow{min-width:0}.betrow button{min-width:0;overflow:hidden;white-space:nowrap}
 /* Bầu Cua v1.52.5 — scoped mobile layout + avatar bet chips */
 #mg.mg-baucua{padding-left:5px;padding-right:5px;min-width:0}
 #mg.mg-baucua .bctbl{flex:1 1 auto;min-height:0;min-width:0;gap:5px;padding:6px 4px;border-width:3px;border-radius:16px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
@@ -975,7 +978,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='4a5cb45204';
+const APP_VER='f188804036';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -2499,7 +2502,7 @@ async function enterRoom(code,isHost,bots){if(ONL.active)await leaveRoom(true);a
  ONL.client=new OnlineClient(tr,ONL.me);ONL.client.onState=s=>onlineState(s);ONL.client.onRoom=r=>{ONL.room=r;renderRoom();};ONL.client.onReject=e=>{sfx('bad');msg(e);};ONL.client.onFull=()=>{toast('Phòng đã đủ 4 người');leaveRoom(true);};
  tr.on('chat',m=>addChat(m));tr.on('emote',m=>{const ls=localSeatOf(m.uid);if(ls>=0)showEmote(ls,String(m.e).slice(0,24));});
  tr.on('bye',m=>onPresenceLeave(m.uid));tr.on('throw',m=>{if(!m||!ONL.st)return;const f=localSeatOf(m.from),me=ONL.st.seats.findIndex(s=>s&&s.uid===USER.id);let to=localSeatOf(m.to);if(to<0&&/^seat\d$/.test(m.to||''))to=(+m.to.slice(4)-me+4)%4;if(f>=0&&to>=0){throwFX(f,to,m.id);const t=THROWS.find(x=>x.id===m.id);if(t)toast(`${t.emo} ${esc(NAMES[f]||'')} ${throwVerb(t)} ${to===0?'bạn':esc(NAMES[to]||'')}`);}});
- if(isHost){ONL.host=new OnlineHost(tr,ONL.me,{fillBots:bots,dealMs:2300,bet:(BETS2||[]).includes(PR.bet)?PR.bet:100});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};}
+ if(isHost){ONL.host=new OnlineHost(tr,ONL.me,{fillBots:bots,dealMs:2300,bet:(BETS2||[]).includes(PR.bet)&&(typeof hiBetOk!=='function'||hiBetOk(PR,PR.bet,'tlmn'))?PR.bet:100});ONL.host.onState=(s,r)=>{ONL.room=r;renderRoom();if(s)onlineState(s,true);};}
  ch.on('presence',{event:'sync'},()=>{const s=ch.presenceState();ONL.presence=Object.keys(s);});
  ch.on('presence',{event:'leave'},({key})=>onPresenceLeave(key));
  ch.on('presence',{event:'join'},({key})=>{if(ONL.host&&key!==USER.id)setTimeout(()=>ONL.host&&ONL.host.push(),300);});
@@ -3441,8 +3444,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.56.3';
+const APP_V='1.57';
 const CHANGELOG=[
+ ['1.57','20/10',['Mở khóa mức cược cao cho Tiến lên Miền Nam và Đếm lá theo hạng sao của từng chế độ: Bạc 20k, Vàng 30k, Kim cương 50k, Xanh 70k, Đỏ 100k, Đen 150k (đạt sao đầu tiên của hạng là mở)','Mức chưa mở hiện 🔒 kèm hạng cần đạt; vẫn cần đủ xu để vào bàn','Bàn mức cao toàn máy Cao thủ (như bàn 10k), thắng Cao thủ vẫn được thưởng thêm XP; chặt, thúi, tiền lá Đếm lá, luộc, phạt thoát bàn đều nhân theo mức cược','Máy ở bàn cao có xu tương xứng mức cược','Online: chủ bàn chỉ chọn được mức đã mở khóa; người vào bàn cần đủ xu']],
  ['1.56.3','20/10',['Sửa luật Thúi 3 bích: chỉ phạt gấp đôi khi người về bét chỉ còn đúng 1 lá là 3♠; còn 3♠ kèm lá khác thì không bị phạt 3 bích (thúi heo/hàng/cháy vẫn tính như thường). Áp dụng cho Miền Nam, Đếm lá và chơi online']],
  ['1.56.2','19/10',['Thưởng EXP: "Tổng xu đã thắng" đổi thành mỗi 1.000.000 xu = +1% (trước là mỗi 100.000 xu)']],
  ['1.56.1','19/10',['Sửa Thưởng EXP — "Tổng xu đã thắng" nay tính ở MỌI chế độ (trước chỉ Miền Nam/Đếm lá): 3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker, online','Tính theo lãi ròng mỗi ván, gồm cả tiền chặt heo, thúi, cháy, 3 bích, luộc; quà điểm danh, nhiệm vụ, vòng quay không tính','Người chơi cũ được cộng bù lịch sử thắng của các chế độ trên (một lần)','Huy hiệu: chỉ đếm huy hiệu còn tồn tại (bỏ mã cũ)']],
@@ -4463,5 +4467,25 @@ function plActsHTML(uid){const p=(typeof lobbyPres==='function'?lobbyPres():[]).
  return `<div class="placts">${FRIENDS.has(uid)?'<span class="small">✓ Đã là bạn bè</span>':`<button onclick="addFriendUid('${esc(uid)}')">Kết bạn</button>`}${ONL.active&&ONL.code&&p.room!==ONL.code?`<button class="alt" onclick="inviteFriend('${esc(uid)}');closeModal()">Mời vào bàn</button>`:''}${p.room&&p.room!==(ONL.active&&ONL.code)?`<button class="alt" ${free?'':'disabled'} onclick="closeModal();joinSame('${esc(p.room)}',${p.pubT?1:0})">${free?'Vào cùng bàn':'Bàn đã đủ người'}</button>`:''}</div>`;}
 const _plOld156=plTap;plTap=function(uid){if(uid===USER.id)return openMyProfile();const p=lobbyPres().find(x=>x.uid===uid);if(!p)return toast('Người chơi đã rời sảnh');if(p.bot)return _plOld156(uid);openPlayerProfile(uid,'openOnline()',plActsHTML(uid));};
 function lbTap(uid){if(!uid)return;if(typeof USER!=='undefined'&&USER&&uid===USER.id)return openMyProfile();openPlayerProfile(uid,'openLeaderboard()');}
+
+// ===== v1.57: mức cược cao mở khóa theo hạng sao của chế độ (Miền Nam / Đếm lá) =====
+const HI_BETS=[[20000,1],[30000,2],[50000,3],[70000,4],[100000,5],[150000,6]];// [cược, bậc hạng: 1 Bạc … 6 Đen]
+HI_BETS.forEach(([b])=>{if(!BETS2.includes(b))BETS2.push(b);});
+function hiBetMode(){try{return (typeof ONL!=='undefined'&&ONL.active)?'tlmn':(MODE==='demla'?'demla':'tlmn');}catch(e){return 'tlmn';}}
+function hiBetReq(b){const t=HI_BETS.find(x=>x[0]===b);return t?t[1]:0;}
+function hiBetOk(P,b,m){const r=hiBetReq(b);if(!r)return true;return starInfo(modeXpOf(P,m||hiBetMode())).step>=r*5+1;}
+function hiBetLabel(b){const r=hiBetReq(b);return r?STAR_TIERS[r][0]:'';}
+function hiBetTap(b){const m=hiBetMode();if(!hiBetOk(PR,b,m)){sfx('bad');return toast(`🔒 Cần hạng ${hiBetLabel(b)} ở ${m==='demla'?'Đếm lá':'Tiến lên'} để mở mức ${kxu(b)}`);}if(PR.xu<b){sfx('bad');return toast('Không đủ xu cho mức '+fmt(b));}setTblBet(b);}
+const _ot157=openTables;openTables=function(){const m=hiBetMode();if(hiBetReq(PR.bet)&&!hiBetOk(PR,PR.bet,m))PR.bet=suggestBet();_ot157.apply(this,arguments);try{const row=document.querySelector('#modalIn .betrow');if(!row)return;const sug=suggestBet();
+ const base=BETS2.filter(b=>!hiBetReq(b)).map(b=>`<button ${b>PR.xu?'disabled':''} onclick="setTblBet(${b})" class="${b>=MASTER_BET?'mbet ':''}${b===PR.bet?'':'alt'}">${b>=MASTER_BET?'10k':fmt(b)}${b>=MASTER_BET?'<small>Cao thủ</small>':b===sug?'<small>gợi ý</small>':''}</button>`).join('');
+ const hi=HI_BETS.map(([b,r])=>{const ok=hiBetOk(PR,b,m),col=STAR_TIERS[r][2];return `<button onclick="hiBetTap(${b})" class="hbet ${ok?'':'lk'} ${b===PR.bet?'':'alt'}" style="--hc:${col}">${ok?'':'🔒 '}${kxu(b)}<small>${ok?'Cao thủ · ':''}${STAR_TIERS[r][0]}</small></button>`;}).join('');
+ row.innerHTML=base+'<div class="hbhead">⭐ Mức cao · mở theo hạng sao '+(m==='demla'?'Đếm lá':'Tiến lên')+'</div>'+hi;
+ if(PR.bet>=MASTER_BET){const n=document.querySelector('#modalIn .mnote');if(n)n.innerHTML=`🥋 Bàn ${fmt(PR.bet)}: toàn bộ máy là <b>Cao thủ</b>. Thắng máy Cao thủ vẫn được <b>thưởng thêm XP</b> (như bàn 10k), không thưởng thêm xu.`;}}catch(e){console.warn(e)}};
+// máy ở bàn cao có đủ xu theo mức cược
+const _bxs157=botXuSeed;botXuSeed=function(name,lv){const s=_bxs157(name,lv);try{const b=(typeof curBet==='function'?curBet():PR.bet)||0;if(b>=MASTER_BET)return Math.max(s,b*(8+hashStr(name)%13));}catch(e){}return s;};
+// online: chủ bàn chỉ chọn mức đã mở khóa
+const _rr157=renderRoom;renderRoom=function(){_rr157.apply(this,arguments);try{if(!ONL.active||!ONL.host)return;const sel=document.querySelector('#home .pcard select[onchange^="setTableBet"]');if(!sel)return;const bet=ONL.room&&ONL.room.bet||PR.bet;
+ sel.innerHTML=[100,200,500,1000,2000,5000,10000,...HI_BETS.map(x=>x[0])].map(b=>{const ok=hiBetOk(PR,b,'tlmn')&&b<=PR.xu;return `<option value="${b}" ${b===bet?'selected':''} ${ok?'':'disabled'}>${fmt(b)}${hiBetReq(b)?' · '+hiBetLabel(b)+(ok?'':' 🔒'):''}</option>`;}).join('');}catch(e){}};
+const _stb157=setTableBet;setTableBet=function(b){if(!hiBetOk(PR,b,'tlmn'))return toast('🔒 Cần hạng '+hiBetLabel(b)+' Tiến lên');return _stb157(b);};
 boot();
 </script></body></html>
