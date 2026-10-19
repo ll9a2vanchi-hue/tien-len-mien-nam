@@ -28,6 +28,7 @@ hookEnd=function(place,instant,n){let ctx={};
  else if(G){const f=G.finished,seats=G.seats||[0,1,2,3],all=[...f,...seats.filter(p=>!f.includes(p))];const below=all.slice(all.indexOf(0)+1).filter(p=>p);
   ctx={bonus:aiBeatBonus(all,0,BOTAI),noXuBonus:masterTbl(),beatHard:below.filter(p=>BOTAI[p]>=2).length,beatMaster:below.filter(p=>BOTAI[p]===3).length,usedTwo:!!G.usedTwo,last3s:!!G.last3s&&place===0,comeback:!!G.cb&&place===0};}
  ctx.mode=G&&G.mode==='demla'?'demla':'tlmn';PR._mode=ctx.mode;try{Object.assign(ctx,modeCtx(place,instant));}catch(e){}
+ try{const t=thuiParts();const ch=G&&!G.online?(G.chopNet||0):(LEDG.chop||0);ctx.earnExtra=ch+t.thui+t.chay+t.b3+t.t3;}catch(e){}
  const r=onGameEnd(PR,place,instant,n||4,ctx);if(G)G.lastRes=r;try{LEDG.res=r;}catch(e){}
  toast(`${['Nhất','Nhì','Ba','Bét'][place]}: ${r.delta>=0?'+':''}${fmt(r.delta)} xu${r.bxu?` (thưởng máy khó +${fmt(r.bxu)})`:''}`);badgeToasts(r.badges);levelUpFX(r.lv);saveP();
  if(PR.xu<BETS[0])setTimeout(()=>openDaily(),1200);};
@@ -739,8 +740,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.56';
+const APP_V='1.56.1';
 const CHANGELOG=[
+ ['1.56.1','19/10',['Sửa Thưởng EXP — "Tổng xu đã thắng" nay tính ở MỌI chế độ (trước chỉ Miền Nam/Đếm lá): 3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker, online','Tính theo lãi ròng mỗi ván, gồm cả tiền chặt heo, thúi, cháy, 3 bích, luộc; quà điểm danh, nhiệm vụ, vòng quay không tính','Người chơi cũ được cộng bù lịch sử thắng của các chế độ trên (một lần)','Huy hiệu: chỉ đếm huy hiệu còn tồn tại (bỏ mã cũ)']],
  ['1.56','18/10',['Rà soát bố cục ở 360/412/461: bàn Miền Nam/Đếm lá — ghế bên trái/phải xếp tên, xu, cấp và danh hiệu thành cột gọn, không còn tràn mép; Bầu cua — cột sao không còn đè lên nhãn Nhà cái','Chạm một người trên bảng xếp hạng hoặc trong danh sách Người online để mở thẳng hồ sơ đầy đủ (cấp, danh hiệu, sao, tài sản, pet, huy hiệu); nút Kết bạn / Mời / Vào cùng bàn nằm ngay trong hồ sơ','Xì tố & Poker: nhãn rõ cạnh ghế — "Tố ×N" cho người tố, "Theo" cho người theo, "Xem" cho người xem bài, "Bỏ" cho người bỏ, "Tất tay" cho người tất tay']],
  ['1.55','18/10',['28 vật phẩm cao cấp mới (100.000 – 1.000.000 xu), mỗi nhóm 4 món có hiệu ứng động riêng:','Mặt sau bài: Cực Quang, Hologram, Địa Ngục Hỏa, Kim Cương Hoàng Gia','Mặt bàn: Cực Quang Đêm, Hoa Rơi Mùa Xuân, Dải Ngân Hà, Kho Vàng Hoàng Gia','Bộ bài: Neon Cyber, Lá Vàng Dát, Hắc Diện Thạch, Cầu Vồng Holo','Bong bóng chat: Cầu Vồng, Băng Giá, Thiên Hà, Kim Cương','Màu tên: Cực Quang, Neon Hồng, Dung Nham, Kim Cương','Hiệu ứng thắng: Pháo Hoa Đêm, Mưa Sao Băng, Bão Vàng, Phượng Hoàng Tái Sinh','Biểu cảm: Huyền Thoại, Vũ Trụ, Bố Già, Siêu Sao Bùng Nổ (có hiệu ứng riêng khi gửi)','Các món này được tính vào Thưởng EXP (mỗi 1.000.000 xu = +1%); ưu đãi -30% mỗi ngày vẫn áp dụng; món cao cấp xếp đầu mỗi tab cửa hàng']],
  ['1.54','18/10',['THƯỞNG EXP mới: mỗi 1.000.000 xu vật phẩm cửa hàng = +1%, mỗi 1.000.000 xu avatar = +1%, mỗi 100.000 xu đã thắng = +1%, mỗi huy hiệu +0,05% (cộng dồn với tài sản & thú cưng, trần +300%)','Màn hình "Thưởng EXP" liệt kê từng nguồn, tổng và trần — mở từ thẻ người chơi ở màn hình chính và tab Kinh nghiệm trong hồ sơ','Nhiệm vụ: thưởng xu ×5','Quà điểm danh hằng ngày: ×10 (1.000 → 10.000 xu), chuỗi ngày giữ nguyên','Vòng quay may mắn: giá quay và mọi giải xu ×10 (2.000 xu/lượt, giải đến 20.000 xu), tỉ lệ trúng giữ nguyên','Máy chủ nâng trần đồng bộ xu/XP/thắng để không bị cắt số liệu']],
@@ -832,7 +834,7 @@ setInterval(()=>{try{if(!G||!G.over||_gk39===G)return;if(!document.querySelector
 // Luộc: sau khi ván kết thúc offline, máy không đủ cược nữa và mình đã ăn xu của nó
 const _eg39=endGame;endGame=function(i){const r=_eg39.apply(this,arguments);setTimeout(()=>{try{if(!G||G.online||G._luoc)return;G._luoc=1;const bet=curBet();let tot=0,names=[];
  (SEATMAP[TBL||4]||[0,1,2,3]).forEach(p=>{if(!p)return;const now=seatXu(p),was=LEDG.s0[p];if(now<bet&&was!=null&&was>now&&PR.xu>(LEDG.xu0||0)){const lv=Math.max(0,Math.min(3,+BOTAI[p]||0));const xp=LUOC_XP[lv],xu=Math.round(bet*0.5*(lv+1));
-  const up=addXp(PR,xp,PR._mode);PR.xu+=xu;tot+=xu;names.push(NAMES[p]);bst('luoc');if(lv===3)bst('luoc3');LUOC.tbl++;PR.stats.luocTable=Math.max(PR.stats.luocTable||0,LUOC.tbl);questEvent(PR,'luoc');
+  const up=addXp(PR,xp,PR._mode);PR.xu+=xu;addEarned(PR,xu);tot+=xu;names.push(NAMES[p]);bst('luoc');if(lv===3)bst('luoc3');LUOC.tbl++;PR.stats.luocTable=Math.max(PR.stats.luocTable||0,LUOC.tbl);questEvent(PR,'luoc');
   setTimeout(()=>{try{sfx('chop');winFX('🍲 LUỘC SẠCH '+NAMES[p].trim().toUpperCase()+'! +'+xp+' XP');toast(`Luộc ${NAMES[p].trim()}: +${fmt(xu)} xu, +${xp} XP`);}catch(e){}},400+names.length*1200);}});
  if(tot){LUOC.xu=tot;LUOC.g=G;saveP();evBadge();}}catch(e){}},350);return r;};
 const _nb39=newBotsNext;newBotsNext=function(){LUOC.tbl=0;return _nb39();};
