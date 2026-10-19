@@ -1,5 +1,5 @@
 const H=require('./tools-h.js');(async()=>{const b=await H.launch();
-for(const w of [360,412,461]){const p=await H.open(b,w,780,()=>{PR.xp=40000;PR.xu=4e6;PR.stats.earned=150000;delete PR.stats.earnBf;PR.stats.m_poker_earn=80000;PR.stats.m_xito_earn=20000;PR.inv.back_holo=1;PR.inv.av_king=1;saveP();location.reload();});
+for(const w of [360,412,461]){const p=await H.open(b,w,780,()=>{PR.xp=40000;PR.xu=4e6;PR.stats.earned=150000;delete PR.stats.earnBf;PR.stats.m_poker_earn=80000;PR.stats.m_xito_earn=20000;PR.inv.back_holo=1;PR.inv.av_king=1;BADGES.forEach(b=>{if(/earn/.test(b.id))PR.badges[b.id]=1;});saveP();location.reload();});
  await p.waitForTimeout(1500);const r={};
  r.before=await p.evaluate(()=>({e:PR.stats.earned,bf:PR.stats.earnBf,b:expBonus(PR)}));
  await p.evaluate(()=>renderHome());r.chip0=await p.evaluate(()=>document.querySelector('.exchip').textContent);

@@ -10,7 +10,7 @@ t('avatar không tính vào vật phẩm',X.ownedValue(p,false)===0);
 const fake={id:'zz1',type:'back',name:'z',price:1000000};S.SHOP.push(fake);p=mk();p.inv.zz1=1;t('1.000.000 xu vật phẩm = +1%',X.expBreakdown(p).rows[0].pct===1);
 const fa={id:'zz2',type:'avatar',name:'z',emo:'x',price:2000000};S.SHOP.push(fa);p=mk();p.inv.zz2=1;t('2.000.000 xu avatar = +2%',X.expBreakdown(p).rows[1].pct===2);
 p=mk();p.stats.earned=300000;t('300.000 xu thắng = +3%',X.expBreakdown(p).rows[2].pct===3);
-p=mk();p.badges={a:1,b:2,c:3,d:4};t('mỗi huy hiệu +0,05%',X.expBreakdown(p).rows[3].pct===0.2);
+p=mk();p.badges=Object.fromEntries(X.BADGES.slice(0,4).map(b=>[b.id,1]));t('mỗi huy hiệu +0,05%',X.expBreakdown(p).rows[3].pct===0.2);
 // trần 300%
 p=mk();p.stats.earned=1e9;B=X.expBreakdown(p);t('trần +300%',B.total===300&&B.capped&&B.raw>300&&X.expBonus(p)===300);
 p=mk();p.stats.earned=1e9;const a=X.addXp(p,100);t('addXp nhân theo thưởng (chạm trần ×4)',p._lastXp===400);
