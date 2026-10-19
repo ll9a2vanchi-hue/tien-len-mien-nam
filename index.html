@@ -975,7 +975,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='515945d581';
+const APP_VER='4a5cb45204';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -1365,7 +1365,7 @@ function onGameEnd(P,place,instant,n,ctx){n=n||4;ctx=ctx||{};const s=P.stats;s.g
  const x0=P.xu;P.xu=Math.max(0,P.xu+delta);const paid=P.xu-x0,x1=P.xu;const lv=addXp(P,xp0+bxp,ctx.mode);const x2=P.xu;const badges=checkBadges(P);
  const ledger={place:paid-(delta>0?bxu:0),bonus:delta>0?bxu:0,level:x2-x1,badges:P.xu-x2};return{delta,bxu,bxp,bonus,badges,lv,ledger};}
 // sổ xu ván: parts {place,bonus,chop,thui,chay,b3,level,badges,exit,misc}
-const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['t3','Thúi 3 bích (bét còn 3♠)'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['luoc','Luộc máy'],['demla','Đếm lá'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
+const LEDGER_LABELS=[['place','Thứ hạng'],['chop','Tiền chặt heo'],['thui','Thúi heo/hàng'],['chay','Cháy bài'],['b3','3 bích về nhất'],['t3','Thúi 3 bích (bét chỉ còn 1 lá 3♠)'],['bonus','Thưởng thắng máy khó'],['badges','Thưởng huy hiệu'],['level','Thưởng lên cấp'],['luoc','Luộc máy'],['demla','Đếm lá'],['exit','Phạt rời bàn'],['misc','Khác (ném đồ, quà…)']];
 function ledgerItems(parts){const items=LEDGER_LABELS.map(([k,l])=>({k,l,v:Math.round(parts[k]||0)})).filter(x=>x.v);return{items,total:items.reduce((a,x)=>a+x.v,0)};}
 
 // ---------- Cấp độ / XP / Danh hiệu ----------
@@ -1834,7 +1834,7 @@ function isB3Win(p){return !!(p&&p.length===1&&Number(p[0])===0);}
 // thúi/cháy: trả cho người về ngay trên mình; 3 bích về nhất: trả cho người nhất
 function thuiSettle(hands,rank,bet,winPlay){if(!rank||!rank.length)return[];const w=rank[0],b3=isB3Win(winPlay);const out=[];
  rank.slice(1).forEach((p,j)=>{const above=rank[j];const v=thuiValue(hands[p],bet);const chay=(hands[p]||[]).length===13;if(chay){v.amount+=2*bet;v.items.push({k:'cháy bài',v:2*bet});}
-  if(j===rank.length-2&&(hands[p]||[]).map(Number).includes(0)){v.amount+=2*bet;v.items.push({k:'thúi 3 bích',v:2*bet});}
+  if(j===rank.length-2&&(hands[p]||[]).length===1&&Number(hands[p][0])===0){v.amount+=2*bet;v.items.push({k:'thúi 3 bích',v:2*bet});}
   if(b3&&above===w){v.amount+=bet;v.items.push({k:'3 bích về nhất',v:bet});}
   if(v.amount)out.push({payer:p,receiver:above,amount:v.amount,cards:v.cards,items:v.items,b3:b3&&above===w,t3:v.items.some(i=>i.k==='thúi 3 bích'),chay});
   if(b3&&above!==w)out.push({payer:p,receiver:w,amount:bet,cards:[],items:[{k:'3 bích về nhất',v:bet}],b3:true,chay:false});});return out;}
@@ -2747,7 +2747,7 @@ openTables=function(){if(!BETS2.includes(PR.bet)||PR.bet>PR.xu)PR.bet=Math.min(s
  modal(`<h3>${I('bot')} Chơi với máy</h3><p class="small">1. Chọn số người</p><div class="tsel">${opt(2)}${opt(3)}${opt(4)}</div>
  <p class="small" style="margin-top:12px">2. Chọn mức cược · Bạn có ${I('coin')} ${fmt(PR.xu)}</p><div class="betrow">${BETS2.map(b=>`<button ${b>PR.xu?'disabled':''} onclick="setTblBet(${b})" class="${b>=MASTER_BET?'mbet ':''}${b===PR.bet?'':'alt'}">${b>=MASTER_BET?'10k':fmt(b)}${b>=MASTER_BET?'<small>Cao thủ</small>':b===sug?'<small>gợi ý</small>':''}</button>`).join('')}</div>${PR.bet>=MASTER_BET?'<p class="small mnote">🥋 Bàn 10.000: toàn bộ máy là <b>Cao thủ</b>. Thắng máy Cao thủ vẫn được <b>thưởng thêm XP</b>, nhưng không thưởng thêm xu (xu theo thứ hạng như thường).</p>':'<p class="small mnote">Mức 10k: bàn toàn Cao thủ.</p>'}
  <p class="small">Độ khó máy: <b>${PR.bet>=MASTER_BET?"toàn Cao thủ":"ngẫu nhiên theo cấp của bạn"}</b></p>
- <details class="xptbl"><summary>Luật thanh toán</summary><p class="small">• Thúi heo/hàng: người thua còn heo, tứ quý, 3 đôi thông trả người về ngay trên.<br>• Cháy bài (còn 13 lá): trả thêm 2× cược.<br>• 3 bích về nhất: nước cuối là 1 lá 3♠ đánh lẻ → mỗi người trả thêm 1× cược.<br>• <b>Thúi 3 bích</b>: người về <b>bét</b> mà còn 3♠ trả <b>gấp đôi (2× cược)</b> cho người về ngay trên.<br>• Chặt heo / <b>chặt chồng</b> (cả Miền Nam và Đếm lá): người chặt sau cùng thu toàn bộ tiền chồng từ người vừa bị chặt.<br>• Rời bàn giữa ván: phạt <b>100%</b> mức cược.</p></details>
+ <details class="xptbl"><summary>Luật thanh toán</summary><p class="small">• Thúi heo/hàng: người thua còn heo, tứ quý, 3 đôi thông trả người về ngay trên.<br>• Cháy bài (còn 13 lá): trả thêm 2× cược.<br>• 3 bích về nhất: nước cuối là 1 lá 3♠ đánh lẻ → mỗi người trả thêm 1× cược.<br>• <b>Thúi 3 bích</b>: người về <b>bét</b> mà <b>chỉ còn đúng 1 lá 3♠</b> trả <b>gấp đôi (2× cược)</b> cho người về ngay trên (còn 3♠ kèm lá khác thì không tính, chỉ tính thúi heo/hàng/cháy như thường).<br>• Chặt heo / <b>chặt chồng</b> (cả Miền Nam và Đếm lá): người chặt sau cùng thu toàn bộ tiền chồng từ người vừa bị chặt.<br>• Rời bàn giữa ván: phạt <b>100%</b> mức cược.</p></details>
  <button class="bigbtn" onclick="startTable(pickN)" ${PR.xu<PR.bet?'disabled':''}>${I('bot')} VÀO BÀN ${pickN} NGƯỜI · ${fmt(PR.bet)} xu</button>`);};
 // ---- Âm thanh nâng cấp + nhạc nền
 let MUSIC=localStorage.getItem('tlmn_music')==='1',MVOL=+(localStorage.getItem('tlmn_mvol')||0.35);
@@ -3441,8 +3441,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.56.2';
+const APP_V='1.56.3';
 const CHANGELOG=[
+ ['1.56.3','20/10',['Sửa luật Thúi 3 bích: chỉ phạt gấp đôi khi người về bét chỉ còn đúng 1 lá là 3♠; còn 3♠ kèm lá khác thì không bị phạt 3 bích (thúi heo/hàng/cháy vẫn tính như thường). Áp dụng cho Miền Nam, Đếm lá và chơi online']],
  ['1.56.2','19/10',['Thưởng EXP: "Tổng xu đã thắng" đổi thành mỗi 1.000.000 xu = +1% (trước là mỗi 100.000 xu)']],
  ['1.56.1','19/10',['Sửa Thưởng EXP — "Tổng xu đã thắng" nay tính ở MỌI chế độ (trước chỉ Miền Nam/Đếm lá): 3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker, online','Tính theo lãi ròng mỗi ván, gồm cả tiền chặt heo, thúi, cháy, 3 bích, luộc; quà điểm danh, nhiệm vụ, vòng quay không tính','Người chơi cũ được cộng bù lịch sử thắng của các chế độ trên (một lần)','Huy hiệu: chỉ đếm huy hiệu còn tồn tại (bỏ mã cũ)']],
  ['1.56','18/10',['Rà soát bố cục ở 360/412/461: bàn Miền Nam/Đếm lá — ghế bên trái/phải xếp tên, xu, cấp và danh hiệu thành cột gọn, không còn tràn mép; Bầu cua — cột sao không còn đè lên nhãn Nhà cái','Chạm một người trên bảng xếp hạng hoặc trong danh sách Người online để mở thẳng hồ sơ đầy đủ (cấp, danh hiệu, sao, tài sản, pet, huy hiệu); nút Kết bạn / Mời / Vào cùng bàn nằm ngay trong hồ sơ','Xì tố & Poker: nhãn rõ cạnh ghế — "Tố ×N" cho người tố, "Theo" cho người theo, "Xem" cho người xem bài, "Bỏ" cho người bỏ, "Tất tay" cho người tất tay']],
