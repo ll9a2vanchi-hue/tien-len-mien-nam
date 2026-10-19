@@ -262,7 +262,7 @@ function ownedValue(P,avatar){let v=0;for(const it of _shopList()){if(!(it.price
 function expBreakdown(P){const rd=x=>Math.round(x*100)/100;const sv=ownedValue(P,false),av=ownedValue(P,true),nb0=0,nb=badgeCountValid(P);earnBackfill(P);const earned2=(P.stats&&P.stats.earned)||0;
  const rows=[{k:'shop',ic:'🛍️',label:'Vật phẩm cửa hàng',info:fmt0(sv)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(sv/1000000)},
   {k:'avatar',ic:'😎',label:'Avatar sở hữu',info:fmt0(av)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(av/1000000)},
-  {k:'earned',ic:'🪙',label:'Tổng xu đã thắng',info:fmt0(earned2)+' xu · mỗi 100.000 xu = +1%',pct:rd(earned2/100000)},
+  {k:'earned',ic:'🪙',label:'Tổng xu đã thắng',info:fmt0(earned2)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(earned2/1000000)},
   {k:'badge',ic:'🏅',label:'Huy hiệu',info:nb+' huy hiệu · mỗi huy hiệu = +0,05%',pct:rd(nb*0.05)},
   {k:'asset',ic:'🏢',label:'Tài sản mua sắm',info:'Quần áo, trang sức, phụ kiện, phong thủy',pct:shopExpBonus(P)},
   {k:'pet',ic:'🐾',label:'Thú cưng',info:'Thú đang theo bạn',pct:typeof petBonus==='function'?petBonus(P):0}];

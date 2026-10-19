@@ -975,7 +975,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='73114c674c';
+const APP_VER='515945d581';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -1310,7 +1310,7 @@ function ownedValue(P,avatar){let v=0;for(const it of _shopList()){if(!(it.price
 function expBreakdown(P){const rd=x=>Math.round(x*100)/100;const sv=ownedValue(P,false),av=ownedValue(P,true),nb0=0,nb=badgeCountValid(P);earnBackfill(P);const earned2=(P.stats&&P.stats.earned)||0;
  const rows=[{k:'shop',ic:'🛍️',label:'Vật phẩm cửa hàng',info:fmt0(sv)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(sv/1000000)},
   {k:'avatar',ic:'😎',label:'Avatar sở hữu',info:fmt0(av)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(av/1000000)},
-  {k:'earned',ic:'🪙',label:'Tổng xu đã thắng',info:fmt0(earned2)+' xu · mỗi 100.000 xu = +1%',pct:rd(earned2/100000)},
+  {k:'earned',ic:'🪙',label:'Tổng xu đã thắng',info:fmt0(earned2)+' xu · mỗi 1.000.000 xu = +1%',pct:rd(earned2/1000000)},
   {k:'badge',ic:'🏅',label:'Huy hiệu',info:nb+' huy hiệu · mỗi huy hiệu = +0,05%',pct:rd(nb*0.05)},
   {k:'asset',ic:'🏢',label:'Tài sản mua sắm',info:'Quần áo, trang sức, phụ kiện, phong thủy',pct:shopExpBonus(P)},
   {k:'pet',ic:'🐾',label:'Thú cưng',info:'Thú đang theo bạn',pct:typeof petBonus==='function'?petBonus(P):0}];
@@ -3441,8 +3441,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.56.1';
+const APP_V='1.56.2';
 const CHANGELOG=[
+ ['1.56.2','19/10',['Thưởng EXP: "Tổng xu đã thắng" đổi thành mỗi 1.000.000 xu = +1% (trước là mỗi 100.000 xu)']],
  ['1.56.1','19/10',['Sửa Thưởng EXP — "Tổng xu đã thắng" nay tính ở MỌI chế độ (trước chỉ Miền Nam/Đếm lá): 3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker, online','Tính theo lãi ròng mỗi ván, gồm cả tiền chặt heo, thúi, cháy, 3 bích, luộc; quà điểm danh, nhiệm vụ, vòng quay không tính','Người chơi cũ được cộng bù lịch sử thắng của các chế độ trên (một lần)','Huy hiệu: chỉ đếm huy hiệu còn tồn tại (bỏ mã cũ)']],
  ['1.56','18/10',['Rà soát bố cục ở 360/412/461: bàn Miền Nam/Đếm lá — ghế bên trái/phải xếp tên, xu, cấp và danh hiệu thành cột gọn, không còn tràn mép; Bầu cua — cột sao không còn đè lên nhãn Nhà cái','Chạm một người trên bảng xếp hạng hoặc trong danh sách Người online để mở thẳng hồ sơ đầy đủ (cấp, danh hiệu, sao, tài sản, pet, huy hiệu); nút Kết bạn / Mời / Vào cùng bàn nằm ngay trong hồ sơ','Xì tố & Poker: nhãn rõ cạnh ghế — "Tố ×N" cho người tố, "Theo" cho người theo, "Xem" cho người xem bài, "Bỏ" cho người bỏ, "Tất tay" cho người tất tay']],
  ['1.55','18/10',['28 vật phẩm cao cấp mới (100.000 – 1.000.000 xu), mỗi nhóm 4 món có hiệu ứng động riêng:','Mặt sau bài: Cực Quang, Hologram, Địa Ngục Hỏa, Kim Cương Hoàng Gia','Mặt bàn: Cực Quang Đêm, Hoa Rơi Mùa Xuân, Dải Ngân Hà, Kho Vàng Hoàng Gia','Bộ bài: Neon Cyber, Lá Vàng Dát, Hắc Diện Thạch, Cầu Vồng Holo','Bong bóng chat: Cầu Vồng, Băng Giá, Thiên Hà, Kim Cương','Màu tên: Cực Quang, Neon Hồng, Dung Nham, Kim Cương','Hiệu ứng thắng: Pháo Hoa Đêm, Mưa Sao Băng, Bão Vàng, Phượng Hoàng Tái Sinh','Biểu cảm: Huyền Thoại, Vũ Trụ, Bố Già, Siêu Sao Bùng Nổ (có hiệu ứng riêng khi gửi)','Các món này được tính vào Thưởng EXP (mỗi 1.000.000 xu = +1%); ưu đãi -30% mỗi ngày vẫn áp dụng; món cao cấp xếp đầu mỗi tab cửa hàng']],
