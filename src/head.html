@@ -813,6 +813,18 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 #mg.mg-poker .pkopp{flex:1 1 auto;min-height:0}
 @media(max-height:820px){#mg.mg-poker .pkopp.n5 .pkh .cgc,#mg.mg-poker .pkopp.n6 .pkh .cgc{--cw:min(11.5vw,48px,5vh)}#mg.mg-poker .pks.me .pkh .cgc{--cw:min(25vw,104px,11.5vh)}}
 #mg.mg-poker .pks.win .pkh .cgc{transform:none}#mg.mg-poker .pkopp{padding-bottom:2px}
+/* v1.57.2 poker: tự co theo chiều cao, không che bài lật */
+#mg.mg-poker .pkopp{flex:none!important}#mg.mg-poker .pktbl{justify-content:space-between}
+#mg.mg-poker .pkopp .pkh .cgc{width:calc(var(--cw)*var(--pkf,1))!important;height:calc(var(--cw)*var(--pkf,1)*1.42)!important;margin-left:calc(var(--cw)*var(--pkf,1)*-0.4)}#mg.mg-poker .pkopp .pkh .cgc:first-child{margin-left:0}
+#mg.mg-poker .pkboard .cgc{width:calc(var(--cw)*var(--pkf,1))!important;height:calc(var(--cw)*var(--pkf,1)*1.42)!important}
+#mg.mg-poker .pks.me .pkh .cgc{width:calc(var(--cw)*var(--pkm,1))!important;height:calc(var(--cw)*var(--pkm,1)*1.42)!important;margin-left:calc(var(--cw)*var(--pkm,1)*-0.28)}#mg.mg-poker .pks.me .pkh .cgc:first-child{margin-left:0}
+#mg.mg-poker .cgc.pkw{transform:translateY(-6px)!important;box-shadow:0 0 0 2px #ffd84d,0 0 12px 3px #ffd84dcc!important;z-index:2;position:relative}
+#mg.mg-poker .pktbl.pkwin .cgc:not(.pkw):not(.back){filter:brightness(.7)}
+#mg.mg-poker .pks.win .cgsc{background:linear-gradient(#ffe48a,#f4c542);color:#3a2400;font-weight:900;white-space:nowrap}
+#mg.mg-poker .pkopp .pkh{padding-top:7px}#mg.mg-poker .cgled{font-size:11px}#mg.mg-poker .cgled span{white-space:normal;overflow:visible;text-overflow:clip}#mg.mg-poker .cgled>div{align-items:center}
+#mg .pks.me .mgseat{order:0}#mg .pks.me .cgsc{order:1}#mg .pks.me .pkh{order:2}#mg .pks.me>*:not(.mgseat):not(.cgsc):not(.pkh){order:3}
+#mg .pks.me .cgsc.live{background:linear-gradient(#ffe48a,#f4c542);color:#3a2400;font-weight:900;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#mg .cgc.pkhl{box-shadow:0 0 0 2px #ffd84d,0 0 10px 2px #ffd84daa!important}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>

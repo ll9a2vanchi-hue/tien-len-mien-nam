@@ -80,7 +80,7 @@ function bcOpen(){const st=MG.st;if(st.phase!=='open')return;st.phase='done';st.
  const bv=st.bots.map(b=>bcuaPay(b.bets||{},st.dice));let me;
  if(st.role==='con'){me=bcuaPay(st.bets,st.dice);bv.forEach((v,i)=>{MG.bxu[st.bots[i].name]=Math.max(0,(MG.bxu[st.bots[i].name]||0)+v);});st.ledger=[['Với nhà cái',me]];}
  else{const v=cgCap([0].concat(bv),PR.xu);me=v[0];v.slice(1).forEach((x,i)=>{bv[i]=x;MG.bxu[st.bots[i].name]=Math.max(0,(MG.bxu[st.bots[i].name]||0)+x);});st.ledger=st.bots.map((b,i)=>[b.name,-bv[i]]);}
- st.res={me,b:bv};const triple=st.dice[0]===st.dice[1]&&st.dice[1]===st.dice[2];st.msg=(me>0?`🎉 Bạn thắng +${fmt(me)} xu`:me<0?`Bạn thua ${fmt(me)} xu`:'Hòa')+(triple?' · Bão '+BC_NAME[st.dice[0]]+'!':'');
+ st.res={me,b:bv};const triple=st.dice[0]===st.dice[1]&&st.dice[1]===st.dice[2];st.msg=(me>0?`🎉 Bạn thắng +${fmt(me)} xu`:me<0?`Bạn thua ${fmt(-me)} xu`:'Hòa')+(triple?' · Bão '+BC_NAME[st.dice[0]]+'!':'');
  const _tb=bcTot(st.bets),_cnt=k=>st.dice.filter(d=>d==k).length;const xp=mgEnd(me,{stats:triple&&me>0?['bcuaTriple']:[],ev:st.role==='cai'?{role:true,dealer:true,sp1:triple&&me>0}:{sp1:triple&&me>0,sp2:Object.keys(st.bets).some(k=>st.bets[k]>0&&_cnt(k)>=2),sp3:_tb>0&&me>=2*_tb,s4:triple&&st.bets[st.dice[0]]>0,s5:Object.keys(st.bets).filter(k=>st.bets[k]>0).length>=6}});st.msg+=` · +${xp} XP`;bcR();bcFlyChips();}
 function bcFlyChips(){const st=MG.st;const dl=document.querySelector('#mg .bcs.dl .av');document.querySelectorAll('#mg .bct .bcc').forEach((c,q)=>{const s=c.closest('.bct').dataset.s;const hit=st.dice.includes(s);const o=c.dataset.o;
   const tgt=hit?(o==='0'?(st.role==='con'?document.querySelector('#mg .bcs[data-o="0"] .av'):dl):document.querySelector(`#mg .bcs[data-o="${o}"] .av`)):(st.role==='cai'?dl:document.querySelector('#mg .bcs.dl .av'));if(!tgt)return;
@@ -578,3 +578,44 @@ const _bxs157=botXuSeed;botXuSeed=function(name,lv){const s=_bxs157(name,lv);try
 const _rr157=renderRoom;renderRoom=function(){_rr157.apply(this,arguments);try{if(!ONL.active||!ONL.host)return;const sel=document.querySelector('#home .pcard select[onchange^="setTableBet"]');if(!sel)return;const bet=ONL.room&&ONL.room.bet||PR.bet;
  sel.innerHTML=[100,200,500,1000,2000,5000,10000,...HI_BETS.map(x=>x[0])].map(b=>{const ok=hiBetOk(PR,b,'tlmn')&&b<=PR.xu;return `<option value="${b}" ${b===bet?'selected':''} ${ok?'':'disabled'}>${fmt(b)}${hiBetReq(b)?' · '+hiBetLabel(b)+(ok?'':' 🔒'):''}</option>`;}).join('');}catch(e){}};
 const _stb157=setTableBet;setTableBet=function(b){if(!hiBetOk(PR,b,'tlmn'))return toast('🔒 Cần hạng '+hiBetLabel(b)+' Tiến lên');return _stb157(b);};
+
+// ===== v1.57.2 Bầu cua: thắng/thua từng người, giữ chiều cao điều khiển, máy được nạp xu =====
+const _bcR1572=bcR;bcR=function(){const o=$('mg'),st=MG.st;const ctl=o&&o.querySelector('.cgctl');const h0=ctl&&st&&st.phase==='bet'?ctl.offsetHeight:0;_bcR1572.apply(this,arguments);try{if(!o||!st)return;
+ if(h0)o.style.setProperty('--bcctl',h0+'px');
+ if(st.phase!=='done'||!st.res)return;const add=(sel,v)=>{const s=o.querySelector(sel);if(!s||s.querySelector('.bcdelta'))return;s.insertAdjacentHTML('beforeend',`<i class="bcdelta ${v>0?'pos':v<0?'neg':''}">${v>0?'+':v<0?'−':'±'}${kxu(Math.abs(v))}</i>`);if(v>0)s.classList.add('wn');};
+ const sb=st.res.b.reduce((a,x)=>a+x,0);
+ if(st.role==='con'){add('#mg .bcs[data-o="0"]',st.res.me);add('#mg .bcs.dl',-(st.res.me+sb));}else add('#mg .bcs.dl',st.res.me);
+ st.bots.forEach((b,i)=>{if(bcTot(b.bets))add(`#mg .bcs[data-o="${i+1}"]`,st.res.b[i]);});}catch(e){console.warn(e)}};
+const _bcPlan1572=bcPlan;bcPlan=function(maxK,amts){try{mgRefill(MG.st.bots,500);}catch(e){}return _bcPlan1572(maxK,amts);};
+
+// ===== v1.57.2 Poker: co bài theo chiều cao, tô sáng 5 lá thắng, ghi rõ bộ bài =====
+function pkVN(v){return v===14?'A':v===13?'K':v===12?'Q':v===11?'J':String(v);}
+function pkOrder(r){const cs=r.cards.slice(),sc=r.sc;if(sc[0]===4||sc[0]===8){cs.sort((a,b)=>pkV(a)-pkV(b));if(sc[1]===5){const a=cs.pop();cs.unshift(a);}return cs;}
+ const cnt={};cs.forEach(c=>cnt[pkV(c)]=(cnt[pkV(c)]||0)+1);return cs.sort((a,b)=>cnt[pkV(b)]-cnt[pkV(a)]||pkV(b)-pkV(a));}
+function pkCardsTxt(cs){return cs.map(c=>pkVN(pkV(c))+SUITS[c&3]).join(' ');}
+function pkHandTxt(r){const cs=pkOrder(r),n=handName(r.sc,'pk');if(r.sc[0]===4||r.sc[0]===8)return n+' '+cs.map(c=>pkVN(pkV(c))).join('-');return n+' · '+pkCardsTxt(cs);}
+function pkFit(){const o=$('mg'),t=o&&o.querySelector('.pktbl');if(!t)return;let f=1,m=1;t.style.setProperty('--pkf',1);t.style.setProperty('--pkm',1);const over=()=>t.scrollHeight>t.clientHeight+1;for(let k=0;k<8&&over()&&m>0.66;k++){m-=0.04;t.style.setProperty('--pkm',m.toFixed(2));}for(let k=0;k<10&&over()&&f>0.45;k++){f-=0.05;t.style.setProperty('--pkf',f.toFixed(2));}}
+const _pkR1572=pkR;pkR=function(){_pkR1572.apply(this,arguments);try{pkFit();const st=MG.st,o=$('mg');if(!st||st.phase!=='done'||!st.res)return;const live=btLive(st.b);if(live.length<2)return;
+ const t=o.querySelector('.pktbl');t.classList.add('pkwin');
+ st.res.forEach((v,i)=>{if(v<=0||st.b.fold[i])return;const r=best5(st.hands[i].concat(st.board),'pk');const ids=new Set(r.cards.map(String));
+  o.querySelectorAll('.pkboard .cgc').forEach(e=>{if(ids.has(e.dataset.c))e.classList.add('pkw');});
+  const s=o.querySelector(`.pks[data-i="${i}"]`);if(!s)return;s.querySelectorAll('.pkh .cgc').forEach(e=>{if(ids.has(e.dataset.c))e.classList.add('pkw');});const lab=s.querySelector('.cgsc');if(lab)lab.textContent=handDesc(st.hands[i].concat(st.board),'pk').txt;});
+ st.seats.forEach((x,i)=>{if(i===0||st.res[i]>0||!st.shown[i])return;const s=o.querySelector(`.pks[data-i="${i}"] .cgsc`);if(s)s.title=pkHandTxt(best5(st.hands[i].concat(st.board),'pk'));});}catch(e){console.warn(e)}};
+const _pkShow1572=pkShow;pkShow=function(){_pkShow1572.apply(this,arguments);try{const st=MG.st,b=st.b;const live=btLive(b);if(live.length<2)return;
+ st.ledger=st.seats.map((s,i)=>{if(b.fold[i])return [(i===0?'Bạn':s.name)+' · bỏ',st.res[i]];const r=best5(st.hands[i].concat(st.board),'pk');return [(i===0?'Bạn':s.name)+' · '+pkHandTxt(r),st.res[i]];}).filter(l=>l[1]);
+ const wi=st.res.indexOf(Math.max(...st.res));const r=best5(st.hands[wi].concat(st.board),'pk');st.msg=st.msg.replace(' · '+handName(r.sc,'pk'),' · '+pkHandTxt(r));pkR();}catch(e){console.warn(e)}};
+// ===== v1.57.2: nhãn bộ bài hiện tại của bạn (Xì tố & Poker), cập nhật mỗi vòng =====
+function handDesc(cs,mode){if(!cs||!cs.length)return null;let use=cs,sc;
+ if(mode==='pk'&&cs.length>5){const r=best5(cs,'pk');use=r.cards;sc=r.sc;}else if(cs.length===5){sc=eval5(cs,mode);}else sc=evalPartial(cs);
+ const cnt={};use.forEach(c=>cnt[pkV(c)]=(cnt[pkV(c)]||0)+1);const grp=Object.entries(cnt).map(([v,n])=>[n,+v]).sort((a,b)=>b[0]-a[0]||b[1]-a[1]);
+ const N=(mode==='xt'?XT_NAMES:PK_NAMES)[sc[0]],V=pkVN,cat=sc[0];const isSt=use.length===5&&(cat===4||cat===8),isFl=use.length===5&&N.startsWith('Thùng')&&!isSt;let txt,ids;
+ if(isSt){const o=pkOrder({cards:use,sc:[cat,sc[1]]});txt=N+' '+o.map(c=>V(pkV(c))).join('-');ids=use;}
+ else if(isFl){txt=N+' '+SUITS[use[0]&3]+' '+V(Math.max(...use.map(pkV)));ids=use;}
+ else if(grp[0][0]>=2){const g=grp.filter(x=>x[0]>=2);txt=cat===2?N+' '+V(g[0][1])+'-'+V(g[1][1]):(g.length>1&&grp[0][0]===3&&grp[1][0]===2)?N+' '+V(g[0][1])+'-'+V(g[1][1]):N+' '+V(g[0][1]);ids=use.filter(c=>cnt[pkV(c)]>=2);}
+ else{const t=Math.max(...use.map(pkV));txt='Mậu thầu '+V(t);ids=use.filter(c=>pkV(c)===t);}
+ return {txt,ids:new Set(ids.map(String))};}
+function liveLab(sel,cs,mode){const o=$('mg');const s=o&&o.querySelector(sel);if(!s||s.classList.contains('fold'))return;const d=handDesc(cs,mode);if(!d)return;let l=s.querySelector('.cgsc');if(!l){s.querySelector('.pkh')?.insertAdjacentHTML('beforebegin','<div class="cgsc"></div>');l=s.querySelector('.cgsc');}if(!l)return;
+ l.textContent=d.txt;l.classList.add('live');s.querySelectorAll('.pkh .cgc').forEach(e=>{if(d.ids.has(e.dataset.c))e.classList.add('pkhl');});
+ if(mode==='pk'&&MG.st.phase!=='done')o.querySelectorAll('.pkboard .cgc').forEach(e=>{if(d.ids.has(e.dataset.c))e.classList.add('pkhl');});}
+const _pkR1572b=pkR;pkR=function(){_pkR1572b.apply(this,arguments);try{const st=MG.st;if(st&&st.hands&&st.hands[0]&&st.hands[0].length)liveLab('.pks.me',st.hands[0].concat(st.board||[]),'pk');pkFit();}catch(e){console.warn(e)}};
+const _xtR1572=xtR;xtR=function(){_xtR1572.apply(this,arguments);try{const st=MG.st;if(st&&st.hands&&st.hands[0]&&st.hands[0].length)liveLab('.pks.me',st.hands[0],'xt');}catch(e){console.warn(e)}};

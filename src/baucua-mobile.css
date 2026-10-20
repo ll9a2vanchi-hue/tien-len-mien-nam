@@ -138,3 +138,19 @@
 #mg.mg-baucua .bcboard{margin:3px 0!important;gap:6px!important}
 #mg.mg-baucua .bct{min-height:clamp(92px,11vh,132px)!important}
 @media(max-height:800px){#mg.mg-baucua .bct{min-height:84px!important}#mg.mg-baucua .bcplate{height:73px!important;width:108px!important}}
+
+/* v1.57.2: sửa sao chồng tên, bát che chọn số người, bàn không nhảy khi lắc, hiện thắng/thua từng người */
+#mg.mg-baucua .bcseats .bcs{overflow:visible;padding-top:9px!important;position:relative}
+#mg.mg-baucua .mgseat .av .avst{flex-direction:row!important;font-size:9px;bottom:calc(100% + 1px)}#mg.mg-baucua .mgseat .av .avst i{display:inline-block!important;width:auto!important}
+#mg.mg-baucua .bcseats .bcs .mgseat .slv,#mg.mg-baucua .bcseats .bcs .mgseat{overflow:hidden}
+#mg.mg-baucua .bcplate{margin-top:6px!important}#mg.mg-baucua .bcbowl{bottom:0!important;top:-4px!important;height:auto!important}
+#mg.mg-baucua .bctbl{justify-content:flex-start!important}#mg.mg-baucua .cgctl{min-height:var(--bcctl,0px);justify-content:center}
+#mg.mg-baucua .bcdelta{position:absolute;top:0;right:2px;z-index:7;font-style:normal;font-size:11px;font-weight:900;padding:1px 6px;border-radius:9px;color:#fff;background:#555;box-shadow:0 1px 4px #0008;animation:bcdpop .45s cubic-bezier(.2,1.6,.4,1) both;pointer-events:none;white-space:nowrap}
+#mg.mg-baucua .bcdelta.pos{background:linear-gradient(#43a047,#1b5e20);border:1px solid #a5d6a7}#mg.mg-baucua .bcdelta.neg{background:linear-gradient(#e53935,#8e0000);border:1px solid #ef9a9a}
+#mg.mg-baucua .bcs.wn{box-shadow:0 0 0 2px #ffd84d,0 0 12px #ffd84d88}
+@keyframes bcdpop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){#mg.mg-baucua .bcdelta{animation:none}}
+#mg.mg-baucua .bcseats{row-gap:1px!important;padding-bottom:3px!important}
+@media(max-height:800px){#mg.mg-baucua .bct{min-height:76px!important;padding:3px 1px!important}#mg.mg-baucua .bct .bce{font-size:clamp(26px,6vw,32px)}}
+#mg.mg-baucua .bcs .av .avst{flex-direction:row!important;font-size:9px}#mg.mg-baucua .bcs .av .avst i{display:inline-block!important;width:auto!important}
+#mg.mg-baucua .cgctl .cgled{display:none}/* thắng/thua đã hiện ngay trên từng ghế */
