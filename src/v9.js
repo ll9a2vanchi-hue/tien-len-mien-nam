@@ -740,8 +740,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.57';
+const APP_V='1.57.1';
 const CHANGELOG=[
+ ['1.57.1','21/10',['Poker: phóng to bài cho dễ nhìn — 5 lá chung to hết bề ngang, 2 lá tẩy của bạn to rõ ở dưới, bài máy to hơn','Sắp xếp lại ghế, hũ, nhãn Tố/Theo/Bỏ để không chồng lấn ở màn hình nhỏ; giữ mặt bài/lưng bài đang dùng']],
  ['1.57','20/10',['Mở khóa mức cược cao cho Tiến lên Miền Nam và Đếm lá theo hạng sao của từng chế độ: Bạc 20k, Vàng 30k, Kim cương 50k, Xanh 70k, Đỏ 100k, Đen 150k (đạt sao đầu tiên của hạng là mở)','Mức chưa mở hiện 🔒 kèm hạng cần đạt; vẫn cần đủ xu để vào bàn','Bàn mức cao toàn máy Cao thủ (như bàn 10k), thắng Cao thủ vẫn được thưởng thêm XP; chặt, thúi, tiền lá Đếm lá, luộc, phạt thoát bàn đều nhân theo mức cược','Máy ở bàn cao có xu tương xứng mức cược','Online: chủ bàn chỉ chọn được mức đã mở khóa; người vào bàn cần đủ xu']],
  ['1.56.3','20/10',['Sửa luật Thúi 3 bích: chỉ phạt gấp đôi khi người về bét chỉ còn đúng 1 lá là 3♠; còn 3♠ kèm lá khác thì không bị phạt 3 bích (thúi heo/hàng/cháy vẫn tính như thường). Áp dụng cho Miền Nam, Đếm lá và chơi online']],
  ['1.56.2','19/10',['Thưởng EXP: "Tổng xu đã thắng" đổi thành mỗi 1.000.000 xu = +1% (trước là mỗi 100.000 xu)']],

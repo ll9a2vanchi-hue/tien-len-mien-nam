@@ -798,6 +798,21 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 .betrow .hbhead{grid-column:1/-1;font-size:11px;font-weight:700;opacity:.85;margin-top:4px;text-align:center}
 .betrow button.hbet{border:1.5px solid var(--hc)!important;min-width:0}.betrow button.hbet small{color:var(--hc);opacity:1;font-weight:800}.betrow button.hbet:not(.alt){background:linear-gradient(var(--hc),#0006)!important;color:#fff}.betrow button.hbet:not(.alt) small{color:#fff}
 .betrow button.hbet.lk{opacity:.55;filter:grayscale(.4)}.betrow{min-width:0}.betrow button{min-width:0;overflow:hidden;white-space:nowrap}
+/* v1.57.1 poker: bài to, dễ nhìn */
+#mg.mg-poker .pkboard{gap:3px;min-height:0}#mg.mg-poker .pkboard .cgc{--cw:min(calc((100vw - 44px)/5 - 3px),72px);margin-left:0}
+#mg.mg-poker .pkboard .slot{width:min(calc((100vw - 44px)/5 - 3px),72px);height:calc(min(calc((100vw - 44px)/5 - 3px),72px)*1.42)}
+#mg.mg-poker .pks.me .pkh .cgc{--cw:min(25vw,104px);margin-left:calc(var(--cw)*-0.28)}#mg.mg-poker .pks.me .pkh{padding-left:0}#mg.mg-poker .pks.me .pkh .cgc:first-child{margin-left:0}
+#mg.mg-poker .pks:not(.me) .pkh{padding-left:0}#mg.mg-poker .pks:not(.me) .pkh .cgc{--cw:min(11.5vw,48px);margin-left:calc(var(--cw)*-0.4)}#mg.mg-poker .pks:not(.me) .pkh .cgc:first-child{margin-left:0}
+#mg.mg-poker .pkopp.n2 .pkh .cgc,#mg.mg-poker .pkopp.n3 .pkh .cgc{--cw:min(15vw,62px)!important}#mg.mg-poker .pkopp.n1 .pkh .cgc{--cw:min(17vw,70px)!important}
+#mg.mg-poker .pks:not(.me) .mgseat .slv{display:none}#mg.mg-poker .pkopp{gap:8px 4px}#mg.mg-poker .pktbl{gap:4px}
+#mg.mg-poker .pks.me .mgseat{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:2px 6px;align-items:center}#mg.mg-poker .pks.me .mgseat .av{width:28px;height:28px;font-size:16px}#mg.mg-poker .pks.me .mgseat .slv,#mg.mg-poker .pks.me .mgseat .sxp{display:none}
+#mg.mg-poker .pkst,#mg.mg-poker .pkraise{position:relative;z-index:4}
+#mg.mg-poker .pkopp.n5 .mgseat,#mg.mg-poker .pkopp.n6 .mgseat{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:0 4px;align-items:center}#mg.mg-poker .pkopp.n5 .mgseat .av,#mg.mg-poker .pkopp.n6 .mgseat .av{width:26px;height:26px;font-size:15px}
+@media(max-height:820px){#mg.mg-poker .pks.me .pkh .cgc{--cw:min(25vw,104px,12.5vh)}#mg.mg-poker .pkboard .cgc{--cw:min(calc((100vw - 44px)/5 - 3px),72px,8.6vh)}#mg.mg-poker .pkboard .slot{width:min(calc((100vw - 44px)/5 - 3px),72px,8.6vh);height:calc(min(calc((100vw - 44px)/5 - 3px),72px,8.6vh)*1.42)}}
+#mg.mg-poker .pkboard,#mg.mg-poker .pkpot,#mg.mg-poker .pks.me{flex:none}#mg.mg-poker .pktbl .cgmsg{font-size:12px;padding:2px 10px;flex:none}#mg.mg-poker .pktbl:has(.pks.win) .cgmsg{display:none}
+#mg.mg-poker .pkopp{flex:1 1 auto;min-height:0}
+@media(max-height:820px){#mg.mg-poker .pkopp.n5 .pkh .cgc,#mg.mg-poker .pkopp.n6 .pkh .cgc{--cw:min(11.5vw,48px,5vh)}#mg.mg-poker .pks.me .pkh .cgc{--cw:min(25vw,104px,11.5vh)}}
+#mg.mg-poker .pks.win .pkh .cgc{transform:none}#mg.mg-poker .pkopp{padding-bottom:2px}
 /* Bầu Cua v1.52.5 — scoped mobile layout + avatar bet chips */
 #mg.mg-baucua{padding-left:5px;padding-right:5px;min-width:0}
 #mg.mg-baucua .bctbl{flex:1 1 auto;min-height:0;min-width:0;gap:5px;padding:6px 4px;border-width:3px;border-radius:16px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
@@ -978,7 +993,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='f188804036';
+const APP_VER='84d3b5e480';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -3444,8 +3459,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.57';
+const APP_V='1.57.1';
 const CHANGELOG=[
+ ['1.57.1','21/10',['Poker: phóng to bài cho dễ nhìn — 5 lá chung to hết bề ngang, 2 lá tẩy của bạn to rõ ở dưới, bài máy to hơn','Sắp xếp lại ghế, hũ, nhãn Tố/Theo/Bỏ để không chồng lấn ở màn hình nhỏ; giữ mặt bài/lưng bài đang dùng']],
  ['1.57','20/10',['Mở khóa mức cược cao cho Tiến lên Miền Nam và Đếm lá theo hạng sao của từng chế độ: Bạc 20k, Vàng 30k, Kim cương 50k, Xanh 70k, Đỏ 100k, Đen 150k (đạt sao đầu tiên của hạng là mở)','Mức chưa mở hiện 🔒 kèm hạng cần đạt; vẫn cần đủ xu để vào bàn','Bàn mức cao toàn máy Cao thủ (như bàn 10k), thắng Cao thủ vẫn được thưởng thêm XP; chặt, thúi, tiền lá Đếm lá, luộc, phạt thoát bàn đều nhân theo mức cược','Máy ở bàn cao có xu tương xứng mức cược','Online: chủ bàn chỉ chọn được mức đã mở khóa; người vào bàn cần đủ xu']],
  ['1.56.3','20/10',['Sửa luật Thúi 3 bích: chỉ phạt gấp đôi khi người về bét chỉ còn đúng 1 lá là 3♠; còn 3♠ kèm lá khác thì không bị phạt 3 bích (thúi heo/hàng/cháy vẫn tính như thường). Áp dụng cho Miền Nam, Đếm lá và chơi online']],
  ['1.56.2','19/10',['Thưởng EXP: "Tổng xu đã thắng" đổi thành mỗi 1.000.000 xu = +1% (trước là mỗi 100.000 xu)']],
