@@ -619,3 +619,29 @@ function liveLab(sel,cs,mode){const o=$('mg');const s=o&&o.querySelector(sel);if
  if(mode==='pk'&&MG.st.phase!=='done')o.querySelectorAll('.pkboard .cgc').forEach(e=>{if(d.ids.has(e.dataset.c))e.classList.add('pkhl');});}
 const _pkR1572b=pkR;pkR=function(){_pkR1572b.apply(this,arguments);try{const st=MG.st;if(st&&st.hands&&st.hands[0]&&st.hands[0].length)liveLab('.pks.me',st.hands[0].concat(st.board||[]),'pk');pkFit();}catch(e){console.warn(e)}};
 const _xtR1572=xtR;xtR=function(){_xtR1572.apply(this,arguments);try{const st=MG.st;if(st&&st.hands&&st.hands[0]&&st.hands[0].length)liveLab('.pks.me',st.hands[0],'xt');}catch(e){console.warn(e)}};
+
+// ===== v1.58 Bầu cua: chip trả thưởng bay, lịch sử 10 ván, Cược lại / ×2, xúc xắc lớn khi mở bát, hiệu ứng Bão =====
+function bcHist(){return Array.isArray(PR.bcHist)?PR.bcHist:[];}
+function bcHistHtml(){const h=bcHist();if(!h.length)return '';return `<div class="bchist" aria-label="10 ván gần nhất">${h.map((d,i)=>`<span class="bchr ${i===0?'new':''} ${d[0]===d[1]&&d[1]===d[2]?'bao':''}">${d.map(x=>BC_EMO[x]||'').join('')}</span>`).join('')}</div>`;}
+function bcLastOk(){const st=MG.st,l=st&&st.lastBets;return !!(l&&bcTot(l)&&bcTot(l)<=PR.xu);}
+function bcRebet(){const st=MG.st;if(!st||st.placing||st.role!=='con')return;if(st.phase==='done')bcNew();if(st.phase!=='bet')return;const l=st.lastBets;if(!l||!bcTot(l))return toast('Chưa có ván trước');if(bcTot(l)>PR.xu)return toast('Không đủ xu để cược lại');st.bets=Object.assign({},l);sfx('cgChip');bcR();Object.keys(l).forEach(s=>{if(l[s])bcFlyIn(0,s);});}
+function bcDouble(){const st=MG.st;if(!st||st.placing||st.role!=='con')return;if(st.phase==='done'){const l=st.bets;bcNew();st.bets=Object.assign({},l);}if(st.phase!=='bet')return;const t=bcTot(st.bets);if(!t)return toast('Chưa đặt cược');if(t*2>PR.xu)return toast('Không đủ xu để gấp đôi');for(const s in st.bets)st.bets[s]*=2;sfx('cgChip');bcR();Object.keys(st.bets).forEach(s=>{if(st.bets[s])bcFlyIn(0,s);});}
+const _bcCtl158=bcCtl;bcCtl=function(){let h=_bcCtl158.apply(this,arguments);const st=MG.st;if(st.role!=='con'||(st.phase!=='bet'&&st.phase!=='done'))return h;
+ const tot=bcTot(st.bets);const re=`<button class="cgbig alt bcxb" ${bcLastOk()?'':'disabled'} onclick="bcRebet()" title="Cược lại">↺ Lại</button><button class="cgbig alt bcxb" ${tot&&tot*2<=PR.xu?'':'disabled'} onclick="bcDouble()">×2</button>`;
+ return h.replace('<div class="cgrow"><button class="cgbig alt"','<div class="cgrow bcrow4">'+re+'<button class="cgbig alt"');};
+const _bcS2158=bcShake2;bcShake2=function(){const st=MG.st;if(st&&st.role==='con'&&bcTot(st.bets))st.lastBets=Object.assign({},st.bets);return _bcS2158.apply(this,arguments);};
+const _bcR158=bcR;bcR=function(){_bcR158.apply(this,arguments);try{const pl=document.querySelector('#mg .bcplate');if(pl&&!pl.querySelector('.bchist'))pl.insertAdjacentHTML('beforeend',bcHistHtml());bcFit();}catch(e){}};
+function bcBaoSfx(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.16,'square',.07,i*.09));tone(1568,.5,'triangle',.08,.5);noise(.3,.06,.45,3000);}
+function bcBigDice(st,triple){if(RM&&!triple)return;const tb=document.querySelector('#mg .bctbl');if(!tb)return;const r=tb.getBoundingClientRect();const d=document.createElement('div');d.className='bcbig'+(triple?' bao':'')+(RM?' rm':'');
+ d.style.left=(r.left+r.width/2)+'px';d.style.top=(r.top+r.height*0.55)+'px';d.innerHTML=(triple?`<div class="bcbao">🌪️ BÃO ${esc(BC_NAME[st.dice[0]].toUpperCase())}!</div>`:'')+`<div class="bcbd">${st.dice.map((x,i)=>`<span style="--i:${i}">${BC_EMO[x]}</span>`).join('')}</div>`;document.body.appendChild(d);setTimeout(()=>d.remove(),triple?2300:1500);}
+const _bcOpen158=bcOpen;bcOpen=function(){const st=MG.st;const was=st&&st.phase==='open';_bcOpen158.apply(this,arguments);if(!was||!st.res)return;try{
+ const h=bcHist().slice();h.unshift(st.dice.slice());PR.bcHist=h.slice(0,10);saveP();const pl=document.querySelector('#mg .bcplate');if(pl){pl.querySelector('.bchist')?.remove();pl.insertAdjacentHTML('beforeend',bcHistHtml());}
+ const triple=st.dice[0]===st.dice[1]&&st.dice[1]===st.dice[2];bcBigDice(st,triple);if(triple){bcBaoSfx();document.querySelector('#mg .bctbl')?.classList.add('bcbaofx');}
+ bcPayFly(st);bcFit();}catch(e){console.warn(e)}};
+function bcPayFly(st){if(RM)return;const dl=document.querySelector('#mg .bcs.dl .av');if(!dl)return;let q=0;
+ document.querySelectorAll('#mg .bct .bcc').forEach(c=>{const s=c.closest('.bct').dataset.s;const k=st.dice.filter(x=>x===s).length;if(!k)return;const o=c.dataset.o;
+  const tgt=o==='0'?(st.role==='con'?document.querySelector('#mg .bcs[data-o="0"] .av'):null):document.querySelector(`#mg .bcs[data-o="${o}"] .av`);if(!tgt)return;
+  for(let j=0;j<k;j++){const a=dl.getBoundingClientRect(),b=tgt.getBoundingClientRect();const f=c.cloneNode(true);f.classList.add('bcfly','bcpay');f.style.left=(a.left+a.width/2-c.offsetWidth/2)+'px';f.style.top=(a.top+a.height/2-c.offsetHeight/2)+'px';document.body.appendChild(f);
+   const dx=b.left+b.width/2-a.left-a.width/2,dy=b.top+b.height/2-a.top-a.height/2,dl0=1500+(q++)*90;
+   f.animate([{transform:'translate(0,0) scale(.6)',opacity:0},{transform:`translate(${dx*.5}px,${dy*.5-30}px) scale(1.15)`,opacity:1,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(.7)`,opacity:.3}],{duration:800,delay:dl0,easing:'ease-out',fill:'both'}).onfinish=()=>{f.remove();if(q%2)sfx('cgChip');};}});}
+function bcFit(){const t=document.querySelector('#mg .bctbl');if(!t)return;t.style.removeProperty('--bctm');let m=76;for(let k=0;k<8&&t.scrollHeight>t.clientHeight&&m>48;k++){m-=4;t.style.setProperty('--bctm',m+'px');}}

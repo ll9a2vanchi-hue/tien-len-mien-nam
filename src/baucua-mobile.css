@@ -154,3 +154,21 @@
 @media(max-height:800px){#mg.mg-baucua .bct{min-height:76px!important;padding:3px 1px!important}#mg.mg-baucua .bct .bce{font-size:clamp(26px,6vw,32px)}}
 #mg.mg-baucua .bcs .av .avst{flex-direction:row!important;font-size:9px}#mg.mg-baucua .bcs .av .avst i{display:inline-block!important;width:auto!important}
 #mg.mg-baucua .cgctl .cgled{display:none}/* thắng/thua đã hiện ngay trên từng ghế */
+
+/* v1.58 */
+#mg.mg-baucua .bcplate{position:relative}
+#mg.mg-baucua .bchist{position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);display:grid;grid-template-columns:repeat(2,auto);gap:2px 4px;padding:3px 4px;border-radius:8px;background:#2a0918cc;border:1px solid #e9c37755;font-size:11px;line-height:1.15;pointer-events:none;white-space:nowrap}
+#mg.mg-baucua .bchr{opacity:.8;letter-spacing:-1px}#mg.mg-baucua .bchr.new{opacity:1;outline:1px solid #ffd84d;border-radius:4px}#mg.mg-baucua .bchr.bao{background:#ffd84d44;border-radius:4px}
+@media(min-width:420px){#mg.mg-baucua .bchist{font-size:13px}}
+#mg.mg-baucua .bcrow4{display:grid!important;grid-template-columns:1fr .7fr 1fr 1.4fr;gap:5px!important}#mg.mg-baucua .bcrow4 .cgbig{font-size:13px;padding:4px 2px!important;min-width:0;white-space:nowrap}
+.bcbig{position:fixed;z-index:60;transform:translate(-50%,-50%);pointer-events:none;text-align:center;animation:bcbigio 1.5s ease both}
+.bcbig .bcbd{display:flex;gap:10px;justify-content:center}.bcbig .bcbd span{font-size:64px;display:grid;place-items:center;width:84px;height:84px;border-radius:18px;background:linear-gradient(#fffbea,#f2dca6);box-shadow:0 6px 18px #000a,0 0 0 3px #c79a4b;animation:bcdroll .55s calc(var(--i)*.12s) cubic-bezier(.2,1.5,.4,1) both}
+@media(max-width:400px){.bcbig .bcbd span{font-size:50px;width:66px;height:66px}}
+.bcbig.bao{animation-duration:2.3s}.bcbig.bao .bcbd span{box-shadow:0 0 0 3px #ffd84d,0 0 28px 8px #ffb300}
+.bcbao{font-size:30px;font-weight:900;color:#fff3b0;text-shadow:0 0 12px #ff9800,0 3px 0 #8a3b00;margin-bottom:8px;animation:bcbaop .6s cubic-bezier(.2,1.6,.4,1) both;white-space:nowrap}
+@keyframes bcbigio{0%{opacity:0}12%{opacity:1}75%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-120%) scale(.4)}}
+@keyframes bcdroll{from{transform:rotate(-200deg) scale(.2)}to{transform:none}}@keyframes bcbaop{from{transform:scale(.3)}to{transform:none}}
+#mg.mg-baucua .bctbl.bcbaofx{animation:bcbaofl 1.2s ease 2}@keyframes bcbaofl{0%,100%{box-shadow:inset 0 0 24px #25040b55}50%{box-shadow:inset 0 0 60px #ffd84d,0 0 30px #ffb300}}
+@media(prefers-reduced-motion:reduce){.bcbig,.bcbig .bcbd span,.bcbao,#mg.mg-baucua .bctbl.bcbaofx{animation:none!important}.bcbig.rm{opacity:1}}
+#mg.mg-baucua .cgrow.bcrow4 .cgbig{font-size:13px!important;padding:4px 2px!important;overflow:hidden;text-overflow:clip}
+#mg.mg-baucua .bctbl[style*="--bctm"] .bct{min-height:var(--bctm)!important;padding:1px!important}#mg.mg-baucua .bctbl[style*="--bctm"] .bct .bce{font-size:min(30px,calc(var(--bctm)*.36))}

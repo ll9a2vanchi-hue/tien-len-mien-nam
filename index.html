@@ -981,6 +981,24 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 @media(max-height:800px){#mg.mg-baucua .bct{min-height:76px!important;padding:3px 1px!important}#mg.mg-baucua .bct .bce{font-size:clamp(26px,6vw,32px)}}
 #mg.mg-baucua .bcs .av .avst{flex-direction:row!important;font-size:9px}#mg.mg-baucua .bcs .av .avst i{display:inline-block!important;width:auto!important}
 #mg.mg-baucua .cgctl .cgled{display:none}/* thắng/thua đã hiện ngay trên từng ghế */
+
+/* v1.58 */
+#mg.mg-baucua .bcplate{position:relative}
+#mg.mg-baucua .bchist{position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);display:grid;grid-template-columns:repeat(2,auto);gap:2px 4px;padding:3px 4px;border-radius:8px;background:#2a0918cc;border:1px solid #e9c37755;font-size:11px;line-height:1.15;pointer-events:none;white-space:nowrap}
+#mg.mg-baucua .bchr{opacity:.8;letter-spacing:-1px}#mg.mg-baucua .bchr.new{opacity:1;outline:1px solid #ffd84d;border-radius:4px}#mg.mg-baucua .bchr.bao{background:#ffd84d44;border-radius:4px}
+@media(min-width:420px){#mg.mg-baucua .bchist{font-size:13px}}
+#mg.mg-baucua .bcrow4{display:grid!important;grid-template-columns:1fr .7fr 1fr 1.4fr;gap:5px!important}#mg.mg-baucua .bcrow4 .cgbig{font-size:13px;padding:4px 2px!important;min-width:0;white-space:nowrap}
+.bcbig{position:fixed;z-index:60;transform:translate(-50%,-50%);pointer-events:none;text-align:center;animation:bcbigio 1.5s ease both}
+.bcbig .bcbd{display:flex;gap:10px;justify-content:center}.bcbig .bcbd span{font-size:64px;display:grid;place-items:center;width:84px;height:84px;border-radius:18px;background:linear-gradient(#fffbea,#f2dca6);box-shadow:0 6px 18px #000a,0 0 0 3px #c79a4b;animation:bcdroll .55s calc(var(--i)*.12s) cubic-bezier(.2,1.5,.4,1) both}
+@media(max-width:400px){.bcbig .bcbd span{font-size:50px;width:66px;height:66px}}
+.bcbig.bao{animation-duration:2.3s}.bcbig.bao .bcbd span{box-shadow:0 0 0 3px #ffd84d,0 0 28px 8px #ffb300}
+.bcbao{font-size:30px;font-weight:900;color:#fff3b0;text-shadow:0 0 12px #ff9800,0 3px 0 #8a3b00;margin-bottom:8px;animation:bcbaop .6s cubic-bezier(.2,1.6,.4,1) both;white-space:nowrap}
+@keyframes bcbigio{0%{opacity:0}12%{opacity:1}75%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-120%) scale(.4)}}
+@keyframes bcdroll{from{transform:rotate(-200deg) scale(.2)}to{transform:none}}@keyframes bcbaop{from{transform:scale(.3)}to{transform:none}}
+#mg.mg-baucua .bctbl.bcbaofx{animation:bcbaofl 1.2s ease 2}@keyframes bcbaofl{0%,100%{box-shadow:inset 0 0 24px #25040b55}50%{box-shadow:inset 0 0 60px #ffd84d,0 0 30px #ffb300}}
+@media(prefers-reduced-motion:reduce){.bcbig,.bcbig .bcbd span,.bcbao,#mg.mg-baucua .bctbl.bcbaofx{animation:none!important}.bcbig.rm{opacity:1}}
+#mg.mg-baucua .cgrow.bcrow4 .cgbig{font-size:13px!important;padding:4px 2px!important;overflow:hidden;text-overflow:clip}
+#mg.mg-baucua .bctbl[style*="--bctm"] .bct{min-height:var(--bctm)!important;padding:1px!important}#mg.mg-baucua .bctbl[style*="--bctm"] .bct .bce{font-size:min(30px,calc(var(--bctm)*.36))}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
@@ -1021,7 +1039,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='95f1e928d5';
+const APP_VER='4a43d65cca';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -3487,8 +3505,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.57.2';
+const APP_V='1.58';
 const CHANGELOG=[
+ ['1.58','21/10',['Bầu cua: mở bát xong, chip thưởng bay từ nhà cái về từng ghế thắng (bạn và máy), chip thua bay về nhà cái','Bầu cua: lịch sử 10 ván gần nhất cạnh bát (lưu cùng tài khoản), ván Bão được tô vàng','Bầu cua: nút ↺ Lại (cược lại như ván trước) và ×2 (gấp đôi cược), không vượt quá số xu','Bầu cua: khi mở bát, 3 con xúc xắc hiện to giữa bàn rồi thu về','Bầu cua: Bão (3 con giống nhau) có nhạc riêng, chữ BÃO lớn và bàn lóe sáng','Bầu cua: bàn tự co ô cược để không phải cuộn ở 360/412/461; tôn trọng chế độ giảm chuyển động']],
  ['1.57.2','21/10',['Poker: bài lật của mọi ghế luôn hiện đủ, không bị 5 lá chung che (tự co theo chiều cao màn hình)','Poker: lúc so bài, 5 lá tạo bộ thắng sáng lên và ghi rõ tên bộ, ví dụ "Sảnh A-2-3-4-5"; bảng kết quả ghi 5 lá tốt nhất của từng người','Xì tố & Poker: nhãn bộ bài hiện tại của bạn ngay trên bài (vd "Đôi 7", "Thú K-7"), cập nhật mỗi vòng, lá tạo bộ được tô sáng','Bầu cua: hiện +/− xu ngay trên ghế từng người khi mở bát, ghế thắng sáng viền','Bầu cua: sửa sao hạng xếp dọc đè tên, bát che nút chọn số người, bàn nhảy khi lắc; ô cược không bị khuất ở 360/412/461','Bầu cua: máy được nạp xu trước khi cược; sửa chữ "thua -800" thành "thua 800"']],
  ['1.57.1','21/10',['Poker: phóng to bài cho dễ nhìn — 5 lá chung to hết bề ngang, 2 lá tẩy của bạn to rõ ở dưới, bài máy to hơn','Sắp xếp lại ghế, hũ, nhãn Tố/Theo/Bỏ để không chồng lấn ở màn hình nhỏ; giữ mặt bài/lưng bài đang dùng']],
  ['1.57','20/10',['Mở khóa mức cược cao cho Tiến lên Miền Nam và Đếm lá theo hạng sao của từng chế độ: Bạc 20k, Vàng 30k, Kim cương 50k, Xanh 70k, Đỏ 100k, Đen 150k (đạt sao đầu tiên của hạng là mở)','Mức chưa mở hiện 🔒 kèm hạng cần đạt; vẫn cần đủ xu để vào bàn','Bàn mức cao toàn máy Cao thủ (như bàn 10k), thắng Cao thủ vẫn được thưởng thêm XP; chặt, thúi, tiền lá Đếm lá, luộc, phạt thoát bàn đều nhân theo mức cược','Máy ở bàn cao có xu tương xứng mức cược','Online: chủ bàn chỉ chọn được mức đã mở khóa; người vào bàn cần đủ xu']],
@@ -4573,5 +4592,31 @@ function liveLab(sel,cs,mode){const o=$('mg');const s=o&&o.querySelector(sel);if
  if(mode==='pk'&&MG.st.phase!=='done')o.querySelectorAll('.pkboard .cgc').forEach(e=>{if(d.ids.has(e.dataset.c))e.classList.add('pkhl');});}
 const _pkR1572b=pkR;pkR=function(){_pkR1572b.apply(this,arguments);try{const st=MG.st;if(st&&st.hands&&st.hands[0]&&st.hands[0].length)liveLab('.pks.me',st.hands[0].concat(st.board||[]),'pk');pkFit();}catch(e){console.warn(e)}};
 const _xtR1572=xtR;xtR=function(){_xtR1572.apply(this,arguments);try{const st=MG.st;if(st&&st.hands&&st.hands[0]&&st.hands[0].length)liveLab('.pks.me',st.hands[0],'xt');}catch(e){console.warn(e)}};
+
+// ===== v1.58 Bầu cua: chip trả thưởng bay, lịch sử 10 ván, Cược lại / ×2, xúc xắc lớn khi mở bát, hiệu ứng Bão =====
+function bcHist(){return Array.isArray(PR.bcHist)?PR.bcHist:[];}
+function bcHistHtml(){const h=bcHist();if(!h.length)return '';return `<div class="bchist" aria-label="10 ván gần nhất">${h.map((d,i)=>`<span class="bchr ${i===0?'new':''} ${d[0]===d[1]&&d[1]===d[2]?'bao':''}">${d.map(x=>BC_EMO[x]||'').join('')}</span>`).join('')}</div>`;}
+function bcLastOk(){const st=MG.st,l=st&&st.lastBets;return !!(l&&bcTot(l)&&bcTot(l)<=PR.xu);}
+function bcRebet(){const st=MG.st;if(!st||st.placing||st.role!=='con')return;if(st.phase==='done')bcNew();if(st.phase!=='bet')return;const l=st.lastBets;if(!l||!bcTot(l))return toast('Chưa có ván trước');if(bcTot(l)>PR.xu)return toast('Không đủ xu để cược lại');st.bets=Object.assign({},l);sfx('cgChip');bcR();Object.keys(l).forEach(s=>{if(l[s])bcFlyIn(0,s);});}
+function bcDouble(){const st=MG.st;if(!st||st.placing||st.role!=='con')return;if(st.phase==='done'){const l=st.bets;bcNew();st.bets=Object.assign({},l);}if(st.phase!=='bet')return;const t=bcTot(st.bets);if(!t)return toast('Chưa đặt cược');if(t*2>PR.xu)return toast('Không đủ xu để gấp đôi');for(const s in st.bets)st.bets[s]*=2;sfx('cgChip');bcR();Object.keys(st.bets).forEach(s=>{if(st.bets[s])bcFlyIn(0,s);});}
+const _bcCtl158=bcCtl;bcCtl=function(){let h=_bcCtl158.apply(this,arguments);const st=MG.st;if(st.role!=='con'||(st.phase!=='bet'&&st.phase!=='done'))return h;
+ const tot=bcTot(st.bets);const re=`<button class="cgbig alt bcxb" ${bcLastOk()?'':'disabled'} onclick="bcRebet()" title="Cược lại">↺ Lại</button><button class="cgbig alt bcxb" ${tot&&tot*2<=PR.xu?'':'disabled'} onclick="bcDouble()">×2</button>`;
+ return h.replace('<div class="cgrow"><button class="cgbig alt"','<div class="cgrow bcrow4">'+re+'<button class="cgbig alt"');};
+const _bcS2158=bcShake2;bcShake2=function(){const st=MG.st;if(st&&st.role==='con'&&bcTot(st.bets))st.lastBets=Object.assign({},st.bets);return _bcS2158.apply(this,arguments);};
+const _bcR158=bcR;bcR=function(){_bcR158.apply(this,arguments);try{const pl=document.querySelector('#mg .bcplate');if(pl&&!pl.querySelector('.bchist'))pl.insertAdjacentHTML('beforeend',bcHistHtml());bcFit();}catch(e){}};
+function bcBaoSfx(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.16,'square',.07,i*.09));tone(1568,.5,'triangle',.08,.5);noise(.3,.06,.45,3000);}
+function bcBigDice(st,triple){if(RM&&!triple)return;const tb=document.querySelector('#mg .bctbl');if(!tb)return;const r=tb.getBoundingClientRect();const d=document.createElement('div');d.className='bcbig'+(triple?' bao':'')+(RM?' rm':'');
+ d.style.left=(r.left+r.width/2)+'px';d.style.top=(r.top+r.height*0.55)+'px';d.innerHTML=(triple?`<div class="bcbao">🌪️ BÃO ${esc(BC_NAME[st.dice[0]].toUpperCase())}!</div>`:'')+`<div class="bcbd">${st.dice.map((x,i)=>`<span style="--i:${i}">${BC_EMO[x]}</span>`).join('')}</div>`;document.body.appendChild(d);setTimeout(()=>d.remove(),triple?2300:1500);}
+const _bcOpen158=bcOpen;bcOpen=function(){const st=MG.st;const was=st&&st.phase==='open';_bcOpen158.apply(this,arguments);if(!was||!st.res)return;try{
+ const h=bcHist().slice();h.unshift(st.dice.slice());PR.bcHist=h.slice(0,10);saveP();const pl=document.querySelector('#mg .bcplate');if(pl){pl.querySelector('.bchist')?.remove();pl.insertAdjacentHTML('beforeend',bcHistHtml());}
+ const triple=st.dice[0]===st.dice[1]&&st.dice[1]===st.dice[2];bcBigDice(st,triple);if(triple){bcBaoSfx();document.querySelector('#mg .bctbl')?.classList.add('bcbaofx');}
+ bcPayFly(st);bcFit();}catch(e){console.warn(e)}};
+function bcPayFly(st){if(RM)return;const dl=document.querySelector('#mg .bcs.dl .av');if(!dl)return;let q=0;
+ document.querySelectorAll('#mg .bct .bcc').forEach(c=>{const s=c.closest('.bct').dataset.s;const k=st.dice.filter(x=>x===s).length;if(!k)return;const o=c.dataset.o;
+  const tgt=o==='0'?(st.role==='con'?document.querySelector('#mg .bcs[data-o="0"] .av'):null):document.querySelector(`#mg .bcs[data-o="${o}"] .av`);if(!tgt)return;
+  for(let j=0;j<k;j++){const a=dl.getBoundingClientRect(),b=tgt.getBoundingClientRect();const f=c.cloneNode(true);f.classList.add('bcfly','bcpay');f.style.left=(a.left+a.width/2-c.offsetWidth/2)+'px';f.style.top=(a.top+a.height/2-c.offsetHeight/2)+'px';document.body.appendChild(f);
+   const dx=b.left+b.width/2-a.left-a.width/2,dy=b.top+b.height/2-a.top-a.height/2,dl0=1500+(q++)*90;
+   f.animate([{transform:'translate(0,0) scale(.6)',opacity:0},{transform:`translate(${dx*.5}px,${dy*.5-30}px) scale(1.15)`,opacity:1,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(.7)`,opacity:.3}],{duration:800,delay:dl0,easing:'ease-out',fill:'both'}).onfinish=()=>{f.remove();if(q%2)sfx('cgChip');};}});}
+function bcFit(){const t=document.querySelector('#mg .bctbl');if(!t)return;t.style.removeProperty('--bctm');let m=76;for(let k=0;k<8&&t.scrollHeight>t.clientHeight&&m>48;k++){m-=4;t.style.setProperty('--bctm',m+'px');}}
 boot();
 </script></body></html>
