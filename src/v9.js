@@ -740,8 +740,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.2';
+const APP_V='1.58.3';
 const CHANGELOG=[
+ ['1.58.3','21/10',['Sửa thông báo nhỏ (toast) bị bàn Xì tố/Poker/Bầu cua/Domino che mất — nay luôn nổi trên cùng, kể cả thông báo "🔥 Tố tất thắng"']],
  ['1.58.2','21/10',['Xì tố: thưởng EXP "Tố tất" — thắng ván mà bạn đã tố tất với số xu tố ≥ 10 lần cược sàn được cộng thêm 50% EXP gốc của ván (cộng trước hệ số thưởng EXP chung)','Tối đa 10 lần mỗi ngày (đặt lại lúc 00:00 giờ Việt Nam); thua, úp bỏ hoặc tố tất nhỏ không được thưởng. Có thông báo "🔥 Tố tất thắng +X EXP (n/10 hôm nay)"']],
  ['1.58.1','21/10',['Sửa avatar cao cấp (vd Đổ Thánh Vô Song) bị vỡ hình ở thẻ hồ sơ: mặt nhân vật biến mất chỉ còn vòng tia đỏ đen. Nguyên nhân: cùng một avatar hiện ở nhiều chỗ (có chỗ đang ẩn) dùng trùng mã màu; nay mỗi lần vẽ có mã riêng','Rà soát toàn bộ 65 avatar ở trang chủ, chọn avatar, cửa hàng, hồ sơ, xếp hạng, người online, bàn chơi ở 360/412/461']],
  ['1.58','21/10',['Bầu cua: mở bát xong, chip thưởng bay từ nhà cái về từng ghế thắng (bạn và máy), chip thua bay về nhà cái','Bầu cua: lịch sử 10 ván gần nhất cạnh bát (lưu cùng tài khoản), ván Bão được tô vàng','Bầu cua: nút ↺ Lại (cược lại như ván trước) và ×2 (gấp đôi cược), không vượt quá số xu','Bầu cua: khi mở bát, 3 con xúc xắc hiện to giữa bàn rồi thu về','Bầu cua: Bão (3 con giống nhau) có nhạc riêng, chữ BÃO lớn và bàn lóe sáng','Bầu cua: bàn tự co ô cược để không phải cuộn ở 360/412/461; tôn trọng chế độ giảm chuyển động']],

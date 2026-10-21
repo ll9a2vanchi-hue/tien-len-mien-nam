@@ -825,6 +825,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 #mg .pks.me .mgseat{order:0}#mg .pks.me .cgsc{order:1}#mg .pks.me .pkh{order:2}#mg .pks.me>*:not(.mgseat):not(.cgsc):not(.pkh){order:3}
 #mg .pks.me .cgsc.live{background:linear-gradient(#ffe48a,#f4c542);color:#3a2400;font-weight:900;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 #mg .cgc.pkhl{box-shadow:0 0 0 2px #ffd84d,0 0 10px 2px #ffd84daa!important}
+#toast{z-index:90!important}/* v1.58.2: thông báo luôn nổi trên bàn mini game */
 /* Bầu Cua v1.52.5 — scoped mobile layout + avatar bet chips */
 #mg.mg-baucua{padding-left:5px;padding-right:5px;min-width:0}
 #mg.mg-baucua .bctbl{flex:1 1 auto;min-height:0;min-width:0;gap:5px;padding:6px 4px;border-width:3px;border-radius:16px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
@@ -1039,7 +1040,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='bfcc15a71d';
+const APP_VER='f02fc5c3f0';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -3505,8 +3506,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.2';
+const APP_V='1.58.3';
 const CHANGELOG=[
+ ['1.58.3','21/10',['Sửa thông báo nhỏ (toast) bị bàn Xì tố/Poker/Bầu cua/Domino che mất — nay luôn nổi trên cùng, kể cả thông báo "🔥 Tố tất thắng"']],
  ['1.58.2','21/10',['Xì tố: thưởng EXP "Tố tất" — thắng ván mà bạn đã tố tất với số xu tố ≥ 10 lần cược sàn được cộng thêm 50% EXP gốc của ván (cộng trước hệ số thưởng EXP chung)','Tối đa 10 lần mỗi ngày (đặt lại lúc 00:00 giờ Việt Nam); thua, úp bỏ hoặc tố tất nhỏ không được thưởng. Có thông báo "🔥 Tố tất thắng +X EXP (n/10 hôm nay)"']],
  ['1.58.1','21/10',['Sửa avatar cao cấp (vd Đổ Thánh Vô Song) bị vỡ hình ở thẻ hồ sơ: mặt nhân vật biến mất chỉ còn vòng tia đỏ đen. Nguyên nhân: cùng một avatar hiện ở nhiều chỗ (có chỗ đang ẩn) dùng trùng mã màu; nay mỗi lần vẽ có mã riêng','Rà soát toàn bộ 65 avatar ở trang chủ, chọn avatar, cửa hàng, hồ sơ, xếp hạng, người online, bàn chơi ở 360/412/461']],
  ['1.58','21/10',['Bầu cua: mở bát xong, chip thưởng bay từ nhà cái về từng ghế thắng (bạn và máy), chip thua bay về nhà cái','Bầu cua: lịch sử 10 ván gần nhất cạnh bát (lưu cùng tài khoản), ván Bão được tô vàng','Bầu cua: nút ↺ Lại (cược lại như ván trước) và ×2 (gấp đôi cược), không vượt quá số xu','Bầu cua: khi mở bát, 3 con xúc xắc hiện to giữa bàn rồi thu về','Bầu cua: Bão (3 con giống nhau) có nhạc riêng, chữ BÃO lớn và bàn lóe sáng','Bầu cua: bàn tự co ô cược để không phải cuộn ở 360/412/461; tôn trọng chế độ giảm chuyển động']],

@@ -9,7 +9,7 @@ for(const w of [360,412,461]){const p=await H.open(b,w,780,()=>{PR.xu=4e6;delete
   PR.xtAllin.n=2;await play({amt:12,allin:true});let t;for(let k=0;k<300&&!t;k++){await sl(100);t=[...document.querySelectorAll('.toast')].map(e=>{const r=e.getBoundingClientRect();return {txt:e.textContent,l:r.left,r:r.right}}).find(x=>/3\/10/.test(x.txt));}
   window.BQ&&(BQ.length=0);document.getElementById('badgeFX')?.remove();
   out.toast=t;out.fit=t&&t.l>=0&&t.r<=innerWidth;window.__shot=1;await new Promise(r=>{window.__go=r;});
-  PR.xtAllin.n=10;out.cap=await play({amt:10,allin:true});PR.xtAllin={d:'2000-01-01',n:10};out.reset=await play({amt:10,allin:true});out.base=base;return out;},w);await p.waitForFunction(()=>window.__shot,null,{timeout:60000});await p.screenshot({path:`shots/v1582-toast-${w}.png`});await p.evaluate(()=>window.__go());const r=await pr;
+  PR.xtAllin.n=10;out.cap=await play({amt:10,allin:true});PR.xtAllin={d:'2000-01-01',n:10};out.reset=await play({amt:10,allin:true});out.base=base;return out;},w);await p.waitForFunction(()=>window.__shot,null,{timeout:60000});await p.waitForTimeout(450);await p.screenshot({path:`shots/v1582-toast-${w}.png`});await p.evaluate(()=>window.__go());const r=await pr;
  if(w===360)console.log(JSON.stringify(r));
  ok(r.win.n===1&&r.small.n===0,'bonus only for big all-in win');ok(r.lose.n===1&&r.fold.n===1,'no bonus on loss/fold');ok(r.cap.n===10,'cap 10/day');ok(r.reset.n===1,'resets on new day');
  await p.waitForTimeout(10);ok(r.toast&&/🔥 Tố tất thắng \+\d+ EXP \(3\/10 hôm nay\)/.test(r.toast.txt)&&r.fit,'toast '+(r.toast&&r.toast.txt));
