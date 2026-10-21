@@ -645,3 +645,12 @@ function bcPayFly(st){if(RM)return;const dl=document.querySelector('#mg .bcs.dl 
    const dx=b.left+b.width/2-a.left-a.width/2,dy=b.top+b.height/2-a.top-a.height/2,dl0=1500+(q++)*90;
    f.animate([{transform:'translate(0,0) scale(.6)',opacity:0},{transform:`translate(${dx*.5}px,${dy*.5-30}px) scale(1.15)`,opacity:1,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(.7)`,opacity:.3}],{duration:800,delay:dl0,easing:'ease-out',fill:'both'}).onfinish=()=>{f.remove();if(q%2)sfx('cgChip');};}});}
 function bcFit(){const t=document.querySelector('#mg .bctbl');if(!t)return;t.style.removeProperty('--bctm');let m=76;for(let k=0;k<8&&t.scrollHeight>t.clientHeight&&m>48;k++){m-=4;t.style.setProperty('--bctm',m+'px');}}
+
+// ===== v1.58.2 Xì tố: thưởng EXP "Tố tất" — thắng ván đã tố tất với số tố ≥ 10× cược sàn: +50% EXP gốc ván đó (tính trước hệ số thưởng EXP chung), tối đa 10 lần/ngày (00:00 giờ VN) =====
+const XT_ALLIN_MAX=10,XT_ALLIN_MUL=10;
+function vnDay(t){return new Date((t||Date.now())+7*3600e3).toISOString().slice(0,10);}
+function xtAllinLeft(P){const d=vnDay();if(!P.xtAllin||P.xtAllin.d!==d)P.xtAllin={d,n:0};return XT_ALLIN_MAX-P.xtAllin.n;}
+function xtAllinOk(st){try{const b=st.b,ante=st.bet||MG.bet||0;return !!(b&&b.allin[0]&&!b.fold[0]&&ante>0&&b.contrib[0]>=XT_ALLIN_MUL*ante);}catch(e){return false;}}
+const _xtShow1582=xtShow;xtShow=function(){MG._xtAI=MG.g==='xito'&&MG.st&&xtAllinOk(MG.st);try{return _xtShow1582.apply(this,arguments);}finally{MG._xtAI=false;}};
+const _mgEnd1582=mgEnd;mgEnd=function(net,o){o=o||{};let bon=0,n=0;if(MG._xtAI&&net>0&&o.xp==null&&xtAllinLeft(PR)>0){const base=modeXp(MG.g,net);bon=Math.round(base*0.5);if(bon>0){o=Object.assign({},o,{xp:base+bon});PR.xtAllin.n++;n=PR.xtAllin.n;}}
+ const xp=_mgEnd1582.call(this,net,o);if(bon>0){saveP();const m=`🔥 Tố tất thắng +${bon} EXP (${n}/${XT_ALLIN_MAX} hôm nay)`;if(typeof TQ!=='undefined'&&typeof pumpT==='function'){TQ.unshift(m);pumpT();}else toast(m);}return xp;};

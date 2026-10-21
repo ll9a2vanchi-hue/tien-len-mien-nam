@@ -1039,7 +1039,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='e3ddfcdb41';
+const APP_VER='bfcc15a71d';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -3505,8 +3505,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.1';
+const APP_V='1.58.2';
 const CHANGELOG=[
+ ['1.58.2','21/10',['Xì tố: thưởng EXP "Tố tất" — thắng ván mà bạn đã tố tất với số xu tố ≥ 10 lần cược sàn được cộng thêm 50% EXP gốc của ván (cộng trước hệ số thưởng EXP chung)','Tối đa 10 lần mỗi ngày (đặt lại lúc 00:00 giờ Việt Nam); thua, úp bỏ hoặc tố tất nhỏ không được thưởng. Có thông báo "🔥 Tố tất thắng +X EXP (n/10 hôm nay)"']],
  ['1.58.1','21/10',['Sửa avatar cao cấp (vd Đổ Thánh Vô Song) bị vỡ hình ở thẻ hồ sơ: mặt nhân vật biến mất chỉ còn vòng tia đỏ đen. Nguyên nhân: cùng một avatar hiện ở nhiều chỗ (có chỗ đang ẩn) dùng trùng mã màu; nay mỗi lần vẽ có mã riêng','Rà soát toàn bộ 65 avatar ở trang chủ, chọn avatar, cửa hàng, hồ sơ, xếp hạng, người online, bàn chơi ở 360/412/461']],
  ['1.58','21/10',['Bầu cua: mở bát xong, chip thưởng bay từ nhà cái về từng ghế thắng (bạn và máy), chip thua bay về nhà cái','Bầu cua: lịch sử 10 ván gần nhất cạnh bát (lưu cùng tài khoản), ván Bão được tô vàng','Bầu cua: nút ↺ Lại (cược lại như ván trước) và ×2 (gấp đôi cược), không vượt quá số xu','Bầu cua: khi mở bát, 3 con xúc xắc hiện to giữa bàn rồi thu về','Bầu cua: Bão (3 con giống nhau) có nhạc riêng, chữ BÃO lớn và bàn lóe sáng','Bầu cua: bàn tự co ô cược để không phải cuộn ở 360/412/461; tôn trọng chế độ giảm chuyển động']],
  ['1.57.2','21/10',['Poker: bài lật của mọi ghế luôn hiện đủ, không bị 5 lá chung che (tự co theo chiều cao màn hình)','Poker: lúc so bài, 5 lá tạo bộ thắng sáng lên và ghi rõ tên bộ, ví dụ "Sảnh A-2-3-4-5"; bảng kết quả ghi 5 lá tốt nhất của từng người','Xì tố & Poker: nhãn bộ bài hiện tại của bạn ngay trên bài (vd "Đôi 7", "Thú K-7"), cập nhật mỗi vòng, lá tạo bộ được tô sáng','Bầu cua: hiện +/− xu ngay trên ghế từng người khi mở bát, ghế thắng sáng viền','Bầu cua: sửa sao hạng xếp dọc đè tên, bát che nút chọn số người, bàn nhảy khi lắc; ô cược không bị khuất ở 360/412/461','Bầu cua: máy được nạp xu trước khi cược; sửa chữ "thua -800" thành "thua 800"']],
@@ -4619,5 +4620,14 @@ function bcPayFly(st){if(RM)return;const dl=document.querySelector('#mg .bcs.dl 
    const dx=b.left+b.width/2-a.left-a.width/2,dy=b.top+b.height/2-a.top-a.height/2,dl0=1500+(q++)*90;
    f.animate([{transform:'translate(0,0) scale(.6)',opacity:0},{transform:`translate(${dx*.5}px,${dy*.5-30}px) scale(1.15)`,opacity:1,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(.7)`,opacity:.3}],{duration:800,delay:dl0,easing:'ease-out',fill:'both'}).onfinish=()=>{f.remove();if(q%2)sfx('cgChip');};}});}
 function bcFit(){const t=document.querySelector('#mg .bctbl');if(!t)return;t.style.removeProperty('--bctm');let m=76;for(let k=0;k<8&&t.scrollHeight>t.clientHeight&&m>48;k++){m-=4;t.style.setProperty('--bctm',m+'px');}}
+
+// ===== v1.58.2 Xì tố: thưởng EXP "Tố tất" — thắng ván đã tố tất với số tố ≥ 10× cược sàn: +50% EXP gốc ván đó (tính trước hệ số thưởng EXP chung), tối đa 10 lần/ngày (00:00 giờ VN) =====
+const XT_ALLIN_MAX=10,XT_ALLIN_MUL=10;
+function vnDay(t){return new Date((t||Date.now())+7*3600e3).toISOString().slice(0,10);}
+function xtAllinLeft(P){const d=vnDay();if(!P.xtAllin||P.xtAllin.d!==d)P.xtAllin={d,n:0};return XT_ALLIN_MAX-P.xtAllin.n;}
+function xtAllinOk(st){try{const b=st.b,ante=st.bet||MG.bet||0;return !!(b&&b.allin[0]&&!b.fold[0]&&ante>0&&b.contrib[0]>=XT_ALLIN_MUL*ante);}catch(e){return false;}}
+const _xtShow1582=xtShow;xtShow=function(){MG._xtAI=MG.g==='xito'&&MG.st&&xtAllinOk(MG.st);try{return _xtShow1582.apply(this,arguments);}finally{MG._xtAI=false;}};
+const _mgEnd1582=mgEnd;mgEnd=function(net,o){o=o||{};let bon=0,n=0;if(MG._xtAI&&net>0&&o.xp==null&&xtAllinLeft(PR)>0){const base=modeXp(MG.g,net);bon=Math.round(base*0.5);if(bon>0){o=Object.assign({},o,{xp:base+bon});PR.xtAllin.n++;n=PR.xtAllin.n;}}
+ const xp=_mgEnd1582.call(this,net,o);if(bon>0){saveP();const m=`🔥 Tố tất thắng +${bon} EXP (${n}/${XT_ALLIN_MAX} hôm nay)`;if(typeof TQ!=='undefined'&&typeof pumpT==='function'){TQ.unshift(m);pumpT();}else toast(m);}return xp;};
 boot();
 </script></body></html>
