@@ -109,7 +109,7 @@ SVA_LIST.push(
 const SVA_PRICE={2:20000,3:100000,4:500000,5:500000,6:500000},SVA_LV={4:20,5:35,6:45};
 const SVA_HIEM=[20000,25000,30000,35000,40000,45000,50000];
 SVA_LIST.forEach(([id,name,tier,fn])=>{SVA[id]=fn;});
-function svaHTML(id){const f=SVA[id];if(!f)return '';const t=(SVA_LIST.find(x=>x[0]===id)||[])[2]||2;return `<svg class="sva t${t}" viewBox="0 0 100 100" aria-hidden="true">${f()}</svg>`;}
+function svaHTML(id){const f=SVA[id];if(!f)return '';const t=(SVA_LIST.find(x=>x[0]===id)||[])[2]||2;const k='_'+(++_svaN).toString(36);/* id riêng cho mỗi lần vẽ: tránh trùng id gradient khi cùng avatar xuất hiện nhiều nơi (bản ẩn display:none làm mất màu) */const body=f().replace(/id="([^"]+)"/g,(m,x)=>`id="${x}${k}"`).replace(/url\(#([^)]+)\)/g,(m,x)=>`url(#${x}${k})`).replace(/href="#([^"]+)"/g,(m,x)=>/^i-/.test(x)?m:`href="#${x}${k}"`);return `<svg class="sva t${t}" viewBox="0 0 100 100" aria-hidden="true">${body}</svg>`;}let _svaN=0;
 // đăng ký vào cửa hàng: emo là mã đánh dấu ⟦id⟧, được thay bằng SVG khi hiển thị
 (function(){if(typeof SHOP==='undefined')return;SVA_LIST.forEach(([id,name,tier])=>{if(SHOP.find(x=>x.id===id))return;const r=tier>=6?5:Math.min(4,tier);let hi=0;
  SHOP.push(Object.assign({id,type:'avatar',name,emo:'⟦'+id+'⟧',price:tier===2?SVA_HIEM[(SVA_LIST.filter(x=>x[2]===2).findIndex(x=>x[0]===id))%SVA_HIEM.length]:SVA_PRICE[tier],r,svg:1},SVA_LV[tier]?{lv:SVA_LV[tier]}:{},tier>=4?{tag:'new'}:{}));});})();
