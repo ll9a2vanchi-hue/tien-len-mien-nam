@@ -740,8 +740,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.3';
+const APP_V='1.58.4';
 const CHANGELOG=[
+ ['1.58.4','22/10',['Xì tố & Poker: khi có người tố tất ít xu hơn (sinh hũ phụ), ghế thắng ghi rõ "👑 Thắng hũ chính" hoặc "Thắng hũ phụ +X" — giải thích vì sao có 2 người thắng','Dòng thông báo và bảng kết quả liệt kê từng hũ: số xu và người thắng (kèm tên bộ bài)','Poker: bài bằng nhau thì hiện "🤝 Chia hũ" cho tất cả người hòa. Luật chia tiền không đổi']],
  ['1.58.3','21/10',['Sửa thông báo nhỏ (toast) bị bàn Xì tố/Poker/Bầu cua/Domino che mất — nay luôn nổi trên cùng, kể cả thông báo "🔥 Tố tất thắng"']],
  ['1.58.2','21/10',['Xì tố: thưởng EXP "Tố tất" — thắng ván mà bạn đã tố tất với số xu tố ≥ 10 lần cược sàn được cộng thêm 50% EXP gốc của ván (cộng trước hệ số thưởng EXP chung)','Tối đa 10 lần mỗi ngày (đặt lại lúc 00:00 giờ Việt Nam); thua, úp bỏ hoặc tố tất nhỏ không được thưởng. Có thông báo "🔥 Tố tất thắng +X EXP (n/10 hôm nay)"']],
  ['1.58.1','21/10',['Sửa avatar cao cấp (vd Đổ Thánh Vô Song) bị vỡ hình ở thẻ hồ sơ: mặt nhân vật biến mất chỉ còn vòng tia đỏ đen. Nguyên nhân: cùng một avatar hiện ở nhiều chỗ (có chỗ đang ẩn) dùng trùng mã màu; nay mỗi lần vẽ có mã riêng','Rà soát toàn bộ 65 avatar ở trang chủ, chọn avatar, cửa hàng, hồ sơ, xếp hạng, người online, bàn chơi ở 360/412/461']],

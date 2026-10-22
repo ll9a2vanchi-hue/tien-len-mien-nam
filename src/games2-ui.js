@@ -654,3 +654,22 @@ function xtAllinOk(st){try{const b=st.b,ante=st.bet||MG.bet||0;return !!(b&&b.al
 const _xtShow1582=xtShow;xtShow=function(){MG._xtAI=MG.g==='xito'&&MG.st&&xtAllinOk(MG.st);try{return _xtShow1582.apply(this,arguments);}finally{MG._xtAI=false;}};
 const _mgEnd1582=mgEnd;mgEnd=function(net,o){o=o||{};let bon=0,n=0;if(MG._xtAI&&net>0&&o.xp==null&&xtAllinLeft(PR)>0){const base=modeXp(MG.g,net);bon=Math.round(base*0.5);if(bon>0){o=Object.assign({},o,{xp:base+bon});PR.xtAllin.n++;n=PR.xtAllin.n;}}
  const xp=_mgEnd1582.call(this,net,o);if(bon>0){saveP();const m=`🔥 Tố tất thắng +${bon} EXP (${n}/${XT_ALLIN_MAX} hôm nay)`;if(typeof TQ!=='undefined'&&typeof pumpT==='function'){TQ.unshift(m);pumpT();}else toast(m);}return xp;};
+
+// ===== v1.58.4 Xì tố & Poker: hiện rõ người thắng từng hũ (hũ chính / hũ phụ / chia hũ) — không đổi luật =====
+function potWinners(pots,scores){return pots.map((p,k)=>{let best=null,ws=[];p.elig.forEach(i=>{if(!scores[i])return;const d=best?cmpSc(scores[i],best):1;if(d>0){best=scores[i];ws=[i];}else if(d===0)ws.push(i);});return {amt:p.amt,ws,k,refund:p.elig.length<=1};});}
+function potCalc(st,mode){const b=st.b;if(btLive(b).length<2)return null;const sc=st.hands.map((h,i)=>b.fold[i]?null:(mode==='pk'?best5(h.concat(st.board),'pk').sc:eval5(h,'xt')));
+ const pw=potWinners(sidePots(b.contrib,b.fold),sc).filter(p=>!p.refund&&p.ws.length).reduce((a,p)=>{const l=a[a.length-1];if(l&&l.ws.join()===p.ws.join())l.amt+=p.amt;else a.push({amt:p.amt,ws:p.ws});return a;},[]);const multi=pw.length>1,split=pw.some(p=>p.ws.length>1);if(!multi&&!split)return null;
+ const tag={},gain={};pw.forEach((p,j)=>{const share=Math.floor(p.amt/p.ws.length);p.ws.forEach(i=>{gain[i]=(gain[i]||0)+share;if(j===0)tag[i]=p.ws.length>1?'🤝 Chia hũ':'👑 Thắng hũ chính';});});
+ Object.keys(gain).forEach(i=>{if(!tag[i])tag[i]='Thắng hũ phụ +'+kxu(gain[i]);else if(multi&&pw.slice(1).some(p=>p.ws.includes(+i)))tag[i]+=' + phụ';});
+ const nm=i=>i==0?'Bạn':st.seats[i].name.trim();const hn=i=>handName(sc[i],mode);
+ const parts=pw.map((p,j)=>`${j===0?(multi?'Hũ chính':'Hũ'):'Hũ phụ'+(pw.length>2?' '+j:'')} ${kxu(p.amt)}: ${p.ws.length>1?'chia '+p.ws.map(nm).join(' & ')+' ('+hn(p.ws[0])+')':nm(p.ws[0])+' ('+hn(p.ws[0])+')'}`);
+ return {pw,tag,parts};}
+function potApply(st,mode){const P=potCalc(st,mode);st.potInfo=P;if(!P)return;const xp=(st.msg.match(/ · \+\d+ XP$/)||[''])[0],me=st.res[0];
+ st.msg='🏆 '+P.parts.join(' · ')+` · Bạn ${me>=0?'+':''}${fmt(me)} xu`+xp;st.ledger=P.parts.map(t=>['🏆 '+t,0]).concat((st.ledger||[]).filter(l=>!/^🏆/.test(l[0])));}
+function potTags(){const st=MG.st,o=$('mg');if(!st||!st.potInfo||st.phase!=='done'||!o)return;const P=st.potInfo;
+ o.querySelectorAll('.pks').forEach(s=>{const i=+s.dataset.i;const t=P.tag[i];if(t){s.classList.add('win','pwin');s.dataset.wt=t;}else{s.classList.remove('win');}});}
+const _xtShow1584=xtShow;xtShow=function(){const r=_xtShow1584.apply(this,arguments);try{potApply(MG.st,'xt');xtR();}catch(e){console.warn(e)}return r;};
+const _pkShow1584=pkShow;pkShow=function(){const r=_pkShow1584.apply(this,arguments);try{potApply(MG.st,'pk');pkR();}catch(e){console.warn(e)}return r;};
+const _xtR1584=xtR;xtR=function(){_xtR1584.apply(this,arguments);try{potTags();}catch(e){}};
+const _pkR1584=pkR;pkR=function(){_pkR1584.apply(this,arguments);try{potTags();}catch(e){}};
+const _mgLed1584=mgLedger;mgLedger=function(rows){if(!rows)return '';const pot=rows.filter(l=>/^🏆/.test(l[0])),rest=rows.filter(l=>!/^🏆/.test(l[0]));return (pot.length?`<div class="cgpots">${pot.map(l=>`<div>${esc(l[0])}</div>`).join('')}</div>`:'')+_mgLed1584(rest);};
