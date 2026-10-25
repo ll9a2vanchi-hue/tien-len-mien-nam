@@ -54,7 +54,7 @@ function bcR(){const o=$('mg');const st=MG.st;if(!o||!st)return;const show=st.ph
  const dealer=st.role==='cai'?{name:'Bạn (cái)',av:myAv(),me:1}:{name:'Nhà cái',av:'🎩'};
  const mySeat=st.role==='con'?'<div class="bcs me" data-o="0" style="--cc:'+BC_COL[0]+'"><div class="bcmy"><span class="av '+frameCls()+'" style="--avc:#3a5">'+myAv()+'</span><b>Bạn</b><span class="bc-seat-chip '+(bcTot(st.bets)?'active':'idle')+'" style="--cc:'+BC_COL[0]+'"><span class="bc-seat-chip-dot"></span>'+(bcTot(st.bets)?kxu(bcTot(st.bets)):'—')+'</span></div></div>':'';
  const dealerSeat='<div class="bcs dl" data-o="d" style="--cc:'+(st.role==='cai'?BC_COL[0]:'#f4d78b')+'">'+mgSeat(dealer,'<i class="cgdl">CÁI</i>')+'</div>';
- const botSeats=st.bots.map((b,i)=>'<div class="bcs" data-o="'+(i+1)+'" style="--cc:'+BC_COL[i+1]+'">'+bcSeatChip(mgSeat(b,st.res?'<i class="mgv '+(st.res.b[i]>0?'pos':st.res.b[i]<0?'neg':'')+'">'+(st.res.b[i]>0?'+':'')+kxu(st.res.b[i])+'</i>':''),i+1,bcTot(b.bets))+'</div>').join('');
+ const botSeats=st.bots.map((b,i)=>'<div class="bcs" data-o="'+(i+1)+'" style="--cc:'+BC_COL[i+1]+'">'+bcSeatChip(mgSeat(b,st.res?'<i class="mgv '+(st.res.b[i]>0?'pos':st.res.b[i]<0?'neg':'')+'">'+(st.res.b[i]>0?'+':st.res.b[i]<0?'-':'')+kxu(Math.abs(st.res.b[i]))+'</i>':''),i+1,bcTot(b.bets))+'</div>').join('');
  o.innerHTML=mgTop()+`<div class="bctbl"><div class="bcseats">${dealerSeat}${mySeat}${botSeats}</div>
  <div class="bcsetup bcsetup-board"><span class="bcsetup-label">👥 Số người chơi</span><div class="bcseat-options">${[2,3,4,5,6].map(n=>`<button type="button" class="${bcSeatCount()===n?'selected':''}" onclick="bcSetSeats(${n})" ${(st.placing||st.phase==='shake'||st.phase==='open')?'disabled':''} aria-label="${n} người chơi" aria-pressed="${bcSeatCount()===n}">${n}</button>`).join('')}</div></div>
 
@@ -71,8 +71,8 @@ function bcRole(r){const st=MG.st;if(st.phase!=='bet'&&st.phase!=='done')return;
 function bcNew(){const st=MG.st;if(!st||st.placing||st.phase==='shake'||st.phase==='open')return;st.phase='bet';st.bets={};st.res=null;st.msg='';st.ledger=null;bcBotBets();bcR();}
 function bcPut(s){const st=MG.st;if(st.placing)return;if(st.phase==='done')bcNew();if(st.phase!=='bet'||st.role!=='con')return;const tot=bcTot(st.bets);if(tot+st.chip>PR.xu)return toast('Không đủ xu');st.bets[s]=(st.bets[s]||0)+st.chip;bcR();bcFlyIn(0,s);}
 function bcClear(){MG.st.bets={};bcR();}
-function bcShake(){const st=MG.st;if(st.placing)return;if(st.phase==='done'){st.res=null;st.ledger=null;st.msg='';if(st.role==='con'&&bcTot(st.bets)>PR.xu)st.bets={};if(st.role==='cai'){st.phase='bet';mgRefill(st.bots,500);st.bots.forEach(b=>b.bets={});bcR();return bcPlay(bcPlan(3,[100,200,500,1000]),bcShake2);}st.phase='bet';}if(st.role==='con'&&!bcTot(st.bets))return;
- if(st.placing)return;if(st.role==='con'&&!st._botsIn){st.bots.forEach(b=>b.bets={});st._botsIn=1;return bcPlay(bcPlan(2,[100,200,500]),()=>{st._botsIn=0;bcShake2();});}
+function bcShake(){const st=MG.st;if(st.placing)return;if(st.phase==='done'){st.res=null;st.ledger=null;st.msg='';if(st.role==='con'&&bcTot(st.bets)>PR.xu)st.bets={};if(st.role==='cai'){st.phase='bet';bcLvFund();mgRefill(st.bots,bcLevel()*5);bcLvFund();st.bots.forEach(b=>b.bets={});bcR();return bcPlay(bcPlan(3,bcChipsFor(bcLevel()).slice(0,3)),bcShake2);}st.phase='bet';}if(st.role==='con'&&!bcTot(st.bets))return;
+ if(st.placing)return;if(st.role==='con'&&!st._botsIn){st.bots.forEach(b=>b.bets={});st._botsIn=1;bcLvFund();return bcPlay(bcPlan(2,bcChipsFor(bcLevel()).slice(0,3)),()=>{st._botsIn=0;bcShake2();});}
  bcShake2();}
 function bcShake2(){const st=MG.st; st.dice=bcuaRoll();st.phase='shake';st.busy=true;st.bet=st.role==='con'?bcTot(st.bets):0;bcR();bcRattle();setTimeout(()=>{if(MG.st!==st)return;st.phase='open';st.msg='Bát đã lắc xong — mở bát!';bcR();},RM?300:1400);}
 function bcRattle(){const n=RM?4:14;for(let i=0;i<n;i++){const t=i*0.085+Math.random()*0.02;noise(.04,.12,t,1800+Math.random()*1500);tone(900+Math.random()*700,.03,'triangle',.04,t);}noise(.12,.15,n*0.085,500);}
@@ -724,3 +724,16 @@ const _bcCtl1587=bcCtl;bcCtl=function(){const st=MG.st;let h=_bcCtl1587.apply(th
 const _bcR1587=bcR;bcR=function(){try{bcLvSync();}catch(e){}return _bcR1587.apply(this,arguments);};
 // màn hình thấp (≈360×740): cho phép co khoảng trống bàn thêm để không phải cuộn
 const _bcFit1587=bcFit;bcFit=function(){_bcFit1587();const t=document.querySelector('#mg .bctbl');if(!t)return;let m=parseFloat(t.style.getPropertyValue('--bctm'))||76;for(let k=0;k<6&&t.scrollHeight>t.clientHeight&&m>28;k++){m-=4;t.style.setProperty('--bctm',m+'px');}};
+// ===================== v1.58.8: sửa lỗi mức cược Bầu cua =====================
+// 1) mức bàn đã lưu nhưng không đủ xu → dùng mức thấp hơn cao nhất còn đủ xu (vẫn nhớ mức đã chọn để tự trở lại khi đủ xu)
+const _bcLevel1588=bcLevel;bcLevel=function(){const v=_bcLevel1588();if(v<=PR.xu)return v;const ok=BC_LVLS.filter(x=>x<v&&x<=PR.xu&&lvBetOk(PR,x));return ok.length?ok[ok.length-1]:BC_LVLS[0];};
+// 2) chọn chip / mức bàn ở Bầu cua không được làm đổi mức cược của trò khác (MG.bet dùng chung)
+const _bcChip1588=bcChip;bcChip=function(){const k=MG.bet;const r=_bcChip1588.apply(this,arguments);MG.bet=k;return r;};
+const _bcSetLv1588=bcSetLv;bcSetLv=function(){const k=MG.bet;const r=_bcSetLv1588.apply(this,arguments);MG.bet=k;return r;};
+// 3) ↺ Lại sau khi đổi mức bàn: cược lại theo tỉ lệ mức bàn mới (không đặt lại số tiền của mức cũ)
+const _bcS21588=bcShake2;bcShake2=function(){const st=MG.st;const r=_bcS21588.apply(this,arguments);if(st&&st.role==='con'&&st.lastBets)st.lastLv=bcLevel();return r;};
+function bcLastScaled(){const st=MG.st,l=st&&st.lastBets;if(!l)return l;const lv=bcLevel(),ov=st.lastLv||lv;if(ov===lv)return l;const o={};Object.keys(l).forEach(s=>{if(l[s])o[s]=Math.max(lv,Math.round(l[s]/ov)*lv);});return o;}
+const _bcLastOk1588=bcLastOk;bcLastOk=function(){const st=MG.st;if(!st||!st.lastBets)return false;const l=bcLastScaled();return !!(bcTot(l)&&bcTot(l)<=PR.xu);};
+const _bcRebet1588=bcRebet;bcRebet=function(){const st=MG.st;if(st&&st.lastBets){const l=bcLastScaled();if(l!==st.lastBets){st.lastBets=l;st.lastLv=bcLevel();}}return _bcRebet1588.apply(this,arguments);};
+// thông báo khi mức bàn tự hạ vì thiếu xu
+const _bcR1588=bcR;bcR=function(){const st=MG.st;if(st){const l=bcLevel(),sv=_bcLevel1588();if(l<sv&&st._lvWarn!==l+'/'+sv){st._lvWarn=l+'/'+sv;toast(`Không đủ xu cho bàn ${kxu(sv)} — tạm dùng bàn ${kxu(l)}`);}else if(l===sv)st._lvWarn=null;}return _bcR1588.apply(this,arguments);};
