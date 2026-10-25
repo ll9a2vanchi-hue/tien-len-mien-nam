@@ -1,4 +1,5 @@
 const H=require('./tools-h.js');(async()=>{const b=await H.launch();let f=0;const ok=(c,m)=>{console.log((c?'ok ':'FAIL ')+m);if(!c)f++;};
+const vge=(a,b)=>{const x=String(a).split('.').map(Number),y=b.split('.').map(Number);for(let i=0;i<3;i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0);}return true;};
 for(const w of [360,412,461]){const p=await H.open(b,w,800,()=>{let x=0;while(levelInfo(x).level<35)x+=50;PR.xp=x;PR.xu=5e6;saveP();showHome();});
  const r=await p.evaluate(async()=>{const sl=ms=>new Promise(r=>setTimeout(r,ms));const out={v:APP_V,lv:myLevelNow(PR)};const fs=e=>e?parseFloat(getComputedStyle(e).fontSize):0;
   const ovf=sel=>[...document.querySelectorAll(sel)].filter(e=>{const r=e.getBoundingClientRect();return r.width&&(r.left<-1||r.right>innerWidth+1)}).length;
@@ -14,7 +15,7 @@ for(const w of [360,412,461]){const p=await H.open(b,w,800,()=>{let x=0;while(le
    if(g==='poker'){pkDeal();await sl(900);o.stkFs=fs(document.querySelector('#mg .pkstk'));o.ovf+=ovf('.pkstk');}G[g]=o;mgClose(1);await sl(100);}
   out.G=G;out.hi=hiBetReq(20000)===1&&hiBetReq(150000)===6;out.xp=[modeXp('xito',30000),modeXp('xito',200)];return out;});
  if(w===412)console.log(JSON.stringify(r));
- ok(r.v>='1.58.6','version');ok(r.lv===35,'lv 35');ok(r.homeLv>=16,'home level badge big '+r.homeLv);ok(r.hi,'TLMN star tiers unchanged');ok(r.xp[0]===r.xp[1],'XP not scaled by bet');
+ ok(vge(r.v,'1.58.6'),'version');ok(r.lv===35,'lv 35');ok(r.homeLv>=16,'home level badge big '+r.homeLv);ok(r.hi,'TLMN star tiers unchanged');ok(r.xp[0]===r.xp[1],'XP not scaled by bet');
  for(const [g,o] of Object.entries(r.G)){ok(o.bets.n===13&&o.bets.lk==='50k🔒 Lv 45|70k🔒 Lv 60|100k🔒 Lv 80|150k🔒 Lv 100',g+' tiers/locks '+o.bets.lk);ok(o.lockHeld,g+' locked tier not selectable');ok(o.bet===30000,g+' 30k unlocked at Lv35');
   const k=g==='poker'?20:g==='baucua'?2:10;ok(o.minBot>=30000*k,g+' bots funded '+o.minBot);if(o.dealer!=null)ok(o.dealer>=30000*50,g+' dealer funded');
   ok(o.ovf===0&&o.clip===0,g+' fits '+w+' ovf='+o.ovf+' clip='+o.clip);if(g!=='poker')ok(o.botFs>=11.5,g+' bot xu font '+o.botFs);ok(!o.lvFs||o.lvFs>=11.5,g+' lv font '+o.lvFs);if(g==='baucua')ok(o.selVis&&o.oneRow,'baucua chip strip 1 row, selected visible');if(o.stkFs!=null)ok(o.stkFs>=12,'poker stack font '+o.stkFs);}

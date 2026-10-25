@@ -855,6 +855,7 @@ body.mgon #modal{z-index:60}
 @media (max-height:760px){#mg.mg-baucua .cgbets.bcchips button{min-height:28px;padding:2px 0!important}#mg.mg-baucua .cgrole button{min-height:32px!important}}
 .cgbets.lvbets.bclvgrid{grid-template-columns:repeat(4,1fr)!important;gap:6px!important;margin:8px 0}
 .cgbets.lvbets.bclvgrid button{min-height:44px;font-size:15px!important}
+body.cgon #modal{z-index:60}.cgbets.lvpick{display:flex;justify-content:center;margin:6px 0}.lvpickbtn{min-width:62%;padding:9px 14px;font-size:15px}.lvpickbtn b{color:#ffe082;font-size:16px}.lvpickbtn.warn b{color:#ff8a80}.cgtbl{z-index:1}.cgctl{position:relative;z-index:2}.lvpickbtn.inl{min-width:0;margin:0!important;padding:6px 10px!important;font-size:13px!important;min-height:32px;white-space:nowrap;background:linear-gradient(#3a2a10,#22180a)!important;color:#ffe08a!important;border:1px solid #f4c542aa!important}.lvpickbtn.inl b{font-size:14px}.cgset .lvpickbtn.inl{margin-left:4px!important}
 /* Bầu Cua v1.52.5 — scoped mobile layout + avatar bet chips */
 #mg.mg-baucua{padding-left:5px;padding-right:5px;min-width:0}
 #mg.mg-baucua .bctbl{flex:1 1 auto;min-height:0;min-width:0;gap:5px;padding:6px 4px;border-width:3px;border-radius:16px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
@@ -1029,7 +1030,7 @@ body.mgon #modal{z-index:60}
 @media(prefers-reduced-motion:reduce){.bcbig,.bcbig .bcbd span,.bcbao,#mg.mg-baucua .bctbl.bcbaofx{animation:none!important}.bcbig.rm{opacity:1}}
 #mg.mg-baucua .cgrow.bcrow4 .cgbig{font-size:13px!important;padding:4px 2px!important;overflow:hidden;text-overflow:clip}
 #mg.mg-baucua .bctbl[style*="--bctm"] .bct{min-height:var(--bctm)!important;padding:1px!important}#mg.mg-baucua .bctbl[style*="--bctm"] .bct .bce{font-size:min(30px,calc(var(--bctm)*.36))}
-body.cgon #modal{z-index:60}.cgbets.lvpick{display:flex;justify-content:center;margin:6px 0}.lvpickbtn{min-width:62%;padding:9px 14px;font-size:15px}.lvpickbtn b{color:#ffe082;font-size:16px}.lvpickbtn.warn b{color:#ff8a80}.cgtbl{z-index:1}.cgctl{position:relative;z-index:2}.lvpickbtn.inl{min-width:0;margin:0!important;padding:6px 10px!important;font-size:13px!important;min-height:32px;white-space:nowrap;background:linear-gradient(#3a2a10,#22180a)!important;color:#ffe08a!important;border:1px solid #f4c542aa!important}.lvpickbtn.inl b{font-size:14px}.cgset .lvpickbtn.inl{margin-left:4px!important}</style></head><body>
+#modalIn.hasfoot{padding-bottom:0}#modalIn .resfoot{position:sticky;bottom:0;z-index:3;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px -18px 0;padding:8px 12px 10px;background:linear-gradient(rgba(30,23,15,.97),rgba(14,11,8,.99));border-top:1px solid #c9962e66;box-shadow:0 -8px 14px -6px #000c}#modalIn .resfoot>button{flex:1 1 0;margin:0!important;min-height:38px;padding:8px 6px}#modalIn .resfoot>button[onclick^="newGame"],#modalIn .resfoot>button[onclick*="hostStart"]{flex:1 1 100%;min-height:42px;font-size:16px}#modalIn .resfoot .rfclose{flex:1 1 0;display:flex}#modalIn .resfoot .rfclose>button{flex:1;margin:0!important;min-height:38px}</style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
 <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="url(#gGold)" stroke="#8a6200" stroke-width="1.5"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#8a6200" stroke-width="1.2"/><path d="M12 8.5v7M10 10.2h3.2a1.3 1.3 0 010 2.6h-2.4a1.3 1.3 0 000 2.6H14" stroke="#8a6200" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
@@ -1069,7 +1070,7 @@ body.cgon #modal{z-index:60}.cgbets.lvpick{display:flex;justify-content:center;m
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='b80234fe51';
+const APP_VER='ec62b2d4b0';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -3535,8 +3536,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.9';
+const APP_V='1.58.10';
 const CHANGELOG=[
+ ['1.58.10','26/10',['Bảng Kết quả (Tiến lên, Đếm lá): hàng nút Ván mới · Đổi bàn · Về sảnh · Đóng luôn nằm cố định ở đáy, danh sách kết quả cuộn bên trong — màn hình thấp không phải kéo xuống mới thấy nút']],
  ['1.58.9','26/10',['Sửa lỗi 3 Cào / Xì dách bàn 5–6 người: hết ván không bấm được Ván mới (bài của bạn bị đẩy xuống đè lên nút) — bàn tự co cho vừa, nút luôn bấm được','Mức cược gọn thành 1 nút 🎚 (bấm để mở bảng chọn, có khóa theo cấp) ở 3 Cào, Xì dách, Domino, Xì tố, Poker — khu điều khiển thấp hơn, không còn 2 hàng chip','Sửa thông báo "thua -200 xu" → "thua 200 xu"; tiền thua hiển thị gọn (-70k thay vì -70000) ở mọi trò; không còn hiện "-0"']],
  ['1.58.8','26/10',['Bầu cua: sửa lỗi khi LÀM CÁI — từ ván thứ 2 máy chỉ cược 100–1.000 bất kể mức bàn; giờ máy cược đúng theo mức bàn (1× · 2× · 5×) ở mọi ván','Bầu cua: mức bàn đã lưu nhưng không đủ xu → tạm dùng mức thấp hơn còn đủ (có thông báo), không còn bị khóa hết chip; đủ xu lại thì tự trở về mức đã chọn','Bầu cua: ↺ Lại sau khi đổi mức bàn sẽ cược lại theo mức bàn mới; chọn chip Bầu cua không còn làm đổi mức cược ở trò khác','Bầu cua: tiền thua của người chơi máy hiển thị gọn (-150k thay vì -150000)']],
  ['1.58.7','25/10',['Bầu cua: chọn MỨC CƯỢC BÀN (nút 🎚 Bàn … cạnh Chơi con/Làm cái): 100 → 5k, và 10k Lv10 · 20k Lv20 · 30k Lv30 · 50k Lv45 · 70k Lv60 · 100k Lv80 · 150k Lv100; mức chưa mở hiện 🔒, không đủ xu thì mờ','Hàng chip gọn 4 nút = 1× · 2× · 5× · 10× mức bàn, không còn dải cuộn ngang; nhớ mức bàn lần trước','Nhà cái và máy luôn đủ xu theo mức bàn; khi bạn làm cái, máy cược theo mức bàn. Giữ nguyên ↺ Lại, ×2, lịch sử và hiệu ứng']],
@@ -4766,5 +4768,13 @@ function cgFit(){const t=document.querySelector('#cg .cgtbl');if(!t)return;const
  for(let z=0.94;z>=0.6&&t.scrollHeight>t.clientHeight+1;z-=0.06)parts.forEach(e=>e.style.zoom=z.toFixed(2));}
 const _cgRender1589b=cgRender;cgRender=function(){const r=_cgRender1589b.apply(this,arguments);try{cgFit();}catch(e){}return r;};
 addEventListener('resize',()=>{try{if(document.body.classList.contains('cgon'))cgFit();}catch(e){}});
+// ===================== v1.58.10: bảng Kết quả (TLMN / Đếm lá) — hàng nút Ván mới/Đổi bàn/Về sảnh/Đóng luôn dính đáy, danh sách cuộn bên trong =====================
+function resFoot(){const m=$('modalIn');if(!m||!m.querySelector('button[onclick^="newGame"],button[onclick*="hostStart"]'))return;
+ let f=m.querySelector(':scope>.resfoot');if(!f){f=document.createElement('div');f.className='resfoot';}
+ [...f.children].forEach(c=>{if(c.tagName!=='BUTTON'&&!c.classList.contains('rfclose'))f.before(c);});
+ [...m.children].forEach(c=>{if(c===f)return;if(c.tagName==='BUTTON')f.appendChild(c);else if(c.tagName==='DIV'&&c.children.length===1&&c.firstElementChild.tagName==='BUTTON'&&/closeModal/.test(c.firstElementChild.getAttribute('onclick')||'')){c.className='rfclose';f.appendChild(c);}});
+ const cl=f.querySelector('.rfclose');if(cl)f.appendChild(cl);m.appendChild(f);m.classList.add('hasfoot');}
+const _sr1510=showResult;showResult=function(r){const x=_sr1510(r);try{resFoot();const mi=$("modalIn");if(mi)mi.scrollTop=0;setTimeout(resFoot,400);}catch(e){console.error(e);}return x;};
+const _cm1510=closeModal;closeModal=function(){const m=$('modalIn');if(m)m.classList.remove('hasfoot');return _cm1510.apply(this,arguments);};
 boot();
 </script></body></html>

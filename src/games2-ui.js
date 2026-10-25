@@ -754,3 +754,11 @@ function cgFit(){const t=document.querySelector('#cg .cgtbl');if(!t)return;const
  for(let z=0.94;z>=0.6&&t.scrollHeight>t.clientHeight+1;z-=0.06)parts.forEach(e=>e.style.zoom=z.toFixed(2));}
 const _cgRender1589b=cgRender;cgRender=function(){const r=_cgRender1589b.apply(this,arguments);try{cgFit();}catch(e){}return r;};
 addEventListener('resize',()=>{try{if(document.body.classList.contains('cgon'))cgFit();}catch(e){}});
+// ===================== v1.58.10: bảng Kết quả (TLMN / Đếm lá) — hàng nút Ván mới/Đổi bàn/Về sảnh/Đóng luôn dính đáy, danh sách cuộn bên trong =====================
+function resFoot(){const m=$('modalIn');if(!m||!m.querySelector('button[onclick^="newGame"],button[onclick*="hostStart"]'))return;
+ let f=m.querySelector(':scope>.resfoot');if(!f){f=document.createElement('div');f.className='resfoot';}
+ [...f.children].forEach(c=>{if(c.tagName!=='BUTTON'&&!c.classList.contains('rfclose'))f.before(c);});
+ [...m.children].forEach(c=>{if(c===f)return;if(c.tagName==='BUTTON')f.appendChild(c);else if(c.tagName==='DIV'&&c.children.length===1&&c.firstElementChild.tagName==='BUTTON'&&/closeModal/.test(c.firstElementChild.getAttribute('onclick')||'')){c.className='rfclose';f.appendChild(c);}});
+ const cl=f.querySelector('.rfclose');if(cl)f.appendChild(cl);m.appendChild(f);m.classList.add('hasfoot');}
+const _sr1510=showResult;showResult=function(r){const x=_sr1510(r);try{resFoot();const mi=$("modalIn");if(mi)mi.scrollTop=0;setTimeout(resFoot,400);}catch(e){console.error(e);}return x;};
+const _cm1510=closeModal;closeModal=function(){const m=$('modalIn');if(m)m.classList.remove('hasfoot');return _cm1510.apply(this,arguments);};

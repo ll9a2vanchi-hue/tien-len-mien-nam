@@ -1,4 +1,5 @@
 const H=require('./tools-h.js');(async()=>{const b=await H.launch();let f=0;const ok=(c,m)=>{console.log((c?'ok ':'FAIL ')+m);if(!c)f++;};
+const vge=(a,b)=>{const x=String(a).split('.').map(Number),y=b.split('.').map(Number);for(let i=0;i<3;i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0);}return true;};
 const p=await H.open(b,412,800,()=>{let x=0;while(levelInfo(x).level<72)x+=100;PR.xp=x;PR.xu=5e6;saveP();localStorage.removeItem('tlmn_bclv');localStorage.setItem('tlmn_bcrole','con');});
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
 let r=await p.evaluate(async()=>{const O={v:APP_V};const sl=ms=>new Promise(r=>setTimeout(r,ms));const chips=()=>[...document.querySelectorAll('#mg .bcchips button')].map(x=>x.dataset.b+(x.disabled?'d':'')).join(',');
@@ -17,7 +18,7 @@ let r=await p.evaluate(async()=>{const O={v:APP_V};const sl=ms=>new Promise(r=>s
  bcShake();await wait(()=>MG.st.phase==='open'||MG.st.phase==='shake');O.r2=amt();await wait(()=>MG.st.phase==='open');bcOpen();
  O.neg=[...document.querySelectorAll('#mg .bcs .mgv.neg')].map(x=>x.textContent).join(',');O.saved=localStorage.getItem('tlmn_bclv');
  bcRole('con');mgClose(1);return O;});
-ok(r.v>='1.58.8','version '+r.v);ok(r.lk==='100000,150000'&&r.lockHeld,'Lv72: tới 70k mở, 100k/150k khóa '+r.lk);
+ok(vge(r.v,'1.58.8'),'version '+r.v);ok(r.lk==='100000,150000'&&r.lockHeld,'Lv72: tới 70k mở, 100k/150k khóa '+r.lk);
 ok(r.c70==='70000,140000,350000,700000','chip 1/2/5/10× '+r.c70);ok(r.ch===140000&&r.noLeak&&r.noLeak2,'chip Bầu cua không làm đổi MG.bet');
 ok(r.payOk&&r.xuOk&&r.bets===140000,'tiền thắng/thua đúng mức cược '+JSON.stringify([r.payOk,r.xuOk,r.bets,r.dx]));ok(r.reOk&&r.re==='{"cua":1000,"tom":1000}','↺ Lại theo mức bàn mới '+r.re);
 ok(r.r1.length&&r.r1.every(a=>a%20000===0),'làm cái ván 1: máy cược theo mức '+r.r1);
