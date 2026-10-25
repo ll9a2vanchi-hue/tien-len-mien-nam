@@ -847,6 +847,14 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 #meInfo.m2 .lvb{width:auto!important;min-width:25px;height:24px!important;padding:0 4px;font-size:13px!important;border-radius:12px}
 #mg.mg-baucua .cgbets.lvbets{display:flex!important;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 90%,#0004);mask-image:linear-gradient(90deg,#000 90%,#0004)}#mg.mg-baucua .cgbets.lvbets::-webkit-scrollbar{display:none}
 #mg.mg-baucua .cgbets.lvbets button{flex:0 0 calc((100% - 18px)/6.6);min-height:30px;padding:2px 0!important}#mg.mg-baucua .cgbets.lvbets button small{font-size:8.5px}
+/* v1.58.7 Bầu cua: mức bàn + 4 chip */
+#mg.mg-baucua .cgbets.bcchips{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:5px!important}
+#mg.mg-baucua .cgbets.bcchips button{min-height:32px;padding:4px 0!important;font-size:13.5px!important;font-weight:900}
+#mg.mg-baucua .cgrole button.bclvbtn{background:linear-gradient(#3a2a10,#22180a)!important;color:#ffe08a!important;border:1px solid #f4c542aa!important;white-space:nowrap}
+body.mgon #modal{z-index:60}
+@media (max-height:760px){#mg.mg-baucua .cgbets.bcchips button{min-height:28px;padding:2px 0!important}#mg.mg-baucua .cgrole button{min-height:32px!important}}
+.cgbets.lvbets.bclvgrid{grid-template-columns:repeat(4,1fr)!important;gap:6px!important;margin:8px 0}
+.cgbets.lvbets.bclvgrid button{min-height:44px;font-size:15px!important}
 /* Bầu Cua v1.52.5 — scoped mobile layout + avatar bet chips */
 #mg.mg-baucua{padding-left:5px;padding-right:5px;min-width:0}
 #mg.mg-baucua .bctbl{flex:1 1 auto;min-height:0;min-width:0;gap:5px;padding:6px 4px;border-width:3px;border-radius:16px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
@@ -1061,7 +1069,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='2577e92fa5';
+const APP_VER='a591ef98e4';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -3527,8 +3535,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.6';
+const APP_V='1.58.7';
 const CHANGELOG=[
+ ['1.58.7','25/10',['Bầu cua: chọn MỨC CƯỢC BÀN (nút 🎚 Bàn … cạnh Chơi con/Làm cái): 100 → 5k, và 10k Lv10 · 20k Lv20 · 30k Lv30 · 50k Lv45 · 70k Lv60 · 100k Lv80 · 150k Lv100; mức chưa mở hiện 🔒, không đủ xu thì mờ','Hàng chip gọn 4 nút = 1× · 2× · 5× · 10× mức bàn, không còn dải cuộn ngang; nhớ mức bàn lần trước','Nhà cái và máy luôn đủ xu theo mức bàn; khi bạn làm cái, máy cược theo mức bàn. Giữ nguyên ↺ Lại, ×2, lịch sử và hiệu ứng']],
  ['1.58.6','25/10',['Số cấp độ to, đậm và rõ hơn ở thẻ người chơi, trên ghế mọi bàn và danh sách người chơi','Số xu của máy trên ghế to hơn, có nền tối dễ đọc (3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker)','Mở mức cược cao cho 3 Cào, Xì dách, Bầu cua, Domino, Xì tố (tiền xâu), Poker (mù lớn) theo CẤP: 10k Lv10 · 20k Lv20 · 30k Lv30 · 50k Lv45 · 70k Lv60 · 100k Lv80 · 150k Lv100. Mức chưa mở hiện 🔒, không đủ xu thì mờ','Máy ngồi bàn cao luôn đủ xu. EXP mỗi ván không nhân theo mức cược. Tiến lên & Đếm lá vẫn mở theo hạng sao']],
  ['1.58.5','25/10',['Bỏ trần +300% Thưởng EXP: mọi nguồn (vật phẩm, avatar, xu đã thắng, huy hiệu, tài sản, thú cưng) cộng dồn không giới hạn','Màn hình "Thưởng EXP" bỏ thanh trần, hiện tổng thực tế','Máy chủ nới giới hạn EXP mỗi lần đồng bộ để người chơi nhiều EXP không bị cắt trên bảng xếp hạng']],
  ['1.58.4','22/10',['Xì tố & Poker: khi có người tố tất ít xu hơn (sinh hũ phụ), ghế thắng ghi rõ "👑 Thắng hũ chính" hoặc "Thắng hũ phụ +X" — giải thích vì sao có 2 người thắng','Dòng thông báo và bảng kết quả liệt kê từng hũ: số xu và người thắng (kèm tên bộ bài)','Poker: bài bằng nhau thì hiện "🤝 Chia hũ" cho tất cả người hòa. Luật chia tiền không đổi']],
@@ -4701,5 +4710,29 @@ const _openCasino1586=openCasino;openCasino=function(g){if(!lvBetOk(PR,CG.bet))C
 // Bầu cua: dải chip 1 hàng cuộn ngang — luôn đưa chip đang chọn vào giữa
 function lvBetsCenter(){const c=document.querySelector('#mg.mg-baucua .lvbets');if(!c)return;const s=c.querySelector('button:not(.alt)');if(s)c.scrollLeft=Math.max(0,s.offsetLeft-c.offsetLeft-c.clientWidth/2+s.offsetWidth/2);}
 const _bcR1586=bcR;bcR=function(){const r=_bcR1586.apply(this,arguments);try{lvBetsCenter();}catch(e){}return r;};
+// ===================== v1.58.7: Bầu cua — chọn MỨC CƯỢC BÀN (mở theo cấp), chip = 1×/2×/5×/10× mức bàn =====================
+const BC_LVLS=[100,200,500,1000,2000,5000,...LV_BETS.map(x=>x[0])];const BC_MULT=[1,2,5,10];
+function bcLevel(){const v=+localStorage.getItem('tlmn_bclv');return BC_LVLS.includes(v)&&lvBetOk(PR,v)?v:200;}
+function bcChipsFor(l){return BC_MULT.map(m=>l*m);}
+function bcLvFund(){const st=MG.st;if(!st)return;const l=bcLevel();MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,500000,l*300);mgTopUp(st.bots,l,40);}
+function bcLvSync(){const st=MG.st;if(!st)return;const cs=bcChipsFor(bcLevel());if(!cs.includes(st.chip))st.chip=cs.find(c=>c<=PR.xu)||cs[0];bcLvFund();}
+bcChip=function(b){const st=MG.st;if(!st||!bcChipsFor(bcLevel()).includes(b))return;bcLvFund();return _bcChip1586(b);};
+// máy cược theo mức bàn khi bạn làm cái
+bcBotBets=function(){const st=MG.st;bcLvFund();mgRefill(st.bots,bcLevel()*5);st.bots.forEach(b=>b.bets={});if(st.role==='con')return;bcPlay(bcPlan(3,bcChipsFor(bcLevel()).slice(0,3)));};
+function bcLvPick(){const st=MG.st;if(!st||st.placing||st.phase==='shake'||st.phase==='open')return;const cur=bcLevel();
+ const btn=l=>{const r=lvBetReq(l);if(r&&!lvBetOk(PR,l))return `<button class="alt lk" data-l="${l}" onclick="lvBetLock(${l})">${kxu(l)}<small>🔒 Lv ${r}</small></button>`;
+  return `<button class="${l===cur?'':'alt'}" data-l="${l}" ${l>PR.xu?'disabled':''} onclick="bcSetLv(${l})">${kxu(l)}${r?`<small>Lv ${r}</small>`:''}</button>`;};
+ modal(`<h3>🦀 Mức cược bàn Bầu cua</h3><p class="small">Chip trên bàn = 1× · 2× · 5× · 10× mức bàn. Mức cao mở theo cấp của bạn (đang cấp ${myLevelNow(PR)}).</p><div class="cgbets lvbets bclvgrid">${BC_LVLS.map(btn).join('')}</div>`);}
+function bcSetLv(l){const st=MG.st;if(!BC_LVLS.includes(l))return;if(!lvBetOk(PR,l))return lvBetLock(l);if(l>PR.xu){sfx('bad');return toast('Không đủ xu cho mức '+fmt(l));}
+ localStorage.setItem('tlmn_bclv',String(l));closeModal();sfx('tap');if(!st)return;const ch=bcChipsFor(l);st.chip=ch.find(c=>c<=PR.xu)||ch[0];MG.bet=st.chip;
+ if(!st.placing&&st.phase!=='shake'&&st.phase!=='open'){if(st.phase==='done')bcNew();else{st.bets={};bcBotBets();}}bcLvFund();bcR();toast('🦀 Bàn '+kxu(l)+' · chip '+ch.map(kxu).join(' / '));}
+const _bcCtl1587=bcCtl;bcCtl=function(){const st=MG.st;let h=_bcCtl1587.apply(this,arguments);if(!st||(st.phase!=='bet'&&st.phase!=='done'))return h;const l=bcLevel();
+ const old=mgBets(BC_CHIPS,st.chip,'bcChip',b=>b<=PR.xu);
+ const chips=`<div class="cgbets bcchips">${bcChipsFor(l).map(b=>`<button class="${b===st.chip?'':'alt'}" data-b="${b}" ${b>PR.xu?'disabled':''} onclick="bcChip(${b})">${kxu(b)}</button>`).join('')}</div>`;
+ h=h.replace(old,chips);
+ return h.replace(`onclick="bcRole('cai')">🎩 Làm cái</button></div>`,`onclick="bcRole('cai')">🎩 Làm cái</button><button class="bclvbtn" onclick="bcLvPick()" ${st.placing?'disabled':''}>🎚 Bàn ${kxu(l)} ▾</button></div>`);};
+const _bcR1587=bcR;bcR=function(){try{bcLvSync();}catch(e){}return _bcR1587.apply(this,arguments);};
+// màn hình thấp (≈360×740): cho phép co khoảng trống bàn thêm để không phải cuộn
+const _bcFit1587=bcFit;bcFit=function(){_bcFit1587();const t=document.querySelector('#mg .bctbl');if(!t)return;let m=parseFloat(t.style.getPropertyValue('--bctm'))||76;for(let k=0;k<6&&t.scrollHeight>t.clientHeight&&m>28;k++){m-=4;t.style.setProperty('--bctm',m+'px');}};
 boot();
 </script></body></html>

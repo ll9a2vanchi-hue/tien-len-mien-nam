@@ -700,3 +700,27 @@ const _openCasino1586=openCasino;openCasino=function(g){if(!lvBetOk(PR,CG.bet))C
 // Bầu cua: dải chip 1 hàng cuộn ngang — luôn đưa chip đang chọn vào giữa
 function lvBetsCenter(){const c=document.querySelector('#mg.mg-baucua .lvbets');if(!c)return;const s=c.querySelector('button:not(.alt)');if(s)c.scrollLeft=Math.max(0,s.offsetLeft-c.offsetLeft-c.clientWidth/2+s.offsetWidth/2);}
 const _bcR1586=bcR;bcR=function(){const r=_bcR1586.apply(this,arguments);try{lvBetsCenter();}catch(e){}return r;};
+// ===================== v1.58.7: Bầu cua — chọn MỨC CƯỢC BÀN (mở theo cấp), chip = 1×/2×/5×/10× mức bàn =====================
+const BC_LVLS=[100,200,500,1000,2000,5000,...LV_BETS.map(x=>x[0])];const BC_MULT=[1,2,5,10];
+function bcLevel(){const v=+localStorage.getItem('tlmn_bclv');return BC_LVLS.includes(v)&&lvBetOk(PR,v)?v:200;}
+function bcChipsFor(l){return BC_MULT.map(m=>l*m);}
+function bcLvFund(){const st=MG.st;if(!st)return;const l=bcLevel();MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,500000,l*300);mgTopUp(st.bots,l,40);}
+function bcLvSync(){const st=MG.st;if(!st)return;const cs=bcChipsFor(bcLevel());if(!cs.includes(st.chip))st.chip=cs.find(c=>c<=PR.xu)||cs[0];bcLvFund();}
+bcChip=function(b){const st=MG.st;if(!st||!bcChipsFor(bcLevel()).includes(b))return;bcLvFund();return _bcChip1586(b);};
+// máy cược theo mức bàn khi bạn làm cái
+bcBotBets=function(){const st=MG.st;bcLvFund();mgRefill(st.bots,bcLevel()*5);st.bots.forEach(b=>b.bets={});if(st.role==='con')return;bcPlay(bcPlan(3,bcChipsFor(bcLevel()).slice(0,3)));};
+function bcLvPick(){const st=MG.st;if(!st||st.placing||st.phase==='shake'||st.phase==='open')return;const cur=bcLevel();
+ const btn=l=>{const r=lvBetReq(l);if(r&&!lvBetOk(PR,l))return `<button class="alt lk" data-l="${l}" onclick="lvBetLock(${l})">${kxu(l)}<small>🔒 Lv ${r}</small></button>`;
+  return `<button class="${l===cur?'':'alt'}" data-l="${l}" ${l>PR.xu?'disabled':''} onclick="bcSetLv(${l})">${kxu(l)}${r?`<small>Lv ${r}</small>`:''}</button>`;};
+ modal(`<h3>🦀 Mức cược bàn Bầu cua</h3><p class="small">Chip trên bàn = 1× · 2× · 5× · 10× mức bàn. Mức cao mở theo cấp của bạn (đang cấp ${myLevelNow(PR)}).</p><div class="cgbets lvbets bclvgrid">${BC_LVLS.map(btn).join('')}</div>`);}
+function bcSetLv(l){const st=MG.st;if(!BC_LVLS.includes(l))return;if(!lvBetOk(PR,l))return lvBetLock(l);if(l>PR.xu){sfx('bad');return toast('Không đủ xu cho mức '+fmt(l));}
+ localStorage.setItem('tlmn_bclv',String(l));closeModal();sfx('tap');if(!st)return;const ch=bcChipsFor(l);st.chip=ch.find(c=>c<=PR.xu)||ch[0];MG.bet=st.chip;
+ if(!st.placing&&st.phase!=='shake'&&st.phase!=='open'){if(st.phase==='done')bcNew();else{st.bets={};bcBotBets();}}bcLvFund();bcR();toast('🦀 Bàn '+kxu(l)+' · chip '+ch.map(kxu).join(' / '));}
+const _bcCtl1587=bcCtl;bcCtl=function(){const st=MG.st;let h=_bcCtl1587.apply(this,arguments);if(!st||(st.phase!=='bet'&&st.phase!=='done'))return h;const l=bcLevel();
+ const old=mgBets(BC_CHIPS,st.chip,'bcChip',b=>b<=PR.xu);
+ const chips=`<div class="cgbets bcchips">${bcChipsFor(l).map(b=>`<button class="${b===st.chip?'':'alt'}" data-b="${b}" ${b>PR.xu?'disabled':''} onclick="bcChip(${b})">${kxu(b)}</button>`).join('')}</div>`;
+ h=h.replace(old,chips);
+ return h.replace(`onclick="bcRole('cai')">🎩 Làm cái</button></div>`,`onclick="bcRole('cai')">🎩 Làm cái</button><button class="bclvbtn" onclick="bcLvPick()" ${st.placing?'disabled':''}>🎚 Bàn ${kxu(l)} ▾</button></div>`);};
+const _bcR1587=bcR;bcR=function(){try{bcLvSync();}catch(e){}return _bcR1587.apply(this,arguments);};
+// màn hình thấp (≈360×740): cho phép co khoảng trống bàn thêm để không phải cuộn
+const _bcFit1587=bcFit;bcFit=function(){_bcFit1587();const t=document.querySelector('#mg .bctbl');if(!t)return;let m=parseFloat(t.style.getPropertyValue('--bctm'))||76;for(let k=0;k<6&&t.scrollHeight>t.clientHeight&&m>28;k++){m-=4;t.style.setProperty('--bctm',m+'px');}};
