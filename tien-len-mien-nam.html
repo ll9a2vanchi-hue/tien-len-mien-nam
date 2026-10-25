@@ -828,6 +828,25 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 #toast{z-index:90!important}/* v1.58.2: thông báo luôn nổi trên bàn mini game */
 #mg .pks.pwin::before{content:attr(data-wt);top:auto!important;bottom:-9px;z-index:8;max-width:96%;overflow:hidden;text-overflow:ellipsis;font-size:10px}
 #mg .cgpots{display:flex;flex-direction:column;gap:1px;margin:0 0 3px;padding:3px 8px;border-radius:8px;background:#ffd84d22;border:1px solid #ffd84d66;color:#ffe9a8;font-size:11px;font-weight:700;line-height:1.3}
+/* v1.58.6: số cấp dễ đọc hơn + xu của máy to/rõ hơn + mức cược mở theo cấp */
+.lvb{font-weight:900!important;color:#1c1000!important;font-variant-numeric:tabular-nums;letter-spacing:-.2px;text-shadow:0 1px 0 #fff9;background:linear-gradient(#fff3a6,#f5c400 55%,#d08a00)!important;border:1.5px solid #fff!important;box-shadow:0 0 0 1.5px #6a4300,0 2px 6px #000c!important}
+.pcard .pt .lvb{min-width:32px;height:28px;padding:0 6px;border-radius:14px;font-size:16.5px;margin-right:6px}
+.slv .lvb{font-size:11.5px!important;min-width:20px!important;height:18px!important;line-height:16px!important;padding:0 3px!important;border-radius:9px!important}
+.blv .lvb{font-size:13px;min-width:24px;height:22px;line-height:20px;border-radius:11px}
+.pli .lvb{font-size:13px;min-width:24px;height:21px}
+#meInfo .lvb.big{font-size:15px}
+.cgp small.cgbx,.mgseat small.cgbx,#mg .pkstk{display:inline-flex;align-items:center;gap:2px;font-size:12.5px!important;font-weight:800;color:#ffe66b!important;background:#000b;border:1px solid #ffd54a55;border-radius:9px;padding:0 6px 0 3px;line-height:17px;text-shadow:0 1px 1px #000;max-width:100%;white-space:nowrap;overflow:hidden}
+.cgp small.cgbx svg,.mgseat small.cgbx svg,#mg .pkstk svg{width:12px!important;height:12px!important;flex:none}
+#mg.mg-baucua .mgseat small.cgbx{font-size:11.5px!important;padding:0 5px 0 2px}
+.cgbets.lvbets{grid-template-columns:repeat(7,1fr)!important}
+.cgbets.lvbets button{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;min-height:34px;padding:4px 0!important}
+.cgbets.lvbets button small{font-size:9px;font-weight:800;opacity:.95;white-space:nowrap}
+.cgbets.lvbets button.lk{opacity:.8;filter:grayscale(.5);border-style:dashed}
+.cgbets.lvbets button.lk small{color:#ffd36b}
+.seat .sxu{font-size:12px!important;font-weight:800!important;color:#ffe66b!important;line-height:17px!important;text-shadow:0 1px 1px #000}.seat .sxu .cn{width:11px;height:11px}
+#meInfo.m2 .lvb{width:auto!important;min-width:25px;height:24px!important;padding:0 4px;font-size:13px!important;border-radius:12px}
+#mg.mg-baucua .cgbets.lvbets{display:flex!important;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 90%,#0004);mask-image:linear-gradient(90deg,#000 90%,#0004)}#mg.mg-baucua .cgbets.lvbets::-webkit-scrollbar{display:none}
+#mg.mg-baucua .cgbets.lvbets button{flex:0 0 calc((100% - 18px)/6.6);min-height:30px;padding:2px 0!important}#mg.mg-baucua .cgbets.lvbets button small{font-size:8.5px}
 /* Bầu Cua v1.52.5 — scoped mobile layout + avatar bet chips */
 #mg.mg-baucua{padding-left:5px;padding-right:5px;min-width:0}
 #mg.mg-baucua .bctbl{flex:1 1 auto;min-height:0;min-width:0;gap:5px;padding:6px 4px;border-width:3px;border-radius:16px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
@@ -1042,7 +1061,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='8f114dcbe1';
+const APP_VER='2577e92fa5';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -3508,9 +3527,10 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.5';
+const APP_V='1.58.6';
 const CHANGELOG=[
- ['1.58.5','22/10',['Bỏ trần +300% Thưởng EXP: mọi nguồn (vật phẩm, avatar, xu đã thắng, huy hiệu, tài sản, thú cưng) cộng dồn không giới hạn','Màn hình "Thưởng EXP" bỏ thanh trần, hiện tổng thực tế','Máy chủ nới giới hạn EXP mỗi lần đồng bộ để người chơi nhiều EXP không bị cắt trên bảng xếp hạng']],
+ ['1.58.6','25/10',['Số cấp độ to, đậm và rõ hơn ở thẻ người chơi, trên ghế mọi bàn và danh sách người chơi','Số xu của máy trên ghế to hơn, có nền tối dễ đọc (3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker)','Mở mức cược cao cho 3 Cào, Xì dách, Bầu cua, Domino, Xì tố (tiền xâu), Poker (mù lớn) theo CẤP: 10k Lv10 · 20k Lv20 · 30k Lv30 · 50k Lv45 · 70k Lv60 · 100k Lv80 · 150k Lv100. Mức chưa mở hiện 🔒, không đủ xu thì mờ','Máy ngồi bàn cao luôn đủ xu. EXP mỗi ván không nhân theo mức cược. Tiến lên & Đếm lá vẫn mở theo hạng sao']],
+ ['1.58.5','25/10',['Bỏ trần +300% Thưởng EXP: mọi nguồn (vật phẩm, avatar, xu đã thắng, huy hiệu, tài sản, thú cưng) cộng dồn không giới hạn','Màn hình "Thưởng EXP" bỏ thanh trần, hiện tổng thực tế','Máy chủ nới giới hạn EXP mỗi lần đồng bộ để người chơi nhiều EXP không bị cắt trên bảng xếp hạng']],
  ['1.58.4','22/10',['Xì tố & Poker: khi có người tố tất ít xu hơn (sinh hũ phụ), ghế thắng ghi rõ "👑 Thắng hũ chính" hoặc "Thắng hũ phụ +X" — giải thích vì sao có 2 người thắng','Dòng thông báo và bảng kết quả liệt kê từng hũ: số xu và người thắng (kèm tên bộ bài)','Poker: bài bằng nhau thì hiện "🤝 Chia hũ" cho tất cả người hòa. Luật chia tiền không đổi']],
  ['1.58.3','21/10',['Sửa thông báo nhỏ (toast) bị bàn Xì tố/Poker/Bầu cua/Domino che mất — nay luôn nổi trên cùng, kể cả thông báo "🔥 Tố tất thắng"']],
  ['1.58.2','21/10',['Xì tố: thưởng EXP "Tố tất" — thắng ván mà bạn đã tố tất với số xu tố ≥ 10 lần cược sàn được cộng thêm 50% EXP gốc của ván (cộng trước hệ số thưởng EXP chung)','Tối đa 10 lần mỗi ngày (đặt lại lúc 00:00 giờ Việt Nam); thua, úp bỏ hoặc tố tất nhỏ không được thưởng. Có thông báo "🔥 Tố tất thắng +X EXP (n/10 hôm nay)"']],
@@ -3868,7 +3888,7 @@ function cgCtl(){const st=CG.st;
  if(!st||st.phase==='done'){const need=cgNeed();const led=st&&st.ledger?`<div class="cgled">${st.ledger.map(l=>`<div><span>${esc(l[0])}</span><b class="${l[1]>0?'pos':l[1]<0?'neg':''}">${l[1]>0?'+':''}${fmt(l[1])}</b></div>`).join('')}</div>`:'';
   return `${led}<div class="cgset"><div class="cgn">${[2,3,4,5,6].map(k=>`<button class="${k===CG.n?'':'alt'}" onclick="cgSetup('n',${k})">${k}</button>`).join('')}<span class="small">người</span></div>
   <div class="cgrole"><button class="${CG.role==='con'?'':'alt'}" onclick="cgSetup('role','con')">🙋 Chơi con</button><button class="${CG.role==='cai'?'':'alt'}" onclick="cgSetup('role','cai')">🎩 Làm cái</button></div></div>
-  <div class="cgbets">${CG_BETS.map(b=>`<button class="${b===CG.bet?'':'alt'}" ${(CG.role==='cai'?cgDealerNeed(CG.g,CG.n,b):b)>PR.xu?'disabled':''} onclick="CG.bet=${b};cgRender()">${kxu(b)}</button>`).join('')}</div>
+  ${mgBets(CG_BETS,CG.bet,'cgBet',b=>(CG.role==='cai'?cgDealerNeed(CG.g,CG.n,b):b)<=PR.xu)}
   ${CG.role==='cai'?`<p class="small cgnote">Làm cái: ăn/chung từng nhà (${CG.n-1} con × ${fmt(CG.bet)} xu). Cần ≥ ${fmt(need)} xu.</p>`:''}
   <button class="cgbig" ${PR.xu<need?'disabled':''} onclick="cgDeal()">${st?'Ván mới':'Chia bài'} · ${fmt(CG.bet)} xu${CG.role==='cai'?' / nhà':''}</button>`;}
  const ME=st.me;
@@ -4654,5 +4674,32 @@ const _pkShow1584=pkShow;pkShow=function(){const r=_pkShow1584.apply(this,argume
 const _xtR1584=xtR;xtR=function(){_xtR1584.apply(this,arguments);try{potTags();}catch(e){}};
 const _pkR1584=pkR;pkR=function(){_pkR1584.apply(this,arguments);try{potTags();}catch(e){}};
 const _mgLed1584=mgLedger;mgLedger=function(rows){if(!rows)return '';const pot=rows.filter(l=>/^🏆/.test(l[0])),rest=rows.filter(l=>!/^🏆/.test(l[0]));return (pot.length?`<div class="cgpots">${pot.map(l=>`<div>${esc(l[0])}</div>`).join('')}</div>`:'')+_mgLed1584(rest);};
+// ===================== v1.58.6: mức cược cao cho các trò phụ, mở theo CẤP người chơi =====================
+// TLMN/Đếm lá giữ mở theo hạng sao (HI_BETS). XP mỗi ván cố định theo kết quả, không nhân theo mức cược.
+const LV_BETS=[[10000,10],[20000,20],[30000,30],[50000,45],[70000,60],[100000,80],[150000,100]];
+[CG_BETS,BC_CHIPS,DM_BETS,XT_BETS,PK_BETS].forEach(a=>LV_BETS.forEach(([b])=>{if(!a.includes(b))a.push(b);}));
+function lvBetReq(b){const t=LV_BETS.find(x=>x[0]===b);return t?t[1]:0;}
+function myLevelNow(P){return levelInfo(((P||PR).xp)||0).level;}
+function lvBetOk(P,b){return myLevelNow(P)>=lvBetReq(b);}
+function lvBetLock(b){sfx('bad');toast(`🔒 Cần đạt cấp ${lvBetReq(b)} để mở mức cược ${kxu(b)}`);}
+mgBets=function(list,cur,on,maxOk){return `<div class="cgbets lvbets">${list.map(b=>{const r=lvBetReq(b);
+ if(r&&!lvBetOk(PR,b))return `<button class="alt lk" data-b="${b}" onclick="lvBetLock(${b})">${kxu(b)}<small>🔒 Lv ${r}</small></button>`;
+ return `<button class="${b===cur?'':'alt'}" data-b="${b}" ${maxOk&&!maxOk(b)?'disabled':''} onclick="${on}(${b})">${kxu(b)}</button>`;}).join('')}</div>`;};
+// máy ngồi bàn cao phải đủ xu: nạp lại cho máy thiếu khi đổi mức cược
+function mgTopUp(bots,bet,k){(bots||[]).forEach(b=>{if(!b||b.me)return;if((MG.bxu[b.name]||0)<bet*k)MG.bxu[b.name]=Math.round(bet*(k+5+Math.random()*35)/100)*100;});}
+function mgBetFix(){const b=MG.bet||0;if(MG.dmBots)mgTopUp(MG.dmBots,b,15);if(MG.xtBots)mgTopUp(MG.xtBots,b,15);if(MG.pkBots)mgTopUp(MG.pkBots,b,25);}
+const _dmSet1586=dmSet;dmSet=function(k,v){if(k==='bet'&&!lvBetOk(PR,v))return lvBetLock(v);const r=_dmSet1586.apply(this,arguments);if(k==='bet'){mgBetFix();dmR();}return r;};
+const _xtSet1586=xtSet;xtSet=function(k,v){if(k==='bet'&&!lvBetOk(PR,v))return lvBetLock(v);const r=_xtSet1586.apply(this,arguments);if(k==='bet'){mgBetFix();xtR();}return r;};
+const _pkSet1586=pkSet;pkSet=function(k,v){if(k==='bet'&&!lvBetOk(PR,v))return lvBetLock(v);const r=_pkSet1586.apply(this,arguments);if(k==='bet'){mgBetFix();pkR();}return r;};
+const _bcChip1586=bcChip;bcChip=function(b){if(!lvBetOk(PR,b))return lvBetLock(b);const st=MG.st;if(st){MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,500000,b*60);mgTopUp(st.bots,b,10);}return _bcChip1586(b);};
+// mở trò với mức đã lưu nhưng chưa đủ cấp → về mức mặc định
+const _mgOpen1586=mgOpen;mgOpen=function(g){if(!lvBetOk(PR,MG.bet))MG.bet=200;const r=_mgOpen1586.apply(this,arguments);try{if(MG.st&&MG.g==='baucua'){MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,MG.st.chip*60);mgTopUp(MG.st.bots,MG.st.chip,10);}else{mgBetFix();const R={domino:dmR,xito:xtR,poker:pkR}[g];if(R)R();}}catch(e){}return r;};
+// 3 Cào & Xì dách
+function cgTopUp(){const b=CG.bet;(CG.seats||[]).forEach(s=>{if(s.me)return;if(s.dealer&&s.name==='Nhà cái'){CG.bxu[s.name]=Math.max(CG.bxu[s.name]||0,b*100);return;}if((CG.bxu[s.name]||0)<b*10)CG.bxu[s.name]=cgBotXu();});}
+function cgBet(b){if(CG.st&&CG.st.phase!=='done')return;if(!lvBetOk(PR,b))return lvBetLock(b);CG.bet=b;CG.seats=CG.seats||cgSeats();cgTopUp();cgRender();}
+const _openCasino1586=openCasino;openCasino=function(g){if(!lvBetOk(PR,CG.bet))CG.bet=200;const r=_openCasino1586.apply(this,arguments);try{cgTopUp();cgRender();}catch(e){}return r;};
+// Bầu cua: dải chip 1 hàng cuộn ngang — luôn đưa chip đang chọn vào giữa
+function lvBetsCenter(){const c=document.querySelector('#mg.mg-baucua .lvbets');if(!c)return;const s=c.querySelector('button:not(.alt)');if(s)c.scrollLeft=Math.max(0,s.offsetLeft-c.offsetLeft-c.clientWidth/2+s.offsetWidth/2);}
+const _bcR1586=bcR;bcR=function(){const r=_bcR1586.apply(this,arguments);try{lvBetsCenter();}catch(e){}return r;};
 boot();
 </script></body></html>

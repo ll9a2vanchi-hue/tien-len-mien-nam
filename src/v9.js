@@ -740,9 +740,10 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.5';
+const APP_V='1.58.6';
 const CHANGELOG=[
- ['1.58.5','22/10',['Bỏ trần +300% Thưởng EXP: mọi nguồn (vật phẩm, avatar, xu đã thắng, huy hiệu, tài sản, thú cưng) cộng dồn không giới hạn','Màn hình "Thưởng EXP" bỏ thanh trần, hiện tổng thực tế','Máy chủ nới giới hạn EXP mỗi lần đồng bộ để người chơi nhiều EXP không bị cắt trên bảng xếp hạng']],
+ ['1.58.6','25/10',['Số cấp độ to, đậm và rõ hơn ở thẻ người chơi, trên ghế mọi bàn và danh sách người chơi','Số xu của máy trên ghế to hơn, có nền tối dễ đọc (3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker)','Mở mức cược cao cho 3 Cào, Xì dách, Bầu cua, Domino, Xì tố (tiền xâu), Poker (mù lớn) theo CẤP: 10k Lv10 · 20k Lv20 · 30k Lv30 · 50k Lv45 · 70k Lv60 · 100k Lv80 · 150k Lv100. Mức chưa mở hiện 🔒, không đủ xu thì mờ','Máy ngồi bàn cao luôn đủ xu. EXP mỗi ván không nhân theo mức cược. Tiến lên & Đếm lá vẫn mở theo hạng sao']],
+ ['1.58.5','25/10',['Bỏ trần +300% Thưởng EXP: mọi nguồn (vật phẩm, avatar, xu đã thắng, huy hiệu, tài sản, thú cưng) cộng dồn không giới hạn','Màn hình "Thưởng EXP" bỏ thanh trần, hiện tổng thực tế','Máy chủ nới giới hạn EXP mỗi lần đồng bộ để người chơi nhiều EXP không bị cắt trên bảng xếp hạng']],
  ['1.58.4','22/10',['Xì tố & Poker: khi có người tố tất ít xu hơn (sinh hũ phụ), ghế thắng ghi rõ "👑 Thắng hũ chính" hoặc "Thắng hũ phụ +X" — giải thích vì sao có 2 người thắng','Dòng thông báo và bảng kết quả liệt kê từng hũ: số xu và người thắng (kèm tên bộ bài)','Poker: bài bằng nhau thì hiện "🤝 Chia hũ" cho tất cả người hòa. Luật chia tiền không đổi']],
  ['1.58.3','21/10',['Sửa thông báo nhỏ (toast) bị bàn Xì tố/Poker/Bầu cua/Domino che mất — nay luôn nổi trên cùng, kể cả thông báo "🔥 Tố tất thắng"']],
  ['1.58.2','21/10',['Xì tố: thưởng EXP "Tố tất" — thắng ván mà bạn đã tố tất với số xu tố ≥ 10 lần cược sàn được cộng thêm 50% EXP gốc của ván (cộng trước hệ số thưởng EXP chung)','Tối đa 10 lần mỗi ngày (đặt lại lúc 00:00 giờ Việt Nam); thua, úp bỏ hoặc tố tất nhỏ không được thưởng. Có thông báo "🔥 Tố tất thắng +X EXP (n/10 hôm nay)"']],

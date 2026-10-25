@@ -37,7 +37,7 @@ function cgCtl(){const st=CG.st;
  if(!st||st.phase==='done'){const need=cgNeed();const led=st&&st.ledger?`<div class="cgled">${st.ledger.map(l=>`<div><span>${esc(l[0])}</span><b class="${l[1]>0?'pos':l[1]<0?'neg':''}">${l[1]>0?'+':''}${fmt(l[1])}</b></div>`).join('')}</div>`:'';
   return `${led}<div class="cgset"><div class="cgn">${[2,3,4,5,6].map(k=>`<button class="${k===CG.n?'':'alt'}" onclick="cgSetup('n',${k})">${k}</button>`).join('')}<span class="small">người</span></div>
   <div class="cgrole"><button class="${CG.role==='con'?'':'alt'}" onclick="cgSetup('role','con')">🙋 Chơi con</button><button class="${CG.role==='cai'?'':'alt'}" onclick="cgSetup('role','cai')">🎩 Làm cái</button></div></div>
-  <div class="cgbets">${CG_BETS.map(b=>`<button class="${b===CG.bet?'':'alt'}" ${(CG.role==='cai'?cgDealerNeed(CG.g,CG.n,b):b)>PR.xu?'disabled':''} onclick="CG.bet=${b};cgRender()">${kxu(b)}</button>`).join('')}</div>
+  ${mgBets(CG_BETS,CG.bet,'cgBet',b=>(CG.role==='cai'?cgDealerNeed(CG.g,CG.n,b):b)<=PR.xu)}
   ${CG.role==='cai'?`<p class="small cgnote">Làm cái: ăn/chung từng nhà (${CG.n-1} con × ${fmt(CG.bet)} xu). Cần ≥ ${fmt(need)} xu.</p>`:''}
   <button class="cgbig" ${PR.xu<need?'disabled':''} onclick="cgDeal()">${st?'Ván mới':'Chia bài'} · ${fmt(CG.bet)} xu${CG.role==='cai'?' / nhà':''}</button>`;}
  const ME=st.me;

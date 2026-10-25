@@ -7,7 +7,7 @@ for(const w of [360,412,461]){const p=await H.open(b,w,780,()=>{PR.xu=4e6;PR.bcH
   out.me=MG.st.res.me;out.exp=bcuaPay(MG.st.bets,MG.st.dice);
   PR.xu=300;bcRebet();out.rebetBlocked=bcTot(MG.st.bets)===0;PR.xu=4e6;bcRebet();const t=bcTot(MG.st.bets);bcDouble();out.dbl=bcTot(MG.st.bets)===2*t;PR.xu=bcTot(MG.st.bets)+100;const t2=bcTot(MG.st.bets);bcDouble();out.dblBlocked=bcTot(MG.st.bets)===t2;PR.xu=4e6;
   const tb=document.querySelector('#mg .bctbl');out.scroll=tb.scrollHeight-tb.clientHeight;
-  const bad=[...document.querySelectorAll('#mg button,#mg .bchist')].filter(e=>{const r=e.getBoundingClientRect();return r.width&&(r.left<-.5||r.right>innerWidth+.5)});out.bad=bad.length;return out;});
+  const bad=[...document.querySelectorAll('#mg button,#mg .bchist,#mg .lvbets')].filter(e=>!e.closest('.lvbets')||e.classList.contains('lvbets'))/*v1.58.6: dải chip cuộn ngang — kiểm tra dải, không kiểm tra từng chip*/.filter(e=>{const r=e.getBoundingClientRect();return r.width&&(r.left<-.5||r.right>innerWidth+.5)});out.bad=bad.length;return out;});
  ok(r.noRebet,'rebet disabled at start');ok(r.hist===10&&r.first==='ga,ga,ga','history 10, newest first');ok(r.big,'bão overlay');ok(r.me===r.exp,'payout '+r.me);ok(r.rebetBlocked&&r.dbl&&r.dblBlocked,'rebet/x2 respect xu');ok(r.scroll<=0&&r.bad===0,`fits ${w} scroll ${r.scroll}`);
  const s=await p.evaluate(()=>{const raw=Object.values(localStorage).find(v=>/bcHist/.test(v));return !!raw;});ok(s,'history persisted');
  await p.close();}

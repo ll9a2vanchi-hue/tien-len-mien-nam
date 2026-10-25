@@ -673,3 +673,30 @@ const _pkShow1584=pkShow;pkShow=function(){const r=_pkShow1584.apply(this,argume
 const _xtR1584=xtR;xtR=function(){_xtR1584.apply(this,arguments);try{potTags();}catch(e){}};
 const _pkR1584=pkR;pkR=function(){_pkR1584.apply(this,arguments);try{potTags();}catch(e){}};
 const _mgLed1584=mgLedger;mgLedger=function(rows){if(!rows)return '';const pot=rows.filter(l=>/^🏆/.test(l[0])),rest=rows.filter(l=>!/^🏆/.test(l[0]));return (pot.length?`<div class="cgpots">${pot.map(l=>`<div>${esc(l[0])}</div>`).join('')}</div>`:'')+_mgLed1584(rest);};
+// ===================== v1.58.6: mức cược cao cho các trò phụ, mở theo CẤP người chơi =====================
+// TLMN/Đếm lá giữ mở theo hạng sao (HI_BETS). XP mỗi ván cố định theo kết quả, không nhân theo mức cược.
+const LV_BETS=[[10000,10],[20000,20],[30000,30],[50000,45],[70000,60],[100000,80],[150000,100]];
+[CG_BETS,BC_CHIPS,DM_BETS,XT_BETS,PK_BETS].forEach(a=>LV_BETS.forEach(([b])=>{if(!a.includes(b))a.push(b);}));
+function lvBetReq(b){const t=LV_BETS.find(x=>x[0]===b);return t?t[1]:0;}
+function myLevelNow(P){return levelInfo(((P||PR).xp)||0).level;}
+function lvBetOk(P,b){return myLevelNow(P)>=lvBetReq(b);}
+function lvBetLock(b){sfx('bad');toast(`🔒 Cần đạt cấp ${lvBetReq(b)} để mở mức cược ${kxu(b)}`);}
+mgBets=function(list,cur,on,maxOk){return `<div class="cgbets lvbets">${list.map(b=>{const r=lvBetReq(b);
+ if(r&&!lvBetOk(PR,b))return `<button class="alt lk" data-b="${b}" onclick="lvBetLock(${b})">${kxu(b)}<small>🔒 Lv ${r}</small></button>`;
+ return `<button class="${b===cur?'':'alt'}" data-b="${b}" ${maxOk&&!maxOk(b)?'disabled':''} onclick="${on}(${b})">${kxu(b)}</button>`;}).join('')}</div>`;};
+// máy ngồi bàn cao phải đủ xu: nạp lại cho máy thiếu khi đổi mức cược
+function mgTopUp(bots,bet,k){(bots||[]).forEach(b=>{if(!b||b.me)return;if((MG.bxu[b.name]||0)<bet*k)MG.bxu[b.name]=Math.round(bet*(k+5+Math.random()*35)/100)*100;});}
+function mgBetFix(){const b=MG.bet||0;if(MG.dmBots)mgTopUp(MG.dmBots,b,15);if(MG.xtBots)mgTopUp(MG.xtBots,b,15);if(MG.pkBots)mgTopUp(MG.pkBots,b,25);}
+const _dmSet1586=dmSet;dmSet=function(k,v){if(k==='bet'&&!lvBetOk(PR,v))return lvBetLock(v);const r=_dmSet1586.apply(this,arguments);if(k==='bet'){mgBetFix();dmR();}return r;};
+const _xtSet1586=xtSet;xtSet=function(k,v){if(k==='bet'&&!lvBetOk(PR,v))return lvBetLock(v);const r=_xtSet1586.apply(this,arguments);if(k==='bet'){mgBetFix();xtR();}return r;};
+const _pkSet1586=pkSet;pkSet=function(k,v){if(k==='bet'&&!lvBetOk(PR,v))return lvBetLock(v);const r=_pkSet1586.apply(this,arguments);if(k==='bet'){mgBetFix();pkR();}return r;};
+const _bcChip1586=bcChip;bcChip=function(b){if(!lvBetOk(PR,b))return lvBetLock(b);const st=MG.st;if(st){MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,500000,b*60);mgTopUp(st.bots,b,10);}return _bcChip1586(b);};
+// mở trò với mức đã lưu nhưng chưa đủ cấp → về mức mặc định
+const _mgOpen1586=mgOpen;mgOpen=function(g){if(!lvBetOk(PR,MG.bet))MG.bet=200;const r=_mgOpen1586.apply(this,arguments);try{if(MG.st&&MG.g==='baucua'){MG.bxu['Nhà cái']=Math.max(MG.bxu['Nhà cái']||0,MG.st.chip*60);mgTopUp(MG.st.bots,MG.st.chip,10);}else{mgBetFix();const R={domino:dmR,xito:xtR,poker:pkR}[g];if(R)R();}}catch(e){}return r;};
+// 3 Cào & Xì dách
+function cgTopUp(){const b=CG.bet;(CG.seats||[]).forEach(s=>{if(s.me)return;if(s.dealer&&s.name==='Nhà cái'){CG.bxu[s.name]=Math.max(CG.bxu[s.name]||0,b*100);return;}if((CG.bxu[s.name]||0)<b*10)CG.bxu[s.name]=cgBotXu();});}
+function cgBet(b){if(CG.st&&CG.st.phase!=='done')return;if(!lvBetOk(PR,b))return lvBetLock(b);CG.bet=b;CG.seats=CG.seats||cgSeats();cgTopUp();cgRender();}
+const _openCasino1586=openCasino;openCasino=function(g){if(!lvBetOk(PR,CG.bet))CG.bet=200;const r=_openCasino1586.apply(this,arguments);try{cgTopUp();cgRender();}catch(e){}return r;};
+// Bầu cua: dải chip 1 hàng cuộn ngang — luôn đưa chip đang chọn vào giữa
+function lvBetsCenter(){const c=document.querySelector('#mg.mg-baucua .lvbets');if(!c)return;const s=c.querySelector('button:not(.alt)');if(s)c.scrollLeft=Math.max(0,s.offsetLeft-c.offsetLeft-c.clientWidth/2+s.offsetWidth/2);}
+const _bcR1586=bcR;bcR=function(){const r=_bcR1586.apply(this,arguments);try{lvBetsCenter();}catch(e){}return r;};
