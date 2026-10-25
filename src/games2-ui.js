@@ -539,7 +539,7 @@ const _rh153=renderHome;renderHome=function(){_rh153.apply(this,arguments);try{c
 
 // ===== v1.54: màn hình Thưởng EXP =====
 function openExpBonus(back){const B=expBreakdown(PR);const rows=B.rows.map(r=>`<div class="exrow ${r.pct?'':'z'}"><i>${r.ic}</i><span><b>${r.label}</b><small>${r.info}</small></span><em>+${fmt(r.pct)}%</em></div>`).join('');
- modal(`<h3>✨ Thưởng EXP</h3><div class="extot"><small>Tổng thưởng đang áp dụng</small><b>+${fmt(B.total)}%</b><div class="excap"><i style="width:${Math.min(100,100*B.total/B.cap)}%"></i></div><small>Trần +${B.cap}%${B.capped?' · đã chạm trần (cộng dồn '+fmt(B.raw)+'%)':''}</small></div>
+ modal(`<h3>✨ Thưởng EXP</h3><div class="extot"><small>Tổng thưởng đang áp dụng</small><b>+${fmt(B.total)}%</b><small>Không giới hạn trần · mọi nguồn cộng dồn</small></div>
  <div class="exlist">${rows}</div><p class="small" style="text-align:center">Áp dụng cho mọi nguồn XP: ván chơi, nhiệm vụ, quà.</p>${back?'<button class="alt" style="width:100%" onclick="openMyProfile()">← Hồ sơ</button>':''}`);}
 const _rh154=renderHome;renderHome=function(){_rh154.apply(this,arguments);try{const pi=document.querySelector('#home .pcard .pi');if(!pi||pi.querySelector('.exchip'))return;const c=document.createElement('button');c.className='exchip';c.textContent='✨ EXP +'+fmt(expBonus(PR))+'%';c.onclick=e=>{e.stopPropagation();openExpBonus();};const px=pi.querySelector('.pxu');px.parentNode.insertBefore(c,px);}catch(e){}};
 

@@ -1042,7 +1042,7 @@ body[data-felt=felt_vault] #table::before{background:linear-gradient(110deg,tran
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='69ef11bcb6';
+const APP_VER='8f114dcbe1';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -1370,8 +1370,8 @@ function badgeCountValid(P){const B=P.badges||{};let n=0;for(const b of BADGES)i
 const EARN_MODES=['3cao','xidach','baucua','domino','xito','poker'];
 function earnBackfill(P){const s=P.stats=P.stats||{};if(s.earnBf)return false;let add=0;for(const m of EARN_MODES)add+=s['m_'+m+'_earn']||0;s.earned=(s.earned||0)+add;s.earnBf=1;return add;}
 function addEarned(P,v){if(!(v>0))return;const s=P.stats=P.stats||{};s.earned=(s.earned||0)+Math.round(v);}
-// ---- Thưởng EXP (v1.54): mỗi nguồn cộng dồn, tổng bị chặn ở EXP_CAP ----
-const EXP_CAP=300;
+// ---- Thưởng EXP (v1.54): mỗi nguồn cộng dồn; v1.58.5: bỏ trần, không giới hạn ----
+const EXP_CAP=Infinity;
 let _shopRef=null;function _shopList(){if(typeof SHOP!=='undefined')return SHOP;if(!_shopRef){try{_shopRef=require('./shop.js').SHOP;}catch(e){_shopRef=[];}}return _shopRef;}
 function ownedValue(P,avatar){let v=0;for(const it of _shopList()){if(!(it.price>0))continue;if((it.type==='avatar')!==!!avatar)continue;if(P.inv&&P.inv[it.id])v+=it.price;}return v;}
 function expBreakdown(P){const rd=x=>Math.round(x*100)/100;const sv=ownedValue(P,false),av=ownedValue(P,true),nb0=0,nb=badgeCountValid(P);earnBackfill(P);const earned2=(P.stats&&P.stats.earned)||0;
@@ -1381,7 +1381,7 @@ function expBreakdown(P){const rd=x=>Math.round(x*100)/100;const sv=ownedValue(P
   {k:'badge',ic:'🏅',label:'Huy hiệu',info:nb+' huy hiệu · mỗi huy hiệu = +0,05%',pct:rd(nb*0.05)},
   {k:'asset',ic:'🏢',label:'Tài sản mua sắm',info:'Quần áo, trang sức, phụ kiện, phong thủy',pct:shopExpBonus(P)},
   {k:'pet',ic:'🐾',label:'Thú cưng',info:'Thú đang theo bạn',pct:typeof petBonus==='function'?petBonus(P):0}];
- const raw=rd(rows.reduce((a,r)=>a+r.pct,0));return{rows,raw,total:Math.min(EXP_CAP,raw),cap:EXP_CAP,capped:raw>EXP_CAP};}
+ const raw=rd(rows.reduce((a,r)=>a+r.pct,0));return{rows,raw,total:raw,cap:null,capped:false};}
 function fmt0(n){return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 function expBonus(P){return expBreakdown(P).total;}
 function assetCost(id,toLv){const a=assetDef(id);if(!a||toLv<1||toLv>a.max)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
@@ -3508,8 +3508,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.4';
+const APP_V='1.58.5';
 const CHANGELOG=[
+ ['1.58.5','22/10',['Bỏ trần +300% Thưởng EXP: mọi nguồn (vật phẩm, avatar, xu đã thắng, huy hiệu, tài sản, thú cưng) cộng dồn không giới hạn','Màn hình "Thưởng EXP" bỏ thanh trần, hiện tổng thực tế','Máy chủ nới giới hạn EXP mỗi lần đồng bộ để người chơi nhiều EXP không bị cắt trên bảng xếp hạng']],
  ['1.58.4','22/10',['Xì tố & Poker: khi có người tố tất ít xu hơn (sinh hũ phụ), ghế thắng ghi rõ "👑 Thắng hũ chính" hoặc "Thắng hũ phụ +X" — giải thích vì sao có 2 người thắng','Dòng thông báo và bảng kết quả liệt kê từng hũ: số xu và người thắng (kèm tên bộ bài)','Poker: bài bằng nhau thì hiện "🤝 Chia hũ" cho tất cả người hòa. Luật chia tiền không đổi']],
  ['1.58.3','21/10',['Sửa thông báo nhỏ (toast) bị bàn Xì tố/Poker/Bầu cua/Domino che mất — nay luôn nổi trên cùng, kể cả thông báo "🔥 Tố tất thắng"']],
  ['1.58.2','21/10',['Xì tố: thưởng EXP "Tố tất" — thắng ván mà bạn đã tố tất với số xu tố ≥ 10 lần cược sàn được cộng thêm 50% EXP gốc của ván (cộng trước hệ số thưởng EXP chung)','Tối đa 10 lần mỗi ngày (đặt lại lúc 00:00 giờ Việt Nam); thua, úp bỏ hoặc tố tất nhỏ không được thưởng. Có thông báo "🔥 Tố tất thắng +X EXP (n/10 hôm nay)"']],
@@ -4519,7 +4520,7 @@ const _rh153=renderHome;renderHome=function(){_rh153.apply(this,arguments);try{c
 
 // ===== v1.54: màn hình Thưởng EXP =====
 function openExpBonus(back){const B=expBreakdown(PR);const rows=B.rows.map(r=>`<div class="exrow ${r.pct?'':'z'}"><i>${r.ic}</i><span><b>${r.label}</b><small>${r.info}</small></span><em>+${fmt(r.pct)}%</em></div>`).join('');
- modal(`<h3>✨ Thưởng EXP</h3><div class="extot"><small>Tổng thưởng đang áp dụng</small><b>+${fmt(B.total)}%</b><div class="excap"><i style="width:${Math.min(100,100*B.total/B.cap)}%"></i></div><small>Trần +${B.cap}%${B.capped?' · đã chạm trần (cộng dồn '+fmt(B.raw)+'%)':''}</small></div>
+ modal(`<h3>✨ Thưởng EXP</h3><div class="extot"><small>Tổng thưởng đang áp dụng</small><b>+${fmt(B.total)}%</b><small>Không giới hạn trần · mọi nguồn cộng dồn</small></div>
  <div class="exlist">${rows}</div><p class="small" style="text-align:center">Áp dụng cho mọi nguồn XP: ván chơi, nhiệm vụ, quà.</p>${back?'<button class="alt" style="width:100%" onclick="openMyProfile()">← Hồ sơ</button>':''}`);}
 const _rh154=renderHome;renderHome=function(){_rh154.apply(this,arguments);try{const pi=document.querySelector('#home .pcard .pi');if(!pi||pi.querySelector('.exchip'))return;const c=document.createElement('button');c.className='exchip';c.textContent='✨ EXP +'+fmt(expBonus(PR))+'%';c.onclick=e=>{e.stopPropagation();openExpBonus();};const px=pi.querySelector('.pxu');px.parentNode.insertBefore(c,px);}catch(e){}};
 

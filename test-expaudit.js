@@ -21,7 +21,7 @@ for(const m of ['3cao','xidach','baucua','domino','xito','poker']){const Q=mk();
 // (f) mua sắm
 {const Q=mk();Q.xu=1e8;X.buyAsset(Q,'ao1');X.buyAsset(Q,'tt3');t('Mua sắm = tổng pct',X.expBreakdown(Q).rows[4].pct===7);}
 // (g) trần & áp dụng 1 lần
-{const Q=mk();Q.stats.earned=5e9;X.expBreakdown(Q);X.addXp(Q,100,'poker');t('trần 300% → ×4 đúng 1 lần',Q._lastXp===400&&Q.mxp.poker===400);
+{const Q=mk();Q.stats.earned=5e9;X.expBreakdown(Q);const qb=X.expBonus(Q);X.addXp(Q,100,'poker');const qx=Math.round(100*(1+qb/100));t('không trần → nhân đúng 1 lần',qb>300&&Q._lastXp===qx&&Q.mxp.poker===qx);
  const Q2=mk();Q2.stats.earned=2000000;X.expBreakdown(Q2);const r=X.onGameEnd(Q2,0,false,4,{mode:'tlmn',xuDelta:300});const base=X.tableXp(4,0,false,'tlmn');t('onGameEnd áp dụng thưởng 1 lần (+2%)',Q2._lastXp===Math.round(base*1.02));}
 // (h) UI = áp dụng
 {const Q=mk();Q.stats.earned=123456;Q.inv.back_holo=1;Q.badges={[X.BADGES[2].id]:1};X.expBreakdown(Q);const B=X.expBreakdown(Q);t('tổng UI = tổng các dòng = expBonus',Math.abs(B.total-B.rows.reduce((a,r)=>a+r.pct,0))<1e-9&&X.expBonus(Q)===B.total);X.addXp(Q,1000);t('XP thực nhận khớp UI',Q._lastXp===Math.round(1000*(1+B.total/100)));}

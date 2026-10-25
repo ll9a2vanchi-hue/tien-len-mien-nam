@@ -11,9 +11,9 @@ const fake={id:'zz1',type:'back',name:'z',price:1000000};S.SHOP.push(fake);p=mk(
 const fa={id:'zz2',type:'avatar',name:'z',emo:'x',price:2000000};S.SHOP.push(fa);p=mk();p.inv.zz2=1;t('2.000.000 xu avatar = +2%',X.expBreakdown(p).rows[1].pct===2);
 p=mk();p.stats.earned=3000000;t('3.000.000 xu thắng = +3%',X.expBreakdown(p).rows[2].pct===3);p=mk();p.stats.earned=300000;t('300.000 xu thắng = +0,3%',X.expBreakdown(p).rows[2].pct===0.3);
 p=mk();p.badges=Object.fromEntries(X.BADGES.slice(0,4).map(b=>[b.id,1]));t('mỗi huy hiệu +0,05%',X.expBreakdown(p).rows[3].pct===0.2);
-// trần 300%
-p=mk();p.stats.earned=1e10;B=X.expBreakdown(p);t('trần +300%',B.total===300&&B.capped&&B.raw>300&&X.expBonus(p)===300);
-p=mk();p.stats.earned=1e10;const a=X.addXp(p,100);t('addXp nhân theo thưởng (chạm trần ×4)',p._lastXp===400);
+// v1.58.5: bỏ trần 300%
+p=mk();p.stats.earned=1e10;B=X.expBreakdown(p);t('không còn trần +300%',B.total===B.raw&&!B.capped&&B.total>300&&X.expBonus(p)===B.total);
+p=mk();p.stats.earned=1e10;const bb=X.expBonus(p);const a=X.addXp(p,100);t('addXp nhân theo thưởng (không trần)',p._lastXp===Math.round(100*(1+bb/100))&&p._lastXp>400);
 p=mk();p.stats.earned=5000000;X.addXp(p,100);t('addXp +5% => 105',p._lastXp===105);
 // kinh tế
 t('quest ×5',X.questDef('play3').xu===750&&X.questDef('chop1').xu===2000&&X.questDef('w_win15').xu===15000);

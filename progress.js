@@ -255,8 +255,8 @@ function badgeCountValid(P){const B=P.badges||{};let n=0;for(const b of BADGES)i
 const EARN_MODES=['3cao','xidach','baucua','domino','xito','poker'];
 function earnBackfill(P){const s=P.stats=P.stats||{};if(s.earnBf)return false;let add=0;for(const m of EARN_MODES)add+=s['m_'+m+'_earn']||0;s.earned=(s.earned||0)+add;s.earnBf=1;return add;}
 function addEarned(P,v){if(!(v>0))return;const s=P.stats=P.stats||{};s.earned=(s.earned||0)+Math.round(v);}
-// ---- Thưởng EXP (v1.54): mỗi nguồn cộng dồn, tổng bị chặn ở EXP_CAP ----
-const EXP_CAP=300;
+// ---- Thưởng EXP (v1.54): mỗi nguồn cộng dồn; v1.58.5: bỏ trần, không giới hạn ----
+const EXP_CAP=Infinity;
 let _shopRef=null;function _shopList(){if(typeof SHOP!=='undefined')return SHOP;if(!_shopRef){try{_shopRef=require('./shop.js').SHOP;}catch(e){_shopRef=[];}}return _shopRef;}
 function ownedValue(P,avatar){let v=0;for(const it of _shopList()){if(!(it.price>0))continue;if((it.type==='avatar')!==!!avatar)continue;if(P.inv&&P.inv[it.id])v+=it.price;}return v;}
 function expBreakdown(P){const rd=x=>Math.round(x*100)/100;const sv=ownedValue(P,false),av=ownedValue(P,true),nb0=0,nb=badgeCountValid(P);earnBackfill(P);const earned2=(P.stats&&P.stats.earned)||0;
@@ -266,7 +266,7 @@ function expBreakdown(P){const rd=x=>Math.round(x*100)/100;const sv=ownedValue(P
   {k:'badge',ic:'🏅',label:'Huy hiệu',info:nb+' huy hiệu · mỗi huy hiệu = +0,05%',pct:rd(nb*0.05)},
   {k:'asset',ic:'🏢',label:'Tài sản mua sắm',info:'Quần áo, trang sức, phụ kiện, phong thủy',pct:shopExpBonus(P)},
   {k:'pet',ic:'🐾',label:'Thú cưng',info:'Thú đang theo bạn',pct:typeof petBonus==='function'?petBonus(P):0}];
- const raw=rd(rows.reduce((a,r)=>a+r.pct,0));return{rows,raw,total:Math.min(EXP_CAP,raw),cap:EXP_CAP,capped:raw>EXP_CAP};}
+ const raw=rd(rows.reduce((a,r)=>a+r.pct,0));return{rows,raw,total:raw,cap:null,capped:false};}
 function fmt0(n){return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 function expBonus(P){return expBreakdown(P).total;}
 function assetCost(id,toLv){const a=assetDef(id);if(!a||toLv<1||toLv>a.max)return null;return toLv===1?a.price:Math.round(a.price*0.25*toLv);}
