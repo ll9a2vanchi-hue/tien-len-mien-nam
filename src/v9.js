@@ -352,7 +352,7 @@ let _finHist=-1;const _osF=onlineState;onlineState=function(st,fh){_osF(st,fh);t
  if(st.over&&st.rank&&!st.instant){const key=JSON.stringify(st.rank)+st.hist.length;if(ONL._finKey!==key){ONL._finKey=key;startFinal(key,L(st.rank[0]),()=>showOnlineResult(st));}}
  else if(!st.over&&st.ev&&st.ev.fin&&st.hist.length!==_finHist){_finHist=st.hist.length;const s=st.ev.seat!=null?st.ev.seat:null;const nm=s!=null?(L(s)===0?'Bạn':NAMES[L(s)]):'';finCaption((nm?nm+' ':'')+'về '+['nhất','nhì','ba'][st.ev.fin-1]+'!',1900,st.ev.fin===1);}}catch(e){}};
 // ---- Xu của từng người dưới avatar (offline + online)
-function kxu(v){v=+v||0;return v>=1e6?(v/1e6).toFixed(v>=1e7?0:1).replace('.0','')+'M':v>=1e4?Math.round(v/1e3)+'k':v>=1e3?(v/1e3).toFixed(1).replace('.0','')+'k':String(v);}
+function kxu(v){v=+v||0;if(v<0)return '-'+kxu(-v);return v>=1e6?(v/1e6).toFixed(v>=1e7?0:1).replace('.0','')+'M':v>=1e4?Math.round(v/1e3)+'k':v>=1e3?(v/1e3).toFixed(1).replace('.0','')+'k':String(v);}
 function hashStr(t){let h=2166136261;for(const c of String(t))h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0;}
 function botXuSeed(name,lv){const h=hashStr(name);return Math.round((800+(lv||5)*260+(h%4000))/10)*10;}
 const BXU={};/* offline: tên máy -> xu */
@@ -740,8 +740,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.8';
+const APP_V='1.58.9';
 const CHANGELOG=[
+ ['1.58.9','26/10',['Sửa lỗi 3 Cào / Xì dách bàn 5–6 người: hết ván không bấm được Ván mới (bài của bạn bị đẩy xuống đè lên nút) — bàn tự co cho vừa, nút luôn bấm được','Mức cược gọn thành 1 nút 🎚 (bấm để mở bảng chọn, có khóa theo cấp) ở 3 Cào, Xì dách, Domino, Xì tố, Poker — khu điều khiển thấp hơn, không còn 2 hàng chip','Sửa thông báo "thua -200 xu" → "thua 200 xu"; tiền thua hiển thị gọn (-70k thay vì -70000) ở mọi trò; không còn hiện "-0"']],
  ['1.58.8','26/10',['Bầu cua: sửa lỗi khi LÀM CÁI — từ ván thứ 2 máy chỉ cược 100–1.000 bất kể mức bàn; giờ máy cược đúng theo mức bàn (1× · 2× · 5×) ở mọi ván','Bầu cua: mức bàn đã lưu nhưng không đủ xu → tạm dùng mức thấp hơn còn đủ (có thông báo), không còn bị khóa hết chip; đủ xu lại thì tự trở về mức đã chọn','Bầu cua: ↺ Lại sau khi đổi mức bàn sẽ cược lại theo mức bàn mới; chọn chip Bầu cua không còn làm đổi mức cược ở trò khác','Bầu cua: tiền thua của người chơi máy hiển thị gọn (-150k thay vì -150000)']],
  ['1.58.7','25/10',['Bầu cua: chọn MỨC CƯỢC BÀN (nút 🎚 Bàn … cạnh Chơi con/Làm cái): 100 → 5k, và 10k Lv10 · 20k Lv20 · 30k Lv30 · 50k Lv45 · 70k Lv60 · 100k Lv80 · 150k Lv100; mức chưa mở hiện 🔒, không đủ xu thì mờ','Hàng chip gọn 4 nút = 1× · 2× · 5× · 10× mức bàn, không còn dải cuộn ngang; nhớ mức bàn lần trước','Nhà cái và máy luôn đủ xu theo mức bàn; khi bạn làm cái, máy cược theo mức bàn. Giữ nguyên ↺ Lại, ×2, lịch sử và hiệu ứng']],
  ['1.58.6','25/10',['Số cấp độ to, đậm và rõ hơn ở thẻ người chơi, trên ghế mọi bàn và danh sách người chơi','Số xu của máy trên ghế to hơn, có nền tối dễ đọc (3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker)','Mở mức cược cao cho 3 Cào, Xì dách, Bầu cua, Domino, Xì tố (tiền xâu), Poker (mù lớn) theo CẤP: 10k Lv10 · 20k Lv20 · 30k Lv30 · 50k Lv45 · 70k Lv60 · 100k Lv80 · 150k Lv100. Mức chưa mở hiện 🔒, không đủ xu thì mờ','Máy ngồi bàn cao luôn đủ xu. EXP mỗi ván không nhân theo mức cược. Tiến lên & Đếm lá vẫn mở theo hạng sao']],

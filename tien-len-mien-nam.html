@@ -1029,7 +1029,7 @@ body.mgon #modal{z-index:60}
 @media(prefers-reduced-motion:reduce){.bcbig,.bcbig .bcbd span,.bcbao,#mg.mg-baucua .bctbl.bcbaofx{animation:none!important}.bcbig.rm{opacity:1}}
 #mg.mg-baucua .cgrow.bcrow4 .cgbig{font-size:13px!important;padding:4px 2px!important;overflow:hidden;text-overflow:clip}
 #mg.mg-baucua .bctbl[style*="--bctm"] .bct{min-height:var(--bctm)!important;padding:1px!important}#mg.mg-baucua .bctbl[style*="--bctm"] .bct .bce{font-size:min(30px,calc(var(--bctm)*.36))}
-</style></head><body>
+body.cgon #modal{z-index:60}.cgbets.lvpick{display:flex;justify-content:center;margin:6px 0}.lvpickbtn{min-width:62%;padding:9px 14px;font-size:15px}.lvpickbtn b{color:#ffe082;font-size:16px}.lvpickbtn.warn b{color:#ff8a80}.cgtbl{z-index:1}.cgctl{position:relative;z-index:2}.lvpickbtn.inl{min-width:0;margin:0!important;padding:6px 10px!important;font-size:13px!important;min-height:32px;white-space:nowrap;background:linear-gradient(#3a2a10,#22180a)!important;color:#ffe08a!important;border:1px solid #f4c542aa!important}.lvpickbtn.inl b{font-size:14px}.cgset .lvpickbtn.inl{margin-left:4px!important}</style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#d89b00"/></linearGradient>
 <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="url(#gGold)" stroke="#8a6200" stroke-width="1.5"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#8a6200" stroke-width="1.2"/><path d="M12 8.5v7M10 10.2h3.2a1.3 1.3 0 010 2.6h-2.4a1.3 1.3 0 000 2.6H14" stroke="#8a6200" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
@@ -1069,7 +1069,7 @@ body.mgon #modal{z-index:60}
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div id="modalIn"></div></div><div id="home"></div><div id="emoBar"></div><div id="chatDraw"></div><div id="toast"></div><div id="updBar">Có bản mới! <button onclick="location.reload()">Tải lại</button></div><div id="fx"></div>
 <script src="cloud-config.js"></script>
 <script>
-const APP_VER='3db572f0da';
+const APP_VER='b80234fe51';
 // RULES_START
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const SUITS=['♠','♣','♦','♥'];
@@ -2156,7 +2156,7 @@ let _svaQ=false;if(typeof MutationObserver!=='undefined'&&typeof document!=='und
 
 let PR=JSON.parse(localStorage.getItem('tlmn_profile')||'null')||newProfile();
 function saveP(){if(typeof renderHome==='function'&&document.body&&document.body.classList&&document.body.classList.contains('athome'))setTimeout(renderHome,0);localStorage.setItem('tlmn_profile',JSON.stringify(PR));localStorage.setItem('tlmn_updated',String(Date.now()));updHud();}
-function fmt(n){return n.toLocaleString('vi-VN');}
+function fmt(n){if(n===0)n=0;return n.toLocaleString('vi-VN');}
 function toast(h){const d=document.createElement('div');d.className='toast';d.innerHTML=h;document.getElementById('toast').appendChild(d);setTimeout(()=>d.remove(),3200);}
 function badgeToasts(l){l.forEach(b=>toast(`${b.icon} <b>Huy hiệu mới: ${b.name}</b><br>+${fmt(b.xu)} xu`));}
 function updHud(){ensureDaily(PR,new Date());animCoin(PR.xu);
@@ -3147,7 +3147,7 @@ let _finHist=-1;const _osF=onlineState;onlineState=function(st,fh){_osF(st,fh);t
  if(st.over&&st.rank&&!st.instant){const key=JSON.stringify(st.rank)+st.hist.length;if(ONL._finKey!==key){ONL._finKey=key;startFinal(key,L(st.rank[0]),()=>showOnlineResult(st));}}
  else if(!st.over&&st.ev&&st.ev.fin&&st.hist.length!==_finHist){_finHist=st.hist.length;const s=st.ev.seat!=null?st.ev.seat:null;const nm=s!=null?(L(s)===0?'Bạn':NAMES[L(s)]):'';finCaption((nm?nm+' ':'')+'về '+['nhất','nhì','ba'][st.ev.fin-1]+'!',1900,st.ev.fin===1);}}catch(e){}};
 // ---- Xu của từng người dưới avatar (offline + online)
-function kxu(v){v=+v||0;return v>=1e6?(v/1e6).toFixed(v>=1e7?0:1).replace('.0','')+'M':v>=1e4?Math.round(v/1e3)+'k':v>=1e3?(v/1e3).toFixed(1).replace('.0','')+'k':String(v);}
+function kxu(v){v=+v||0;if(v<0)return '-'+kxu(-v);return v>=1e6?(v/1e6).toFixed(v>=1e7?0:1).replace('.0','')+'M':v>=1e4?Math.round(v/1e3)+'k':v>=1e3?(v/1e3).toFixed(1).replace('.0','')+'k':String(v);}
 function hashStr(t){let h=2166136261;for(const c of String(t))h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0;}
 function botXuSeed(name,lv){const h=hashStr(name);return Math.round((800+(lv||5)*260+(h%4000))/10)*10;}
 const BXU={};/* offline: tên máy -> xu */
@@ -3535,8 +3535,9 @@ const _pt36=plTap;plTap=function(uid){_pt36(uid);try{const m=$('modalIn');if(!m|
  const b=document.createElement('button');b.className='alt';b.textContent='💬 Nhắn tin';b.onclick=()=>openDM(uid);back.before(b);
  const k=document.createElement('button');k.className='alt';k.textContent=BLOCK.has(uid)?'Bỏ chặn':'Chặn';k.onclick=()=>{BLOCK.has(uid)?BLOCK.delete(uid):BLOCK.add(uid);saveDM();plTap(uid);};back.before(k);}catch(e){}};
 // ======== v37: số phiên bản + Có gì mới ========
-const APP_V='1.58.8';
+const APP_V='1.58.9';
 const CHANGELOG=[
+ ['1.58.9','26/10',['Sửa lỗi 3 Cào / Xì dách bàn 5–6 người: hết ván không bấm được Ván mới (bài của bạn bị đẩy xuống đè lên nút) — bàn tự co cho vừa, nút luôn bấm được','Mức cược gọn thành 1 nút 🎚 (bấm để mở bảng chọn, có khóa theo cấp) ở 3 Cào, Xì dách, Domino, Xì tố, Poker — khu điều khiển thấp hơn, không còn 2 hàng chip','Sửa thông báo "thua -200 xu" → "thua 200 xu"; tiền thua hiển thị gọn (-70k thay vì -70000) ở mọi trò; không còn hiện "-0"']],
  ['1.58.8','26/10',['Bầu cua: sửa lỗi khi LÀM CÁI — từ ván thứ 2 máy chỉ cược 100–1.000 bất kể mức bàn; giờ máy cược đúng theo mức bàn (1× · 2× · 5×) ở mọi ván','Bầu cua: mức bàn đã lưu nhưng không đủ xu → tạm dùng mức thấp hơn còn đủ (có thông báo), không còn bị khóa hết chip; đủ xu lại thì tự trở về mức đã chọn','Bầu cua: ↺ Lại sau khi đổi mức bàn sẽ cược lại theo mức bàn mới; chọn chip Bầu cua không còn làm đổi mức cược ở trò khác','Bầu cua: tiền thua của người chơi máy hiển thị gọn (-150k thay vì -150000)']],
  ['1.58.7','25/10',['Bầu cua: chọn MỨC CƯỢC BÀN (nút 🎚 Bàn … cạnh Chơi con/Làm cái): 100 → 5k, và 10k Lv10 · 20k Lv20 · 30k Lv30 · 50k Lv45 · 70k Lv60 · 100k Lv80 · 150k Lv100; mức chưa mở hiện 🔒, không đủ xu thì mờ','Hàng chip gọn 4 nút = 1× · 2× · 5× · 10× mức bàn, không còn dải cuộn ngang; nhớ mức bàn lần trước','Nhà cái và máy luôn đủ xu theo mức bàn; khi bạn làm cái, máy cược theo mức bàn. Giữ nguyên ↺ Lại, ×2, lịch sử và hiệu ứng']],
  ['1.58.6','25/10',['Số cấp độ to, đậm và rõ hơn ở thẻ người chơi, trên ghế mọi bàn và danh sách người chơi','Số xu của máy trên ghế to hơn, có nền tối dễ đọc (3 Cào, Xì dách, Bầu cua, Domino, Xì tố, Poker)','Mở mức cược cao cho 3 Cào, Xì dách, Bầu cua, Domino, Xì tố (tiền xâu), Poker (mù lớn) theo CẤP: 10k Lv10 · 20k Lv20 · 30k Lv30 · 50k Lv45 · 70k Lv60 · 100k Lv80 · 150k Lv100. Mức chưa mở hiện 🔒, không đủ xu thì mờ','Máy ngồi bàn cao luôn đủ xu. EXP mỗi ván không nhân theo mức cược. Tiến lên & Đếm lá vẫn mở theo hạng sao']],
@@ -3952,7 +3953,7 @@ function cgSettle(){const st=CG.st;if(st.phase==='done')return;st.phase='done';s
   if(CG.g==='3cao'){const sc=bcScore(mh);Object.assign(ev,{sp1:won&&sc.bacao,sp2:won&&!sc.bacao&&sc.score===9,sp3:allLost&&n>1,s4:deal&&sc.bacao,s5:!sc.bacao&&sc.score===9&&me<0});}
   else{const kd=xdKind(mh,st.me===0?15:16);Object.assign(ev,{sp1:won&&kd.kind==='xidach',sp2:won&&kd.kind==='ngulinh',sp3:won&&kd.kind==='xibang',s4:kd.kind==='ngulinh'&&kd.total===21,s5:allLost&&n>1});}
   modeRecord(PR,CG.g,ev);}catch(e){console.warn(e)}
- if(won)lbWinMini();const up=addXp(PR,modeXp(CG.g,me),CG.g);const xp=PR._lastXp;xpFloat(xp,up);st.msg=(me>0?`🎉 Bạn ${st.me===0?'(cái) ':''}thắng +${fmt(me)} xu`:me<0?`Bạn ${st.me===0?'(cái) ':''}thua ${fmt(me)} xu`:'Hòa')+` · +${xp} XP`;
+ if(won)lbWinMini();const up=addXp(PR,modeXp(CG.g,me),CG.g);const xp=PR._lastXp;xpFloat(xp,up);st.msg=(me>0?`🎉 Bạn ${st.me===0?'(cái) ':''}thắng +${fmt(me)} xu`:me<0?`Bạn ${st.me===0?'(cái) ':''}thua ${fmt(-me)} xu`:'Hòa')+` · +${xp} XP`;
  sfx(me>0?'win':me<0?'thud':'tap');if(me>0)sfx('coin');cgRender();try{const r=$('cgXu').getBoundingClientRect();floatText(r.left,r.bottom+10,(me>=0?'+':'')+fmt(me)+' xu',me>=0?'gain':'loss');}catch(e){}
  try{levelUpFX(up);}catch(e){}badgeToasts(checkBadges(PR));saveP();const x=$('cgXu');if(x)x.textContent=fmt(PR.xu);}
 // ---- vào từ màn hình chính
@@ -4748,5 +4749,22 @@ const _bcLastOk1588=bcLastOk;bcLastOk=function(){const st=MG.st;if(!st||!st.last
 const _bcRebet1588=bcRebet;bcRebet=function(){const st=MG.st;if(st&&st.lastBets){const l=bcLastScaled();if(l!==st.lastBets){st.lastBets=l;st.lastLv=bcLevel();}}return _bcRebet1588.apply(this,arguments);};
 // thông báo khi mức bàn tự hạ vì thiếu xu
 const _bcR1588=bcR;bcR=function(){const st=MG.st;if(st){const l=bcLevel(),sv=_bcLevel1588();if(l<sv&&st._lvWarn!==l+'/'+sv){st._lvWarn=l+'/'+sv;toast(`Không đủ xu cho bàn ${kxu(sv)} — tạm dùng bàn ${kxu(l)}`);}else if(l===sv)st._lvWarn=null;}return _bcR1588.apply(this,arguments);};
+// ===================== v1.58.9: mức cược gọn 1 nút (mở bảng chọn) — tránh hàng cược 2 dòng đẩy bàn đè lên nút Ván mới =====================
+const LVP=[];
+mgBets=function(list,cur,on,maxOk){let i=LVP.findIndex(x=>x.on===on);if(i<0){i=LVP.length;LVP.push({});}LVP[i]={on,list,cur,maxOk};
+ const ok=!maxOk||maxOk(cur);return `<div class="cgbets lvpick"><button class="lvpickbtn ${ok?'':'warn'}" data-b="${cur}" onclick="lvPickOpen(${i})">🎚 Mức cược <b>${kxu(cur)}</b> ▾</button></div>`;};
+function lvPickOpen(i){const P=LVP[i];if(!P)return;const st=document.body.classList.contains('cgon')?CG.st:MG.st;if(st&&st.phase&&st.phase!=='done'&&!(MG.g==='baucua'))return;
+ const btn=b=>{const r=lvBetReq(b);if(r&&!lvBetOk(PR,b))return `<button class="alt lk" data-b="${b}" onclick="lvBetLock(${b})">${kxu(b)}<small>🔒 Lv ${r}</small></button>`;
+  const dis=P.maxOk&&!P.maxOk(b);return `<button class="${b===P.cur?'':'alt'}" data-b="${b}" ${dis?'disabled':''} onclick="closeModal();${P.on}(${b})">${kxu(b)}${r?`<small>Lv ${r}</small>`:''}</button>`;};
+ modal(`<h3>🎚 Chọn mức cược</h3><p class="small">Mức cao mở theo cấp của bạn (đang cấp ${myLevelNow(PR)}). Mức mờ: chưa đủ xu.</p><div class="cgbets lvbets bclvgrid lvpickgrid">${P.list.map(btn).join('')}</div>`);sfx('tap');}
+// gom nút mức cược vào hàng Chơi con/Làm cái (bài cái) hoặc hàng số người (trò khác) để khu điều khiển thấp hơn 1 dòng
+function lvPickInline(root){const o=typeof root==='string'?$(root):root;if(!o)return;const w=o.querySelector('.cgctl .cgbets.lvpick');if(!w)return;const b=w.querySelector('button');const tgt=o.querySelector('.cgctl .cgrole')||o.querySelector('.cgctl .cgset');if(!b||!tgt)return;b.classList.add('inl');tgt.appendChild(b);w.remove();}
+const _cgRender1589=cgRender;cgRender=function(){const r=_cgRender1589.apply(this,arguments);try{lvPickInline('cg');}catch(e){}return r;};
+['dmR','xtR','pkR'].forEach(fn=>{const f0=window[fn];window[fn]=function(){const r=f0.apply(this,arguments);try{lvPickInline('mg');}catch(e){}return r;};});
+// bàn đông người (5–6) + khu điều khiển lúc hết ván: co bàn cho vừa, không để bài của bạn tràn xuống đè nút
+function cgFit(){const t=document.querySelector('#cg .cgtbl');if(!t)return;const parts=[...t.querySelectorAll(':scope > .cgs, :scope > .cgmid')];parts.forEach(e=>e.style.zoom='');if(t.scrollHeight<=t.clientHeight+1)return;
+ for(let z=0.94;z>=0.6&&t.scrollHeight>t.clientHeight+1;z-=0.06)parts.forEach(e=>e.style.zoom=z.toFixed(2));}
+const _cgRender1589b=cgRender;cgRender=function(){const r=_cgRender1589b.apply(this,arguments);try{cgFit();}catch(e){}return r;};
+addEventListener('resize',()=>{try{if(document.body.classList.contains('cgon'))cgFit();}catch(e){}});
 boot();
 </script></body></html>

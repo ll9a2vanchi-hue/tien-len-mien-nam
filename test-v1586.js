@@ -4,7 +4,7 @@ for(const w of [360,412,461]){const p=await H.open(b,w,800,()=>{let x=0;while(le
   const ovf=sel=>[...document.querySelectorAll(sel)].filter(e=>{const r=e.getBoundingClientRect();return r.width&&(r.left<-1||r.right>innerWidth+1)}).length;
   const clip=sel=>[...document.querySelectorAll(sel)].filter(e=>e.offsetParent&&e.scrollWidth>e.clientWidth+1).length;
   out.homeLv=fs(document.querySelector('#home .pcard .pt .lvb'));
-  const bets=()=>{const bs=[...document.querySelectorAll('.lvbets button')];return {n:bs.length,lk:bs.filter(x=>x.classList.contains('lk')).map(x=>x.textContent).join('|')};};
+  const bets=()=>{const pb=document.querySelector('.lvpickbtn');if(pb)pb.click();const bs=[...document.querySelectorAll(pb?'.lvpickgrid button':'.lvbets button')];if(pb)setTimeout(closeModal,0);return {n:bs.length,lk:bs.filter(x=>x.classList.contains('lk')).map(x=>x.textContent).join('|')};};
   const G={};
   openCasino('3cao');await sl(200);G.c3={bets:bets(),ovf:ovf('.lvbets button,.cgbx,.slv'),clip:clip('.lvbets button,.cgbx')};cgBet(150000);G.c3.lockHeld=CG.bet!==150000;cgBet(30000);
   G.c3.bet=CG.bet;G.c3.minBot=Math.min(...CG.seats.filter(s=>!s.me&&!s.dealer).map(s=>CG.bxu[s.name]));G.c3.dealer=CG.bxu['Nhà cái'];G.c3.botFs=fs(document.querySelector('.cgs:not(.me) .cgbx'));G.c3.lvFs=fs(document.querySelector('.cgs:not(.me) .slv .lvb'));closeCasino();

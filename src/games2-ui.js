@@ -737,3 +737,20 @@ const _bcLastOk1588=bcLastOk;bcLastOk=function(){const st=MG.st;if(!st||!st.last
 const _bcRebet1588=bcRebet;bcRebet=function(){const st=MG.st;if(st&&st.lastBets){const l=bcLastScaled();if(l!==st.lastBets){st.lastBets=l;st.lastLv=bcLevel();}}return _bcRebet1588.apply(this,arguments);};
 // thông báo khi mức bàn tự hạ vì thiếu xu
 const _bcR1588=bcR;bcR=function(){const st=MG.st;if(st){const l=bcLevel(),sv=_bcLevel1588();if(l<sv&&st._lvWarn!==l+'/'+sv){st._lvWarn=l+'/'+sv;toast(`Không đủ xu cho bàn ${kxu(sv)} — tạm dùng bàn ${kxu(l)}`);}else if(l===sv)st._lvWarn=null;}return _bcR1588.apply(this,arguments);};
+// ===================== v1.58.9: mức cược gọn 1 nút (mở bảng chọn) — tránh hàng cược 2 dòng đẩy bàn đè lên nút Ván mới =====================
+const LVP=[];
+mgBets=function(list,cur,on,maxOk){let i=LVP.findIndex(x=>x.on===on);if(i<0){i=LVP.length;LVP.push({});}LVP[i]={on,list,cur,maxOk};
+ const ok=!maxOk||maxOk(cur);return `<div class="cgbets lvpick"><button class="lvpickbtn ${ok?'':'warn'}" data-b="${cur}" onclick="lvPickOpen(${i})">🎚 Mức cược <b>${kxu(cur)}</b> ▾</button></div>`;};
+function lvPickOpen(i){const P=LVP[i];if(!P)return;const st=document.body.classList.contains('cgon')?CG.st:MG.st;if(st&&st.phase&&st.phase!=='done'&&!(MG.g==='baucua'))return;
+ const btn=b=>{const r=lvBetReq(b);if(r&&!lvBetOk(PR,b))return `<button class="alt lk" data-b="${b}" onclick="lvBetLock(${b})">${kxu(b)}<small>🔒 Lv ${r}</small></button>`;
+  const dis=P.maxOk&&!P.maxOk(b);return `<button class="${b===P.cur?'':'alt'}" data-b="${b}" ${dis?'disabled':''} onclick="closeModal();${P.on}(${b})">${kxu(b)}${r?`<small>Lv ${r}</small>`:''}</button>`;};
+ modal(`<h3>🎚 Chọn mức cược</h3><p class="small">Mức cao mở theo cấp của bạn (đang cấp ${myLevelNow(PR)}). Mức mờ: chưa đủ xu.</p><div class="cgbets lvbets bclvgrid lvpickgrid">${P.list.map(btn).join('')}</div>`);sfx('tap');}
+// gom nút mức cược vào hàng Chơi con/Làm cái (bài cái) hoặc hàng số người (trò khác) để khu điều khiển thấp hơn 1 dòng
+function lvPickInline(root){const o=typeof root==='string'?$(root):root;if(!o)return;const w=o.querySelector('.cgctl .cgbets.lvpick');if(!w)return;const b=w.querySelector('button');const tgt=o.querySelector('.cgctl .cgrole')||o.querySelector('.cgctl .cgset');if(!b||!tgt)return;b.classList.add('inl');tgt.appendChild(b);w.remove();}
+const _cgRender1589=cgRender;cgRender=function(){const r=_cgRender1589.apply(this,arguments);try{lvPickInline('cg');}catch(e){}return r;};
+['dmR','xtR','pkR'].forEach(fn=>{const f0=window[fn];window[fn]=function(){const r=f0.apply(this,arguments);try{lvPickInline('mg');}catch(e){}return r;};});
+// bàn đông người (5–6) + khu điều khiển lúc hết ván: co bàn cho vừa, không để bài của bạn tràn xuống đè nút
+function cgFit(){const t=document.querySelector('#cg .cgtbl');if(!t)return;const parts=[...t.querySelectorAll(':scope > .cgs, :scope > .cgmid')];parts.forEach(e=>e.style.zoom='');if(t.scrollHeight<=t.clientHeight+1)return;
+ for(let z=0.94;z>=0.6&&t.scrollHeight>t.clientHeight+1;z-=0.06)parts.forEach(e=>e.style.zoom=z.toFixed(2));}
+const _cgRender1589b=cgRender;cgRender=function(){const r=_cgRender1589b.apply(this,arguments);try{cgFit();}catch(e){}return r;};
+addEventListener('resize',()=>{try{if(document.body.classList.contains('cgon'))cgFit();}catch(e){}});
