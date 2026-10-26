@@ -307,9 +307,9 @@ function seatLv(s){if(!s||(!s.me&&(s.name==='Nhà cái'||!s.name)))return '';if(
  const lv=s.lv||botLvFor(s.name);return `<span class="slv"><span class="lvb">${lv}</span>${titleHTML(titleForLevel(lv))}</span>`;}
 function xpFloat(xp,up){try{const L=levelInfo(PR.xp);toast(`⭐ +${xp} XP · Cấp ${L.level} (${L.cur}/${L.need})`+(up&&up.length?' · Lên cấp!':''));}catch(e){}}
 // ===================== v1.48: Huy hiệu theo chế độ =====================
-const BG_TABS=[['mn','Miền Nam','🂡'],['demla','Đếm lá','🔢'],['3cao','3 Cào','🃏'],['xidach','Xì dách','🂱'],['baucua','Bầu cua','🦀'],['domino','Domino','🁫'],['xito','Xì tố','🂡'],['poker','Poker','♠️'],['chung','Chung','⭐']];
+const BG_TABS=[['mn','Miền Nam','🂡'],['demla','Đếm lá','🔢'],['3cao','3 Cào','🃏'],['xidach','Xì dách','🂱'],['baucua','Bầu cua','🦀'],['domino','Domino','🁫'],['xito','Xì tố','🂡'],['poker','Poker','♠️'],['maubinh','Mậu binh','🎴'],['chung','Chung','⭐']];
 let bgTab=null,bgFil='all';
-openBadges=function(t,f){if(t)bgTab=t;if(f)bgFil=f;if(!bgTab){const mm={mn:'mn',demla:'demla','3cao':'3cao',xidach:'xidach',baucua:'baucua',domino:'domino',xito:'xito',poker:'poker'};bgTab=mm[typeof MODE!=='undefined'?MODE:'mn']||'mn';}
+openBadges=function(t,f){if(t)bgTab=t;if(f)bgFil=f;if(!bgTab){const mm={mn:'mn',demla:'demla','3cao':'3cao',xidach:'xidach',baucua:'baucua',domino:'domino',xito:'xito',poker:'poker',maubinh:'maubinh'};bgTab=mm[typeof MODE!=='undefined'?MODE:'mn']||'mn';}
  const inTab=BADGES.filter(b=>badgeMode(b)===bgTab);const has=b=>!!PR.badges[b.id];
  const list=inTab.filter(b=>bgFil==='all'||(bgFil==='on'?has(b):bgFil==='off'?!has(b)&&!b.secret:b.secret)).sort((a,b)=>(has(b)-has(a))||((a.secret?1:0)-(b.secret?1:0)));
  const n=Object.keys(PR.badges).filter(k=>BADGES.find(b=>b.id===k)).length,tn=inTab.filter(has).length;
@@ -762,3 +762,94 @@ function resFoot(){const m=$('modalIn');if(!m||!m.querySelector('button[onclick^
  const cl=f.querySelector('.rfclose');if(cl)f.appendChild(cl);m.appendChild(f);m.classList.add('hasfoot');}
 const _sr1510=showResult;showResult=function(r){const x=_sr1510(r);try{resFoot();const mi=$("modalIn");if(mi)mi.scrollTop=0;setTimeout(resFoot,400);}catch(e){console.error(e);}return x;};
 const _cm1510=closeModal;closeModal=function(){const m=$('modalIn');if(m)m.classList.remove('hasfoot');return _cm1510.apply(this,arguments);};
+// ===================== v1.59.0: MẬU BINH (Binh sập xám) — bạn + 3 máy, xếp 3 chi =====================
+MODES.push(['maubinh','Mậu binh','🎴']);MG_TITLE.maubinh='🎴 Mậu binh';MG_STAT.maubinh='mb';
+const MB_BETS=[100,200,500,1000,2000,5000];LV_BETS.forEach(([b])=>{if(!MB_BETS.includes(b))MB_BETS.push(b);});
+const MB_TIME=60;
+MG_MODE.maubinh={
+ open(){MG.st=null;MG.mbN=+(localStorage.getItem('tlmn_mbn')||4);if(![2,3,4].includes(MG.mbN))MG.mbN=4;if(!MB_BETS.includes(MG.bet)||!lvBetOk(PR,MG.bet))MG.bet=200;MG.mbBots=mgBots(MG.mbN-1);mgTopUp(MG.mbBots,MG.bet,30);mbR();},
+ pub(){const st=MG.st;if(!st)return{seats:[],msg:'Đang chọn bàn'};const up=st.phase!=='arrange';return{msg:st.msg||'',seats:st.seats.map((s,i)=>({name:i===0?(PR.name||'Người chơi'):s.name,av:i===0?myAv():s.av,cards:up?[].concat(...st.arr[i]):null,cnt:13,lab:up&&st.R?(st.R.trang[i]?st.R.trang[i].name:st.R.lung[i]?'Binh lủng':''):'',v:st.res?st.res[i]:null}))};},
+ quit(){const st=MG.st;if(st&&st.busy){PR.xu=Math.max(0,PR.xu-Math.min(PR.xu,st.bet*MB_LUNG));saveP();}clearInterval(MG.mbTick);}
+};
+function mbUnit(){return MG.bet;}
+function mbNeed(){return MG.bet*6;}
+function mbSet(k,v){if(MG.st&&MG.st.busy)return;if(k==='n'){if(![2,3,4].includes(v))return;MG.mbN=v;localStorage.setItem('tlmn_mbn',v);MG.mbBots=mgBots(v-1);}else{if(!lvBetOk(PR,v))return lvBetLock(v);MG.bet=v;}mgTopUp(MG.mbBots,MG.bet,30);MG.st=MG.st&&MG.st.phase==='done'?MG.st:null;mbR();}
+// sắp lá trong 1 chi: theo bộ (đôi/xám đứng cạnh nhau) rồi theo giá trị
+function mbSort(cs){const cnt={};cs.forEach(c=>{const v=pkV(c);cnt[v]=(cnt[v]||0)+1;});return cs.slice().sort((a,b)=>(cnt[pkV(b)]-cnt[pkV(a)])||(pkV(b)-pkV(a))||((b&3)-(a&3)));}
+// bài vừa chia: xếp theo giá trị giảm dần → chi 1 / chi 2 / chi 3 (bạn tự sửa hoặc bấm Xếp tự động)
+function mbInitArr(h){const s=h.slice().sort((a,b)=>pkV(b)-pkV(a)||((b&3)-(a&3)));return [mbSort(s.slice(0,5)),mbSort(s.slice(5,10)),mbSort(s.slice(10))];}
+function mbDeal(){if(PR.xu<mbNeed())return toast('Cần ít nhất '+fmt(mbNeed())+' xu (6 chi)');clearInterval(MG.mbTick);mgRefill(MG.mbBots,MG.bet*12);mgTopUp(MG.mbBots,MG.bet,30);
+ const n=MG.mbN;const seats=[{name:'Bạn',av:myAv(),me:1}].concat(MG.mbBots.slice(0,n-1));const deck=shuf(DECK52);const hands=seats.map(()=>deck.splice(0,13));
+ const arr=hands.map((h,i)=>i===0?mbInitArr(h):null);const trang=hands.map(h=>mbTrang(h));
+ MG.st={seats,hands,arr,trang,phase:'arrange',busy:true,bet:MG.bet,sel:null,ready:seats.map((s,i)=>i===0?0:0),dl:Date.now()+MB_TIME*1000,msg:'Xếp 13 lá thành 3 chi: Chi 1 ≥ Chi 2 ≥ Chi 3',res:null,R:null,step:0,fresh:1};
+ const st=MG.st;
+ // máy xếp (có chút ngẫu nhiên theo cấp), báo xong sau vài giây
+ seats.forEach((s,i)=>{if(!i)return;const lv=s.lv||botLvFor(s.name)||10;const r=()=>Math.random();r.amp=lv>=40?0.05:lv>=20?0.25:0.6;st.arr[i]=(trang[i]&&trang[i].arr)||mbBest(hands[i],r)||mbInitArr(hands[i]);st.arr[i]=st.arr[i].map(mbSort);
+  setTimeout(()=>{if(MG.st!==st||st.phase!=='arrange')return;st.ready[i]=1;sfx('cgChip');mbR();},2500+Math.random()*12000);});
+ sfx('cgRiffle');mbR();MG.mbTick=setInterval(mbTickFn,1000);}
+function mbTickFn(){const st=MG.st;if(!st||MG.g!=='maubinh'||st.phase!=='arrange'){clearInterval(MG.mbTick);return;}const left=Math.max(0,Math.ceil((st.dl-Date.now())/1000));const e=$('mbTime');if(e){e.textContent='⏱ '+left+'s';e.classList.toggle('low',left<=10);}
+ if(left<=0){if(mbIsLung(st.arr[0])&&!st.trang[0])mbAuto(true);toast('Hết giờ — tự động xếp xong');mbGo();}}
+function mbPos(c){const a=MG.st.arr[0];for(let k=0;k<3;k++){const j=a[k].indexOf(c);if(j>=0)return[k,j];}return null;}
+function mbTap(c){const st=MG.st;if(!st||st.phase!=='arrange')return;if(st.sel==null||st.sel===c){st.sel=st.sel===c?null:c;sfx('tap');return mbR();}
+ const p=mbPos(st.sel),q=mbPos(c);if(!p||!q)return;const a=st.arr[0];if(p[0]===q[0]){st.sel=c;sfx('tap');return mbR();}
+ a[p[0]][p[1]]=c;a[q[0]][q[1]]=st.sel;a[p[0]]=mbSort(a[p[0]]);a[q[0]]=mbSort(a[q[0]]);st.sel=null;sfx('cgSnap');mbR();}
+// chạm chi đích khi đang chọn lá: đổi với lá yếu nhất của chi đó
+function mbToChi(k){const st=MG.st;if(!st||st.phase!=='arrange'||st.sel==null)return;const p=mbPos(st.sel);if(!p||p[0]===k)return;const row=st.arr[0][k];mbTap(row[row.length-1]);}
+function mbAuto(silent){const st=MG.st;if(!st||st.phase!=='arrange')return;const b=(st.trang[0]&&st.trang[0].arr)||mbBest(st.hands[0]);if(b)st.arr[0]=b.map(mbSort);st.sel=null;if(!silent){sfx('cgRiffle');}mbR();}
+function mbGo(){const st=MG.st;if(!st||st.phase!=='arrange')return;if(mbIsLung(st.arr[0])&&!st.trang[0]&&Date.now()<st.dl&&!st._lungOk){st._lungOk=1;sfx('bad');toast('⚠ Binh lủng! Bấm Xong lần nữa nếu vẫn muốn mở bài (thua 6 chi mỗi người)');return mbR();}
+ clearInterval(MG.mbTick);st.phase='reveal';st.sel=null;st.ready=st.ready.map(()=>1);const R=mbSettle(st.arr,st.trang);st.R=R;
+ const have=st.seats.map((s,i)=>i===0?PR.xu:(MG.bxu[s.name]||0));st.X=mbPayMat(R.P,st.bet,have);const pay=st.X.map(r=>r.reduce((a,v)=>a+v,0));st.pay=pay;st.step=0;sfx('cgSlide');mbStepFn();}
+function mbStepFn(){const st=MG.st;if(!st||MG.g!=='maubinh'||st.phase!=='reveal')return;st.step++;const R=st.R;
+ const anyT=R.trang.some(Boolean);if(anyT&&st.step<4)st.step=4;
+ if(st.step<=3){const k=st.step-1;st.msg=`So chi ${k+1}`+(R.chi[k][0]>0?` · bạn +${R.chi[k][0]} chi`:R.chi[k][0]<0?` · bạn ${R.chi[k][0]} chi`:'');sfx(R.chi[k][0]>0?'cgChip':R.chi[k][0]<0?'cgThud':'cgSlide');mbR();return setTimeout(mbStepFn,RM?450:1300);}
+ mbEnd();}
+function mbEnd(){const st=MG.st;const R=st.R;st.phase='done';st.busy=false;const pay=st.pay;st.res=pay;
+ pay.forEach((v,i)=>{if(i>0)MG.bxu[st.seats[i].name]=Math.max(0,(MG.bxu[st.seats[i].name]||0)+v);});
+ const nm=i=>i===0?'Bạn':st.seats[i].name;const notes=[];
+ R.trang.forEach((t,i)=>{if(t)notes.push(`🎉 ${nm(i)}: Mậu binh ${t.name}`);});R.lung.forEach((l,i)=>{if(l)notes.push(`💥 ${nm(i)} binh lủng`);});
+ if(R.sapLang>=0)notes.push(`🧹 ${nm(R.sapLang)} SẬP LÀNG!`);else R.sap.forEach((r,i)=>r.forEach((x,j)=>{if(x)notes.push(`${nm(i)} bắt sập ${nm(j)}`);}));
+ st.ledger=st.seats.slice(1).map((s,j)=>{const i=j+1;const p=R.P[0][i];return [s.name+' ('+(p>0?'+':'')+p+' chi)',st.X[0][i]];});
+ st.notes=notes;st.msg=(notes.length?notes.slice(0,2).join(' · ')+' · ':'')+(pay[0]>0?`Bạn thắng +${fmt(pay[0])} xu`:pay[0]<0?`Bạn thua ${fmt(-pay[0])} xu`:'Hòa');
+ const me=0,sapMe=R.sap[0].some(Boolean),t0=R.trang[0],big=st.R.sc[0].some((s,k)=>k<2&&s[0]>=7);
+ const stats=[];if(R.sapLang===0)stats.push('mbSapLang');if(t0&&t0.t===6)stats.push('mbRong');
+ const xp=mgEnd(pay[0],{stats,ev:pay[0]>0?{role:!!t0,sp1:R.sapLang===me,sp2:sapMe,sp3:big,s4:!!(t0&&t0.t===6),s5:!!(t0&&t0.t===2)}:{role:!!t0}});st.msg+=` · +${xp} XP`;
+ if(pay[0]>0)sfx('cgJingle');mbR();try{if(R.sapLang===0||t0)winFX(t0?'🎉 MẬU BINH '+t0.name.toUpperCase()+'!':'🧹 SẬP LÀNG!',true);}catch(e){}}
+function mbCard(c,cls,click){const d=cardEl(c);d.classList.remove('sel');d.classList.add('cgc','mbc');if(cls)cls.split(' ').forEach(k=>k&&d.classList.add(k));if(click)d.setAttribute('onclick',click);return d.outerHTML;}
+function mbDelta(v,unit){return v?`<i class="mbd ${v>0?'pos':'neg'}">${v>0?'+':''}${v}${unit||''}</i>`:'<i class="mbd">0</i>';}
+function mbSeatHTML(s,i){const st=MG.st;const up=st&&st.phase!=='arrange';const R=st&&st.R;const k=st?st.step-1:-1;
+ let body;if(!st)body='<div class="mbwait">Chờ chia bài</div>';
+ else if(!up)body=`<div class="mbbacks">${'<div class="card back cgc mbc"></div>'.repeat(5)}</div><div class="mbst ${st.ready[i]?'ok':''}">${st.ready[i]?'Xong ✓':'Đang xếp…'}</div>`;
+ else{const a=st.arr[i];const t=R.trang[i];body=[2,1,0].map(r=>{const on=st.phase==='done'||r===k||(t&&st.step>=4);const lab=t?'':`<small class="mbl">${mbName(R.sc[i][r])}</small>`;
+   const dv=!t&&!R.lung[i]&&(st.phase==='done'||r<=k)?mbDelta(R.chi[r][i]):'';return `<div class="mbrow r${r} ${r===k&&st.phase==='reveal'?'hot':''}">${a[r].map(c=>mbCard(c,on?'':'dim')).join('')}${lab}${dv}</div>`;}).join('')+
+   (t?`<div class="mbtag tr">🎉 ${t.name}</div>`:R.lung[i]&&st.step>=4?'<div class="mbtag lu">Binh lủng</div>':'')+(st.phase==='done'&&R.sap[i].some(Boolean)?'<div class="mbtag sp">Bắt sập!</div>':'')+(st.phase==='done'&&R.sap.some((r,x)=>r[i])?'<div class="mbtag sd">Sập!</div>':'');}
+ const v=st&&st.res?`<i class="mgv ${st.res[i]>0?'pos':st.res[i]<0?'neg':''}">${st.res[i]>0?'+':''}${kxu(st.res[i])}</i>`:'';
+ return `<div class="mbs ${st&&st.phase==='done'&&st.res&&st.res[i]>0?'win':''}">${mgSeat(s,v)}${body}</div>`;}
+function mbR(){const o=$('mg');if(!o||MG.g!=='maubinh')return;const st=MG.st;const n=st?st.seats.length:MG.mbN;const opp=st?st.seats.slice(1):MG.mbBots.slice(0,n-1);
+ const meRows=st?mbMeRows():`<div class="mbintro"><b>🎴 Mậu binh · Binh sập xám</b><p>Mỗi người 13 lá, xếp thành <b>Chi 1</b> (5 lá) ≥ <b>Chi 2</b> (5 lá) ≥ <b>Chi 3</b> (3 lá). So từng chi với mỗi đối thủ: thắng +1 chi, thua −1 chi. Thắng cả 3 chi = <b>sập</b> (×2).</p><p class="small">1 chi = ${fmt(mbUnit())} xu · <a onclick="mbRules()">📖 Xem luật</a></p></div>`;
+ o.innerHTML=mgTop()+`<div class="mbtbl ${st?'ph-'+st.phase:''}"><div class="mbopp n${n}">${opp.map((s,j)=>mbSeatHTML(s,j+1)).join('')}</div><div class="mbmsg ${st&&st.phase==='arrange'&&mbIsLung(st.arr[0])&&!st.trang[0]?'warn':''}">${esc(mbMsg())}</div>${meRows}</div><div class="cgctl">${mbCtl()}</div>`;
+ try{svaScan(o);}catch(e){}try{lvPickInline(o);}catch(e){}mbFit();}
+function mbMsg(){const st=MG.st;if(!st)return '';if(st.phase==='arrange'){const a=st.arr[0];if(st.trang[0])return '🎉 Bạn có Mậu binh trắng: '+st.trang[0].name+' — bấm Mậu binh!';if(mbIsLung(a)){const s=mbScores(a);return cmpSc(s[0],s[1])<0?'⚠ Binh lủng: Chi 2 đang mạnh hơn Chi 1':'⚠ Binh lủng: Chi 3 đang mạnh hơn Chi 2';}
+  return st.sel!=null?'Chạm lá khác (hoặc tên chi) để đổi chỗ':'Chạm 1 lá rồi chạm lá ở chi khác để đổi chỗ';}return st.msg||'';}
+function mbMeRows(){const st=MG.st;const a=st.arr[0];const ar=st.phase==='arrange';const R=st.R;const k=st.step-1;const t=st.trang[0];const lung=ar?(mbIsLung(a)&&!t):R&&R.lung[0];const sc=mbScores(a);
+ const rows=[2,1,0].map(r=>{const bad=ar&&lung&&((r===1&&cmpSc(sc[0],sc[1])<0)||(r===2&&cmpSc(sc[1],sc[2])<0)||(r===0&&cmpSc(sc[0],sc[1])<0)||(r===1&&cmpSc(sc[1],sc[2])<0));
+  const tgt=ar&&st.sel!=null&&mbPos(st.sel)[0]!==r;const dv=R&&!R.trang.some(Boolean)&&!R.lung[0]&&(st.phase==='done'||r<=k)?mbDelta(R.chi[r][0],' chi'):'';
+  return `<div class="mbmrow r${r} ${bad?'bad':''} ${tgt?'tgt':''} ${R&&r===k&&st.phase==='reveal'?'hot':''}"><div class="mbh" ${tgt?`onclick="mbToChi(${r})"`:''}><b>Chi ${r+1}</b><span>${t&&!ar?'':mbName(sc[r])}${r===0&&mbChiVal(0,sc[0])>1?' · '+mbChiVal(0,sc[0])+' chi':r===1&&mbChiVal(1,sc[1])>1?' · '+mbChiVal(1,sc[1])+' chi':r===2&&mbChiVal(2,sc[2])>1?' · '+mbChiVal(2,sc[2])+' chi':''}</span>${tgt?'<i class="mbgo">⇄ đổi vào</i>':''}${dv}</div><div class="mbcards">${a[r].map(c=>mbCard(c,(st.sel===c?'pick':'')+(st.fresh?' cgnew':''),ar?`mbTap(${c})`:'')).join('')}</div></div>`;}).join('');
+ st.fresh=0;const me=st.res?`<i class="mgv ${st.res[0]>0?'pos':st.res[0]<0?'neg':''}">${st.res[0]>0?'+':''}${kxu(st.res[0])}</i>`:'';
+ const tags=R?(t?`<span class="mbtag tr">🎉 ${t.name}</span>`:'')+(R.lung[0]?'<span class="mbtag lu">Binh lủng</span>':'')+(st.phase==='done'&&R.sap[0].some(Boolean)?'<span class="mbtag sp">Bắt sập!</span>':'')+(st.phase==='done'&&R.sap.some(r=>r[0])?'<span class="mbtag sd">Sập!</span>':'')+(st.phase==='done'&&R.sapLang>=0?`<span class="mbtag sp">${R.sapLang===0?'Bạn sập làng!':'Sập làng'}</span>`:''):'';
+ return `<div class="mbme ${st.phase==='done'&&st.res&&st.res[0]>0?'win':''}"><div class="mbmehd"><span class="av ${frameCls()}" style="--avc:#3a5">${myAv()}</span><b>Bạn</b>${seatLv({me:1})}<small class="cgbx">${I('coin')}${kxu(PR.xu)}</small>${me}${tags}</div>${rows}</div>`;}
+function mbCtl(){const st=MG.st;if(st&&st.phase==='arrange'){const left=Math.max(0,Math.ceil((st.dl-Date.now())/1000));const t=st.trang[0];
+  return `<div class="cgrow mbact"><span id="mbTime" class="mbtime ${left<=10?'low':''}">⏱ ${left}s</span><button class="cgbig alt" onclick="mbAuto()">🪄 Xếp tự động</button><button class="cgbig ${t?'mbwhite':''}" onclick="mbGo()">${t?'🎉 Mậu binh!':'✓ Xong'}</button></div>`;}
+ if(st&&st.phase==='reveal')return '<p class="small" style="text-align:center">Đang so bài…</p>';
+ return `${st?mgLedger(st.ledger):''}<div class="cgset"><div class="cgn">${[2,3,4].map(k=>`<button class="${k===MG.mbN?'':'alt'}" onclick="mbSet('n',${k})">${k}</button>`).join('')}<span class="small">người</span></div><button class="alt mbrule" onclick="mbRules()">📖 Luật</button></div>${mgBets(MB_BETS,MG.bet,"mbSet.bind(null,'bet')",b=>b*6<=PR.xu)}<button class="cgbig" ${PR.xu<mbNeed()?'disabled':''} onclick="mbDeal()">Ván mới · 1 chi = ${kxu(mbUnit())} xu</button>`;}
+function mbRules(){modal(`<h3>📖 Luật Mậu binh (Binh sập xám)</h3><div class="mbrules">
+<p><b>Xếp bài:</b> 13 lá chia 3 chi — <b>Chi 1</b> 5 lá, <b>Chi 2</b> 5 lá, <b>Chi 3</b> 3 lá. Bắt buộc Chi 1 ≥ Chi 2 ≥ Chi 3, sai là <b>binh lủng</b>. Hết ${MB_TIME} giây máy tự xếp giúp.</p>
+<p><b>Thứ tự bộ (cao → thấp):</b> Thùng phá sảnh, Tứ quý, Cù lũ, Thùng, Sảnh, Xám chi, Thú (2 đôi), Đôi, Mậu thầu. Chi 3 chỉ có Xám, Đôi, Mậu thầu. A lớn nhất, 2 nhỏ nhất.</p>
+<p><b>So chi:</b> so từng chi với từng đối thủ, thắng +1 chi, thua −1 chi, bằng nhau hòa. 1 chi = mức cược.</p>
+<p><b>Thưởng chi:</b> Chi 1 Tứ quý 4 chi, Thùng phá sảnh 5 chi · Chi 2 Cù lũ 2 chi, Tứ quý 8 chi, Thùng phá sảnh 10 chi · Chi 3 Xám 3 chi.</p>
+<p><b>Sập:</b> thắng cả 3 chi một đối thủ → ăn gấp đôi người đó. <b>Sập làng:</b> sập tất cả đối thủ (bàn ≥3 người) → gấp đôi thêm lần nữa.</p>
+<p><b>Binh lủng:</b> thua mỗi người ${MB_LUNG} chi (hai người cùng lủng thì hòa).</p>
+<p><b>Mậu binh trắng</b> (thắng ngay, không so chi): Sảnh rồng (13 lá khác số) 24 chi · Đồng màu (13 lá cùng đỏ/đen) 12 chi · 5 đôi 1 xám 8 chi · Lục phé bôn (6 đôi) 6 chi · Ba thùng 6 chi · Ba sảnh 6 chi. Hai người cùng trắng: loại cao hơn ăn, bằng nhau hòa.</p>
+<p class="small">Không đủ xu thì chỉ trả tối đa số xu đang có.</p></div>`);}
+// co bàn khi màn hình thấp để nút luôn bấm được
+function mbFit(){const t=document.querySelector('#mg .mbtbl');if(!t)return;t.style.setProperty('--mbz',1);let z=1;for(let k=0;k<8&&t.scrollHeight>t.clientHeight+1;k++){z-=0.05;t.style.setProperty('--mbz',z.toFixed(2));}}
+addEventListener('resize',()=>{try{if(MG.g==='maubinh')mbFit();}catch(e){}});

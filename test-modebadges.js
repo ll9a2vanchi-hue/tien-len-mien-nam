@@ -13,5 +13,5 @@ for(const m of modes){const p=P.newProfile();p.xu=0;let d=new Date(2026,0,1,2,0)
 // huy hiệu cũ: mỗi chỉ số được dùng phải được ghi nhận ở đâu đó trong mã
 const src=fs.readdirSync('src').filter(x=>x.endsWith('.js')).map(x=>fs.readFileSync('src/'+x,'utf8')).join('\n')+['extras.js','chop.js','casino.js','games2.js','cloud.js'].map(x=>fs.existsSync(x)?fs.readFileSync(x,'utf8'):'').join('\n')+fs.readFileSync('progress.js','utf8').replace(/const BADGES=\[[\s\S]*?\n\];/,'');
 const keys=new Set();P.BADGES.filter(b=>!b.mode).forEach(b=>{const t=b.test.toString();for(const r of t.matchAll(/V\(s,'(\w+)'/g))keys.add(r[1]);for(const r of t.matchAll(/\bs\.(\w+)/g))keys.add(r[1]);if(b.k)keys.add(b.k);});
-for(const k of keys){const re=new RegExp("(bst\\(\\s*'"+k+"'|bst\\(k\\+'"+k.replace(/^(bcua|dom|xt|pk)/,'')+"'|"+(/^play\d$/.test(k)?"'play'\\+n|":"")+"['\"]"+k+"['\"]|\\.\\b"+k+"\\b\\s*(\\+\\+|\\+=|=))");ok(re.test(src),'chỉ số không được ghi nhận: '+k);}
+for(const k of keys){const re=new RegExp("(bst\\(\\s*'"+k+"'|bst\\(k\\+'"+k.replace(/^(bcua|dom|xt|pk|mb)/,'')+"'|"+(/^play\d$/.test(k)?"'play'\\+n|":"")+"['\"]"+k+"['\"]|\\.\\b"+k+"\\b\\s*(\\+\\+|\\+=|=))");ok(re.test(src),'chỉ số không được ghi nhận: '+k);}
 console.log(f?'FAILED '+f:'ALL OK ('+P.BADGES.length+' huy hiệu)');process.exit(f?1:0);

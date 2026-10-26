@@ -6,7 +6,7 @@ t('unranked at 0',X.starInfo(0).step===0);t('first star',X.starInfo(X.STAR_STEPS
 t('bac 1 at step 6',X.starInfo(X.STAR_CUM[6]).name==='Bạc'&&X.starInfo(X.STAR_CUM[6]).stars===1);
 t('max den 5',X.starInfo(1e9).step===35&&X.starInfo(1e9).name==='Đen'&&X.starInfo(1e9).stars===5);
 t('max mode +86%',X.starStepBonus(35)===86);t('dong 5 = 2%',X.starStepBonus(5)===2);
-let p=P();X.STAR_MODES.forEach(([m])=>p.mxp=Object.assign({},p.mxp,{[m]:1e9}));t('all 8 = +688%',X.starBonus(p)===688);
+let p=P();X.STAR_MODES.forEach(([m])=>p.mxp=Object.assign({},p.mxp,{[m]:1e9}));t('all 9 = +774%',X.starBonus(p)===774);
 p=P();const r0=X.passiveRate(p);p.mxp={tlmn:X.STAR_CUM[5]};t('passive includes stars',Math.abs(X.passiveRate(p)-r0*1.02)<1e-9);
 p=P();X.addXp(p,300,'poker');t('mode xp tracked',p.mxp.poker===300&&p._starUp&&p._starUp.step===1);
 X.addXp(p,50,'tlmn');t('other mode separate',p.mxp.tlmn===50);X.addXp(p,50);t('no mode no track',p.mxp.tlmn===50);
